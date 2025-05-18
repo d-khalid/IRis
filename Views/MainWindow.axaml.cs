@@ -1,5 +1,5 @@
 using Avalonia.Controls;
-using IRis.Models.Circuit;
+using Avalonia.Input;
 using IRis.Services;
 using IRis.ViewModels;
 
@@ -11,7 +11,9 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         // "MainCanvas" from the XAML is used for all the drawing
-        canvasService.RegisterCanvas(MainCanvas);
+        canvasService.Register(MainCanvas);
+        
+        
         
         
         // DataContext = MainWindowViewModel();
