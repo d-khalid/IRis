@@ -23,9 +23,10 @@ public partial class App : Application
         // Set the default theme as 'Dark'
         // ThemeManager.ChangeTheme(Application.Current, "Dark");
         
-       // Create a CanvasService object and pass its reference to both MainWindow and MainWindowViewModel
-       CanvasService canvasService = new CanvasService();
-        
+        // Create a CanvasService object and pass its reference to both MainWindow and MainWindowViewModel
+        CanvasService canvasService = new CanvasService();
+
+    
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 

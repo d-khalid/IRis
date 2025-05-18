@@ -17,7 +17,10 @@
     
     <Window.KeyBindings>
         <!-- Bind Enter key to a command -->
-        <KeyBinding Gesture="Enter" Command="{Binding AddComponentCommand}" CommandParameter="AND"/>
+        <KeyBinding Gesture="A" Command="{Binding AddComponentCommand}" CommandParameter="AND"/>
+        
+        <!-- Bind Enter key to a command -->
+        <KeyBinding Gesture="X" Command="{Binding AddComponentCommand}" CommandParameter="XOR"/>
         
         <!-- Bind Enter key to a command -->
         <KeyBinding Gesture="N" Command="{Binding AddComponentCommand}" CommandParameter="NOT"/>
@@ -25,7 +28,19 @@
         <KeyBinding Gesture="O" Command="{Binding AddComponentCommand}" CommandParameter="OR"/>
         
         <!-- Bind Enter key to a command -->
-        <KeyBinding Gesture="M" Command="{Binding AddComponentCommand}" CommandParameter="NAND"/>
+        <KeyBinding Gesture="E" Command="{Binding AddComponentCommand}" CommandParameter="NAND"/>
+        
+        <!-- Bind Enter key to a command -->
+        <KeyBinding Gesture="Q" Command="{Binding AddComponentCommand}" CommandParameter="NOR"/>
+        
+        <!-- Bind Enter key to a command -->
+        <KeyBinding Gesture="W" Command="{Binding AddComponentCommand}" CommandParameter="XNOR"/>
+        
+        <!-- Bind Enter key to a command -->
+        <KeyBinding Gesture="P" Command="{Binding AddComponentCommand}" CommandParameter="PROBE"/>
+        
+        <!-- Bind Enter key to a command -->
+        <KeyBinding Gesture="T" Command="{Binding AddComponentCommand}" CommandParameter="TOGGLE"/>
 
 
         
