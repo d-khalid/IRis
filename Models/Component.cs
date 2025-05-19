@@ -57,11 +57,11 @@ public abstract class Component : Control, ICustomHitTest
 
     public virtual void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-        {
-            IsSelected = !IsSelected;
-            e.Handled = false;
-        }
+        // if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        // {
+        //     IsSelected = !IsSelected;
+        //     e.Handled = false;
+        // }
     }
 
 
