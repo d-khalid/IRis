@@ -5,33 +5,22 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using CommunityToolkit.Mvvm.Input;
 using IRis.Models;
-using IRis.Services;
 
 
 namespace IRis.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private readonly CanvasService _canvasService;
+
+        private readonly Simulation _simulation;
 
 
-        private Component _selectedComponent;
-
-        public Component SelectedComponent
-        {
-            get => _selectedComponent;
-            set
-            {
-                SetProperty(ref _selectedComponent, value);
-                // Start preview when component is selected
-                _canvasService.StartPreview(value);
-            }
-        }
-
-        public MainWindowViewModel(CanvasService canvasService)
+     
+        public MainWindowViewModel(Simulation simulation)
         {
             // Use the CanvasService for adding/removing components
-            _canvasService = canvasService;
+            _simulation = simulation;
+
 
             // Initialize all commands
             NewCommand = new RelayCommand(New);
@@ -120,6 +109,7 @@ namespace IRis.ViewModels
 
         private void Delete()
         {
+            _simulation.DeletedSelectedComponents();
         }
 
         // Help command
@@ -136,7 +126,10 @@ namespace IRis.ViewModels
         {
             Console.WriteLine($"Adding component: {componentType}");
 
-            SelectedComponent = CreateComponent(componentType);
+            _simulation.PreviewCompType = componentType;
+
+            //SelectedComponent = CreateComponent(componentType);
+
 
 
             // switch (componentType)
@@ -165,32 +158,6 @@ namespace IRis.ViewModels
             // }
         }
 
-        private static Component CreateComponent(string componentType)
-        {
-            switch (componentType)
-            {
-                case "AND":
-                    return new AndGate(4);
-                case "OR":
-                    return new OrGate(2);
-                case "NOT":
-                    return new NotGate();
-                case "NAND":
-                    return new NandGate(2);
-                case "NOR":
-                    return new NorGate(2);
-                case "XOR":
-                    return new XorGate(2);
-                case "XNOR":
-                    return new XnorGate(2);
-                case "PROBE":
-                    return new LogicProbe();
-                case "TOGGLE":
-                    return new LogicToggle();
-                    break;
-                default:
-                    return null; // TODO: DANGEROUS, THIS IS A FUCKING NULLPO WAITING TO HAPPEN
-            }
-        }
+       
     }
 }

@@ -1,17 +1,17 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using IRis.Services;
+using IRis.Models;
 using IRis.ViewModels;
 
 namespace IRis.Views;
 
 public partial class MainWindow : Window
 {
-    public MainWindow(CanvasService canvasService)
+    public MainWindow(Simulation simulation)
     {
         InitializeComponent();
         // "MainCanvas" from the XAML is used for all the drawing
-        canvasService.Register(MainCanvas);
+        simulation.Register(MainCanvas);
         
         
         

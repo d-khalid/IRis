@@ -41,6 +41,13 @@
         
         <!-- Bind Enter key to a command -->
         <KeyBinding Gesture="T" Command="{Binding AddComponentCommand}" CommandParameter="TOGGLE"/>
+        
+        <!-- Bind Enter key to a command -->
+        <KeyBinding Gesture="Delete" Command="{Binding DeleteCommand}" />
+        
+        
+        <!-- Bind Enter key to a command -->
+        <KeyBinding Gesture="Z" Command="{Binding AddComponentCommand}" CommandParameter="NULL"/>
 
 
         
