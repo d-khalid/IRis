@@ -43,6 +43,11 @@ public static class ComponentDefaults
     
     // High brings the 2nd arc closer to the main arc on the gate
     public static double XorArcDistFactor = 3;
+    
+    // For the grid
+    public const double GridSpacing = 20; // pixels between grid lines
+    public static IBrush GridBrush = new SolidColorBrush(Colors.Black, 0.3);
+    public static double GridThickness = 0.5;
 
 
 }
