@@ -3,8 +3,9 @@ using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media;
+using IRis.Models.Components;
 
-namespace IRis.Models;
+namespace IRis.Models.Core;
 
 
 // Contains the position and truth value of a connection point
@@ -43,6 +44,48 @@ public abstract class Gate : Component
         IsHitTestVisible = true;
         
         
+    }
+    
+    // Implement ICloneable for copies
+    public override object Clone()
+    {
+        // Create new instance based on concrete type
+        Gate clone = this switch
+        {
+            AndGate _ => new AndGate(this.NumInputs),
+            OrGate _ => new OrGate(this.NumInputs),
+            NotGate _ => new NotGate(),  // Special constructor
+            NandGate _ => new NandGate(this.NumInputs),
+            NorGate _ => new NorGate(this.NumInputs),
+            XorGate _ => new XorGate(this.NumInputs),
+            XnorGate _ => new XnorGate(this.NumInputs),
+            _ => throw new NotSupportedException($"Unsupported gate type: {this.GetType().Name}")
+        };
+
+        // Copy all base properties
+        clone.Width = this.Width;
+        clone.Height = this.Height;
+        clone.Rotation = this.Rotation;
+        clone.IsSelected = this.IsSelected;
+
+        // Copy terminal values (positions are set in constructor)
+        for (int i = 0; i < this.NumInputs; i++)
+        {
+            clone.Inputs[i] = new Terminal(
+                clone.Inputs[i].Position,  // Use new position
+                this.Inputs[i].Value       // Copy original value
+            );
+        }
+        clone.Output = new Terminal(
+            clone.Output.Position,
+            this.Output.Value
+        );
+
+        // Reset visual state
+        clone.VisualChildren.Clear();
+        clone.InvalidateVisual();
+
+        return clone;
     }
 
     // Draws an translucent box around the gate

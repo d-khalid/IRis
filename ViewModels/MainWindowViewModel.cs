@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Windows.Input;
+using System.Xml.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using CommunityToolkit.Mvvm.Input;
 using IRis.Models;
+using IRis.Views;
 
 
 namespace IRis.ViewModels
@@ -13,13 +16,44 @@ namespace IRis.ViewModels
     {
 
         private readonly Simulation _simulation;
+        
+        
+        
+        private string _openedFileName = " - ";
+       
+        private string _lastAction = " - ";
 
+        public string OpenedFileName
+        {
+            get => _openedFileName;
+            set => SetProperty(ref _openedFileName, value);
+        }
 
+        public string CursorPosition
+        {
+            get => $"[{_simulation.CurrentMousePos.X}, {_simulation.CurrentMousePos.Y}]";
+        }
+        public string LastAction
+        {
+            get => _lastAction;
+            set => SetProperty(ref _lastAction, value);
+        }
      
         public MainWindowViewModel(Simulation simulation)
         {
             // Use the CanvasService for adding/removing components
             _simulation = simulation;
+            
+            // Notify cursor pos about changes in LastMousePos
+            _simulation.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(Simulation.CurrentMousePos))
+                {
+                    // Notify that CursorPosition changed
+                    OnPropertyChanged(nameof(CursorPosition));
+                }
+            };
+            
 
 
             // Initialize all commands
@@ -54,12 +88,14 @@ namespace IRis.ViewModels
 
         private void Open()
         {
+          
         }
 
         public ICommand SaveCommand { get; }
 
         private void Save()
         {
+           
         }
 
         public ICommand SaveAsCommand { get; }
@@ -91,25 +127,36 @@ namespace IRis.ViewModels
 
         private void Cut()
         {
+            // _simulation.CutSelected();
+            LastAction = "Cut to clipboard.";
         }
 
         public ICommand CopyCommand { get; }
 
         private void Copy()
         {
+            // TODO: BE CAREFUL ABOUT THIS
+            // _simulation.CopySelected();
+            LastAction = "Copied to clipboard.";
+
         }
 
         public ICommand PasteCommand { get; }
 
         private void Paste()
         {
+            // _simulation.StartPastePreview();
+            LastAction = "Pasted clipboard contents.";
+
         }
 
         public ICommand DeleteCommand { get; }
 
         private void Delete()
         {
-            _simulation.DeletedSelectedComponents();
+            // _simulation.DeleteSelectedComponents();
+            LastAction = "Deleted selected components.";
+
         }
 
         // Help command
@@ -117,6 +164,16 @@ namespace IRis.ViewModels
 
         private void About()
         {
+            var aboutWindow = new AboutWindow();
+    
+            // Center it relative to main window
+            aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+    
+            // Get reference to main window
+            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+    
+            aboutWindow.ShowDialog(mainWindow);
+
         }
 
         // Component command
@@ -126,7 +183,8 @@ namespace IRis.ViewModels
         {
             Console.WriteLine($"Adding component: {componentType}");
 
-            _simulation.PreviewCompType = componentType;
+            _simulation.SetPreviewCompType(componentType);
+            LastAction = $"Selected Component [{componentType}]";
 
             //SelectedComponent = CreateComponent(componentType);
 

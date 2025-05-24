@@ -1,10 +1,13 @@
+using System;
+using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Rendering;
+using IRis.Models.Components;
 
-namespace IRis.Models;
+namespace IRis.Models.Core;
 
 public abstract class Component : Control, ICustomHitTest
 {
@@ -21,6 +24,7 @@ public abstract class Component : Control, ICustomHitTest
         {
             _rotation = value;
             RotateTransform = new RotateTransform(value, Width/2, Height/2);
+            InvalidateVisual();
         }
     }
 
@@ -42,11 +46,16 @@ public abstract class Component : Control, ICustomHitTest
         
         //Rotation = 100;
         
-        // Register OnPointerPressed()
-        this.PointerPressed += OnPointerPressed;
         
     }
-    
+
+    // Implement ICloneable for copies
+    // Override for child classes
+    public virtual object Clone()
+    {
+        return null;
+    }
+
     // Override for wires
     public virtual bool HitTest(Point point)
     {   
@@ -54,16 +63,6 @@ public abstract class Component : Control, ICustomHitTest
         
         return new Rect(0,0,Width,Height).Contains(point);
     }
-
-    public virtual void OnPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        // if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-        // {
-        //     IsSelected = !IsSelected;
-        //     e.Handled = false;
-        // }
-    }
-
 
     public override void Render(DrawingContext context)
     {
@@ -101,6 +100,38 @@ public abstract class Component : Control, ICustomHitTest
     {
         
     }
+    
+    // A method for making components by type
+    public static Component Create(string componentType)
+    {
+        switch (componentType)
+        {
+            case "AND":
+                return new AndGate(2);
+            case "OR":
+                return new OrGate(2);
+            case "NOT":
+                return new NotGate();
+            case "NAND":
+                return new NandGate(2);
+            case "NOR":
+                return new NorGate(2);
+            case "XOR":
+                return new XorGate(2);
+            case "XNOR":
+                return new XnorGate(2);
+            case "PROBE":
+                return new LogicProbe();
+            case "TOGGLE":
+                return new LogicToggle();
+                break;
+            case "WIRE":
+                return new Wire();
+            default:
+                return null; // TODO: DANGEROUS, THIS IS A FUCKING NULLPO WAITING TO HAPPEN
+        }
+    }
+
     
     
   

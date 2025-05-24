@@ -42,6 +42,9 @@
         <!-- Bind Enter key to a command -->
         <KeyBinding Gesture="T" Command="{Binding AddComponentCommand}" CommandParameter="TOGGLE"/>
         
+        <KeyBinding Gesture="I" Command="{Binding AddComponentCommand}" CommandParameter="WIRE"/>
+
+        
         <!-- Bind Enter key to a command -->
         <KeyBinding Gesture="Delete" Command="{Binding DeleteCommand}" />
         
@@ -51,8 +54,33 @@
 
 
         
+        <!-- ACTUAL SHORTCUTS, KEEP-->
         <!-- Bind Ctrl+S to SaveCommand -->
         <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveCommand}"/>
+
+        <!-- Bind Ctrl+c to CopyCommand-->
+        <KeyBinding Gesture="Ctrl+C" Command="{Binding CopyCommand}"/>
+        
+        <!-- Bind Ctrl+X to CutCommand -->
+        <KeyBinding Gesture="Ctrl+X" Command="{Binding CutCommand}"/>
+
+        <!-- Bind Ctrl+V to PasteCommand -->
+        <KeyBinding Gesture="Ctrl+V" Command="{Binding PasteCommand}"/>
+
+        <!-- Bind Ctrl+Z to UndoCommand -->
+        <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}"/>
+
+        <!-- Bind Ctrl+Y to RedoCommand -->
+        <KeyBinding Gesture="Ctrl+Y" Command="{Binding RedoCommand}"/>
+
+        <!-- Bind Ctrl+O to OpenCommand -->
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenCommand}"/>
+
+        <!-- Bind Ctrl+N to NewCommand -->
+        <KeyBinding Gesture="Ctrl+N" Command="{Binding NewCommand}"/>
+
+       
+
        
     </Window.KeyBindings>
 
@@ -66,7 +94,7 @@
     <!--     <TextBlock Grid.Row="1" Text="{Binding Greeting}"></TextBlock> -->
     <!-- </Grid> -->
     
-    <DockPanel>
+  <DockPanel>
         <!-- Top Menu Bar -->
         <Menu DockPanel.Dock="Top" >
             <MenuItem Header="File">
@@ -78,8 +106,8 @@
                 <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
             </MenuItem>
             <MenuItem Header="Edit">
-                <MenuItem Header="Undo" Command="{Binding UndoCommand}"/>
-                <MenuItem Header="Redo" Command="{Binding RedoCommand}"/>
+                <!-- <MenuItem Header="Undo" Command="{Binding UndoCommand}"/> -->
+                <!-- <MenuItem Header="Redo" Command="{Binding RedoCommand}"/> -->
                 <Separator/>
                 <MenuItem Header="Cut" Command="{Binding CutCommand}"/>
                 <MenuItem Header="Copy" Command="{Binding CopyCommand}"/>
@@ -108,14 +136,33 @@
                 
                 <Button Content="Toggle Switch" Command="{Binding AddComponentCommand}" CommandParameter="TOGGLE"/>
                 <Button Content="Logic Probe" Command="{Binding AddComponentCommand}" CommandParameter="PROBE"/>
-                <Button Content="Clock" Command="{Binding AddComponentCommand}" CommandParameter="CLOCK"/>
                 
                 <TextBlock Text="Other" FontWeight="Bold" Margin="0,10,0,5"/>
                 
                 <Button Content="Wire" Command="{Binding AddComponentCommand}" CommandParameter="WIRE"/>
-                <Button Content="Label" Command="{Binding AddComponentCommand}" CommandParameter="LABEL"/>
             </StackPanel>
         </ScrollViewer>
+        
+        <!-- Bottom Status Bar -->
+        <Border Background="DarkSlateGray" Height="25" DockPanel.Dock="Bottom" Padding="5">
+            <Grid>
+                <!-- Left-aligned items -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <TextBlock Text="File Name: "/>
+                    <TextBlock Text="{Binding OpenedFileName}" Margin="5,0"/>
+                    <TextBlock Text="|" Margin="5,0"/>
+                    <TextBlock Text="Cursor: "/>
+                    <TextBlock Text="{Binding CursorPosition}" Margin="2,0"/>
+                </StackPanel>
+
+                <!-- Right-aligned item -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="Last Action: "/>
+                    <TextBlock Text="{Binding LastAction}" Margin="2,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
 
         <!-- Main Canvas Area -->
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">

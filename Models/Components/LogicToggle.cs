@@ -2,29 +2,36 @@ using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
-using Avalonia.Styling;
+using IRis.Models.Core;
 
-namespace IRis.Models;
 
-public class LogicProbe : Component
+namespace IRis.Models.Components;
+
+public class LogicToggle : Component
 {
-    private Terminal _input;
+    private Terminal _output;
     
-    public LogicProbe(double width = ComponentDefaults.DefaultWidth, double height = ComponentDefaults.DefaultHeight)
+    public LogicToggle(double width = ComponentDefaults.DefaultWidth, double height = ComponentDefaults.DefaultHeight)
         : base(width, height)
     {
         Width = width * 2 / 3;
         Height = height * 2 / 3;
         
         // Left-oriented
-        _input = new Terminal(new Point(-ComponentDefaults.TerminalWireLength, Height/2), false);
+        _output = new Terminal(new Point(-ComponentDefaults.TerminalWireLength, Height/2), true);
         
     }
     
+    public override object Clone()
+    {
+        var clone = (LogicToggle)base.Clone();
+        clone._output = new Terminal(this._output.Position, this._output.Value);
+        return clone;
+    }
 
     public override void Draw(DrawingContext ctx)
     {
-        IImmutableSolidColorBrush fill = _input.Value switch
+        IImmutableSolidColorBrush fill = _output.Value switch
         {
             true => ComponentDefaults.TrueBrush,
             false => ComponentDefaults.FalseBrush,
@@ -32,20 +39,19 @@ public class LogicProbe : Component
         };
         
 
-        ctx.DrawEllipse(
+        ctx.DrawRectangle(
             fill, 
             ComponentDefaults.GatePen,
-            new Point(Width/2, Height/2),
-            Width/2, Height/2
+            new Rect(0,0,Width,Height)
             );
         
-        ctx.DrawLine(ComponentDefaults.WirePen, _input.Position, new Point(0, _input.Position.Y));
+        ctx.DrawLine(ComponentDefaults.WirePen, _output.Position, new Point(0, _output.Position.Y));
         ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
-            _input.Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
+            _output.Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
         
         // Draw the text label
         var text = new FormattedText(
-            _input.Value switch
+            _output.Value switch
             {
                 true => "1",
                 false => "0",

@@ -1,7 +1,9 @@
 using Avalonia;
 using Avalonia.Media;
+using IRis.Models.Core;
 
-namespace  IRis.Models;
+
+namespace  IRis.Models.Components;
 
 
 public class AndGate : Gate
