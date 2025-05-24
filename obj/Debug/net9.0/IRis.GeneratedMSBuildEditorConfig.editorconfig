@@ -24,5 +24,8 @@ build_property.EnableCodeStyleSeverity =
 [/home/alkalinelemon/Documents/Projects/C\#/IRis/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[/home/alkalinelemon/Documents/Projects/C\#/IRis/Views/AboutWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [/home/alkalinelemon/Documents/Projects/C\#/IRis/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

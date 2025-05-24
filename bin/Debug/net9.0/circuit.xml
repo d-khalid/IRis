@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Circuit>
+  <Components>
+    <AndGate Left="380" Top="140" Width="100" Height="80" Rotation="0" />
+    <AndGate Left="360" Top="320" Width="100" Height="80" Rotation="0" />
+    <AndGate Left="440" Top="500" Width="100" Height="80" Rotation="0" />
+    <NotGate Left="640" Top="320" Width="75" Height="80" Rotation="0" />
+    <NotGate Left="900" Top="320" Width="75" Height="80" Rotation="0" />
+    <Wire Left="900" Top="320" Width="0" Height="0" Rotation="0">
+      <Points>
+        <Point X="-140" Y="40" />
+        <Point X="-20" Y="40" />
+        <Point X="-140" Y="180" />
+      </Points>
+    </Wire>
+    <Wire Left="540" Top="400" Width="0" Height="0" Rotation="0">
+      <Points>
+        <Point X="-60" Y="-40" />
+        <Point X="80" Y="-40" />
+        <Point X="80" Y="-40" />
+      </Points>
+    </Wire>
+  </Components>
+</Circuit>

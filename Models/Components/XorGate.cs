@@ -1,12 +1,14 @@
 using Avalonia;
 using Avalonia.Media;
+using IRis.Models.Core;
 
-namespace  IRis.Models;
+
+namespace  IRis.Models.Components;
 
 
-public class OrGate : Gate
+public class XorGate : Gate
 {
-    public OrGate(int numInputs) : base(numInputs)
+    public XorGate(int numInputs) : base(numInputs)
     {
         
     }
@@ -17,10 +19,9 @@ public class OrGate : Gate
         // 3. Draw terminals (input left, output right)
         DrawTerminals(ctx);
         
-        this.DrawOr(ctx);
+        this.DrawOr(ctx, true);
         
         base.Draw(ctx);
-
 
     }
 }

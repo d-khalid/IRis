@@ -2,7 +2,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 
-namespace IRis.Models;
+namespace IRis.Models.Core;
 
 public static class ComponentDefaults
 {

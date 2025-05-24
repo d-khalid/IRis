@@ -1,25 +1,24 @@
 using Avalonia;
 using Avalonia.Media;
+using IRis.Models.Core;
 
-namespace  IRis.Models;
+
+namespace  IRis.Models.Components;
 
 
-public class NandGate : Gate
+public class NorGate : Gate
 {
-    public NandGate(int numInputs) : base(numInputs, notMode:true)
+    public NorGate(int numInputs) : base(numInputs, notMode:true)
     {
         
     }
 
     public override void Draw(DrawingContext ctx)
     {
-        
-       
-        
-        // 3. Draw terminals (lines + circles)
+        // 3. Draw terminals (input left, output right)
         DrawTerminals(ctx);
         
-        this.DrawAnd(ctx);
+        this.DrawOr(ctx);
         
         // 3. Draw the bubble at the end
         ctx.DrawEllipse(
@@ -31,7 +30,5 @@ public class NandGate : Gate
         
         base.Draw(ctx);
 
-        
-       
     }
 }
