@@ -127,7 +127,7 @@ namespace IRis.ViewModels
 
         private void Cut()
         {
-            // _simulation.CutSelected();
+            _simulation.CutSelected();
             LastAction = "Cut to clipboard.";
         }
 
@@ -136,7 +136,7 @@ namespace IRis.ViewModels
         private void Copy()
         {
             // TODO: BE CAREFUL ABOUT THIS
-            // _simulation.CopySelected();
+            _simulation.CopySelected();
             LastAction = "Copied to clipboard.";
 
         }
@@ -145,7 +145,7 @@ namespace IRis.ViewModels
 
         private void Paste()
         {
-            // _simulation.StartPastePreview();
+            _simulation.StartPastePreview();
             LastAction = "Pasted clipboard contents.";
 
         }
@@ -154,7 +154,7 @@ namespace IRis.ViewModels
 
         private void Delete()
         {
-            // _simulation.DeleteSelectedComponents();
+            _simulation.DeleteSelectedComponents();
             LastAction = "Deleted selected components.";
 
         }
@@ -183,7 +183,7 @@ namespace IRis.ViewModels
         {
             Console.WriteLine($"Adding component: {componentType}");
 
-            _simulation.SetPreviewCompType(componentType);
+            _simulation.PreviewCompType = componentType;
             LastAction = $"Selected Component [{componentType}]";
 
             //SelectedComponent = CreateComponent(componentType);
