@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Input;
@@ -44,6 +45,17 @@ public abstract class Gate : Component
         IsHitTestVisible = true;
         
         
+    }
+    // DTO pattern for serialization
+    protected override List<PropertyDto> GetSerializableProperties()
+    {
+        return new List<PropertyDto>
+        {
+            new() { Name = "Width", Value = Width.ToString() },
+            new() { Name = "Height", Value = Height.ToString() },
+            new() { Name = "Rotation", Value = Rotation.ToString() },
+            new() { Name = "NumInputs", Value = NumInputs.ToString()}
+        };
     }
     
     // Implement ICloneable for copies

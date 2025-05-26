@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
@@ -99,6 +100,29 @@ public abstract class Component : Control, ICustomHitTest
     public virtual void DrawSelection(DrawingContext ctx)
     {
         
+    }
+    
+    // DTO pattern implementation for serialization
+    public ComponentDto ToDto()
+    {
+        return new ComponentDto
+        {
+            Type = this.GetType().Name,
+            X = Canvas.GetLeft(this),
+            Y = Canvas.GetTop(this),
+            Properties = GetSerializableProperties()
+        };
+    }
+
+    protected virtual List<PropertyDto> GetSerializableProperties()
+    {
+        return new List<PropertyDto>
+        {
+            new() { Name = "Width", Value = Width.ToString() },
+            new() { Name = "Height", Value = Height.ToString() },
+            new() { Name = "Rotation", Value = Rotation.ToString() }
+            // Add other serializable properties
+        };
     }
     
     // A method for making components by type

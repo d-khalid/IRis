@@ -49,13 +49,12 @@ public class Wire : Component, ICloneable
 
     public override bool HitTest(Point point)
     {
-        // Translation
-        Point offset = new Point(Canvas.GetLeft(this), Canvas.GetTop(this));
+      
         // Check each wire segment
         for (int i = 0; i < points.Count - 1; i++)
         {
-            Point segmentStart = points[i] + offset;
-            Point segmentEnd = points[i + 1] + offset;
+            Point segmentStart = points[i];
+            Point segmentEnd = points[i + 1] ;
         
             if (IsPointNearLineSegment(point, segmentStart, segmentEnd, ComponentDefaults.WirePen.Thickness / 2))
             {
