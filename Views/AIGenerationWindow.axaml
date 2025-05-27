@@ -1,0 +1,58 @@
+<!-- AIGenerationWindow.axaml -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:IRis.ViewModels"
+        Title="AI Generation"
+        Width="500" Height="300"
+        x:Class="IRis.Views.AIGenerationWindow"
+        x:DataType="vm:AIGenerationWindowViewModel"
+        MinWidth="400" MinHeight="250">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="AI Circuit Generator" 
+                       FontSize="18" 
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Text="Describe the circuit you want to generate" 
+                       FontSize="12" 
+                       Foreground="Gray"
+                       HorizontalAlignment="Center"
+                       Margin="0,5,0,0"/>
+        </StackPanel>
+        
+        <!-- Prompt Label -->
+        <TextBlock Grid.Row="1" 
+                   Text="Enter your prompt:" 
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,5"/>
+        
+        <!-- Text Input Area -->
+        <TextBox Grid.Row="2"
+                 Name="PromptTextBox"
+                 Watermark="e.g., Create a simple logic circuit with an AND gate..."
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 MinHeight="100"
+                 Margin="0,0,0,15"/>
+                 <!-- Text="{Binding PromptText}" -->
+        
+        <!-- Button Panel -->
+        <StackPanel Grid.Row="3">
+            <Button Content="Generate" 
+                    Width="120"
+                    HorizontalContentAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Command="{Binding GenerateCommand}"
+                    IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

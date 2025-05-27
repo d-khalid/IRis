@@ -79,6 +79,7 @@ namespace IRis.ViewModels
             DeleteCommand = new RelayCommand(Delete);
 
             AboutCommand = new RelayCommand(About);
+            AIGenerationCommand = new RelayCommand(AIGeneration);
 
             AddComponentCommand = new RelayCommand<string>(AddComponent);
         }
@@ -87,6 +88,8 @@ namespace IRis.ViewModels
 
         // File commands
         public ICommand NewCommand { get; }
+
+        public ICommand AIGenerationCommand { get; }
 
         private void New()
         {
@@ -312,6 +315,20 @@ namespace IRis.ViewModels
                 ?.MainWindow;
 
             aboutWindow.ShowDialog(mainWindow);
+        }
+
+        private void AIGeneration()
+        {
+            var aiGenerationWindow = new AIGenerationWindow();
+
+            // Center it relative to main window
+            aiGenerationWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            // Get reference to main window
+            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+                ?.MainWindow;
+
+            aiGenerationWindow.ShowDialog(mainWindow);
         }
 
         // Component command

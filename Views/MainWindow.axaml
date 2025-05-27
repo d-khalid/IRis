@@ -115,6 +115,11 @@
                 <MenuItem Header="Paste" Command="{Binding PasteCommand}"/>
                 <MenuItem Header="Delete" Command="{Binding DeleteCommand}"/>
             </MenuItem>
+            <!-- AI option -->
+            <MenuItem Header="AI">
+                <MenuItem Header="Generate" Command="{Binding AIGenerationCommand}"/>
+            </MenuItem>
+
             <MenuItem Header="Help">
                 <MenuItem Header="About" Command="{Binding AboutCommand}"/>
             </MenuItem>
