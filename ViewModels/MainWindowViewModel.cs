@@ -36,7 +36,7 @@ namespace IRis.ViewModels
 
         public string CursorPosition
         {
-            get => $"[{_simulation.CurrentMousePos.X}, {_simulation.CurrentMousePos.Y}]";
+            get => $"({(int)_simulation.CurrentMousePos.X}, {(int)_simulation.CurrentMousePos.Y})";
         }
 
         public string LastAction

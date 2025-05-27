@@ -409,40 +409,18 @@ public partial class Simulation : ObservableObject
                 var componentPos = new Point(Canvas.GetLeft(component), Canvas.GetTop(component));
                 var componentBounds = new Rect(componentPos, new Size(component.Width, component.Height));
 
-                // Check intersection
+                // Check intersection for components (gates)
                 if (componentBounds.Contains(_selectionStart))
                 {
-                    // Select/Unselect
-                    switch (component.IsSelected)
-                    {
-                        case true:
-                            _selectedComponents.Remove(component);
-                            component.IsSelected = false;
-                            break;
-                        case false:
-                            _selectedComponents.Add(component);
-                            component.IsSelected = true;
-                            break;
-                    }
-
-                    return true; 
+                    // Select/Unselect based on if it's already selected
+                    ToggleSelection(component);
+                    return true;
                 }
-                // For wires
+                // Check For wires
                 if (component is Wire wire && component.HitTest(_selectionStart))
                 {
-                    // Select/Unselect
-                    switch (component.IsSelected)
-                    {
-                        case true:
-                            _selectedComponents.Remove(component);
-                            component.IsSelected = false;
-                            break;
-                        case false:
-                            _selectedComponents.Add(component);
-                            component.IsSelected = true;
-                            break;
-                    }
-
+                    // Select/Unselect based on if it's already selected
+                    ToggleSelection(component);
                     return true;
                 }
             }
@@ -471,13 +449,30 @@ public partial class Simulation : ObservableObject
         return false; // Continue running the main event handler
     }
 
+    // Helper for HandleSelectionStart()
+    private void ToggleSelection(Component component)
+    {
+        switch (component.IsSelected)
+        {
+            case true:
+                _selectedComponents.Remove(component);
+                component.IsSelected = false;
+                break;
+            case false:
+                _selectedComponents.Add(component);
+                component.IsSelected = true;
+                break;
+        }
+    }
+
+
     public bool HandleSelectionUpdate()
     {
-      
-        
+
+
         // No selection area to update, let the event handler go on
         if (_selectionRect == null) return false;
-       
+
         // Calculate bounds
         double left = Math.Min(_selectionStart.X, CurrentMousePos.X);
         double top = Math.Min(_selectionStart.Y, CurrentMousePos.Y);

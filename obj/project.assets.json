@@ -1479,25 +1479,31 @@
     ]
   },
   "packageFolders": {
-    "/home/alkalinelemon/.nuget/packages/": {}
+    "C:\\Users\\shahz\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/alkalinelemon/Documents/Projects/C#/IRis/IRis.csproj",
+      "projectUniqueName": "C:\\Users\\shahz\\OneDrive\\Desktop\\IRis\\IRis.csproj",
       "projectName": "IRis",
-      "projectPath": "/home/alkalinelemon/Documents/Projects/C#/IRis/IRis.csproj",
-      "packagesPath": "/home/alkalinelemon/.nuget/packages/",
-      "outputPath": "/home/alkalinelemon/Documents/Projects/C#/IRis/obj/",
+      "projectPath": "C:\\Users\\shahz\\OneDrive\\Desktop\\IRis\\IRis.csproj",
+      "packagesPath": "C:\\Users\\shahz\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\shahz\\OneDrive\\Desktop\\IRis\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/home/alkalinelemon/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\shahz\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "/usr/lib64/dotnet/library-packs": {},
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -1516,7 +1522,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.100"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net9.0": {
@@ -1563,16 +1569,8 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/9.0.105/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: The SSL connection could not be established, see inner exception."
-    }
-  ]
+  }
 }

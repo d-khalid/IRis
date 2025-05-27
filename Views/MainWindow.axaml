@@ -51,6 +51,7 @@
         
         <!-- Bind Enter key to a command -->
         <KeyBinding Gesture="Z" Command="{Binding AddComponentCommand}" CommandParameter="NULL"/>
+        <KeyBinding Gesture="Escape" Command="{Binding AddComponentCommand}" CommandParameter="NULL"/>
 
 
         
