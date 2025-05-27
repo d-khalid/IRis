@@ -42,8 +42,8 @@
                  AcceptsReturn="True"
                  TextWrapping="Wrap"
                  MinHeight="100"
+                 Text="{Binding PromptText}"
                  Margin="0,0,0,15"/>
-                 <!-- Text="{Binding PromptText}" -->
         
         <!-- Button Panel -->
         <StackPanel Grid.Row="3">
