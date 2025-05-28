@@ -34,6 +34,7 @@ public static class ComponentDefaults
     
 
     public static double TerminalWireLength = 30;
+    public static double TerminalSnappingRange = 10;
 
     // For NOT-derived Gates
     public static double BubbleRadius = DefaultWidth / 15;

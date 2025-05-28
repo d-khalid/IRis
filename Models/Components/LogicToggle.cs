@@ -9,34 +9,52 @@ namespace IRis.Models.Components;
 
 public class LogicToggle : Component
 {
-    private Terminal _output;
+    private bool? _value;
+  
     
     public LogicToggle(double width = ComponentDefaults.DefaultWidth, double height = ComponentDefaults.DefaultHeight)
         : base(width, height)
     {
         Width = width * 2 / 3;
         Height = height * 2 / 3;
+
+        Terminals = new Terminal[1];
         
         // Left-oriented
-        _output = new Terminal(new Point(-ComponentDefaults.TerminalWireLength, Height/2), true);
+        Terminals[0] = new Terminal(new Point(-ComponentDefaults.TerminalWireLength, Height/2), null);
         
     }
+    
+    
     
     public override object Clone()
     {
         var clone = (LogicToggle)base.Clone();
-        clone._output = new Terminal(this._output.Position, this._output.Value);
+        clone.Terminals[0] = new Terminal(this.Terminals[0].Position, this.Terminals[0].Wire);
         return clone;
     }
 
     public override void Draw(DrawingContext ctx)
     {
-        IImmutableSolidColorBrush fill = _output.Value switch
+        IImmutableSolidColorBrush fill = ComponentDefaults.DontCareBrush;
+        string content = "X";
+        if (Terminals[0].Wire != null)
         {
-            true => ComponentDefaults.TrueBrush,
-            false => ComponentDefaults.FalseBrush,
-            null => ComponentDefaults.DontCareBrush
-        };
+            fill = Terminals[0].Wire.Value switch
+            {
+                true => ComponentDefaults.TrueBrush,
+                false => ComponentDefaults.FalseBrush,
+                null => ComponentDefaults.DontCareBrush
+            };
+
+            content = Terminals[0].Wire.Value switch
+            {
+                true => "1",
+                false => "0",
+                null => "X",
+            };
+
+        }
         
 
         ctx.DrawRectangle(
@@ -45,18 +63,13 @@ public class LogicToggle : Component
             new Rect(0,0,Width,Height)
             );
         
-        ctx.DrawLine(ComponentDefaults.WirePen, _output.Position, new Point(0, _output.Position.Y));
+        ctx.DrawLine(ComponentDefaults.WirePen, Terminals[0].Position, new Point(0, Terminals[0].Position.Y));
         ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
-            _output.Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
+            Terminals[0].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
         
         // Draw the text label
         var text = new FormattedText(
-            _output.Value switch
-            {
-                true => "1",
-                false => "0",
-                null => "X"
-            },
+            content,
             CultureInfo.CurrentCulture,
             FlowDirection.LeftToRight,
             new Typeface(fontFamily:"Arial", weight:FontWeight.Bold), 

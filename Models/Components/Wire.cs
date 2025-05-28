@@ -15,9 +15,19 @@ public class Wire : Component, ICloneable
 {
     private List<Point> points = new List<Point>();
 
-    private Terminal source;
     
-    private List<Terminal> sinks = new List<Terminal>();
+   // private Component? _lastSetter = null;
+
+    // This value is propagated to everything connected to this wire
+    private bool? _value;
+    public bool? Value
+    {
+        get => _value;
+        set
+        {
+            _value = value; 
+        }
+    }
 
     public List<Point> Points
     {
@@ -160,9 +170,9 @@ public class Wire : Component, ICloneable
         {
             clone.AddPoint(points[i]);
         }
-        // Copy source and sinks by value (Terminal is a struct)
-        clone.source = source;
-        clone.sinks = new List<Terminal>(sinks);
+        // // Copy source and sinks by value (Terminal is a struct)
+        // clone.source = source;
+        // clone.sinks = new List<Terminal>(sinks);
         return clone;
     }
 }
