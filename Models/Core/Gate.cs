@@ -5,17 +5,18 @@ using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media;
 using IRis.Models.Components;
+using Avalonia.Threading;
 
 namespace IRis.Models.Core;
 
 
 // Contains the position and truth value of a connection point
-public readonly struct Terminal
+public struct Terminal
 {
     public Point Position { get; }
-    
+
     // Value is nullable to account for dont cares
-    public bool? Value { get; }
+    public bool? Value { get; set; }
 
     public Terminal(Point position, bool? value)
     {
@@ -31,21 +32,56 @@ public abstract class Gate : Component
 
     protected Terminal[] Inputs;
     protected Terminal Output;
+    private bool?[] _previousInputValues;
+
+    private DispatcherTimer _updateTimer;
 
     // Uses default values if none are given
     public Gate(int numInputs, double width = ComponentDefaults.DefaultWidth,
-        double height = ComponentDefaults.DefaultHeight, bool notMode = false) 
+        double height = ComponentDefaults.DefaultHeight, bool notMode = false)
         : base(width, height)
     {
         NumInputs = numInputs;
         Inputs = new Terminal[NumInputs];
-        
+
         AddTerminalPoints(notMode);
 
         IsHitTestVisible = true;
-        
-        
+
+        // Dispatcher timer, calls CheckIfInputsChanged()
+        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };   // Adjust to reduce CPU load
+        _updateTimer.Tick += (s, e) => CheckIfInputsChanged();
+        _updateTimer.Start();
     }
+
+
+    // Simulation logic
+    // This one MUST be Overriden
+    public abstract void UpdateOutputValue();        // This function implements gate logic to inputs
+
+    public void CheckIfInputsChanged()      // should be called to check periodically
+    {
+        bool hasChanged = false;
+
+        for (int i = 0; i < NumInputs; i++)
+        {
+            if (_previousInputValues[i] != Inputs[i].Value)
+            {
+                hasChanged = true;
+                break;
+            }
+            else
+            {
+                _previousInputValues[i] = Inputs[i].Value;
+            }
+        }
+        
+        if (hasChanged)
+        {
+            UpdateOutputValue();
+        }
+    }
+
     // DTO pattern for serialization
     protected override List<PropertyDto> GetSerializableProperties()
     {

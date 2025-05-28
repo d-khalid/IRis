@@ -10,7 +10,7 @@ public class XorGate : Gate
 {
     public XorGate(int numInputs) : base(numInputs)
     {
-        
+
     }
 
     public override void Draw(DrawingContext ctx)
@@ -18,10 +18,17 @@ public class XorGate : Gate
 
         // 3. Draw terminals (input left, output right)
         DrawTerminals(ctx);
-        
+
         this.DrawOr(ctx, true);
-        
+
         base.Draw(ctx);
 
+    }
+    
+    
+
+    public override void UpdateOutputValue()
+    {
+        // Some implementation
     }
 }
