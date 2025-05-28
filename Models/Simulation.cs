@@ -40,7 +40,7 @@ public partial class Simulation : ObservableObject
     private List<Component> _pastePreviewComponents = new();
     
     // Grid Options
-    public bool SnapToGridEnabled { get; set; } = true;
+    public bool SnapToGridEnabled { get; set; } = false;
     
     private string? _previewCompType;
     private Component? _previewComponent ;
@@ -106,7 +106,7 @@ public partial class Simulation : ObservableObject
         _canvas.PointerMoved += (s, e) =>
         {
             // Update the mouse pos
-            CurrentMousePos = e.GetPosition(_canvas);
+            CurrentMousePos = SnapToGridEnabled ? SnapToGrid(e.GetPosition(_canvas)) : e.GetPosition(_canvas);
 
             if (HandlePreviewUpdate()) return;
             if (HandleSelectionUpdate()) return;
@@ -321,10 +321,11 @@ public partial class Simulation : ObservableObject
         // For wires only
         if (_previewComponent is Wire wirePreview)
         {
-            // Update last point position
+          
             if (wirePreview.Points.Count > 0)
             {
-                wirePreview.Points[^1] = CurrentMousePos;
+                // Make wires snap to the closest terminal
+                wirePreview.Points[^1] = FindClosestSnapPoint(CurrentMousePos, ComponentDefaults.TerminalSnappingRange + 30);
                 wirePreview.InvalidateVisual();
             }
 
@@ -342,7 +343,39 @@ public partial class Simulation : ObservableObject
         
         return false; // Continue
     }
-    
+
+    private Point FindClosestSnapPoint(Point p, double snappingRange)
+    {
+        double minDistance = double.MaxValue;
+        
+        Point closest = CurrentMousePos;
+
+        foreach (Component component in _components)
+        {
+            // Skip components with null terminals array
+            if (component.Terminals == null)
+                continue;
+
+            foreach (Terminal terminal in component.Terminals)
+            {
+                // The terminal positions are relative to the components, we need absolute coords
+                Point absTerminalPos = new Point(terminal.Position.X + Canvas.GetLeft(component), 
+                    terminal.Position.Y + Canvas.GetTop(component));
+                
+                double distance = Point.Distance(p, absTerminalPos);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+
+
+                    closest = absTerminalPos;
+                }
+            }
+        }
+
+        return Point.Distance(closest, p) < snappingRange ? closest : p; // may return null if no terminals exist
+    }
+
     public bool HandlePreviewKeyCommand(KeyEventArgs e)
     {
         // Rotating wires is a terrible idea so no to that

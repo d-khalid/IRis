@@ -29,12 +29,12 @@ public class OrGate : Gate
     
     
 
-    public override void UpdateOutputValue()
-    {
-        var values = Inputs.Select(input => input.Value).ToArray();
-
-        // Logic applies for any no. of Inputs
-        if (values.Any(v => v == null)) Output.Value = null;
-        else Output.Value = values.Any(v => v == true);
-    }
+    // public override void UpdateOutputValue()
+    // {
+    //     var values = Inputs.Select(input => input.Wire.Value).ToArray();
+    //
+    //     // Logic applies for any no. of Inputs
+    //     if (values.Any(v => v == null)) Output.Wire.Value = null;
+    //     else Output.Wire.Value = values.Any(v => v == true);
+    // }
 }

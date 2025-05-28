@@ -1,31 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\shahz\\OneDrive\\Desktop\\IRis\\IRis.csproj": {}
+    "/home/alkalinelemon/Documents/Projects/C#/IRis/IRis.csproj": {}
   },
   "projects": {
-    "C:\\Users\\shahz\\OneDrive\\Desktop\\IRis\\IRis.csproj": {
+    "/home/alkalinelemon/Documents/Projects/C#/IRis/IRis.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\shahz\\OneDrive\\Desktop\\IRis\\IRis.csproj",
+        "projectUniqueName": "/home/alkalinelemon/Documents/Projects/C#/IRis/IRis.csproj",
         "projectName": "IRis",
-        "projectPath": "C:\\Users\\shahz\\OneDrive\\Desktop\\IRis\\IRis.csproj",
-        "packagesPath": "C:\\Users\\shahz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\shahz\\OneDrive\\Desktop\\IRis\\obj\\",
+        "projectPath": "/home/alkalinelemon/Documents/Projects/C#/IRis/IRis.csproj",
+        "packagesPath": "/home/alkalinelemon/.nuget/packages/",
+        "outputPath": "/home/alkalinelemon/Documents/Projects/C#/IRis/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\shahz\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/alkalinelemon/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "/usr/lib64/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -44,7 +39,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net9.0": {
@@ -91,7 +86,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/9.0.105/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -11,17 +11,17 @@ namespace IRis.Models.Core;
 
 
 // Contains the position and truth value of a connection point
-public struct Terminal
+public class Terminal
 {
     public Point Position { get; }
 
     // Value is nullable to account for dont cares
-    public bool? Value { get; set; }
+    public Wire? Wire { get; set; }
 
-    public Terminal(Point position, bool? value)
+    public Terminal(Point position, Wire wire)
     {
         Position = position;
-        Value = value;
+        Wire = wire;
     }
 }
 
@@ -29,9 +29,7 @@ public struct Terminal
 public abstract class Gate : Component
 {
     protected int NumInputs;
-
-    protected Terminal[] Inputs;
-    protected Terminal Output;
+    
     private bool?[] _previousInputValues;
 
     private DispatcherTimer _updateTimer;
@@ -42,7 +40,7 @@ public abstract class Gate : Component
         : base(width, height)
     {
         NumInputs = numInputs;
-        Inputs = new Terminal[NumInputs];
+        Terminals = new Terminal[NumInputs + 1];
 
         AddTerminalPoints(notMode);
 
@@ -57,22 +55,26 @@ public abstract class Gate : Component
 
     // Simulation logic
     // This one MUST be Overriden
-    public abstract void UpdateOutputValue();        // This function implements gate logic to inputs
-
+    public virtual void UpdateOutputValue()
+    {
+    }
+    
+    
+    // This function implements gate logic to inputs
     public void CheckIfInputsChanged()      // should be called to check periodically
     {
         bool hasChanged = false;
 
         for (int i = 0; i < NumInputs; i++)
         {
-            if (_previousInputValues[i] != Inputs[i].Value)
+            if (_previousInputValues[i] != Terminals[i].Wire.Value)
             {
                 hasChanged = true;
                 break;
             }
             else
             {
-                _previousInputValues[i] = Inputs[i].Value;
+                _previousInputValues[i] = Terminals[i].Wire.Value;
             }
         }
         
@@ -119,14 +121,14 @@ public abstract class Gate : Component
         // Copy terminal values (positions are set in constructor)
         for (int i = 0; i < this.NumInputs; i++)
         {
-            clone.Inputs[i] = new Terminal(
-                clone.Inputs[i].Position,  // Use new position
-                this.Inputs[i].Value       // Copy original value
+            clone.Terminals[i] = new Terminal(
+                clone.Terminals[i].Position,  // Use new position
+                this.Terminals[i].Wire      // Copy original value
             );
         }
-        clone.Output = new Terminal(
-            clone.Output.Position,
-            this.Output.Value
+        clone.Terminals[^1] = new Terminal(
+            clone.Terminals[^1].Position,
+            this.Terminals[^1].Wire
         );
 
         // Reset visual state
@@ -160,14 +162,14 @@ public abstract class Gate : Component
         double spacing = Height / (NumInputs + 1);
         for (int i = 0; i < NumInputs; i++)
         {
-            Inputs[i] = new Terminal(new Point(-ComponentDefaults.TerminalWireLength, spacing * (i + 1)), null);
+            Terminals[i] = new Terminal(new Point(-ComponentDefaults.TerminalWireLength, spacing * (i + 1)), null);
             
         }
-        //Output
+        //Terminals[^1]
         double outputX = Width + ComponentDefaults.TerminalWireLength;
         if(notMode) outputX += ComponentDefaults.BubbleRadius * 2;
         
-        Output = new Terminal(new Point(outputX, Height / 2), null);
+        Terminals[^1]= new Terminal(new Point(outputX, Height / 2), null);
     }
 
     // For drawing the terminals
@@ -179,18 +181,18 @@ public abstract class Gate : Component
         // Input lines extend into the gate and covered up by the fill color
         for (int i = 0; i < NumInputs; i++)
         {
-            ctx.DrawLine(ComponentDefaults.WirePen, Inputs[i].Position, new Point(Width / ComponentDefaults.OrArcFactor, Inputs[i].Position.Y));
+            ctx.DrawLine(ComponentDefaults.WirePen, Terminals[i].Position, new Point(Width / ComponentDefaults.OrArcFactor, Terminals[i].Position.Y));
             ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
-                Inputs[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
+                Terminals[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 
         }
-        // For Output
+        // For Terminals[^1]
         // SUSPEND: I STOPPED HERE
      
-        ctx.DrawLine(ComponentDefaults.WirePen, Output.Position,
-            new Point(Output.Position.X - ComponentDefaults.TerminalWireLength, Output.Position.Y));
+        ctx.DrawLine(ComponentDefaults.WirePen, Terminals[^1].Position,
+            new Point(Terminals[^1].Position.X - ComponentDefaults.TerminalWireLength, Terminals[^1].Position.Y));
         ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
-            Output.Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
+            Terminals[^1].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
     }
     
     // Methods for drawing the body of AND and OR

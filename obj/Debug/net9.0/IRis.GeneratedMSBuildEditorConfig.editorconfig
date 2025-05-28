@@ -15,20 +15,20 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = IRis
-build_property.ProjectDir = C:\Users\shahz\OneDrive\Desktop\IRis\
+build_property.ProjectDir = /home/alkalinelemon/Documents/Projects/C#/IRis/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/shahz/OneDrive/Desktop/IRis/App.axaml]
+[/home/alkalinelemon/Documents/Projects/C\#/IRis/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/shahz/OneDrive/Desktop/IRis/Views/AboutWindow.axaml]
+[/home/alkalinelemon/Documents/Projects/C\#/IRis/Views/AboutWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/shahz/OneDrive/Desktop/IRis/Views/AIGenerationWindow.axaml]
+[/home/alkalinelemon/Documents/Projects/C\#/IRis/Views/AIGenerationWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/shahz/OneDrive/Desktop/IRis/Views/MainWindow.axaml]
+[/home/alkalinelemon/Documents/Projects/C\#/IRis/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

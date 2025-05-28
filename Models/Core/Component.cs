@@ -17,6 +17,9 @@ public abstract class Component : Control, ICustomHitTest
     private double _rotation = 0;
 
     protected RotateTransform RotateTransform;
+    
+    // Last one is output
+    public Terminal[]? Terminals = null;
 
     public double Rotation
     {
