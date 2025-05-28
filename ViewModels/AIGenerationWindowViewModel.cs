@@ -25,7 +25,7 @@ namespace IRis.ViewModels
         AIGenerationWindow promptWindow;
 
         [ObservableProperty]
-        private String promptText;
+        private String promptText = "NONE";
 
         public AIGenerationWindowViewModel(AIGenerationWindow promptWindow)
         {

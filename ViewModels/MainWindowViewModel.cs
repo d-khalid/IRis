@@ -30,7 +30,7 @@ namespace IRis.ViewModels
 
         public string? OpenedFileName
         {
-            get => _openedFileName == null ? "NONE" : _openedFileName;
+            get => _openedFileName == null ? "(unsaved)" : _openedFileName;
             set => SetProperty(ref _openedFileName, value);
         }
 

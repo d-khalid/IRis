@@ -8,18 +8,18 @@ namespace  IRis.Models.Components;
 
 public class NorGate : Gate
 {
-    public NorGate(int numInputs) : base(numInputs, notMode:true)
+    public NorGate(int numInputs) : base(numInputs, notMode: true)
     {
-        
+
     }
 
     public override void Draw(DrawingContext ctx)
     {
         // 3. Draw terminals (input left, output right)
         DrawTerminals(ctx);
-        
+
         this.DrawOr(ctx);
-        
+
         // 3. Draw the bubble at the end
         ctx.DrawEllipse(
             Brushes.White, // Fill (none)
@@ -27,8 +27,15 @@ public class NorGate : Gate
             new Point(Width + ComponentDefaults.BubbleRadius, Height / 2),
             ComponentDefaults.BubbleRadius,
             ComponentDefaults.BubbleRadius);
-        
+
         base.Draw(ctx);
 
+    }
+    
+    
+
+    public override void UpdateOutputValue()
+    {
+        // Some implementation
     }
 }
