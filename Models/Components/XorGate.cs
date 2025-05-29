@@ -1,3 +1,4 @@
+using System.Linq;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
@@ -25,10 +26,21 @@ public class XorGate : Gate
 
     }
     
+    public override void ComputeOutput()
+    {
+        // If there's a missing wire, don't bother
+        if (Terminals.Any(p => p.Wire == null)) return;
+
+        // Funny LINQ expression
+        // Check if number of HIGH inputs is odd
+        if (Terminals.SkipLast(1).Where(p => p.Wire.Value == LogicState.High).Count() % 2 != 0)
+        {
+            Terminals[^1].Wire.Value = LogicState.High;
+        }
+        else Terminals[^1].Wire.Value = LogicState.Low;
+
+    }
     
 
-    public override void UpdateOutputValue()
-    {
-        // Some implementation
-    }
+   
 }

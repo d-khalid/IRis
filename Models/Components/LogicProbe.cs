@@ -36,28 +36,35 @@ public class LogicProbe : Component
 
     public override void Draw(DrawingContext ctx)
     {
-        IImmutableSolidColorBrush fill = ComponentDefaults.DontCareBrush;
-        string content = "X";
+        IImmutableSolidColorBrush fill;
+        string content;
         if (Terminals[0].Wire != null)
         {
             fill = Terminals[0].Wire.Value switch
             {
-                true => ComponentDefaults.TrueBrush,
-                false => ComponentDefaults.FalseBrush,
-                null => ComponentDefaults.DontCareBrush
+               LogicState.High => ComponentDefaults.TrueBrush,
+                LogicState.Low => ComponentDefaults.FalseBrush,
+                LogicState.DontCare => ComponentDefaults.DontCareBrush,
+               null => ComponentDefaults.DontCareBrush,
             };
 
             content = Terminals[0].Wire.Value switch
             {
-                true => "1",
-                false => "0",
-                null => "X",
+                LogicState.High => "1",
+                LogicState.Low => "0",
+                LogicState.DontCare => "X",
+                null => "X!"
             };
 
         }
+        else
+        {
+            content = "X!";
+            fill = ComponentDefaults.DontCareBrush;
+        }
 
-   
-        
+
+
 
         ctx.DrawEllipse(
             fill, 

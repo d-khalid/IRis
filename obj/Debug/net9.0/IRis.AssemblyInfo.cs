@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IRis")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+73ac30a909e8807f5cea93f0747086ecae4d988d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c485510cfcc4156da66e263769df8c93a9262c19")]
 [assembly: System.Reflection.AssemblyProductAttribute("IRis")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IRis")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
