@@ -19,8 +19,8 @@ public class Wire : Component, ICloneable
    // private Component? _lastSetter = null;
 
     // This value is propagated to everything connected to this wire
-    private bool? _value;
-    public bool? Value
+    private LogicState? _value;
+    public LogicState? Value
     {
         get => _value;
         set

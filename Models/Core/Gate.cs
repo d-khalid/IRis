@@ -23,10 +23,13 @@ public class Terminal
         Position = position;
         Wire = wire;
     }
+    
+    // For serialization
+    
 }
 
 // Has some gate specific things
-public abstract class Gate : Component
+public abstract class Gate : Component, IOutputProvider
 {
     protected int NumInputs;
     
@@ -47,43 +50,13 @@ public abstract class Gate : Component
         IsHitTestVisible = true;
 
         // Dispatcher timer, calls CheckIfInputsChanged()
-        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };   // Adjust to reduce CPU load
-        _updateTimer.Tick += (s, e) => CheckIfInputsChanged();
-        _updateTimer.Start();
+        // _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };   // Adjust to reduce CPU load
+        // _updateTimer.Tick += (s, e) => CheckIfInputsChanged();
+        // _updateTimer.Start();
     }
 
-
-    // Simulation logic
-    // This one MUST be Overriden
-    public virtual void UpdateOutputValue()
-    {
-    }
-    
-    
-    // This function implements gate logic to inputs
-    public void CheckIfInputsChanged()      // should be called to check periodically
-    {
-        bool hasChanged = false;
-
-        for (int i = 0; i < NumInputs; i++)
-        {
-            if (_previousInputValues[i] != Terminals[i].Wire.Value)
-            {
-                hasChanged = true;
-                break;
-            }
-            else
-            {
-                _previousInputValues[i] = Terminals[i].Wire.Value;
-            }
-        }
-        
-        if (hasChanged)
-        {
-            UpdateOutputValue();
-        }
-    }
-
+    public abstract void ComputeOutput();
+   
     // DTO pattern for serialization
     protected override List<PropertyDto> GetSerializableProperties()
     {

@@ -1,3 +1,4 @@
+using System.Linq;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
@@ -51,11 +52,27 @@ public class NotGate : Gate
         base.Draw(ctx);
 
     }
-    
-    
 
-    public override void UpdateOutputValue()
+    public override void ComputeOutput()
     {
-        // Some implementation
+        // If there's a missing wire, don't bother
+        if (Terminals.Any(p => p.Wire == null)) return;
+
+        switch (Terminals[0].Wire.Value)
+        {
+            case LogicState.DontCare:
+                Terminals[^1].Wire.Value = LogicState.DontCare;
+                break;
+            case LogicState.High:
+                Terminals[^1].Wire.Value = LogicState.Low;
+                break;
+            case LogicState.Low:
+                Terminals[^1].Wire.Value = LogicState.High;
+                break;
+            case null:
+                Terminals[^1].Wire.Value = null;
+                break;
+        }
+
     }
 }

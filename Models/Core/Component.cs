@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
@@ -106,13 +107,15 @@ public abstract class Component : Control, ICustomHitTest
     }
     
     // DTO pattern implementation for serialization
-    public ComponentDto ToDto()
+    public virtual ComponentDto ToDto()
     {
         return new ComponentDto
         {
             Type = this.GetType().Name,
             X = Canvas.GetLeft(this),
             Y = Canvas.GetTop(this),
+            // Terminals = this.Terminals,
+            
             Properties = GetSerializableProperties()
         };
     }
@@ -124,7 +127,7 @@ public abstract class Component : Control, ICustomHitTest
             new() { Name = "Width", Value = Width.ToString() },
             new() { Name = "Height", Value = Height.ToString() },
             new() { Name = "Rotation", Value = Rotation.ToString() }
-            // Add other serializable properties
+            // Add other serializable properties in subclasses
         };
     }
     

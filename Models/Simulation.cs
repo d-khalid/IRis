@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Components;
 using IRis.Models.Core;
@@ -44,6 +45,8 @@ public partial class Simulation : ObservableObject
     
     private string? _previewCompType;
     private Component? _previewComponent ;
+
+    private DispatcherTimer _updateTimer;
 
     public string? PreviewCompType
     {
@@ -95,6 +98,11 @@ public partial class Simulation : ObservableObject
         // Important: Enable keyboard focus
         _canvas.Focusable = true;
         _canvas.Cursor = new Cursor(StandardCursorType.Arrow);
+        
+        // For updating the simulation
+        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };   // Adjust to reduce CPU load
+        _updateTimer.Tick += (s, e) => SimulationStep();
+        _updateTimer.Start();
         
         // Registering event handlers
         _canvas.PointerPressed += (s, e) =>
@@ -155,7 +163,25 @@ public partial class Simulation : ObservableObject
 
     }
 
-    
+    public void SimulationStep()
+    {
+        Console.WriteLine("SIMULATION STEP");
+        foreach (var component in _components)
+        {
+            // Redraw Toggles and Probes
+            if(component is LogicProbe || component is LogicToggle)
+                component.InvalidateVisual();
+            
+            // Compute outputs for everything
+            if (component is IOutputProvider op)
+                op.ComputeOutput();
+
+        }
+        
+        
+    }
+
+
     public void DeleteSelectedComponents()
     {
         for (int i = 0; i < _selectedComponents.Count; i++)
@@ -259,8 +285,18 @@ public partial class Simulation : ObservableObject
         // Commit points to wire
         if (_previewComponent is Wire wirePreview)
         {
-            // Commit point to wire
-            wirePreview.AddPoint(CurrentMousePos);
+            // // Commit point to wire
+            // wirePreview.AddPoint(CurrentMousePos);
+            //
+            // Check for a terminal we can snap to
+            Terminal? target = FindClosestSnapTerminal(CurrentMousePos, ComponentDefaults.TerminalSnappingRange, out var pos);
+
+            if (target != null)
+            {
+                target.Wire = wirePreview;
+            }
+            wirePreview.AddPoint(pos);
+
             return true; // Terminate
         }
         
@@ -324,8 +360,10 @@ public partial class Simulation : ObservableObject
           
             if (wirePreview.Points.Count > 0)
             {
-                // Make wires snap to the closest terminal
-                wirePreview.Points[^1] = FindClosestSnapPoint(CurrentMousePos, ComponentDefaults.TerminalSnappingRange + 30);
+                // Make wires snap to the closest terminal in range
+                Terminal? snap = FindClosestSnapTerminal(CurrentMousePos, ComponentDefaults.TerminalSnappingRange, out Point pos);
+
+                wirePreview.Points[^1] = pos;
                 wirePreview.InvalidateVisual();
             }
 
@@ -344,36 +382,36 @@ public partial class Simulation : ObservableObject
         return false; // Continue
     }
 
-    private Point FindClosestSnapPoint(Point p, double snappingRange)
+    private Terminal? FindClosestSnapTerminal(Point p, double snappingRange, out Point absolutePos)
     {
+        absolutePos = p;
+        Terminal? closestTerminal = null;
         double minDistance = double.MaxValue;
-        
-        Point closest = CurrentMousePos;
 
         foreach (Component component in _components)
         {
-            // Skip components with null terminals array
             if (component.Terminals == null)
                 continue;
 
             foreach (Terminal terminal in component.Terminals)
             {
-                // The terminal positions are relative to the components, we need absolute coords
-                Point absTerminalPos = new Point(terminal.Position.X + Canvas.GetLeft(component), 
-                    terminal.Position.Y + Canvas.GetTop(component));
-                
+                // Calculate absolute terminal position
+                Point absTerminalPos = new Point(
+                    terminal.Position.X + Canvas.GetLeft(component),
+                    terminal.Position.Y + Canvas.GetTop(component)
+                );
+            
                 double distance = Point.Distance(p, absTerminalPos);
-                if (distance < minDistance)
+                if (distance < minDistance && distance <= snappingRange)
                 {
                     minDistance = distance;
-
-
-                    closest = absTerminalPos;
+                    closestTerminal = terminal;
+                    absolutePos = absTerminalPos;
                 }
             }
         }
 
-        return Point.Distance(closest, p) < snappingRange ? closest : p; // may return null if no terminals exist
+        return closestTerminal; // Returns null if no terminal is within snapping range
     }
 
     public bool HandlePreviewKeyCommand(KeyEventArgs e)

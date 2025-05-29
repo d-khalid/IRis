@@ -1,3 +1,4 @@
+using System.Linq;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
@@ -32,15 +33,24 @@ public class NandGate : Gate
             ComponentDefaults.BubbleRadius);
 
         base.Draw(ctx);
-
-
-
+        
     }
     
-    
-
-    public override void UpdateOutputValue()
+    public override void ComputeOutput()
     {
-        // Some implementation
+        // If there's a missing wire, don't bother
+        if (Terminals.Any(p => p.Wire == null)) return;
+
+        // Funny LINQ expression
+        if (Terminals.SkipLast(1).All(p => p.Wire.Value == LogicState.High))
+        {
+            Terminals[^1].Wire.Value = LogicState.Low;
+        }
+        else Terminals[^1].Wire.Value = LogicState.High;
+
     }
+    
+    
+
+ 
 }
