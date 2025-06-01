@@ -15,6 +15,7 @@ using CommunityToolkit.Mvvm.Input;
 using IRis.Models;
 using IRis.Models.Components;
 using IRis.Models.Core;
+using IRis.Services;
 using IRis.Views;
 
 
@@ -23,6 +24,8 @@ namespace IRis.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         private readonly Simulation _simulation;
+
+        private ISerializationService serializer = new XmlSerializationService();
 
         private string? _openedFileName = null;
 
@@ -117,10 +120,8 @@ namespace IRis.ViewModels
             if (result != null && result.Length > 0)
             {
                 OpenedFileName = result[0];
-                List<Component> components = await DeserializeComponentsAsync(OpenedFileName);
-                _simulation.LoadComponents(components);
-
-
+                List<Component> loadedComponents = await serializer.DeserializeComponentsAsync(OpenedFileName);
+                _simulation.LoadComponents(loadedComponents);
                 Console.WriteLine("Path:" + OpenedFileName);
             }
         }
@@ -129,9 +130,6 @@ namespace IRis.ViewModels
 
         private async Task Save()
         {
-            //string? savePath = await SaveFilePickerAsync(MainWindow);
-            // SerializeXml("circuit.xml");
-
             // IF there is no opened file, ask for a path
             // Otherwise just save to that path
             if (string.IsNullOrEmpty(_openedFileName))
@@ -153,95 +151,11 @@ namespace IRis.ViewModels
 
             if (!string.IsNullOrEmpty(_openedFileName))
             {
-                SerializeXml(_openedFileName);
+               serializer.SerializeComponents(_simulation, OpenedFileName);
                 Console.WriteLine("Saved to: " + _openedFileName);
             }
         }
-
-        // TODO: SERIALIZATION/DESERIALIZATION NEEDS TO BECOME ITS OWN CLASS
-        private void SerializeXml(string? filePath)
-        {
-            if (filePath == null)
-            {
-                Console.WriteLine("No file selected!");
-                return;
-            }
-
-            XmlSerializer serializer = new XmlSerializer(typeof(List<ComponentDto>));
-            List<ComponentDto> dtoList = _simulation.Components.Select(p => p.ToDto()).ToList();
-
-
-            StreamWriter writer = new StreamWriter(filePath);
-            serializer.Serialize(writer, dtoList);
-
-            writer.Close();
-        }
-
-        public static async Task<List<Component>> DeserializeComponentsAsync(string filePath)
-        {
-            var serializer = new XmlSerializer(typeof(List<ComponentDto>));
-
-            // TODO: THIS IS ERROR PRONE, CLEANLY EXCEPTION HANDLE THIS PART
-            await using (var stream = File.OpenRead(filePath))
-            {
-                var dtos = (List<ComponentDto>)serializer.Deserialize(stream);
-                return dtos.Select(dto => ConvertDtoToComponent(dto)).ToList();
-            }
-        }
-
-        private static Component ConvertDtoToComponent(ComponentDto dto)
-        {
-            int numInputs = ParseProperty<int>(dto, "NumInputs");
-            double width = ParseProperty<double>(dto, "Width");
-            double height = ParseProperty<double>(dto, "Height");
-            double rotation = ParseProperty<double>(dto, "Rotation");
-
-
-            Component component = dto.Type switch
-            {
-                "AndGate" => new AndGate(numInputs),
-                "OrGate" => new OrGate(numInputs),
-                "NorGate" => new NorGate(numInputs),
-                "NandGate" => new NandGate(numInputs),
-                "XorGate" => new XorGate(numInputs),
-                "XnorGate" => new XnorGate(numInputs),
-                "NotGate" => new NotGate(),
-
-
-                _ => throw new NotSupportedException($"Unknown component type: {dto.Type}")
-            };
-
-            // Set common properties
-            Canvas.SetLeft(component, dto.X);
-            Canvas.SetTop(component, dto.Y);
-
-            component.Rotation = rotation;
-
-
-            // // Set component-specific properties
-            // switch (component)
-            // {
-            //    
-            //     case Wire w:
-            //         // Already handled in CreateWire
-            //         break;
-            // }
-
-
-            return component;
-        }
-
-        private static T ParseProperty<T>(ComponentDto dto, string name)
-        {
-            var prop = dto.Properties.FirstOrDefault(p => p.Name == name);
-            if (prop == null) return default;
-
-            return (T)Convert.ChangeType(prop.Value, typeof(T));
-        }
-
-        // FILE PICKER/SAVE DIALOGS
-        // TODO: PUT THESE IN A SEPARATE SERVCE 
-     
+        
         public ICommand SaveAsCommand { get; }
 
         private void SaveAs()

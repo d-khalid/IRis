@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Avalonia;
 using Avalonia.Controls;
@@ -14,6 +15,10 @@ namespace IRis.Models.Components;
 public class Wire : Component, ICloneable
 {
     private List<Point> points = new List<Point>();
+    
+    
+    // To identify wires in serialization
+    public Guid? Id { get; set; }
 
     
    // private Component? _lastSetter = null;
@@ -38,8 +43,32 @@ public class Wire : Component, ICloneable
 
     public Wire() : base(0,0)
     {
-        //points.Add(start);
+        Id = Guid.NewGuid();
+    }
+    
+    // DTO pattern for serializing
+    public override ComponentDto ToDto()
+    {
+        return new WireDto
+        {
+            Type = this.GetType().Name,
+            X = Canvas.GetLeft(this),
+            Y = Canvas.GetTop(this),
+            // Terminals = this.Terminals.Select(p => p.ToDto()).ToList(),
 
+            Points = this.Points.Select(p => new PointDto(){X = p.X, Y = p.Y}).ToList(),
+            Id = this.Id,
+            
+            Properties = GetSerializableProperties()
+        };
+    }
+
+    protected override List<PropertyDto> GetSerializableProperties()
+    {
+        return new List<PropertyDto>
+        {
+            new() { Name = "Rotation", Value = Rotation.ToString() },
+        };
     }
 
     public void AddPoint(Point point)
@@ -163,13 +192,17 @@ public class Wire : Component, ICloneable
         }
     }
 
+    // Clones the GUID too
     public override object Clone()
     {
         var clone = new Wire();
+        clone.Value = this.Value;
+        clone.Id = this.Id;
         for (int i = 0; i < points.Count; i++)
         {
             clone.AddPoint(points[i]);
         }
+        
         // // Copy source and sinks by value (Terminal is a struct)
         // clone.source = source;
         // clone.sinks = new List<Terminal>(sinks);
