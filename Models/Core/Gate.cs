@@ -25,7 +25,13 @@ public class Terminal
     }
     
     // For serialization
-    
+    public TerminalDto ToDto()
+    {
+        return new TerminalDto
+        {
+            ConnectedWireId = this.Wire?.Id // Will be null if Wire is null
+        };
+    }
 }
 
 // Has some gate specific things

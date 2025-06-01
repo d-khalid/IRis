@@ -1,6 +1,6 @@
 namespace IRis.Services;
 
-public class IAiAnalysisService
+public interface IAiAnalysisService
 {
-    
+    public string GetSerializedCircuit(string prompt);
 }

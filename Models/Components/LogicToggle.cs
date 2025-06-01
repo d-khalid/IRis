@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
@@ -62,10 +63,37 @@ public class LogicToggle : Component, IOutputProvider
     }
 
 
+    protected override List<PropertyDto> GetSerializableProperties()
+    {
+        return new List<PropertyDto>
+        {
+            new() { Name = "Width", Value = Width.ToString() },
+            new() { Name = "Height", Value = Height.ToString() },
+            new() { Name = "Rotation", Value = Rotation.ToString() },
+            new() { Name = "Value", Value = this.Value.ToString() }
+            
+            // Add other serializable properties in subclasses
+        };
+    }
+
     public override object Clone()
     {
-        var clone = (LogicToggle)base.Clone();
-        clone.Terminals[0] = new Terminal(this.Terminals[0].Position, this.Terminals[0].Wire);
+        LogicToggle clone = new LogicToggle();
+        
+        // Copy all base properties
+        clone.Width = this.Width;
+        clone.Height = this.Height;
+        clone.Rotation = this.Rotation;
+        clone.IsSelected = this.IsSelected;
+        
+        // Component-specific things
+        clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire);
+        clone.Value = this.Value;
+        
+        // Reset visual state
+        clone.VisualChildren.Clear();
+        clone.InvalidateVisual();
+
         return clone;
     }
 

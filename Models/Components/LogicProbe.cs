@@ -27,9 +27,21 @@ public class LogicProbe : Component
     
     public override object Clone()
     {
-        var clone = (LogicProbe)base.Clone();
-        clone.Terminals = new Terminal[1];
-        clone.Terminals[0] = new Terminal(this.Terminals[0].Position, this.Terminals[0].Wire);
+        LogicProbe clone = new LogicProbe();
+        
+        // Copy all base properties
+        clone.Width = this.Width;
+        clone.Height = this.Height;
+        clone.Rotation = this.Rotation;
+        clone.IsSelected = this.IsSelected;
+        
+        // Component-specific things
+        clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire);
+        
+        // Reset visual state
+        clone.VisualChildren.Clear();
+        clone.InvalidateVisual();
+
         return clone;
     }
     

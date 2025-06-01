@@ -18,33 +18,33 @@ namespace IRis.Models;
 public partial class Simulation : ObservableObject
 {
     private Canvas _canvas;
-    
+
     private List<Component> _components;
     private List<Component> _selectedComponents;
+
     public List<Component> Components
     {
         get => _components;
         set => _components = value;
     }
 
-    [ObservableProperty]
-    private Point _currentMousePos = new Point(0, 0);
-    
+    [ObservableProperty] private Point _currentMousePos = new Point(0, 0);
+
     // For selection
     private Point _selectionStart;
-    private Rectangle? _selectionRect ;
-    
+    private Rectangle? _selectionRect;
+
     // For copy/pasting/cutting
     private List<Component> _clipboard = new();
     private Point _lastPastePosition;
-    private bool _isPastePreviewActive ;
+    private bool _isPastePreviewActive;
     private List<Component> _pastePreviewComponents = new();
-    
+
     // Grid Options
     public bool SnapToGridEnabled { get; set; } = false;
-    
+
     private string? _previewCompType;
-    private Component? _previewComponent ;
+    private Component? _previewComponent;
 
     private DispatcherTimer _updateTimer;
 
@@ -57,18 +57,17 @@ public partial class Simulation : ObservableObject
 
             // Remove the old preview comp
             _canvas.Children.Remove(_previewComponent);
-            
+
             // Create a component and add it to the canvas
             _previewComponent = Component.Create(value);
             if (_previewComponent != null)
             {
-               
                 // TODO: THIS IS HACKY
                 if (_previewComponent is Wire wire)
                 {
-                    wire.AddPoint(CurrentMousePos); 
+                    wire.AddPoint(CurrentMousePos);
                     Canvas.SetLeft(wire, 0);
-                    Canvas.SetTop(wire , 0);
+                    Canvas.SetTop(wire, 0);
                 }
                 else
                 {
@@ -79,7 +78,6 @@ public partial class Simulation : ObservableObject
                 _canvas.Children.Add(_previewComponent);
                 Console.WriteLine("Added component via setter");
             }
-            
         }
     }
 
@@ -88,22 +86,21 @@ public partial class Simulation : ObservableObject
         // Initialize lists
         _components = new List<Component>();
         _selectedComponents = new List<Component>();
-        
     }
 
     public void Register(Canvas canvas)
     {
         _canvas = canvas;
-        
+
         // Important: Enable keyboard focus
         _canvas.Focusable = true;
         _canvas.Cursor = new Cursor(StandardCursorType.Arrow);
-        
+
         // For updating the simulation
-        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };   // Adjust to reduce CPU load
+        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) }; // Adjust to reduce CPU load
         _updateTimer.Tick += (s, e) => SimulationStep();
         _updateTimer.Start();
-        
+
         // Registering event handlers
         _canvas.PointerPressed += (s, e) =>
         {
@@ -125,14 +122,8 @@ public partial class Simulation : ObservableObject
             if (HandleSelectionEnd()) return;
         };
 
-        _canvas.PointerEntered += (s, e) =>
-        {
-            PreviewEnter();
-        };
-        _canvas.PointerExited += (s, e) =>
-        {
-            PreviewExit();
-        };
+        _canvas.PointerEntered += (s, e) => { PreviewEnter(); };
+        _canvas.PointerExited += (s, e) => { PreviewExit(); };
 
         _canvas.KeyDown += (s, e) =>
         {
@@ -140,14 +131,12 @@ public partial class Simulation : ObservableObject
         };
 
 
-       
-
         // Update mouse pos and preview on scroll
         // TODO: THIS IS ACCEPTABLE FOR NOW BUT 100% NEEDS POLISH LATER ON
         _canvas.PointerWheelChanged += (s, e) =>
         {
             CurrentMousePos = SnapToGrid(e.GetPosition(_canvas));
-            
+
             // Update the preview component
             if (_previewComponent != null)
             {
@@ -156,11 +145,10 @@ public partial class Simulation : ObservableObject
                 Canvas.SetTop(_previewComponent, CurrentMousePos.Y);
             }
         };
-        
-        
+
+
         // Draws the main grid
         DrawGrid();
-
     }
 
     public void SimulationStep()
@@ -169,16 +157,13 @@ public partial class Simulation : ObservableObject
         foreach (var component in _components)
         {
             // Redraw Toggles and Probes
-            if(component is LogicProbe || component is LogicToggle)
+            if (component is LogicProbe || component is LogicToggle)
                 component.InvalidateVisual();
-            
+
             // Compute outputs for everything
             if (component is IOutputProvider op)
                 op.ComputeOutput();
-
         }
-        
-        
     }
 
 
@@ -205,65 +190,199 @@ public partial class Simulation : ObservableObject
 
     public void LoadComponents(List<Component> components)
     {
-        _components = components;
+        // Connect wires here
+        
+        // Get all wire objects in a dictionary with their GUIDs
+        Dictionary<Guid, Wire> wireDict = new();
+
         foreach (Component c in components)
         {
-            _canvas.Children.Add(c);
+            if (c is Wire wire && wire.Id != null)
+            {
+                wireDict.Add((Guid)wire.Id, wire);
+            }
         }
+        
+        // Now perform replacements
+        foreach (Component c in components)
+        {
+            if (c.Terminals == null) continue;
+
+            foreach (Terminal t in c.Terminals)
+            {
+                if(t.Wire == null || t.Wire.Id == null) continue;
+                
+                t.Wire = wireDict[(Guid)t.Wire.Id];
+            }
+        }
+
+        // Add the damn components
+        _components = components;
+        _canvas.Children.AddRange(_components);
+
+        // _components = components;
+        // foreach (Component c in components)
+        // {
+        //     _canvas.Children.Add(c);
+        // }
     }
 
 
     // Adds selected components to clipboard
     public void CopySelected(bool cutMode = false)
     {
-        _clipboard.Clear();
+        _clipboard.Clear(); 
+    
+        
+        // First pass
         foreach (var component in _selectedComponents)
         {
             Component c = (Component)component.Clone();
             _clipboard.Add(c);
             
-            // copy component positions
-            if (c is Wire wire)
-            {
-                Canvas.SetLeft(c, Canvas.GetLeft(component));
-                Canvas.SetTop(c, Canvas.GetTop(component));
-            }
-            else
-            {
-                Canvas.SetLeft(c, Canvas.GetLeft(component));
-                Canvas.SetTop(c, Canvas.GetTop(component));
-            }
-            
+            Canvas.SetLeft(c, Canvas.GetLeft(component));
+            Canvas.SetTop(c, Canvas.GetTop(component));
             component.IsSelected = false;
         }
-        if(cutMode) DeleteSelectedComponents();
+
+        if (cutMode) DeleteSelectedComponents();
+        
         _selectedComponents.Clear();
     }
     
+    // public void CopySelected(bool cutMode = false)
+    // {
+    //     _clipboard.Clear();
+    //
+    //     // Track original wires and their clones
+    //     var wireClones = new Dictionary<Wire, Wire>();
+    //
+    //     // First pass: Clone all components (keeping original wire references temporarily)
+    //     var componentClones = new List<Component>();
+    //     foreach (var component in _selectedComponents)
+    //     {
+    //         // Basic clone without fixing wires yet
+    //         Component clone = (Component)component.Clone();
+    //         componentClones.Add(clone);
+    //
+    //         // Preserve position
+    //         Canvas.SetLeft(clone, Canvas.GetLeft(component));
+    //         Canvas.SetTop(clone, Canvas.GetTop(component));
+    //         component.IsSelected = false;
+    //     }
+    //
+    //     // Second pass: Clone wires and reconnect terminals
+    //     for (int i = 0; i < _selectedComponents.Count; i++)
+    //     {
+    //         var original = _selectedComponents[i];
+    //         var clone = componentClones[i];
+    //
+    //         // No need to check anything that doesn't have terminals
+    //         if (original.Terminals == null) continue;
+    //
+    //         // Process all terminals
+    //         for (int t = 0; t < original.Terminals.Length; t++)
+    //         {
+    //             var originalWire = original.Terminals[t].Wire;
+    //             if (originalWire == null) continue;
+    //
+    //             // Get or create cloned wire
+    //             if (!wireClones.TryGetValue(originalWire, out Wire clonedWire))
+    //             {
+    //                 clonedWire = new Wire()
+    //                 {
+    //                     // Copy all wire properties
+    //                     Id = Guid.NewGuid(), // Generate new ID for the clone
+    //                     Value = originalWire.Value, // Copy current logic state
+    //                     Points = new List<Point>(originalWire.Points) // Deep clone points
+    //                 };
+    //                 wireClones.Add(originalWire, clonedWire);
+    //
+    //
+    //                 //clone.Terminals[t].Wire = clonedWire;
+    //             }
+    //             clone.Terminals[t].Wire = wireClones[originalWire];
+    //
+    //             _clipboard.Add(clone);
+    //         }
+    //
+    //         _clipboard.AddRange(wireClones.Values.ToList());
+    //         
+    //
+    //         if (cutMode) DeleteSelectedComponents();
+    //         _selectedComponents.Clear();
+    //     }
+    // }
+
     public void CutSelected()
     {
         CopySelected(true);
     }
-    
+
     public void PasteSelected()
     {
         if (_clipboard.Count == 0) return;
-        
+
         _pastePreviewComponents.Clear();
         _isPastePreviewActive = true;
+
+        List<Component> clonedComponents = new();
         
+        // First pass
         foreach (var component in _clipboard)
         {
-            var clone = (Component)component.Clone();
-            _pastePreviewComponents.Add(clone);
-            _canvas.Children.Add(clone);
+            // new Wire objects will be made later
+            if (component is Wire) continue;
             
-            //Canvas.SetZIndex(clone, int.MaxValue - 1); // Below selection but above others
-            //clone.Opacity = 0.7;
+            Component c = (Component)component.Clone();
+            clonedComponents.Add(c);
+            
+            Canvas.SetLeft(c, Canvas.GetLeft(component));
+            Canvas.SetTop(c, Canvas.GetTop(component));
+            component.IsSelected = false;
         }
+        
+        // Second pass
+        Dictionary<Wire, Wire> clonedWires = new();
+        foreach (var component in clonedComponents)
+        {
+            if (component.Terminals == null) continue;
+
+            foreach (var terminal in component.Terminals)
+            {
+                if(terminal.Wire == null) continue;
+
+                // If there's a matching wire for an original wire already, make it
+                if (!clonedWires.TryGetValue(terminal.Wire, out var clonedWire))
+                {
+                    Wire newWire = new Wire();
+                    
+                    newWire.Points = terminal.Wire.Points;
+                    newWire.Id = Guid.NewGuid();
+                    
+                    // enums are value types!
+                    newWire.Value = terminal.Wire.Value;
+                    
+                    Canvas.SetLeft(newWire, Canvas.GetLeft(terminal.Wire));
+                    Canvas.SetTop(newWire, Canvas.GetTop(terminal.Wire));
+
+                    
+                    clonedWires.Add(terminal.Wire, newWire);
+                }
+
+                terminal.Wire = clonedWires[terminal.Wire];
+            }
+        }
+        
+        // Add things to preview list
+        _pastePreviewComponents.AddRange(clonedComponents);
+        _pastePreviewComponents.AddRange(clonedWires.Values.ToList());
+        _canvas.Children.AddRange(_pastePreviewComponents);
+        
+
         UpdatePastePreviewPosition();
     }
-    
+
 
     // PREVIEW FUNCTIONS START
     private bool HandlePreviewCommit()
@@ -274,14 +393,14 @@ public partial class Simulation : ObservableObject
             //_selectedComponents.Clear();
             _selectedComponents.AddRange(_pastePreviewComponents);
             _components.AddRange(_pastePreviewComponents);
-        
+
             // Clear the paste preview so that the gates we have are stuck in the canvas
             _pastePreviewComponents.Clear();
             _isPastePreviewActive = false;
-            
+
             return true; // Terminate
         }
-        
+
         // Commit points to wire
         if (_previewComponent is Wire wirePreview)
         {
@@ -289,19 +408,21 @@ public partial class Simulation : ObservableObject
             // wirePreview.AddPoint(CurrentMousePos);
             //
             // Check for a terminal we can snap to
-            Terminal? target = FindClosestSnapTerminal(CurrentMousePos, ComponentDefaults.TerminalSnappingRange, out var pos);
+            Terminal? target =
+                FindClosestSnapTerminal(CurrentMousePos, ComponentDefaults.TerminalSnappingRange, out var pos);
 
             if (target != null)
             {
                 target.Wire = wirePreview;
             }
+
             wirePreview.AddPoint(pos);
 
             return true; // Terminate
         }
-        
+
         // Commit component on click
-        if(_previewComponent != null)
+        if (_previewComponent != null)
         {
             Component? component = Component.Create(_previewCompType);
 
@@ -316,30 +437,30 @@ public partial class Simulation : ObservableObject
             Console.WriteLine($"{_previewCompType} committed!");
 
             return true; // Terminate
-
         }
 
         return false; // Continue
-        
     }
-    
+
     // TODO: MAKE THIS ALWAYS USE THE TOP-LEFT-MOST ELEMENT IN THE CLIPPBOARD
     private void UpdatePastePreviewPosition()
     {
         if (!_isPastePreviewActive) return;
-        
+
         _lastPastePosition = CurrentMousePos;
         //Point offset = CalculatePasteOffset();
 
         // Use the wire's first point as reference
-        Point reference = _clipboard[0] is Wire wire ? wire.Points[0] : new Point(Canvas.GetLeft(_clipboard[0]), Canvas.GetTop(_clipboard[0]));
-        
+        Point reference = _clipboard[0] is Wire wire
+            ? wire.Points[0]
+            : new Point(Canvas.GetLeft(_clipboard[0]), Canvas.GetTop(_clipboard[0]));
+
         for (int i = 0; i < _pastePreviewComponents.Count; i++)
         {
             var original = _clipboard[i];
             var preview = _pastePreviewComponents[i];
 
-            
+
             Console.WriteLine($"{Canvas.GetLeft(original)}, {Canvas.GetTop(original)}");
             Canvas.SetLeft(preview, Canvas.GetLeft(original) + CurrentMousePos.X - reference.X);
             Canvas.SetTop(preview, Canvas.GetTop(original) + CurrentMousePos.Y - reference.Y);
@@ -353,15 +474,15 @@ public partial class Simulation : ObservableObject
             UpdatePastePreviewPosition();
             return true; // Terminate
         }
-           
+
         // For wires only
         if (_previewComponent is Wire wirePreview)
         {
-          
             if (wirePreview.Points.Count > 0)
             {
                 // Make wires snap to the closest terminal in range
-                Terminal? snap = FindClosestSnapTerminal(CurrentMousePos, ComponentDefaults.TerminalSnappingRange, out Point pos);
+                Terminal? snap = FindClosestSnapTerminal(CurrentMousePos, ComponentDefaults.TerminalSnappingRange,
+                    out Point pos);
 
                 wirePreview.Points[^1] = pos;
                 wirePreview.InvalidateVisual();
@@ -378,7 +499,7 @@ public partial class Simulation : ObservableObject
 
             return true; // Terminate
         }
-        
+
         return false; // Continue
     }
 
@@ -400,7 +521,7 @@ public partial class Simulation : ObservableObject
                     terminal.Position.X + Canvas.GetLeft(component),
                     terminal.Position.Y + Canvas.GetTop(component)
                 );
-            
+
                 double distance = Point.Distance(p, absTerminalPos);
                 if (distance < minDistance && distance <= snappingRange)
                 {
@@ -431,6 +552,7 @@ public partial class Simulation : ObservableObject
             {
                 _canvas.Children.Remove(wire);
             }
+
             _previewComponent = null;
             return true; // Terminate
         }
@@ -446,7 +568,7 @@ public partial class Simulation : ObservableObject
 
         return false; // Continue
     }
-    
+
     public void PreviewExit()
     {
         // Hide the preview component
@@ -465,12 +587,12 @@ public partial class Simulation : ObservableObject
         }
     }
     // PREVIEW FUNCTIONS END
-    
+
     // SELECTION FUNCTIONS START
-      public bool HandleSelectionStart()
+    public bool HandleSelectionStart()
     {
         _selectionStart = _currentMousePos;
-        
+
         // Select the control we click on, the preview component won't be selectable
         foreach (var child in _canvas.Children)
         {
@@ -487,6 +609,7 @@ public partial class Simulation : ObservableObject
                     ToggleSelection(component);
                     return true;
                 }
+
                 // Check For wires
                 if (component is Wire wire && component.HitTest(_selectionStart))
                 {
@@ -496,14 +619,15 @@ public partial class Simulation : ObservableObject
                 }
             }
         }
-        
+
         // Unselect components if hitting empty space
         foreach (Component c in _selectedComponents)
         {
             c.IsSelected = false;
         }
+
         _selectedComponents.Clear();
-        
+
         // Add a selection rectangle to the canvas
         _selectionRect = new Rectangle
         {
@@ -539,8 +663,6 @@ public partial class Simulation : ObservableObject
 
     public bool HandleSelectionUpdate()
     {
-
-
         // No selection area to update, let the event handler go on
         if (_selectionRect == null) return false;
 
@@ -563,6 +685,7 @@ public partial class Simulation : ObservableObject
         {
             c.IsSelected = false;
         }
+
         _selectedComponents.Clear();
 
         // Check each component
@@ -582,7 +705,7 @@ public partial class Simulation : ObservableObject
                 }
 
                 // To select a wire, the selection must contain one of its vertices
-                if (component is Wire wire && wire.Points.Any(p => selectionBounds.Contains(p)))
+                if (component is Wire wire && wire.Points.Any(p => selectionBounds.Contains(p + new Point(Canvas.GetLeft(wire), Canvas.GetTop(wire)))))
                 {
                     component.IsSelected = true;
                     _selectedComponents.Add(component);
@@ -605,16 +728,17 @@ public partial class Simulation : ObservableObject
         return false; // Resume 
     }
     // SELECTION FUNCTIONS END
-    
-    
+
+
     private Point SnapToGrid(Point point)
     {
         if (!SnapToGridEnabled) return point;
-        
+
         double snappedX = Math.Round(point.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
         double snappedY = Math.Round(point.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
         return new Point(snappedX, snappedY);
     }
+
     public void DrawGrid()
     {
         if (_canvas == null) return;

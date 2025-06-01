@@ -114,7 +114,8 @@ public abstract class Component : Control, ICustomHitTest
             Type = this.GetType().Name,
             X = Canvas.GetLeft(this),
             Y = Canvas.GetTop(this),
-            // Terminals = this.Terminals,
+            Terminals = this.Terminals.Select(p => p.ToDto()).ToList(),
+            
             
             Properties = GetSerializableProperties()
         };

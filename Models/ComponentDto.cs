@@ -2,30 +2,43 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using Avalonia;
-using IRis.Models.Core;
 
-namespace IRis.Models;
-
-/*
-SERIALIZATION STRATEGY (GUIDs are unique identifiers for .NET objects)
-- store GUIDs for Terminals and Wires
-- Serialize the circuit with GUIDs
-- When deserialzing, reconstruct the terminals and wires using the GUIDs
- */
 [Serializable]
-[XmlRoot("Component")]
+[XmlRoot("Circuit")]  // Changed from "Component" to avoid confusion
+public class CircuitDto
+{
+    [XmlArray("Components")]
+    [XmlArrayItem("Component", Type = typeof(ComponentDto))]
+    [XmlArrayItem("Wire", Type = typeof(WireDto))]  // Explicitly include WireDto
+    public List<ComponentDto> Components { get; set; } = new();
+}
+
+[Serializable]
 public class ComponentDto
 {
-    [XmlAttribute("Type")] public string Type { get; set; }
+    [XmlAttribute("Type")] 
+    public string Type { get; set; }
 
-    [XmlAttribute("X")] public double X { get; set; }
+    [XmlAttribute("X")] 
+    public double X { get; set; }
 
-    [XmlAttribute("Y")] public double Y { get; set; }
+    [XmlAttribute("Y")] 
+    public double Y { get; set; }
 
-    [XmlElement("Terminals")] public List<TerminalDto> Terminals { get; set; } = new();
+    [XmlArray("Terminals")]
+    [XmlArrayItem("Terminal")]
+    public List<TerminalDto> Terminals { get; set; } = new();
 
-    // Add other serializable properties
-    [XmlElement("Properties")] public List<PropertyDto> Properties { get; set; } = new();
+    [XmlArray("Properties")]
+    [XmlArrayItem("Property")]
+    public List<PropertyDto> Properties { get; set; } = new();
+}
+
+[Serializable]
+public class TerminalDto
+{
+    [XmlElement(IsNullable = true)]
+    public Guid? ConnectedWireId { get; set; }
 }
 
 [Serializable]
@@ -38,19 +51,26 @@ public class PropertyDto
 
 
 [Serializable]
-public class TerminalDto
+public class WireDto : ComponentDto
 {
+    [XmlArray("Points")]
+    [XmlArrayItem("Point")]
+    public List<PointDto> Points { get; set; } = new();
     
-    [XmlAttribute("Id")] public Guid Id;
-    [XmlAttribute("ConnectedWireId")] public Guid? ConnectedWireId; // Store only the GUID
+    
+    [XmlElement(IsNullable = true)]
+    public Guid? Id { get; set; }
+   
 }
 
 [Serializable]
-public class WireDto
+public class PointDto
 {
-    [XmlAttribute("Id")] public Guid Id;
-    [XmlAttribute("ConnectedWireState")] public LogicState State;
-    [XmlElement("ConnectedWireId")] public List<Point> Points = new();
+    [XmlAttribute("X")] public double X { get; set; }
+    [XmlAttribute("Y")] public double Y { get; set; }
 
+    public Point ToPoint()
+    {
+        return new Point(X, Y);
+    }
 }
-
