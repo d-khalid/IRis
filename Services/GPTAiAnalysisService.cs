@@ -9,7 +9,7 @@ using OpenAI.Chat;
 
 namespace IRis.Services;
 
-public class GptAiAnalysisService : IAiAnalysisService
+public class GptAiAnalysisService : IAiPromptAnalysisService
 {
     public async Task<string> GetSerializedCircuit(string prompt, string systemPromptPath)
     {

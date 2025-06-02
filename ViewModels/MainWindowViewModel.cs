@@ -95,32 +95,64 @@ namespace IRis.ViewModels
         public ICommand NewCommand { get; }
 
         public ICommand AiPromptCommand { get; }
-        
+
         private AIGenerationWindowViewModel _currentPromptVm;
 
         private void AiGenerationFromPrompt()
         {
             var window = new AIGenerationWindow();
-            _currentPromptVm = new AIGenerationWindowViewModel(window);
-    
-            _currentPromptVm.XmlGenerated += (xml) => 
+            // _currentPromptVm = new AIGenerationWindowViewModel(window);
+            
+            var vm = window.DataContext as AIGenerationWindowViewModel;
+
+            vm.XmlGenerated += (xml) =>
             {
                 Console.WriteLine("Event received");
                 var components = _serializer.DeserializeComponentsAsync(xml);
-                Dispatcher.UIThread.Post(() => 
-                {
-                    _simulation.DeleteAllComponents();
-                    _simulation.LoadComponents(components);
-                });
+
+                _simulation.DeleteAllComponents();
+                _simulation.LoadComponents(components);
             };
 
-            window.Show(); // Non-modal
+            
+            // Center it relative to main window
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            // Get reference to main window
+            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+                ?.MainWindow;
+
+            window.ShowDialog(mainWindow);
         }
+
         public ICommand AiImageCommand { get; }
 
         private void AiGenerationFromImage()
         {
+            var window = new ImageProcessingWindow();
+            // _currentPromptVm = new AIGenerationWindowViewModel(window);
             
+            var vm = window.DataContext as ImageProcessingWindowViewModel;
+
+            vm.XmlGenerated += (xml) =>
+            {
+                Console.WriteLine("Event received");
+                var components = _serializer.DeserializeComponentsAsync(xml);
+
+                _simulation.DeleteAllComponents();
+                _simulation.LoadComponents(components);
+            };
+
+            
+            // Center it relative to main window
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            // Get reference to main window
+            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+                ?.MainWindow;
+
+            window.ShowDialog(mainWindow);
+        
         }
 
         private void New()
@@ -180,11 +212,11 @@ namespace IRis.ViewModels
 
             if (!string.IsNullOrEmpty(_openedFileName))
             {
-               _serializer.SerializeComponents(_simulation, OpenedFileName);
+                _serializer.SerializeComponents(_simulation, OpenedFileName);
                 Console.WriteLine("Saved to: " + _openedFileName);
             }
         }
-        
+
         public ICommand SaveAsCommand { get; }
 
         private void SaveAs()
@@ -260,7 +292,6 @@ namespace IRis.ViewModels
             aboutWindow.ShowDialog(mainWindow);
         }
 
-       
 
         // Component command
         public ICommand AddComponentCommand { get; }
@@ -271,7 +302,6 @@ namespace IRis.ViewModels
 
             _simulation.PreviewCompType = componentType;
             LastAction = $"Selected Component [{componentType}]";
-            
         }
     }
 }

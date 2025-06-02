@@ -1,0 +1,18 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:IRis.ViewModels"
+        xmlns:global="clr-namespace:"
+        Title="Import Circuit from Image"
+        x:Class="IRis.Views.ImageProcessingWindow"
+        x:DataType="global:ImageProcessingWindowViewModel"
+        Width="400" Height="350">
+    
+    <StackPanel Margin="20" Spacing="15">
+        <Button Content="Select Image" Command="{Binding SelectImageCommand}"/>
+        <Image Width="200" Height="150" Source="{Binding SelectedImage}"/>
+        <TextBlock Text="{Binding FilePath}" TextWrapping="Wrap"/>
+        <Button Content="Generate Circuit" 
+                Command="{Binding GenerateCommand}"
+                IsEnabled="{Binding HasImage}"/>
+    </StackPanel>
+</Window>

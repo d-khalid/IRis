@@ -25,7 +25,7 @@ namespace IRis.ViewModels
     {
         public event Action<string>? XmlGenerated;
         
-        private IAiAnalysisService aiAnalysisService = new GptAiAnalysisService();
+        private IAiPromptAnalysisService aiPromptAnalysisService = new GptAiAnalysisService();
         
         AIGenerationWindow promptWindow;
 
@@ -48,7 +48,7 @@ namespace IRis.ViewModels
 
             // Relative Path            XmlGenerated.Invoke(xml);
 
-            string xml = await aiAnalysisService.GetSerializedCircuit(PromptText, "circuit-gen-prompt.txt");
+            string xml = await aiPromptAnalysisService.GetSerializedCircuit(PromptText, "circuit-gen-prompt.txt");
             
             // Invoke event when Xml is done
             XmlGenerated?.Invoke(xml);

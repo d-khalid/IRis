@@ -32,6 +32,10 @@ Default Height for Gates: 80
 Default Width for Probes/Toggles: 66.66 (recurring)
 Default Height for Probes/Toggles: 53.33 (recurring)
 
+If the circuit has a hanging input, connect it to a LogicToggle.
+if the circuit  has a hanging output, connect it to a LogicProbe.
+ALSO ALWAYS MAKE SURE THAT GUIDs ARE IN THE CORRECT FORMAT.
+
 
 Gates have a 'NumInputs' Property (always 1 for 'NotGate'), LogicToggles have a 'Value' property which can be 'Low', 'High' or 'DontCare'
 
