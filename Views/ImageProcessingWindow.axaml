@@ -5,14 +5,71 @@
         Title="Import Circuit from Image"
         x:Class="IRis.Views.ImageProcessingWindow"
         x:DataType="global:ImageProcessingWindowViewModel"
-        Width="400" Height="350">
+        Width="450" Height="400"
+        MinWidth="400" MinHeight="350"
+        WindowStartupLocation="CenterOwner">
     
-    <StackPanel Margin="20" Spacing="15">
-        <Button Content="Select Image" Command="{Binding SelectImageCommand}"/>
-        <Image Width="200" Height="150" Source="{Binding SelectedImage}"/>
-        <TextBlock Text="{Binding FilePath}" TextWrapping="Wrap"/>
-        <Button Content="Generate Circuit" 
-                Command="{Binding GenerateCommand}"
-                IsEnabled="{Binding HasImage}"/>
-    </StackPanel>
+    <Grid Margin="15" RowDefinitions="*,Auto,Auto">
+        <!-- Preview Area -->
+        <Border Grid.Row="0"
+                BorderBrush="#FF5A5A5A"
+                BorderThickness="1"
+                CornerRadius="4"
+                Background="#1AFFFFFF"
+                Margin="0,0,0,15">
+            <Viewbox Stretch="Uniform">
+                <Image Source="{Binding SelectedImage}" 
+                       Width="200"
+                       Height="150"/>
+            </Viewbox>
+        </Border>
+        
+        <!-- File Path Display -->
+        <Border Grid.Row="1"
+                Background="#1AFFFFFF"
+                CornerRadius="4"
+                Padding="8"
+                Margin="0,0,0,15">
+            <TextBlock Text="{Binding FilePath}" 
+                       TextWrapping="Wrap"
+                       TextTrimming="CharacterEllipsis"
+                       HorizontalAlignment="Center"/>
+        </Border>
+        
+        <!-- Buttons Panel -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Invisible background to match preview width -->
+            <Border Grid.ColumnSpan="4"
+                    Background="Transparent"
+                    HorizontalAlignment="Stretch"/>
+            
+            <StackPanel Grid.Column="1"
+                        Grid.ColumnSpan="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        Spacing="10">
+                <Button Content="Select Image" 
+                        Command="{Binding SelectImageCommand}"
+                        MinWidth="205"
+                        HorizontalContentAlignment="Center"
+                        Height="32"/>
+                
+                
+                <Button Content="Generate Circuit" 
+                        Command="{Binding GenerateCommand}"
+                        IsEnabled="{Binding HasImage}"
+                        MinWidth="205"
+                        Height="32"
+                        HorizontalContentAlignment="Center"
+                        Classes="Accent"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
 </Window>
