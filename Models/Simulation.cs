@@ -196,8 +196,8 @@ public partial class Simulation : ObservableObject
     }
     public void DeleteAllComponents()
     {
+        _canvas.Children.RemoveAll(_components);
         _components.Clear();
-        _canvas.Children.Clear();
     }
 
 
