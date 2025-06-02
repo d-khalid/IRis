@@ -85,16 +85,7 @@
        
     </Window.KeyBindings>
 
-    <!-- <Grid RowDefinitions="*, *"> -->
-    <!--     <Canvas Width="120" Height="120" Background="White" VerticalAlignment="Top" HorizontalAlignment="Left"> -->
-    <!--         <Rectangle Fill="Red" Height="44" Width="44"/> -->
-    <!--         <Rectangle Fill="Blue" Height="44" Width="44" Canvas.Left="20" Canvas.Top="20"/> -->
-    <!--         <Rectangle Fill="Green" Height="44" Width="44" Canvas.Left="40" Canvas.Top="40"/> -->
-    <!--         <Rectangle Fill="Orange" Height="44" Width="44" Canvas.Left="60" Canvas.Top="60"/> -->
-    <!--     </Canvas> -->
-    <!--     <TextBlock Grid.Row="1" Text="{Binding Greeting}"></TextBlock> -->
-    <!-- </Grid> -->
-    
+ 
   <DockPanel>
         <!-- Top Menu Bar -->
         <Menu DockPanel.Dock="Top" >
@@ -102,7 +93,7 @@
                 <MenuItem Header="New" Command="{Binding NewCommand}"/>
                 <MenuItem Header="Open..." Command="{Binding OpenCommand}"/>
                 <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
-                <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}"/>
+                <!-- <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}"/> -->
                 <Separator/>
                 <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
             </MenuItem>
@@ -117,7 +108,9 @@
             </MenuItem>
             <!-- AI option -->
             <MenuItem Header="AI">
-                <MenuItem Header="Generate" Command="{Binding AIGenerationCommand}"/>
+                <MenuItem Header="Generate From Prompt" Command="{Binding AiPromptCommand}"/>
+                <MenuItem Header="Generate From Image" Command="{Binding AiImageCommand}"/>
+
             </MenuItem>
 
             <MenuItem Header="Help">

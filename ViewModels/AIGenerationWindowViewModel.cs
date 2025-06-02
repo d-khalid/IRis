@@ -16,12 +16,17 @@ using CommunityToolkit.Mvvm.Input;
 using IRis.Models;
 using IRis.Models.Components;
 using IRis.Models.Core;
+using IRis.Services;
 using IRis.Views;       // just ignore these useless uses lol
 
 namespace IRis.ViewModels
 {
     public partial class AIGenerationWindowViewModel : ViewModelBase
     {
+        public event Action<string>? XmlGenerated;
+        
+        private IAiAnalysisService aiAnalysisService = new GptAiAnalysisService();
+        
         AIGenerationWindow promptWindow;
 
         [ObservableProperty]
@@ -29,21 +34,28 @@ namespace IRis.ViewModels
 
         public AIGenerationWindowViewModel(AIGenerationWindow promptWindow)
         {
-
-            GenerateCommand = new RelayCommand(Generate);
+            GenerateCommand = new AsyncRelayCommand(Generate);
+            
+            
 
             this.promptWindow = promptWindow;       // get the prompt window for use in this scope
         }
         
         public ICommand GenerateCommand { get; }
-        public void Generate()
+        public async Task Generate()
         {
             Console.WriteLine("Generate {PromptText}");
-            // 
-            // 
-            // AI Generation logic goes here
-            // 
-            promptWindow.Close();       // closes the AI prompt window
+
+            // Relative Path            XmlGenerated.Invoke(xml);
+
+            string xml = await aiAnalysisService.GetSerializedCircuit(PromptText, "circuit-gen-prompt.txt");
+            
+            // Invoke event when Xml is done
+            XmlGenerated?.Invoke(xml);
+            
+            Console.WriteLine("\n\nXML:\n" + xml);
+       
+            promptWindow.Close();     
         }
     }
     

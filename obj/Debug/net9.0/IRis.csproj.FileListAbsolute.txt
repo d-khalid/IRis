@@ -134,3 +134,10 @@ C:/Users/shahz/OneDrive/Desktop/IRis/obj/Debug/net9.0/refint/Avalonia/IRis.dll
 C:/Users/shahz/OneDrive/Desktop/IRis/obj/Debug/net9.0/IRis.csproj.Up2Date
 C:/Users/shahz/OneDrive/Desktop/IRis/obj/Debug/net9.0/IRis.genruntimeconfig.cache
 C:/Users/shahz/OneDrive/Desktop/IRis/obj/Debug/net9.0/ref/IRis.dll
+/home/alkalinelemon/Documents/Projects/C#/IRis/bin/Debug/net9.0/Azure.AI.OpenAI.dll
+/home/alkalinelemon/Documents/Projects/C#/IRis/bin/Debug/net9.0/Azure.Core.dll
+/home/alkalinelemon/Documents/Projects/C#/IRis/bin/Debug/net9.0/Microsoft.Bcl.AsyncInterfaces.dll
+/home/alkalinelemon/Documents/Projects/C#/IRis/bin/Debug/net9.0/Microsoft.Extensions.Logging.Abstractions.dll
+/home/alkalinelemon/Documents/Projects/C#/IRis/bin/Debug/net9.0/OpenAI.dll
+/home/alkalinelemon/Documents/Projects/C#/IRis/bin/Debug/net9.0/System.ClientModel.dll
+/home/alkalinelemon/Documents/Projects/C#/IRis/bin/Debug/net9.0/System.Memory.Data.dll

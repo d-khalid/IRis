@@ -13,6 +13,7 @@
           "Avalonia.Diagnostics": "11.2.7",
           "Avalonia.Fonts.Inter": "11.2.7",
           "Avalonia.Themes.Fluent": "11.2.7",
+          "Azure.AI.OpenAI": "2.2.0-beta.4",
           "CommunityToolkit.Mvvm": "8.2.1"
         },
         "runtime": {
@@ -258,6 +259,37 @@
           }
         }
       },
+      "Azure.AI.OpenAI/2.2.0-beta.4": {
+        "dependencies": {
+          "Azure.Core": "1.44.1",
+          "OpenAI": "2.2.0-beta.4",
+          "System.ClientModel": "1.4.0-beta.1"
+        },
+        "runtime": {
+          "lib/net8.0/Azure.AI.OpenAI.dll": {
+            "assemblyVersion": "2.2.0.0",
+            "fileVersion": "2.200.25.16901"
+          }
+        }
+      },
+      "Azure.Core/1.44.1": {
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
+          "System.ClientModel": "1.4.0-beta.1",
+          "System.Diagnostics.DiagnosticSource": "6.0.1",
+          "System.Memory.Data": "6.0.1",
+          "System.Numerics.Vectors": "4.5.0",
+          "System.Text.Encodings.Web": "6.0.0",
+          "System.Text.Json": "6.0.10",
+          "System.Threading.Tasks.Extensions": "4.5.4"
+        },
+        "runtime": {
+          "lib/net6.0/Azure.Core.dll": {
+            "assemblyVersion": "1.44.1.0",
+            "fileVersion": "1.4400.124.50905"
+          }
+        }
+      },
       "CommunityToolkit.Mvvm/8.2.1": {
         "runtime": {
           "lib/net6.0/CommunityToolkit.Mvvm.dll": {
@@ -342,6 +374,34 @@
           }
         }
       },
+      "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
+        "runtime": {
+          "lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
+        "runtime": {
+          "lib/net6.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "OpenAI/2.2.0-beta.4": {
+        "dependencies": {
+          "System.ClientModel": "1.4.0-beta.1",
+          "System.Diagnostics.DiagnosticSource": "6.0.1"
+        },
+        "runtime": {
+          "lib/net8.0/OpenAI.dll": {
+            "assemblyVersion": "2.2.0.0",
+            "fileVersion": "2.2.0.0"
+          }
+        }
+      },
       "SkiaSharp/2.88.9": {
         "dependencies": {
           "SkiaSharp.NativeAssets.Win32": "2.88.9",
@@ -410,7 +470,46 @@
           }
         }
       },
+      "System.ClientModel/1.4.0-beta.1": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
+          "System.Memory.Data": "6.0.1"
+        },
+        "runtime": {
+          "lib/net8.0/System.ClientModel.dll": {
+            "assemblyVersion": "1.4.0.0",
+            "fileVersion": "1.400.25.15605"
+          }
+        }
+      },
+      "System.Diagnostics.DiagnosticSource/6.0.1": {
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
+        }
+      },
       "System.IO.Pipelines/8.0.0": {},
+      "System.Memory.Data/6.0.1": {
+        "runtime": {
+          "lib/net6.0/System.Memory.Data.dll": {
+            "assemblyVersion": "6.0.0.1",
+            "fileVersion": "6.0.3624.51421"
+          }
+        }
+      },
+      "System.Numerics.Vectors/4.5.0": {},
+      "System.Runtime.CompilerServices.Unsafe/6.0.0": {},
+      "System.Text.Encodings.Web/6.0.0": {
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
+        }
+      },
+      "System.Text.Json/6.0.10": {
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0",
+          "System.Text.Encodings.Web": "6.0.0"
+        }
+      },
+      "System.Threading.Tasks.Extensions/4.5.4": {},
       "Tmds.DBus.Protocol/0.20.0": {
         "dependencies": {
           "System.IO.Pipelines": "8.0.0"
@@ -542,6 +641,20 @@
       "path": "avalonia.x11/11.2.7",
       "hashPath": "avalonia.x11.11.2.7.nupkg.sha512"
     },
+    "Azure.AI.OpenAI/2.2.0-beta.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-qjCgspdq67x+urifvf7Dkz4tX5HVU3AlF2XUYU/kQBObKQihPsTYSQJ4tiMHEMNjaKRbfHzxnE2vnuhcqUUWCg==",
+      "path": "azure.ai.openai/2.2.0-beta.4",
+      "hashPath": "azure.ai.openai.2.2.0-beta.4.nupkg.sha512"
+    },
+    "Azure.Core/1.44.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YyznXLQZCregzHvioip07/BkzjuWNXogJEVz9T5W6TwjNr17ax41YGzYMptlo2G10oLCuVPoyva62y0SIRDixg==",
+      "path": "azure.core/1.44.1",
+      "hashPath": "azure.core.1.44.1.nupkg.sha512"
+    },
     "CommunityToolkit.Mvvm/8.2.1": {
       "type": "package",
       "serviceable": true,
@@ -591,6 +704,27 @@
       "path": "microcom.runtime/0.11.0",
       "hashPath": "microcom.runtime.0.11.0.nupkg.sha512"
     },
+    "Microsoft.Bcl.AsyncInterfaces/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UcSjPsst+DfAdJGVDsu346FX0ci0ah+lw3WRtn18NUwEqRt70HaOQ7lI72vy3+1LxtqI3T5GWwV39rQSrCzAeg==",
+      "path": "microsoft.bcl.asyncinterfaces/6.0.0",
+      "hashPath": "microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/HggWBbTwy8TgebGSX5DBZ24ndhzi93sHUBDvP1IxbZD7FDokYzdAr6+vbWGjw2XAfR2EJ1sfKUotpjHnFWPxA==",
+      "path": "microsoft.extensions.logging.abstractions/6.0.0",
+      "hashPath": "microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512"
+    },
+    "OpenAI/2.2.0-beta.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JZ4/mlVXLaXDIZuC4Ddu0KCAA23z4Ax1AQTS26mpJRuSShjXik7DU8a3basY3ddD51W04F7jeX5eAXamKA6rHw==",
+      "path": "openai/2.2.0-beta.4",
+      "hashPath": "openai.2.2.0-beta.4.nupkg.sha512"
+    },
     "SkiaSharp/2.88.9": {
       "type": "package",
       "serviceable": true,
@@ -626,12 +760,68 @@
       "path": "skiasharp.nativeassets.win32/2.88.9",
       "hashPath": "skiasharp.nativeassets.win32.2.88.9.nupkg.sha512"
     },
+    "System.ClientModel/1.4.0-beta.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZR0fKC94VS4P80vmxjk7l13/jPBXV0GMoE4jQfkYk8m2YV+dlw8jSC+b6eAfyBz0u+soN4CjhT3OdOC5KHaXxg==",
+      "path": "system.clientmodel/1.4.0-beta.1",
+      "hashPath": "system.clientmodel.1.4.0-beta.1.nupkg.sha512"
+    },
+    "System.Diagnostics.DiagnosticSource/6.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KiLYDu2k2J82Q9BJpWiuQqCkFjRBWVq4jDzKKWawVi9KWzyD0XG3cmfX0vqTQlL14Wi9EufJrbL0+KCLTbqWiQ==",
+      "path": "system.diagnostics.diagnosticsource/6.0.1",
+      "hashPath": "system.diagnostics.diagnosticsource.6.0.1.nupkg.sha512"
+    },
     "System.IO.Pipelines/8.0.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-FHNOatmUq0sqJOkTx+UF/9YK1f180cnW5FVqnQMvYUN0elp6wFzbtPSiqbo1/ru8ICp43JM1i7kKkk6GsNGHlA==",
       "path": "system.io.pipelines/8.0.0",
       "hashPath": "system.io.pipelines.8.0.0.nupkg.sha512"
+    },
+    "System.Memory.Data/6.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yliDgLh9S9Mcy5hBIdZmX6yphYIW3NH+3HN1kV1m7V1e0s7LNTw/tHNjJP4U9nSMEgl3w1TzYv/KA1Tg9NYy6w==",
+      "path": "system.memory.data/6.0.1",
+      "hashPath": "system.memory.data.6.0.1.nupkg.sha512"
+    },
+    "System.Numerics.Vectors/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ==",
+      "path": "system.numerics.vectors/4.5.0",
+      "hashPath": "system.numerics.vectors.4.5.0.nupkg.sha512"
+    },
+    "System.Runtime.CompilerServices.Unsafe/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg==",
+      "path": "system.runtime.compilerservices.unsafe/6.0.0",
+      "hashPath": "system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+    },
+    "System.Text.Encodings.Web/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Vg8eB5Tawm1IFqj4TVK1czJX89rhFxJo9ELqc/Eiq0eXy13RK00eubyU6TJE6y+GQXjyV5gSfiewDUZjQgSE0w==",
+      "path": "system.text.encodings.web/6.0.0",
+      "hashPath": "system.text.encodings.web.6.0.0.nupkg.sha512"
+    },
+    "System.Text.Json/6.0.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NSB0kDipxn2ychp88NXWfFRFlmi1bst/xynOutbnpEfRCT9JZkZ7KOmF/I/hNKo2dILiMGnqblm+j1sggdLB9g==",
+      "path": "system.text.json/6.0.10",
+      "hashPath": "system.text.json.6.0.10.nupkg.sha512"
+    },
+    "System.Threading.Tasks.Extensions/4.5.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zteT+G8xuGu6mS+mzDzYXbzS7rd3K6Fjb9RiZlYlJPam2/hU7JCBZBVEcywNuR+oZ1ncTvc/cq0faRr3P01OVg==",
+      "path": "system.threading.tasks.extensions/4.5.4",
+      "hashPath": "system.threading.tasks.extensions.4.5.4.nupkg.sha512"
     },
     "Tmds.DBus.Protocol/0.20.0": {
       "type": "package",
