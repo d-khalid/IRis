@@ -1,6 +1,8 @@
+using System.Threading.Tasks;
+
 namespace IRis.Services;
 
 public interface IAiAnalysisService
 {
-    public string GetSerializedCircuit(string prompt);
+    public Task<string> GetSerializedCircuit(string prompt, string systemPromptPath);
 }

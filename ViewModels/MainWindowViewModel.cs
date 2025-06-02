@@ -11,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using IRis.Models;
 using IRis.Models.Components;
@@ -25,7 +26,7 @@ namespace IRis.ViewModels
     {
         private readonly Simulation _simulation;
 
-        private ISerializationService serializer = new XmlSerializationService();
+        private ISerializationService _serializer = new XmlSerializationService();
 
         private string? _openedFileName = null;
 
@@ -82,7 +83,8 @@ namespace IRis.ViewModels
             DeleteCommand = new RelayCommand(Delete);
 
             AboutCommand = new RelayCommand(About);
-            AIGenerationCommand = new RelayCommand(AIGeneration);
+            AiPromptCommand = new RelayCommand(AiGenerationFromPrompt);
+            AiImageCommand = new RelayCommand(AiGenerationFromImage);
 
             AddComponentCommand = new RelayCommand<string>(AddComponent);
         }
@@ -92,7 +94,34 @@ namespace IRis.ViewModels
         // File commands
         public ICommand NewCommand { get; }
 
-        public ICommand AIGenerationCommand { get; }
+        public ICommand AiPromptCommand { get; }
+        
+        private AIGenerationWindowViewModel _currentPromptVm;
+
+        private void AiGenerationFromPrompt()
+        {
+            var window = new AIGenerationWindow();
+            _currentPromptVm = new AIGenerationWindowViewModel(window);
+    
+            _currentPromptVm.XmlGenerated += (xml) => 
+            {
+                Console.WriteLine("Event received");
+                var components = _serializer.DeserializeComponentsAsync(xml);
+                Dispatcher.UIThread.Post(() => 
+                {
+                    _simulation.DeleteAllComponents();
+                    _simulation.LoadComponents(components);
+                });
+            };
+
+            window.Show(); // Non-modal
+        }
+        public ICommand AiImageCommand { get; }
+
+        private void AiGenerationFromImage()
+        {
+            
+        }
 
         private void New()
         {
@@ -120,7 +149,7 @@ namespace IRis.ViewModels
             if (result != null && result.Length > 0)
             {
                 OpenedFileName = result[0];
-                List<Component> loadedComponents = await serializer.DeserializeComponentsAsync(OpenedFileName);
+                List<Component> loadedComponents = await _serializer.DeserializeFromFileAsync(OpenedFileName);
                 _simulation.LoadComponents(loadedComponents);
                 Console.WriteLine("Path:" + OpenedFileName);
             }
@@ -151,7 +180,7 @@ namespace IRis.ViewModels
 
             if (!string.IsNullOrEmpty(_openedFileName))
             {
-               serializer.SerializeComponents(_simulation, OpenedFileName);
+               _serializer.SerializeComponents(_simulation, OpenedFileName);
                 Console.WriteLine("Saved to: " + _openedFileName);
             }
         }
@@ -231,19 +260,7 @@ namespace IRis.ViewModels
             aboutWindow.ShowDialog(mainWindow);
         }
 
-        private void AIGeneration()
-        {
-            var aiGenerationWindow = new AIGenerationWindow();
-
-            // Center it relative to main window
-            aiGenerationWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-            // Get reference to main window
-            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
-                ?.MainWindow;
-
-            aiGenerationWindow.ShowDialog(mainWindow);
-        }
+       
 
         // Component command
         public ICommand AddComponentCommand { get; }
@@ -254,34 +271,7 @@ namespace IRis.ViewModels
 
             _simulation.PreviewCompType = componentType;
             LastAction = $"Selected Component [{componentType}]";
-
-            //SelectedComponent = CreateComponent(componentType);
-
-
-            // switch (componentType)
-            // {
-            //     case "AND":
-            //         _canvasService.AddComponent(new AndGate(4));
-            //         break;
-            //     case "OR":
-            //         _canvasService.AddComponent(new OrGate(2));
-            //         break;
-            //     case "NOT":
-            //         _canvasService.AddComponent(new NotGate());
-            //         break;
-            //     case "NAND":
-            //         _canvasService.AddComponent(new NandGate(2));
-            //         break;
-            //     case "NOR":
-            //         _canvasService.AddComponent(new NorGate(2));
-            //         break;
-            //     case "XOR":
-            //         _canvasService.AddComponent(new XorGate(2));
-            //         break;
-            //     case "XNOR":
-            //         _canvasService.AddComponent(new XnorGate(2));
-            //         break;
-            // }
+            
         }
     }
 }

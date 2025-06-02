@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -14,14 +15,14 @@ namespace IRis.Services;
 public interface ISerializationService
 {
     public void SerializeComponents(Simulation simulation, string fileName);
-    public Task<List<Component>> DeserializeComponentsAsync(string fileName);
+    public List<Component> DeserializeComponentsAsync(string content);
+    async Task<List<Component>> DeserializeFromFileAsync(string filePath)
+    {
+        string data = await File.ReadAllTextAsync(filePath);
+        return DeserializeComponentsAsync(data);
+    }
 
-    // public static Terminal ConvertDtoToTerminal(TerminalDto dto)
-    // {
-    //     Terminal t = new Terminal();
-    //     
-    // }
-
+ 
     public static Component ConvertDtoToComponent(ComponentDto dto)
     {
         int numInputs = ParseProperty<int>(dto, "NumInputs");

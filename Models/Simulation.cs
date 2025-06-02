@@ -153,7 +153,7 @@ public partial class Simulation : ObservableObject
 
     public void SimulationStep()
     {
-        Console.WriteLine("SIMULATION STEP");
+        //Console.WriteLine("SIMULATION STEP");
         foreach (var component in _components)
         {
             // Redraw Toggles and Probes
@@ -188,43 +188,16 @@ public partial class Simulation : ObservableObject
         _selectedComponents.Clear();
     }
 
+    // TODO: THESE METHODS ARE SHALLOW AND BAD! (probably)
     public void LoadComponents(List<Component> components)
     {
-        // Connect wires here
-        
-        // Get all wire objects in a dictionary with their GUIDs
-        Dictionary<Guid, Wire> wireDict = new();
-
-        foreach (Component c in components)
-        {
-            if (c is Wire wire && wire.Id != null)
-            {
-                wireDict.Add((Guid)wire.Id, wire);
-            }
-        }
-        
-        // Now perform replacements
-        foreach (Component c in components)
-        {
-            if (c.Terminals == null) continue;
-
-            foreach (Terminal t in c.Terminals)
-            {
-                if(t.Wire == null || t.Wire.Id == null) continue;
-                
-                t.Wire = wireDict[(Guid)t.Wire.Id];
-            }
-        }
-
-        // Add the damn components
         _components = components;
         _canvas.Children.AddRange(_components);
-
-        // _components = components;
-        // foreach (Component c in components)
-        // {
-        //     _canvas.Children.Add(c);
-        // }
+    }
+    public void DeleteAllComponents()
+    {
+        _components.Clear();
+        _canvas.Children.Clear();
     }
 
 
