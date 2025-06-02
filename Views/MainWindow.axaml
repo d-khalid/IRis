@@ -165,7 +165,7 @@
 
         <!-- Main Canvas Area -->
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <Canvas x:Name="MainCanvas" Background="White" MinWidth="2000" MinHeight="2000">
+            <Canvas x:Name="MainCanvas" Background="LightGray" MinWidth="2000" MinHeight="2000">
                 <!-- Circuit elements will be added here programmatically -->
                 
                 <!-- <Line EndPoint="0,20" StartPoint="20,20" Stroke="Black"  StrokeThickness="3"/> -->
