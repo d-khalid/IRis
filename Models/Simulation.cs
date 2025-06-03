@@ -104,7 +104,7 @@ public partial class Simulation : ObservableObject
         // Registering event handlers
         _canvas.PointerPressed += (s, e) =>
         {
-            if (HandlePreviewCommit()) return;
+            if (HandlePreviewCommit(s, e)) return;
             if (HandleSelectionStart()) return;
         };
 
@@ -358,7 +358,7 @@ public partial class Simulation : ObservableObject
 
 
     // PREVIEW FUNCTIONS START
-    private bool HandlePreviewCommit()
+    private bool HandlePreviewCommit(object? sender, PointerPressedEventArgs? e)
     {
         // Commit pasted components
         if (_isPastePreviewActive)
@@ -390,8 +390,19 @@ public partial class Simulation : ObservableObject
             }
 
             wirePreview.AddPoint(pos);
-
+            
+            // If RIGHT-CLICK, then commit the wire
+            // Finalize wire if it has at least 2 points
+            var point = e.GetCurrentPoint(sender as Control);
+            if (wirePreview.Points.Count >= 2 && point.Properties.IsRightButtonPressed)
+            {
+                _components.Add(wirePreview);
+                _previewComponent = null;
+            }
+         
             return true; // Terminate
+            
+
         }
 
         // Commit component on click
