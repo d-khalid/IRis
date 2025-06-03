@@ -81,7 +81,8 @@ public class ImageProcessingWindowViewModel : ViewModelBase
         if (files.Count == 0) return;
         
         var file = files[0];
-        FilePath = file.Path.AbsolutePath;
+        
+        FilePath = file.Path.AbsolutePath.Replace("%20", " ");
         
         await using var stream = await file.OpenReadAsync();
         SelectedImage = new Bitmap(stream);
