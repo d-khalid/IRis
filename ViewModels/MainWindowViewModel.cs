@@ -49,6 +49,21 @@ namespace IRis.ViewModels
             set => SetProperty(ref _lastAction, value);
         }
 
+        private string _gridToggleText = "Grid: OFF";
+        public string GridToggleText
+        {
+            get => _gridToggleText;
+            set => SetProperty(ref _gridToggleText, value);
+        }
+
+        private string _simulationToggleText = "Simulation: OFF";
+
+        public string SimulationToggleText
+        {
+            get => _simulationToggleText;
+            set => SetProperty(ref _simulationToggleText, value);
+        }
+
         public MainWindowViewModel(Simulation simulation)
         {
             // Use the CanvasService for adding/removing components
@@ -87,9 +102,30 @@ namespace IRis.ViewModels
             AiImageCommand = new RelayCommand(AiGenerationFromImage);
 
             AddComponentCommand = new RelayCommand<string>(AddComponent);
+
+            GridToggleCommand = new RelayCommand(GridToggle);
+            SimulationToggleCommand = new RelayCommand(SimulationToggle);
         }
 
-        // 
+        // OPTIONS
+        public ICommand GridToggleCommand { get; }
+
+        public void GridToggle()
+        {
+            _simulation.SnapToGridEnabled = !_simulation.SnapToGridEnabled;
+            _simulation.GridEnabled = !_simulation.GridEnabled;
+            
+            GridToggleText = _simulation.GridEnabled ? "Grid: ON" : "Grid: OFF";
+        }
+
+        public ICommand SimulationToggleCommand { get; }
+
+        public void SimulationToggle()
+        {
+            _simulation.Simulating = !_simulation.Simulating;
+            
+            SimulationToggleText = _simulation.Simulating ? "Simulation: ON" : "Simulation: OFF";
+        }
 
         // File commands
         public ICommand NewCommand { get; }

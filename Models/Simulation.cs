@@ -41,7 +41,49 @@ public partial class Simulation : ObservableObject
     private List<Component> _pastePreviewComponents = new();
 
     // Grid Options
-    public bool SnapToGridEnabled { get; set; } = false;
+    public bool SnapToGridEnabled { get; set; } = true;
+    private bool _gridEnabled = true;
+    public bool GridEnabled
+    {
+        get => _gridEnabled;
+        set
+        {
+            _gridEnabled = value;
+
+            switch (_gridEnabled)
+            {
+                case true:
+                    DrawGrid();
+                    break;
+                case false:
+                    _canvas.Children.Clear();
+                    _canvas.Children.AddRange(_components);
+                    break;
+            }
+        }
+    }
+
+    private bool _simulating;
+    
+    public bool Simulating
+    {
+        get => _simulating;
+        set
+        {
+            _simulating = value;
+
+            switch (_simulating)
+            {
+                case true:
+                    _updateTimer.Start();
+                    break;
+                case false:
+                    _updateTimer.Stop();
+                    break;
+            }
+        }
+    }
+    
 
     private string? _previewCompType;
     private Component? _previewComponent;
@@ -99,7 +141,9 @@ public partial class Simulation : ObservableObject
         // For updating the simulation
         _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) }; // Adjust to reduce CPU load
         _updateTimer.Tick += (s, e) => SimulationStep();
-        _updateTimer.Start();
+        //_updateTimer.Start();
+        Simulating = false;
+        
 
         // Registering event handlers
         _canvas.PointerPressed += (s, e) =>

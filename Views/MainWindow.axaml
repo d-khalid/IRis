@@ -139,6 +139,17 @@
                 <TextBlock Text="Other" FontWeight="Bold" Margin="0,10,0,5"/>
                 
                 <Button Content="Wire" Command="{Binding AddComponentCommand}" CommandParameter="WIRE"/>
+                
+                <TextBlock Text="Options" FontWeight="Bold" Margin="0,10,0,5"/>
+                <Button Content="{Binding SimulationToggleText}" 
+                        Command="{Binding SimulationToggleCommand}"/>
+                
+                <Button Content="{Binding GridToggleText}" 
+                        Command="{Binding GridToggleCommand}"/>
+                
+                
+                
+                
             </StackPanel>
         </ScrollViewer>
         
