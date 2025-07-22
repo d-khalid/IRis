@@ -49,7 +49,7 @@ namespace IRis.ViewModels
             set => SetProperty(ref _lastAction, value);
         }
 
-        private string _gridToggleText = "Grid: OFF";
+        private string _gridToggleText = "Grid: ON";
         public string GridToggleText
         {
             get => _gridToggleText;
@@ -244,10 +244,7 @@ namespace IRis.ViewModels
                 };
 
                 OpenedFileName = await dialog.ShowAsync(new Window());
-            }
 
-            if (!string.IsNullOrEmpty(_openedFileName))
-            {
                 _serializer.SerializeComponents(_simulation, OpenedFileName);
                 Console.WriteLine("Saved to: " + _openedFileName);
             }

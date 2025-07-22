@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Circuit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Components>
+    <Component Type="NotGate" X="520" Y="220">
+      <Terminals>
+        <Terminal>
+          <ConnectedWireId>8e931d03-2ca2-4aa5-9fcd-bec9ad8250f8</ConnectedWireId>
+        </Terminal>
+        <Terminal>
+          <ConnectedWireId>d629084c-4246-47bc-b026-a8fda9328942</ConnectedWireId>
+        </Terminal>
+      </Terminals>
+      <Properties>
+        <Property Name="Width">75</Property>
+        <Property Name="Height">80</Property>
+        <Property Name="Rotation">0</Property>
+        <Property Name="NumInputs">1</Property>
+      </Properties>
+    </Component>
+    <Component Type="LogicToggle" X="280" Y="240">
+      <Terminals>
+        <Terminal>
+          <ConnectedWireId>8e931d03-2ca2-4aa5-9fcd-bec9ad8250f8</ConnectedWireId>
+        </Terminal>
+      </Terminals>
+      <Properties>
+        <Property Name="Width">66.66666666666667</Property>
+        <Property Name="Height">53.333333333333336</Property>
+        <Property Name="Rotation">0</Property>
+        <Property Name="Value">High</Property>
+      </Properties>
+    </Component>
+    <Component Type="LogicProbe" X="800" Y="240">
+      <Terminals>
+        <Terminal>
+          <ConnectedWireId>d629084c-4246-47bc-b026-a8fda9328942</ConnectedWireId>
+        </Terminal>
+      </Terminals>
+      <Properties>
+        <Property Name="Width">66.66666666666667</Property>
+        <Property Name="Height">53.333333333333336</Property>
+        <Property Name="Rotation">0</Property>
+      </Properties>
+    </Component>
+    <Wire Type="Wire" X="200" Y="60">
+      <Terminals />
+      <Properties>
+        <Property Name="Rotation">0</Property>
+      </Properties>
+      <Points>
+        <Point X="177.46666666666664" Y="208.26666666666665" />
+        <Point X="297.20000000000005" Y="207.2" />
+        <Point X="297.20000000000005" Y="207.2" />
+        <Point X="297.20000000000005" Y="207.2" />
+        <Point X="297.20000000000005" Y="207.2" />
+      </Points>
+      <Id>8e931d03-2ca2-4aa5-9fcd-bec9ad8250f8</Id>
+    </Wire>
+    <Wire Type="Wire" X="200" Y="60">
+      <Terminals />
+      <Properties>
+        <Property Name="Rotation">0</Property>
+      </Properties>
+      <Points>
+        <Point X="445.53333333333336" Y="207.2" />
+        <Point X="576.4" Y="208.26666666666665" />
+        <Point X="576.4" Y="208.26666666666665" />
+        <Point X="576.4" Y="208.26666666666665" />
+      </Points>
+      <Id>d629084c-4246-47bc-b026-a8fda9328942</Id>
+    </Wire>
+  </Components>
+</Circuit>
