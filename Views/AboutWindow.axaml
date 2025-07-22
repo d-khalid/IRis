@@ -1,0 +1,15 @@
+<!-- AboutWindow.axaml -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="About"
+        Width="600" Height="400"
+        x:Class="IRis.Views.AboutWindow"
+        SizeToContent="WidthAndHeight">
+    <StackPanel Margin="20">
+        <TextBlock Text="IRis: An AI-powered Circuit Simulator" FontSize="16" FontWeight="Bold"/>
+        <TextBlock Text="Version 0.1" Margin="0,5"/>
+        <TextBlock Text="Made by: [Danyal Khalid, Kareem Azzam ,Shazaib Ahmed ,Safi Ullah]" Margin="0,5"/>
+        <!-- <Button Content="OK" HorizontalAlignment="Center" Margin="0,20"  -->
+        <!--         Command="{Binding CloseCommand}"/> -->
+    </StackPanel>
+</Window>
