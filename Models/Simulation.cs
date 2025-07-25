@@ -112,13 +112,6 @@ public partial class Simulation : ObservableObject
         _canvas.PointerWheelChanged += OnPointerWheel;
     }
 
-    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        if (_previewManager.HandleCommit(sender, e, _components, _canvas, CurrentMousePos, _commandManager, this))
-            return;
-        _selectionManager.HandleStart(_canvas, _selectedComponents, CurrentMousePos);
-    }
-
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
         // Update the mouse pos
@@ -133,16 +126,11 @@ public partial class Simulation : ObservableObject
             _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
     }
 
-    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
-    {
-        _selectionManager.HandleEnd(_canvas);
-    }
-
     // Keyboard shortcut support for moving selected components
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
         // Handle preview manager first
-        _previewManager.HandleKeyCommand(e, _components, _canvas);
+        _previewManager.HandleKeyCommand(e, _components, _canvas, _commandManager);
         
         // FIXED: Correct condition check
         if (_selectedComponents.Count > 0 && _previewManager.PreviewCompType == null)
@@ -153,6 +141,8 @@ public partial class Simulation : ObservableObject
 
     private void HandleMoveSelectedComponents(KeyEventArgs e)
     {
+        if (_selectedComponents.Count == 0) return;
+        
         double moveDistance = _gridManager.SnapToGridEnabled ? ComponentDefaults.GridSpacing : 10;
         Point offset = new Point(0, 0);
 
@@ -174,17 +164,9 @@ public partial class Simulation : ObservableObject
                 return;
         }
 
-        // Move all selected components
-        foreach (var component in _selectedComponents)
-        {
-            double newX = Canvas.GetLeft(component) + offset.X;
-            double newY = Canvas.GetTop(component) + offset.Y;
-            
-            Canvas.SetLeft(component, newX);
-            Canvas.SetTop(component, newY);
-            
-            component.InvalidateVisual();
-        }
+        // Use command for undo/redo support
+        var moveCommand = new MoveComponentsCommand(_selectedComponents, offset);
+        _commandManager.ExecuteCommand(moveCommand);
         
         e.Handled = true;
     }
@@ -301,5 +283,24 @@ public partial class Simulation : ObservableObject
         }
 
         return closestTerminal; // Returns null if no terminal is within snapping range
+    }
+
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (_previewManager.HandleCommit(sender, e, _components, _canvas, CurrentMousePos, _commandManager, this))
+            return;
+        
+        // Add drag handling
+        _previewManager.OnPointerPressed(sender, e, _selectedComponents);
+        _selectionManager.HandleStart(_canvas, _selectedComponents, CurrentMousePos);
+    }
+
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        // Handle preview manager drag completion first
+        _previewManager.OnPointerReleased(sender, e, _commandManager);
+        
+        // Then handle selection manager
+        _selectionManager.HandleEnd(_canvas, _commandManager);
     }
 }

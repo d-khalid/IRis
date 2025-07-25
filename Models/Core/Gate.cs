@@ -39,9 +39,8 @@ public abstract class Gate : Component, IOutputProvider
 {
     protected int NumInputs;
     
-    private bool?[] _previousInputValues;
-
-    private DispatcherTimer _updateTimer;
+    // private bool?[] _previousInputValues;
+    // private DispatcherTimer _updateTimer;
 
     // Uses default values if none are given
     public Gate(int numInputs, double width = ComponentDefaults.DefaultWidth,
@@ -173,6 +172,7 @@ public abstract class Gate : Component, IOutputProvider
         // Input lines extend into the gate and covered up by the fill color
         for (int i = 0; i < NumInputs; i++)
         {
+            if (Terminals[i] == null) continue;
             ctx.DrawLine(ComponentDefaults.WirePen, Terminals[i].Position, new Point(Width / ComponentDefaults.OrArcFactor, Terminals[i].Position.Y));
             ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
                 Terminals[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);

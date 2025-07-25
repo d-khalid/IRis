@@ -132,7 +132,7 @@ namespace IRis.ViewModels
 
         public ICommand AiPromptCommand { get; }
 
-        private AIGenerationWindowViewModel _currentPromptVm;
+        // private AIGenerationWindowViewModel _currentPromptVm;
 
         private void AiGenerationFromPrompt()
         {
@@ -169,7 +169,7 @@ namespace IRis.ViewModels
             // _currentPromptVm = new AIGenerationWindowViewModel(window);
             
             var vm = window.DataContext as ImageProcessingWindowViewModel;
-
+        
             vm.XmlGenerated += (xml) =>
             {
                 Console.WriteLine("Event received");
@@ -196,27 +196,26 @@ namespace IRis.ViewModels
         }
 
         public ICommand OpenCommand { get; }
-
         private async Task Open()
         {
-            // OPEN A FILE PICKER DIALOG
-            var dialog = new OpenFileDialog()
+            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            if (mainWindow == null) return;
+
+            var files = await mainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = "Select Circuit XML file",
-                Filters = new List<FileDialogFilter>
+                Title = "Select Circuit XML File",
+                AllowMultiple = false,
+                FileTypeFilter = new List<FilePickerFileType>
                 {
-                    new FileDialogFilter { Name = "XML Files", Extensions = new List<string> { "xml" } },
-                    new FileDialogFilter { Name = "All Files", Extensions = new List<string> { "*" } }
-                },
-                AllowMultiple = false
-            };
+                    new FilePickerFileType("XML Files") { Patterns = new[] { "*.xml" } },
+                    new FilePickerFileType("All Files") { Patterns = new[] { "*" } }
+                }
+            });
 
-            var result = await dialog.ShowAsync(new Window());
-
-            // Runs if the selected path exists and is valid
-            if (result != null && result.Length > 0)
+            var file = files?.FirstOrDefault();
+            if (file != null)
             {
-                OpenedFileName = result[0];
+                OpenedFileName = file.Path.LocalPath;
                 List<Component> loadedComponents = await _serializer.DeserializeFromFileAsync(OpenedFileName);
                 _simulation.LoadComponents(loadedComponents);
                 Console.WriteLine("Path:" + OpenedFileName);
@@ -224,28 +223,34 @@ namespace IRis.ViewModels
         }
 
         public ICommand SaveCommand { get; }
-
         private async Task Save()
         {
-            // IF there is no opened file, ask for a path
-            // Otherwise just save to that path
+            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            if (mainWindow == null) return;
+
             if (string.IsNullOrEmpty(_openedFileName))
             {
-                var dialog = new SaveFileDialog()
+                var result = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                 {
-                    Title = "Save Circuit as XML",
-                    Filters = new List<FileDialogFilter>
-                    {
-                        new FileDialogFilter { Name = "XML Files", Extensions = new List<string> { "xml" } },
-                        new FileDialogFilter { Name = "All Files", Extensions = new List<string> { "*" } }
-                    },
+                    Title = "Save Circuit XML",
+                    SuggestedFileName = "circuit.xml",
                     DefaultExtension = "xml",
-                    InitialFileName = "circuit.xml"
-                };
+                    FileTypeChoices = new List<FilePickerFileType>
+                    {
+                        new FilePickerFileType("XML Files") { Patterns = new[] { "*.xml" } },
+                        new FilePickerFileType("All Files") { Patterns = new[] { "*" } }
+                    }
+                });
 
-                OpenedFileName = await dialog.ShowAsync(new Window());
+                if (result != null)
+                {
+                    _openedFileName = result.Path.LocalPath;
+                }
+            }
 
-                _serializer.SerializeComponents(_simulation, OpenedFileName);
+            if (!string.IsNullOrEmpty(_openedFileName))
+            {
+                _serializer.SerializeComponents(_simulation, _openedFileName);
                 Console.WriteLine("Saved to: " + _openedFileName);
             }
         }
@@ -272,7 +277,6 @@ namespace IRis.ViewModels
         }
 
         public ICommand RedoCommand { get; }
-
         private void Redo()
         {
             _simulation.Redo();
@@ -280,7 +284,6 @@ namespace IRis.ViewModels
         }
 
         public ICommand CutCommand { get; }
-
         private void Cut()
         {
             _simulation.CutSelected();
@@ -288,7 +291,6 @@ namespace IRis.ViewModels
         }
 
         public ICommand CopyCommand { get; }
-
         private void Copy()
         {
             // TODO: BE CAREFUL ABOUT THIS
@@ -297,7 +299,6 @@ namespace IRis.ViewModels
         }
 
         public ICommand PasteCommand { get; }
-
         private void Paste()
         {
             _simulation.PasteSelected();
@@ -305,7 +306,6 @@ namespace IRis.ViewModels
         }
 
         public ICommand DeleteCommand { get; }
-
         private void Delete()
         {
             _simulation.DeleteSelectedComponents();
@@ -314,7 +314,6 @@ namespace IRis.ViewModels
 
         // Help command
         public ICommand AboutCommand { get; }
-
         private void About()
         {
             var aboutWindow = new AboutWindow();
@@ -323,16 +322,14 @@ namespace IRis.ViewModels
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             // Get reference to main window
-            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
-                ?.MainWindow;
-
-            aboutWindow.ShowDialog(mainWindow);
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
+            {
+                aboutWindow.ShowDialog(mainWindow);
+            }
         }
-
 
         // Component command
         public ICommand AddComponentCommand { get; }
-
         private void AddComponent(string componentType)
         {
             Console.WriteLine($"Adding component: {componentType}");

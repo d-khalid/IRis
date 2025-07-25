@@ -76,7 +76,7 @@ public class LogicToggle : Component, IOutputProvider
             new() { Name = "Width", Value = Width.ToString() },
             new() { Name = "Height", Value = Height.ToString() },
             new() { Name = "Rotation", Value = Rotation.ToString() },
-            new() { Name = "Value", Value = this.Value.ToString() }
+            new() { Name = "Value", Value = this.Value!.ToString() }
             
             // Add other serializable properties in subclasses
         };
@@ -93,7 +93,10 @@ public class LogicToggle : Component, IOutputProvider
         clone.IsSelected = this.IsSelected;
         
         // Component-specific things
-        clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire);
+        if (clone.Terminals is not null && this.Terminals is not null)
+        {
+            clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire);
+        }
         clone.Value = this.Value;
         
         // Reset visual state

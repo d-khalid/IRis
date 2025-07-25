@@ -4,6 +4,7 @@ using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using IRis.Models.Core;
+using IRis.Models.Components;
 
 namespace IRis.Models.Commands
 {
@@ -48,14 +49,15 @@ namespace IRis.Models.Commands
         private readonly Canvas _canvas;
         private readonly List<Component> _components;
         private readonly List<Component> _deletedComponents;
-        private readonly List<Point> _positions;
+        private readonly List<Point> _originalPositions;
 
-        public DeleteComponentsCommand(Canvas canvas, List<Component> components, List<Component> toDelete)
+        public DeleteComponentsCommand(Canvas canvas, List<Component> components, List<Component> selectedComponents)
         {
             _canvas = canvas;
             _components = components;
-            _deletedComponents = new List<Component>(toDelete);
-            _positions = toDelete.Select(c => new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
+            _deletedComponents = new List<Component>(selectedComponents);
+            _originalPositions = selectedComponents.Select(c => 
+                new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
         }
 
         public void Execute()
@@ -72,30 +74,99 @@ namespace IRis.Models.Commands
             for (int i = 0; i < _deletedComponents.Count; i++)
             {
                 var component = _deletedComponents[i];
-                Canvas.SetLeft(component, _positions[i].X);
-                Canvas.SetTop(component, _positions[i].Y);
+                var position = _originalPositions[i];
+                
+                Canvas.SetLeft(component, position.X);
+                Canvas.SetTop(component, position.Y);
                 _canvas.Children.Add(component);
                 _components.Add(component);
             }
         }
     }
 
-    public class MoveComponentsCommand : ICommand
+    public class AddWirePointCommand : ICommand
     {
-        private readonly List<Component> _components;
-        private readonly List<Point> _oldPositions;
-        private readonly List<Point> _newPositions;
+        private readonly Wire _wire;
+        private readonly Point _point;
 
-        public MoveComponentsCommand(List<Component> components, List<Point> oldPositions, List<Point> newPositions)
+        public AddWirePointCommand(Wire wire, Point point)
         {
-            _components = new List<Component>(components);
-            _oldPositions = new List<Point>(oldPositions);
-            _newPositions = new List<Point>(newPositions);
+            _wire = wire;
+            _point = point;
         }
 
         public void Execute()
         {
-            for (int i = 0; i < _components.Count; i++)
+            _wire.AddPoint(_point);
+        }
+
+        public void Undo()
+        {
+            if (_wire.Points.Count > 0)
+            {
+                _wire.Points.RemoveAt(_wire.Points.Count - 1);
+                _wire.InvalidateVisual();
+            }
+        }
+    }
+
+    public class CommitWireCommand : ICommand
+    {
+        private readonly List<Component> _components;
+        private readonly Wire _wire;
+
+        public CommitWireCommand(List<Component> components, Wire wire)
+        {
+            _components = components;
+            _wire = wire;
+        }
+
+        public void Execute()
+        {
+            _components.Add(_wire);
+        }
+
+        public void Undo()
+        {
+            _components.Remove(_wire);
+        }
+    }
+
+    public class MoveComponentsCommand : ICommand
+    {
+        private readonly List<Component> _components;
+        private readonly List<Point> _originalPositions;
+        private readonly List<Point> _newPositions;
+        private readonly Canvas _canvas;
+
+        // Constructor with 2 arguments (components and offset)
+        public MoveComponentsCommand(List<Component> components, Point offset)
+        {
+            _components = new List<Component>(components);
+            _canvas = null;
+            
+            // Calculate original and new positions based on offset
+            _originalPositions = _components.Select(c => 
+                new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
+            _newPositions = _originalPositions.Select(pos => 
+                new Point(pos.X + offset.X, pos.Y + offset.Y)).ToList();
+        }
+
+        // Constructor with 3 arguments (canvas, components, newPositions) - for SelectionManager compatibility
+        public MoveComponentsCommand(Canvas canvas, List<Component> components, List<Point> newPositions)
+        {
+            _canvas = canvas;
+            _components = new List<Component>(components);
+            _newPositions = new List<Point>(newPositions);
+            
+            // Store original positions for undo
+            _originalPositions = _components.Select(c => 
+                new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
+        }
+
+        public void Execute()
+        {
+            for (int i = 0; i < _components.Count && i < _newPositions.Count; i++)
             {
                 Canvas.SetLeft(_components[i], _newPositions[i].X);
                 Canvas.SetTop(_components[i], _newPositions[i].Y);
@@ -105,10 +176,10 @@ namespace IRis.Models.Commands
 
         public void Undo()
         {
-            for (int i = 0; i < _components.Count; i++)
+            for (int i = 0; i < _components.Count && i < _originalPositions.Count; i++)
             {
-                Canvas.SetLeft(_components[i], _oldPositions[i].X);
-                Canvas.SetTop(_components[i], _oldPositions[i].Y);
+                Canvas.SetLeft(_components[i], _originalPositions[i].X);
+                Canvas.SetTop(_components[i], _originalPositions[i].Y);
                 _components[i].InvalidateVisual();
             }
         }
@@ -134,6 +205,7 @@ namespace IRis.Models.Commands
             if (_undoStack.Count > 0)
             {
                 var command = _undoStack.Pop();
+                Console.WriteLine($"Undoing: {command.GetType().Name}");
                 command.Undo();
                 _redoStack.Push(command);
             }
@@ -144,15 +216,10 @@ namespace IRis.Models.Commands
             if (_redoStack.Count > 0)
             {
                 var command = _redoStack.Pop();
+                Console.WriteLine($"Redoing: {command.GetType().Name}");
                 command.Execute();
                 _undoStack.Push(command);
             }
-        }
-
-        public void Clear()
-        {
-            _undoStack.Clear();
-            _redoStack.Clear();
         }
     }
 }

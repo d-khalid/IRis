@@ -26,17 +26,23 @@ public class AndGate : Gate
 
     public override void ComputeOutput()
     {
-        // If there's a missing wire, don't bother
+        // If any terminal has a missing wire, don't bother
         if (Terminals.Any(p => p.Wire == null)) return;
 
-        // Funny LINQ expression
-        if (Terminals.SkipLast(1).All(p => p.Wire.Value == LogicState.High))
-        {
-            Terminals[^1].Wire.Value = LogicState.High;
-        }
-        else Terminals[^1].Wire.Value = LogicState.Low;
+        // Cache input wires (all except last)
+        var inputWires = Terminals.SkipLast(1).Select(p => p.Wire!).ToList();
+        var outputWire = Terminals[^1].Wire!;
 
+        if (inputWires.All(w => w.Value == LogicState.High))
+        {
+            outputWire.Value = LogicState.High;
+        }
+        else
+        {
+            outputWire.Value = LogicState.Low;
+        }
     }
+
 
     // public override void UpdateOutputValue()
     // {

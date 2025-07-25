@@ -1,3 +1,4 @@
+// File: SelectionManager.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -473,7 +474,7 @@ internal class SelectionManager
         return false;
     }
 
-    public void HandleEnd(Canvas canvas)
+    public void HandleEnd(Canvas canvas, CommandManager? commandManager = null)
     {
         // End dragging
         if (_isDragging)
@@ -482,25 +483,34 @@ internal class SelectionManager
             if (_dragOffsets.Count > 0)
             {
                 var selectedComponents = _dragOffsets.Keys.ToList();
-                var oldPositions = _dragOffsets.Values.ToList();
+                var originalPositions = selectedComponents.Select(c => 
+                    new Point(Canvas.GetLeft(c) - _dragOffsets[c].X - (_dragStart.X - _dragStart.X), 
+                             Canvas.GetTop(c) - _dragOffsets[c].Y - (_dragStart.Y - _dragStart.Y))).ToList();
                 var newPositions = selectedComponents.Select(c => 
                     new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
                 
                 // Only create command if positions actually changed
                 bool moved = false;
-                for (int i = 0; i < oldPositions.Count; i++)
+                for (int i = 0; i < originalPositions.Count; i++)
                 {
-                    if (oldPositions[i] != newPositions[i])
+                    var originalPos = new Point(Canvas.GetLeft(selectedComponents[i]), Canvas.GetTop(selectedComponents[i]));
+                    originalPos = new Point(originalPos.X - _dragOffsets[selectedComponents[i]].X, 
+                                          originalPos.Y - _dragOffsets[selectedComponents[i]].Y);
+                    originalPos = new Point(originalPos.X + _dragStart.X, originalPos.Y + _dragStart.Y);
+                    
+                    if (Math.Abs(originalPos.X - newPositions[i].X) > 0.1 || 
+                        Math.Abs(originalPos.Y - newPositions[i].Y) > 0.1)
                     {
                         moved = true;
                         break;
                     }
                 }
                 
-                if (moved)
+                if (moved && commandManager != null)
                 {
-                    var moveCommand = new MoveComponentsCommand(selectedComponents, oldPositions, newPositions);
-                    // You'll need to pass the CommandManager here - see below
+                    // Use the 3-argument constructor: canvas, components, newPositions
+                    var moveCommand = new MoveComponentsCommand(canvas, selectedComponents, newPositions);
+                    commandManager.ExecuteCommand(moveCommand);
                 }
             }
             

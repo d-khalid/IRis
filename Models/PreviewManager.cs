@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -13,6 +14,9 @@ internal class PreviewManager
 {
     private string? _previewCompType;
     private Component? _previewComponent;
+    private bool _isDragging = false;
+    private List<Point> _dragStartPositions = new();
+    private List<Component> _draggedComponents = new();
 
     public string? PreviewCompType => _previewCompType;
 
@@ -34,6 +38,7 @@ internal class PreviewManager
             {
                 PositionPreviewComponent(mousePos);
                 canvas.Children.Add(_previewComponent);
+                
                 Console.WriteLine("Added component via setter");
             }
         }
@@ -61,10 +66,9 @@ internal class PreviewManager
     public bool HandleCommit(object? sender, PointerPressedEventArgs? e, List<Component> components, 
         Canvas canvas, Point mousePos, CommandManager commandManager, Simulation simulation)
     {
-        // Handle wire preview commit
         if (_previewComponent is Wire wirePreview)
         {
-            return HandleWireCommit(sender, e, components, wirePreview, mousePos, simulation);
+            return HandleWireCommit(sender, e, components, wirePreview, mousePos, simulation, commandManager);
         }
 
         // Commit component on click
@@ -77,27 +81,30 @@ internal class PreviewManager
     }
 
     private bool HandleWireCommit(object? sender, PointerPressedEventArgs? e, List<Component> components,
-        Wire wirePreview, Point mousePos, Simulation simulation)
+        Wire wirePreview, Point mousePos, Simulation simulation, CommandManager commandManager)
     {
-        if (e == null) return true; // Can't handle wire commit without event args
-        // Check for a terminal we can snap to
+        if (e == null) return true;
         Terminal? target = simulation.FindClosestSnapTerminal(mousePos, ComponentDefaults.TerminalSnappingRange, out var pos);
 
         if (target != null)
             target.Wire = wirePreview;
 
-        wirePreview.AddPoint(pos);
+        // Use command for adding point
+        var addPointCommand = new AddWirePointCommand(wirePreview, pos);
+        commandManager.ExecuteCommand(addPointCommand);
 
-        // If RIGHT-CLICK or DOUBLE-CLICK, then commit the wire
-        // Finalize wire if it has at least 2 points
         var point = e.GetCurrentPoint(sender as Control);
+        // Commits the WIRE ON DOUBLE-CLICK, or RIGHT-CLICK
         if (wirePreview.Points.Count >= 2 && (point.Properties.IsRightButtonPressed || e.ClickCount >= 2))
         {
-            components.Add(wirePreview);
+            // Use command for committing wire
+            var commitCommand = new CommitWireCommand(components, wirePreview);
+            commandManager.ExecuteCommand(commitCommand);
             _previewComponent = null;
+            simulation.PreviewCompType = "WIRE";   // Keep placing wires
         }
 
-        return true; // Terminate
+        return true;
     }
 
     private bool HandleComponentCommit(Canvas canvas, List<Component> components, Point mousePos, CommandManager commandManager)
@@ -152,6 +159,7 @@ internal class PreviewManager
             if (snapToGridEnabled) {snappedMousePos = SnapToGrid(mousePos);}   // For wire snapping
             // Make wires snap to the closest terminal in range
             Terminal? snap = simulation.FindClosestSnapTerminal(snappedMousePos, ComponentDefaults.TerminalSnappingRange, out Point pos);
+            
             wirePreview.Points[^1] = pos;
             wirePreview.InvalidateVisual();
         }
@@ -176,26 +184,26 @@ internal class PreviewManager
         }
     }
 
-    public void HandleKeyCommand(KeyEventArgs e, List<Component> components, Canvas canvas)
+    public void HandleKeyCommand(KeyEventArgs e, List<Component> components, Canvas canvas, CommandManager commandManager)
     {
-        // Rotating wires is a terrible idea so no to that
-        if (_previewComponent == null) return; // terminate
+        if (_previewComponent == null) return;
 
-        // Press ENTER to commit a wire)
         if (_previewComponent is Wire wire && e.Key == Key.Enter)
         {
-            HandleWireEnterCommit(wire, components, canvas);
-            return; // Terminate
+            HandleWireEnterCommit(wire, components, canvas, commandManager);
+            return;
         }
 
         HandleRotationKeys(e);
     }
 
-    private void HandleWireEnterCommit(Wire wire, List<Component> components, Canvas canvas)
+    private void HandleWireEnterCommit(Wire wire, List<Component> components, Canvas canvas, CommandManager commandManager)
     {
-        // Finalize wire if it has at least 2 points
         if (wire.Points.Count >= 2)
-            components.Add(wire);
+        {
+            var commitCommand = new CommitWireCommand(components, wire);
+            commandManager.ExecuteCommand(commitCommand);
+        }
         else
             canvas.Children.Remove(wire);
 
@@ -227,5 +235,58 @@ internal class PreviewManager
         // Unhide the preview component
         if (_previewComponent != null)
             _previewComponent.Opacity = 1.0;
+    }
+
+    public void OnPointerPressed(object? sender, PointerPressedEventArgs e, List<Component> selectedComponents)
+    {
+        if (selectedComponents.Any())
+        {
+            _isDragging = true;
+            _draggedComponents = new List<Component>(selectedComponents);
+            _dragStartPositions = _draggedComponents.Select(c => 
+                new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
+        }
+    }
+
+    public void OnPointerReleased(object? sender, PointerReleasedEventArgs e, CommandManager commandManager)
+    {
+        if (_isDragging && _draggedComponents.Any())
+        {
+            // Calculate the total movement and create a move command
+            var currentPositions = _draggedComponents.Select(c => 
+                new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
+            
+            // Check if components actually moved
+            bool hasMoved = false;
+            for (int i = 0; i < _dragStartPositions.Count; i++)
+            {
+                if (_dragStartPositions[i] != currentPositions[i])
+                {
+                    hasMoved = true;
+                    break;
+                }
+            }
+
+            if (hasMoved)
+            {
+                // Calculate offset from first component
+                var offset = currentPositions[0] - _dragStartPositions[0];
+                
+                // Reset components to original positions
+                for (int i = 0; i < _draggedComponents.Count; i++)
+                {
+                    Canvas.SetLeft(_draggedComponents[i], _dragStartPositions[i].X);
+                    Canvas.SetTop(_draggedComponents[i], _dragStartPositions[i].Y);
+                }
+
+                // Create and execute move command
+                var moveCommand = new MoveComponentsCommand(_draggedComponents, offset);
+                commandManager.ExecuteCommand(moveCommand);
+            }
+        }
+
+        _isDragging = false;
+        _draggedComponents.Clear();
+        _dragStartPositions.Clear();
     }
 }

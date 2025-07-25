@@ -57,22 +57,25 @@ public class NotGate : Gate
     {
         // If there's a missing wire, don't bother
         if (Terminals.Any(p => p.Wire == null)) return;
+        var inputWire = Terminals[0].Wire!;
+        var outputWire = Terminals[^1].Wire!;
 
-        switch (Terminals[0].Wire.Value)
+        if (inputWire.Value is null)
+        {
+            outputWire.Value = null;
+            return;
+        }
+        switch (inputWire.Value)
         {
             case LogicState.DontCare:
-                Terminals[^1].Wire.Value = LogicState.DontCare;
+                outputWire.Value = LogicState.DontCare;
                 break;
             case LogicState.High:
-                Terminals[^1].Wire.Value = LogicState.Low;
+                outputWire.Value = LogicState.Low;
                 break;
             case LogicState.Low:
-                Terminals[^1].Wire.Value = LogicState.High;
-                break;
-            case null:
-                Terminals[^1].Wire.Value = null;
+                outputWire.Value = LogicState.High;
                 break;
         }
-
     }
 }

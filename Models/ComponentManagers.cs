@@ -177,11 +177,11 @@ internal class GridManager
     {
         // Draw vertical lines
         for (double x = 0; x < width; x += ComponentDefaults.GridSpacing)
-            canvas.Children.Add(CreateGridLine(new Point(x, 0), new Point(x, height)));
+            canvas.Children.Insert(0, CreateGridLine(new Point(x, 0), new Point(x, height)));
 
         // Draw horizontal lines
         for (double y = 0; y < height; y += ComponentDefaults.GridSpacing)
-            canvas.Children.Add(CreateGridLine(new Point(0, y), new Point(width, y)));
+            canvas.Children.Insert(0, CreateGridLine(new Point(0, y), new Point(width, y)));
     }
 
     private Line CreateGridLine(Point start, Point end)

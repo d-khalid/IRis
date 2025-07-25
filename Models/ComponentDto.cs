@@ -17,7 +17,7 @@ public class CircuitDto
 public class ComponentDto
 {
     [XmlAttribute("Type")] 
-    public string Type { get; set; }
+    public string? Type { get; set; }
 
     [XmlAttribute("X")] 
     public double X { get; set; }
@@ -44,9 +44,9 @@ public class TerminalDto
 [Serializable]
 public class PropertyDto
 {
-    [XmlAttribute("Name")] public string Name { get; set; }
+    [XmlAttribute("Name")] public string? Name { get; set; }
 
-    [XmlText] public string Value { get; set; }
+    [XmlText] public string? Value { get; set; }
 }
 
 
