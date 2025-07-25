@@ -267,12 +267,16 @@ namespace IRis.ViewModels
 
         private void Undo()
         {
+            _simulation.Undo();
+            LastAction = "Undo";
         }
 
         public ICommand RedoCommand { get; }
 
         private void Redo()
         {
+            _simulation.Redo();
+            LastAction = "Redo";
         }
 
         public ICommand CutCommand { get; }

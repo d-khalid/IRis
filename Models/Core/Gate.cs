@@ -117,7 +117,7 @@ public abstract class Gate : Component, IOutputProvider
         return clone;
     }
 
-    // Draws an translucent box around the gate
+    // Draws a translucent box around the gate
     public override void DrawSelection(DrawingContext ctx)
     {
         double expandX = ComponentDefaults.TerminalWireLength + ComponentDefaults.TerminalRadius ;
@@ -139,17 +139,30 @@ public abstract class Gate : Component, IOutputProvider
     protected void AddTerminalPoints(bool notMode = false)
     {
         double spacing = Height / (NumInputs + 1);
+
+        // Helper to snap to nearest multiple of 10
+        Point SnapToGrid(Point pt)
+        {
+            double snapX = Math.Round(pt.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
+            double snapY = Math.Round(pt.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
+            return new Point(snapX, snapY);
+        }
+
+        // Input terminals
         for (int i = 0; i < NumInputs; i++)
         {
-            Terminals[i] = new Terminal(new Point(-ComponentDefaults.TerminalWireLength, spacing * (i + 1)), null);
-            
+            var pos = new Point(-ComponentDefaults.TerminalWireLength, spacing * (i + 1));
+            Terminals[i] = new Terminal(SnapToGrid(pos), null);
         }
-        //Terminals[^1]
-        double outputX = Width + ComponentDefaults.TerminalWireLength;
-        if(notMode) outputX += ComponentDefaults.BubbleRadius * 2;
-        
-        Terminals[^1]= new Terminal(new Point(outputX, Height / 2), null);
+
+        // Output terminal
+        double outputX = Width + ComponentDefaults.TerminalWireLength -5;   // WARNING: this is a Patch
+        if (notMode) outputX += ComponentDefaults.BubbleRadius * 2;
+
+        var outputPos = SnapToGrid(new Point(outputX, Height / 2));
+        Terminals[^1] = new Terminal(SnapToGrid(outputPos), null);
     }
+
 
     // For drawing the terminals
     // notMode: a bubble drawn with the output terminal

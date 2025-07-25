@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using IRis.Models.Components;
 using IRis.Models.Core;
+using IRis.Models.Commands;
 
 namespace IRis.Models;
 
@@ -40,23 +41,25 @@ internal class PreviewManager
 
     private void PositionPreviewComponent(Point mousePos)
     {
-        // TODO: THIS IS HACKY
         if (_previewComponent == null) return;
+        // TODO: fix this initial positioning of wire preview point
         if (_previewComponent is Wire wire)
         {
             wire.AddPoint(mousePos);
             Canvas.SetLeft(wire, 0);
             Canvas.SetTop(wire, 0);
         }
+        // Place the component outside the user's view
         else
         {
-            Canvas.SetLeft(_previewComponent, mousePos.X);
-            Canvas.SetTop(_previewComponent, mousePos.Y);
+            Canvas.SetLeft(_previewComponent, 
+            -ComponentDefaults.DefaultWidth-ComponentDefaults.TerminalWireLength*2);
+            Canvas.SetTop(_previewComponent, 0);
         }
     }
 
     public bool HandleCommit(object? sender, PointerPressedEventArgs? e, List<Component> components, 
-        Canvas canvas, Point mousePos, Simulation simulation)
+        Canvas canvas, Point mousePos, CommandManager commandManager, Simulation simulation)
     {
         // Handle wire preview commit
         if (_previewComponent is Wire wirePreview)
@@ -67,7 +70,7 @@ internal class PreviewManager
         // Commit component on click
         if (_previewComponent != null)
         {
-            return HandleComponentCommit(canvas, components, mousePos);
+            return HandleComponentCommit(canvas, components, mousePos, commandManager);
         }
 
         return false; // Continue
@@ -97,24 +100,27 @@ internal class PreviewManager
         return true; // Terminate
     }
 
-    private bool HandleComponentCommit(Canvas canvas, List<Component> components, Point mousePos)
+    private bool HandleComponentCommit(Canvas canvas, List<Component> components, Point mousePos, CommandManager commandManager)
     {
-        if (string.IsNullOrEmpty(_previewCompType)) return true;    // Terminate
+        if (string.IsNullOrEmpty(_previewCompType)) return true;
         Component? component = Component.Create(_previewCompType);
-        if (component == null) return true; // Terminate
+        if (component == null) return true;
 
         if (_previewComponent != null)
         {
             component.Rotation = _previewComponent.Rotation;
-        } // If _previewComponent is null, component.Rotation will use its default value
-        Canvas.SetLeft(component, mousePos.X);
-        Canvas.SetTop(component, mousePos.Y);
+        }
+        
+        Point position = new Point(
+            Math.Round(mousePos.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing,
+            Math.Round(mousePos.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing
+        );
+        // Add command for undo/redo
+        var addCommand = new AddComponentCommand(canvas, components, component, position);
+        commandManager.ExecuteCommand(addCommand);
 
-        canvas.Children.Add(component);
-        components.Add(component);
         Console.WriteLine($"{_previewCompType} committed!");
-
-        return true; // Terminate
+        return true;
     }
 
     public bool HandleUpdate(Canvas canvas, Point mousePos, bool snapToGridEnabled, 
@@ -123,11 +129,10 @@ internal class PreviewManager
         // For wires only
         if (_previewComponent is Wire wirePreview)
         {
-            return HandleWireUpdate(wirePreview, mousePos, simulation);
-        }
+            return HandleWireUpdate(wirePreview, mousePos, snapToGridEnabled, simulation);
+        } 
 
-        // Update the non-wire preview component
-        if (_previewComponent != null)
+        else if (_previewComponent != null) // Update the non-wire preview component
         {
             Point pos = snapToGridEnabled ? snapToGrid(mousePos) : mousePos;
             Canvas.SetLeft(_previewComponent, pos.X);
@@ -138,16 +143,26 @@ internal class PreviewManager
         return false; // Continue
     }
 
-    private bool HandleWireUpdate(Wire wirePreview, Point mousePos, Simulation simulation)
+    private bool HandleWireUpdate(Wire wirePreview, Point mousePos, bool snapToGridEnabled, Simulation simulation)
     {
         if (wirePreview.Points.Count > 0)
         {
+            Point snappedMousePos = mousePos;
+            // NOTE: This is a patch. Fix variable name later.
+            if (snapToGridEnabled) {snappedMousePos = SnapToGrid(mousePos);}   // For wire snapping
             // Make wires snap to the closest terminal in range
-            Terminal? snap = simulation.FindClosestSnapTerminal(mousePos, ComponentDefaults.TerminalSnappingRange, out Point pos);
+            Terminal? snap = simulation.FindClosestSnapTerminal(snappedMousePos, ComponentDefaults.TerminalSnappingRange, out Point pos);
             wirePreview.Points[^1] = pos;
             wirePreview.InvalidateVisual();
         }
         return true; // Terminate
+    }
+
+    Point SnapToGrid(Point pt)
+    {
+        double snapX = Math.Round(pt.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
+        double snapY = Math.Round(pt.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
+        return new Point(snapX, snapY);
     }
 
     public void UpdateWheelPosition(Point mousePos)

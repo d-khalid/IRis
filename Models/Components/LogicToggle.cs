@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using IRis.Models.Core;
+using System;
 
 
 namespace IRis.Models.Components;
@@ -37,8 +38,13 @@ public class LogicToggle : Component, IOutputProvider
         Height = height * 2 / 3;
 
         Terminals = new Terminal[1];
+
+        // Snap to nearest grid line
+        static double Snap(double val) => Math.Round(val / 10.0) * 10;
+        double x = Snap(Width + ComponentDefaults.TerminalWireLength);
+        double y = Snap(Height / 2);
         // Left-oriented
-        Terminals[0] = new Terminal(new Point(Width + ComponentDefaults.TerminalWireLength, Height / 2), null);
+        Terminals[0] = new Terminal(new Point(x, y), null);
 
         Value = LogicState.Low;
         

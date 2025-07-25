@@ -10,6 +10,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Components;
 using IRis.Models.Core;
+using IRis.Models.Commands;
 
 namespace IRis.Models;
 
@@ -34,6 +35,7 @@ public partial class Simulation : ObservableObject
     private readonly PreviewManager _previewManager;
     private readonly ClipboardManager _clipboardManager;
     private readonly GridManager _gridManager;
+    private readonly CommandManager _commandManager = new();
 
     // For simulation
     private bool _simulating;
@@ -44,7 +46,12 @@ public partial class Simulation : ObservableObject
 
     // External access to selection state
     public bool HasSelectedComponents => _selectedComponents.Count > 0;
-    
+
+    // Undo/Redo
+    public bool CanUndo => _commandManager.CanUndo;
+    public bool CanRedo => _commandManager.CanRedo;
+    public void Undo() => _commandManager.Undo();
+    public void Redo() => _commandManager.Redo();
 
     public bool Simulating
     {
@@ -107,7 +114,7 @@ public partial class Simulation : ObservableObject
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (_previewManager.HandleCommit(sender, e, _components, _canvas, CurrentMousePos, this))
+        if (_previewManager.HandleCommit(sender, e, _components, _canvas, CurrentMousePos, _commandManager, this))
             return;
         _selectionManager.HandleStart(_canvas, _selectedComponents, CurrentMousePos);
     }
@@ -206,7 +213,15 @@ public partial class Simulation : ObservableObject
     }
 
     // Component management
-    public void DeleteSelectedComponents() => _selectionManager.DeleteSelected(_canvas, _components, _selectedComponents);
+    public void DeleteSelectedComponents()
+    {
+        if (_selectedComponents.Count > 0)
+        {
+            var deleteCommand = new DeleteComponentsCommand(_canvas, _components, _selectedComponents);
+            _commandManager.ExecuteCommand(deleteCommand);
+            _selectedComponents.Clear();
+        }
+    }
     public void UnselectComponents() => _selectionManager.UnselectAll(_selectedComponents);
 
     // TODO: THESE METHODS ARE SHALLOW AND BAD! (probably)

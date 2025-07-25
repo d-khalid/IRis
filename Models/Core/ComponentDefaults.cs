@@ -7,13 +7,12 @@ namespace IRis.Models.Core;
 public static class ComponentDefaults
 {
     // Common fields for all components
-    public const double DefaultWidth = 100;
-    public const double DefaultHeight = 80;
+    public const double DefaultWidth = 70;
+    public const double DefaultHeight = 60;
 
     // For controlling the thickness/colors of lines
-    public static Pen WirePen = new Pen(Brushes.Black, 5);
-    
-    public static Pen GatePen = new Pen(Brushes.Black, 5);
+    public static Pen WirePen = new Pen(Brushes.Black, 4);
+    public static Pen GatePen = new Pen(Brushes.Black, 4);
     
     public static IImmutableSolidColorBrush GateFillBrush = Brushes.White;
 
@@ -29,12 +28,9 @@ public static class ComponentDefaults
     public static IImmutableSolidColorBrush FalseBrush = Brushes.DarkRed;
     public static IImmutableSolidColorBrush DontCareBrush = Brushes.Gray;
 
-
-
-    
-
-    public static double TerminalWireLength = 30;
-    public static double TerminalSnappingRange = 20;
+    // For terminals
+    public static double TerminalWireLength = 25;
+    public static double TerminalSnappingRange = 15;
 
     // For NOT-derived Gates
     public static double BubbleRadius = DefaultWidth / 15;
@@ -46,7 +42,7 @@ public static class ComponentDefaults
     public static double XorArcDistFactor = 3;
     
     // For the grid
-    public const double GridSpacing = 20; // pixels between grid lines
+    public const double GridSpacing = 10; // pixels between grid lines (non-decimals only)
     public static IBrush GridBrush = new SolidColorBrush(Colors.Black, 0.3);
     public static double GridThickness = 0.5;
 

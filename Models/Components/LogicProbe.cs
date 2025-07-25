@@ -4,6 +4,7 @@ using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using Avalonia.Styling;
 using IRis.Models.Core;
+using System;
 
 
 namespace IRis.Models.Components;
@@ -19,9 +20,13 @@ public class LogicProbe : Component
         Height = height * 2 / 3;
         
         Terminals = new Terminal[1];
+        // Helper Method for snapping to grid
+        static double Snap(double val) => Math.Round(val / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
+        double x = Snap(-ComponentDefaults.TerminalWireLength);
+        double y = Snap(Height / 2);
         
         // Left-oriented
-        Terminals[0] = new Terminal(new Point(-ComponentDefaults.TerminalWireLength, Height/2), null);
+        Terminals[0] = new Terminal(new Point(x, y), null);
         
     }
     

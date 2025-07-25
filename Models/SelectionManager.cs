@@ -7,6 +7,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using IRis.Models.Components;
 using IRis.Models.Core;
+using IRis.Models.Commands;
 
 namespace IRis.Models;
 
@@ -477,6 +478,32 @@ internal class SelectionManager
         // End dragging
         if (_isDragging)
         {
+            // Create move command if components were actually moved
+            if (_dragOffsets.Count > 0)
+            {
+                var selectedComponents = _dragOffsets.Keys.ToList();
+                var oldPositions = _dragOffsets.Values.ToList();
+                var newPositions = selectedComponents.Select(c => 
+                    new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
+                
+                // Only create command if positions actually changed
+                bool moved = false;
+                for (int i = 0; i < oldPositions.Count; i++)
+                {
+                    if (oldPositions[i] != newPositions[i])
+                    {
+                        moved = true;
+                        break;
+                    }
+                }
+                
+                if (moved)
+                {
+                    var moveCommand = new MoveComponentsCommand(selectedComponents, oldPositions, newPositions);
+                    // You'll need to pass the CommandManager here - see below
+                }
+            }
+            
             _isDragging = false;
             _dragOffsets.Clear();
             return;
