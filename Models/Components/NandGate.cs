@@ -16,9 +16,6 @@ public class NandGate : Gate
 
     public override void Draw(DrawingContext ctx)
     {
-
-
-
         // 3. Draw terminals (lines + circles)
         DrawTerminals(ctx);
 
@@ -38,19 +35,26 @@ public class NandGate : Gate
     
     public override void ComputeOutput()
     {
-        // If there's a missing wire, don't bother
-        if (Terminals.Any(p => p.Wire == null)) return;
+        // For inputs: check if ANY input terminal has at least one wire
+        // For output: check if output terminal has at least one wire
+        var inputTerminals = Terminals.SkipLast(1);
+        var outputTerminal = Terminals[^1];
 
-        // Funny LINQ expression
-        if (Terminals.SkipLast(1).All(p => p.Wire.Value == LogicState.High))
+        if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
+
+        // For each input terminal, OR together all connected wire values
+        var inputValues = inputTerminals.Select(terminal => 
+            terminal.Wires.Any(w => w.Value == LogicState.High)).ToList();
+
+        // NAND logic: NOT(AND) - output is LOW only when ALL inputs are HIGH
+        LogicState outputValue = inputValues.All(value => value == true) ? LogicState.Low : LogicState.High;
+
+        // Set output on ALL connected wires
+        foreach (var wire in outputTerminal.Wires)
         {
-            Terminals[^1].Wire.Value = LogicState.Low;
+            wire.Value = outputValue;
         }
-        else Terminals[^1].Wire.Value = LogicState.High;
-
     }
     
     
-
- 
 }

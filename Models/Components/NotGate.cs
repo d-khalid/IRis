@@ -55,27 +55,48 @@ public class NotGate : Gate
 
     public override void ComputeOutput()
     {
-        // If there's a missing wire, don't bother
-        if (Terminals.Any(p => p.Wire == null)) return;
-        var inputWire = Terminals[0].Wire!;
-        var outputWire = Terminals[^1].Wire!;
+        // Check if input and output terminals have at least one wire
+        var inputTerminal = Terminals[0];
+        var outputTerminal = Terminals[^1];
 
-        if (inputWire.Value is null)
+        if (!inputTerminal.Wires.Any() || !outputTerminal.Wires.Any()) return;
+
+        // For input terminal, OR together all connected wire values
+        LogicState? inputValue = null;
+        if (inputTerminal.Wires.Any(w => w.Value == LogicState.High))
         {
-            outputWire.Value = null;
+            inputValue = LogicState.High;
+        }
+        else if (inputTerminal.Wires.Any(w => w.Value == LogicState.Low))
+        {
+            inputValue = LogicState.Low;
+        }
+        else if (inputTerminal.Wires.Any(w => w.Value == LogicState.DontCare))
+        {
+            inputValue = LogicState.DontCare;
+        }
+
+        if (inputValue is null)
+        {
+            foreach (var wire in outputTerminal.Wires)
+            {
+                wire.Value = null;
+            }
             return;
         }
-        switch (inputWire.Value)
+
+        // Compute NOT logic and set on ALL output wires
+        LogicState outputValue = inputValue switch
         {
-            case LogicState.DontCare:
-                outputWire.Value = LogicState.DontCare;
-                break;
-            case LogicState.High:
-                outputWire.Value = LogicState.Low;
-                break;
-            case LogicState.Low:
-                outputWire.Value = LogicState.High;
-                break;
+            LogicState.DontCare => LogicState.DontCare,
+            LogicState.High => LogicState.Low,
+            LogicState.Low => LogicState.High,
+            _ => LogicState.Low // fallback
+        };
+
+        foreach (var wire in outputTerminal.Wires)
+        {
+            wire.Value = outputValue;
         }
     }
 }

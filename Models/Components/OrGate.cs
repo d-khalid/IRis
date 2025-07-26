@@ -29,16 +29,23 @@ public class OrGate : Gate
     
     public override void ComputeOutput()
     {
-        // If there's a missing wire, don't bother
-        if (Terminals.Any(p => p.Wire == null)) return;
+        // For inputs: check if ANY input terminal has at least one wire
+        // For output: check if output terminal has at least one wire
+        var inputTerminals = Terminals.SkipLast(1);
+        var outputTerminal = Terminals[^1];
 
-        // Funny LINQ expression
-        if (Terminals.SkipLast(1).Any(p => p.Wire.Value == LogicState.High))
+        if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
+
+        // For each input terminal, OR together all connected wire values, then OR all inputs
+        bool anyInputHigh = inputTerminals.Any(terminal => 
+            terminal.Wires.Any(w => w.Value == LogicState.High));
+
+        // Set output on ALL connected wires
+        LogicState outputValue = anyInputHigh ? LogicState.High : LogicState.Low;
+        foreach (var wire in outputTerminal.Wires)
         {
-            Terminals[^1].Wire.Value = LogicState.High;
+            wire.Value = outputValue;
         }
-        else Terminals[^1].Wire.Value = LogicState.Low;
-
     }
     
     
