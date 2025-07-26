@@ -18,7 +18,7 @@ namespace IRis.Models;
 // Currently, this handles the preview
 public partial class Simulation : ObservableObject
 {
-    private Canvas _canvas;
+    private Canvas? _canvas;
     private List<Component> _components;
     private List<Component> _selectedComponents;
 
@@ -39,7 +39,7 @@ public partial class Simulation : ObservableObject
 
     // For simulation
     private bool _simulating;
-    private DispatcherTimer _updateTimer;
+    private DispatcherTimer? _updateTimer;
     
     // Expose selected components
     public List<Component> SelectedComponents => _selectedComponents;
@@ -59,8 +59,8 @@ public partial class Simulation : ObservableObject
         set
         {
             _simulating = value;
-            if (_simulating) _updateTimer.Start();
-            else _updateTimer.Stop();
+            if (_simulating) _updateTimer!.Start();
+            else _updateTimer!.Stop();
         }
     }
 
@@ -89,7 +89,7 @@ public partial class Simulation : ObservableObject
     private void SetupCanvas()
     {
         // Important: Enable keyboard focus
-        _canvas.Focusable = true;
+        _canvas!.Focusable = true;
         _canvas.Cursor = new Cursor(StandardCursorType.Arrow);
     }
 
@@ -103,7 +103,7 @@ public partial class Simulation : ObservableObject
 
     private void RegisterEventHandlers()
     {
-        _canvas.PointerPressed += OnPointerPressed;
+        _canvas!.PointerPressed += OnPointerPressed;
         _canvas.PointerMoved += OnPointerMoved;
         _canvas.PointerReleased += OnPointerReleased;
         _canvas.PointerEntered += (s, e) => _previewManager.OnEnter();
@@ -117,12 +117,12 @@ public partial class Simulation : ObservableObject
         // Update the mouse pos
         CurrentMousePos = e.GetPosition(_canvas);
 
-        if (_previewManager.HandleUpdate(_canvas, CurrentMousePos, _gridManager.SnapToGridEnabled, 
+        if (_previewManager.HandleUpdate(_canvas!, CurrentMousePos, _gridManager.SnapToGridEnabled, 
             _gridManager.SnapToGrid, this))
             return;
         
         // Pass the selectedComponents reference and grid functions
-        _selectionManager.HandleUpdate(_canvas, _selectedComponents, CurrentMousePos, _components, this,
+        _selectionManager.HandleUpdate(_canvas!, _selectedComponents, CurrentMousePos, _components, this,
             _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
     }
 
@@ -130,7 +130,7 @@ public partial class Simulation : ObservableObject
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
         // Handle preview manager first
-        _previewManager.HandleKeyCommand(e, _components, _canvas, _commandManager);
+        _previewManager.HandleKeyCommand(e, _components, _canvas!, _commandManager);
         
         // FIXED: Correct condition check
         if (_selectedComponents.Count > 0 && _previewManager.PreviewCompType == null)
@@ -199,7 +199,7 @@ public partial class Simulation : ObservableObject
     {
         if (_selectedComponents.Count > 0)
         {
-            var deleteCommand = new DeleteComponentsCommand(_canvas, _components, _selectedComponents);
+            var deleteCommand = new DeleteComponentsCommand(_canvas!, _components, _selectedComponents);
             _commandManager.ExecuteCommand(deleteCommand);
             _selectedComponents.Clear();
         }
@@ -210,25 +210,25 @@ public partial class Simulation : ObservableObject
     public void LoadComponents(List<Component> components)
     {
         _components = components;
-        _canvas.Children.AddRange(_components);
+        _canvas!.Children.AddRange(_components);
     }
 
     public void DeleteAllComponents()
     {
-        _canvas.Children.RemoveAll(_components);
+        _canvas!.Children.RemoveAll(_components);
         _components.Clear();
     }
 
     // Clipboard operations
     public void CopySelected(bool cutMode = false) => _clipboardManager.Copy(_selectedComponents, cutMode, DeleteSelectedComponents);
     public void CutSelected() => CopySelected(true);
-    public void PasteSelected() => _clipboardManager.Paste(_canvas, CurrentMousePos);
+    public void PasteSelected() => _clipboardManager.Paste(_canvas!, CurrentMousePos);
 
     // Preview management
     public string? PreviewCompType
     {
         get => _previewManager.PreviewCompType;
-        set => _previewManager.SetPreviewComponent(value, _canvas, CurrentMousePos);
+        set => _previewManager.SetPreviewComponent(value, _canvas!, CurrentMousePos);
     }
 
     // Grid management
@@ -245,10 +245,10 @@ public partial class Simulation : ObservableObject
         {
             _gridManager.GridEnabled = value;
             if (value)
-                _gridManager.DrawGrid(_canvas);
+                _gridManager.DrawGrid(_canvas!);
             else
             {
-                _canvas.Children.Clear();
+                _canvas!.Children.Clear();
                 _canvas.Children.AddRange(_components);
             }
         }
@@ -287,12 +287,12 @@ public partial class Simulation : ObservableObject
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (_previewManager.HandleCommit(sender, e, _components, _canvas, CurrentMousePos, _commandManager, this))
+        if (_previewManager.HandleCommit(sender, e, _components, _canvas!, CurrentMousePos, _commandManager, this))
             return;
         
         // Add drag handling
         _previewManager.OnPointerPressed(sender, e, _selectedComponents);
-        _selectionManager.HandleStart(_canvas, _selectedComponents, CurrentMousePos);
+        _selectionManager.HandleStart(_canvas!, _selectedComponents, CurrentMousePos);
     }
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -301,6 +301,6 @@ public partial class Simulation : ObservableObject
         _previewManager.OnPointerReleased(sender, e, _commandManager);
         
         // Then handle selection manager
-        _selectionManager.HandleEnd(_canvas, _commandManager);
+        _selectionManager.HandleEnd(_canvas!, _commandManager);
     }
 }

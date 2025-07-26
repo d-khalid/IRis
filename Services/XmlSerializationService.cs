@@ -41,7 +41,7 @@ public class XmlSerializationService : ISerializationService
     
         using (var reader = new StringReader(xmlContent))
         {
-            CircuitDto dto = (CircuitDto)serializer.Deserialize(reader);
+            CircuitDto dto = (CircuitDto)serializer.Deserialize(reader)!;
         
             // Convert to components
             List<Component> components = dto.Components
@@ -86,7 +86,7 @@ public class XmlSerializationService : ISerializationService
             
                     // If the wire had no points,
                     // then add the position of every terminal that references it.
-                    if (pointlessWireDict.TryGetValue((Guid)t.Wire.Id, out var pointlessWire))
+                    if (pointlessWireDict.TryGetValue((Guid)t.Wire.Id!, out var pointlessWire))
                     {
                         pointlessWire.AddPoint(t.Position + new Point(Canvas.GetLeft(c), Canvas.GetTop(c)));
                     }

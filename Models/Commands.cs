@@ -143,7 +143,7 @@ namespace IRis.Models.Commands
         public MoveComponentsCommand(List<Component> components, Point offset)
         {
             _components = new List<Component>(components);
-            _canvas = null;
+            _canvas = null!;
             
             // Calculate original and new positions based on offset
             _originalPositions = _components.Select(c => 

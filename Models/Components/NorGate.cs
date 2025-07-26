@@ -37,6 +37,7 @@ public class NorGate : Gate
     {
         // For inputs: check if ANY input terminal has at least one wire
         // For output: check if output terminal has at least one wire
+        if (Terminals == null) return;
         var inputTerminals = Terminals.SkipLast(1);
         var outputTerminal = Terminals[^1];
 

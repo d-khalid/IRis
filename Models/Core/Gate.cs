@@ -63,7 +63,7 @@ public class Terminal
     {
         return new TerminalDto
         {
-            ConnectedWireIds = Wires.Where(w => w.Id.HasValue).Select(w => w.Id.Value).ToList()
+            ConnectedWireIds = Wires.Where(w => w.Id.HasValue).Select(w => w.Id!.Value).ToList()
         };
     }
 }
@@ -133,14 +133,14 @@ public abstract class Gate : Component, IOutputProvider
         // Copy terminal values (positions are set in constructor)
         for (int i = 0; i < this.NumInputs; i++)
         {
-            clone.Terminals[i] = new Terminal(
+            clone.Terminals![i] = new Terminal(
                 clone.Terminals[i].Position,  // Use new position
-                this.Terminals[i].Wire      // Copy original value
+                this.Terminals![i].Wire!      // Copy original value
             );
         }
-        clone.Terminals[^1] = new Terminal(
+        clone.Terminals![^1] = new Terminal(
             clone.Terminals[^1].Position,
-            this.Terminals[^1].Wire
+            this.Terminals![^1].Wire!
         );
 
         // Reset visual state
@@ -185,7 +185,7 @@ public abstract class Gate : Component, IOutputProvider
         for (int i = 0; i < NumInputs; i++)
         {
             var pos = new Point(-ComponentDefaults.TerminalWireLength, spacing * (i + 1));
-            Terminals[i] = new Terminal(SnapToGrid(pos), null);
+            Terminals![i] = new Terminal(SnapToGrid(pos), null!);
         }
 
         // Output terminal
@@ -193,7 +193,7 @@ public abstract class Gate : Component, IOutputProvider
         if (notMode) outputX += ComponentDefaults.BubbleRadius * 2;
 
         var outputPos = SnapToGrid(new Point(outputX, Height / 2));
-        Terminals[^1] = new Terminal(SnapToGrid(outputPos), null);
+        Terminals![^1] = new Terminal(SnapToGrid(outputPos), null!);
     }
 
 
@@ -206,7 +206,7 @@ public abstract class Gate : Component, IOutputProvider
         // Input lines extend into the gate and covered up by the fill color
         for (int i = 0; i < NumInputs; i++)
         {
-            if (Terminals[i] == null) continue;
+            if (Terminals![i] == null) continue;
             ctx.DrawLine(ComponentDefaults.WirePen, Terminals[i].Position, new Point(Width / ComponentDefaults.OrArcFactor, Terminals[i].Position.Y));
             ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
                 Terminals[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
@@ -215,7 +215,7 @@ public abstract class Gate : Component, IOutputProvider
         // For Terminals[^1]
         // SUSPEND: I STOPPED HERE
      
-        ctx.DrawLine(ComponentDefaults.WirePen, Terminals[^1].Position,
+        ctx.DrawLine(ComponentDefaults.WirePen, Terminals![^1].Position,
             new Point(Terminals[^1].Position.X - ComponentDefaults.TerminalWireLength, Terminals[^1].Position.Y));
         ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
             Terminals[^1].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
@@ -234,7 +234,7 @@ public abstract class Gate : Component, IOutputProvider
         };
 
         // Arc 1: Top curve (right to left)
-        figure.Segments.Add(new ArcSegment
+        figure.Segments!.Add(new ArcSegment
         {
             Point = new Point(0, Height),
             Size = new Size(Width / ComponentDefaults.OrArcFactor, Height /2),
@@ -260,7 +260,7 @@ public abstract class Gate : Component, IOutputProvider
             IsLargeArc = false
         });
 
-        gatePath.Figures.Add(figure);
+        gatePath.Figures!.Add(figure);
         
         // 2. Draw the complete gate
         ctx.DrawGeometry(ComponentDefaults.GateFillBrush, ComponentDefaults.GatePen, gatePath);  
@@ -276,7 +276,7 @@ public abstract class Gate : Component, IOutputProvider
                 
             };
 
-            arcFigure.Segments.Add(new ArcSegment
+            arcFigure.Segments!.Add(new ArcSegment
             {
                 Point = new Point(-ComponentDefaults.TerminalWireLength / ComponentDefaults.XorArcDistFactor, Height * 0.98),
                 Size = new Size(Width / ComponentDefaults.OrArcFactor, Height /2),
@@ -284,7 +284,7 @@ public abstract class Gate : Component, IOutputProvider
                 IsLargeArc = false
             });
             
-            xorArc.Figures.Add(arcFigure);
+            xorArc.Figures!.Add(arcFigure);
             
             ctx.DrawGeometry(null, ComponentDefaults.GatePen, xorArc);
         }
@@ -303,7 +303,7 @@ public abstract class Gate : Component, IOutputProvider
         double arcLen = Width / 3;
 
         // Left vertical line
-        figure.Segments.Add(new LineSegment { Point = new Point(0, Height) });
+        figure.Segments!.Add(new LineSegment { Point = new Point(0, Height) });
 
         // Bottom horizontal line (left to right)
         figure.Segments.Add(new LineSegment { Point = new Point(Width - arcLen, Height) });
@@ -321,7 +321,7 @@ public abstract class Gate : Component, IOutputProvider
         // Top horizontal line (right to left)
         figure.Segments.Add(new LineSegment { Point = new Point(0, 0) });
 
-        gatePath.Figures.Add(figure);
+        gatePath.Figures!.Add(figure);
         
         // 2. Draw the complete gate
         ctx.DrawGeometry(ComponentDefaults.GateFillBrush, ComponentDefaults.GatePen, gatePath);

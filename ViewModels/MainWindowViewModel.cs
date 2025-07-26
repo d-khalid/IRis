@@ -101,7 +101,7 @@ namespace IRis.ViewModels
             AiPromptCommand = new RelayCommand(AiGenerationFromPrompt);
             AiImageCommand = new RelayCommand(AiGenerationFromImage);
 
-            AddComponentCommand = new RelayCommand<string>(AddComponent);
+            AddComponentCommand = new RelayCommand<string>(AddComponent!);
             OtherComponentsCommand = new RelayCommand(OtherComponents);
 
             GridToggleCommand = new RelayCommand(GridToggle);
@@ -142,7 +142,7 @@ namespace IRis.ViewModels
             
             var vm = window.DataContext as AIGenerationWindowViewModel;
 
-            vm.XmlGenerated += (xml) =>
+            vm!.XmlGenerated += (xml) =>
             {
                 Console.WriteLine("Event received");
                 var components = _serializer.DeserializeComponentsAsync(xml);
@@ -156,10 +156,10 @@ namespace IRis.ViewModels
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             // Get reference to main window
-            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+            var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
                 ?.MainWindow;
 
-            window.ShowDialog(mainWindow);
+            window.ShowDialog(mainWindow!);
         }
 
         public ICommand AiImageCommand { get; }
@@ -171,7 +171,7 @@ namespace IRis.ViewModels
             
             var vm = window.DataContext as ImageProcessingWindowViewModel;
         
-            vm.XmlGenerated += (xml) =>
+            vm!.XmlGenerated += (xml) =>
             {
                 Console.WriteLine("Event received");
                 var components = _serializer.DeserializeComponentsAsync(xml);
@@ -185,10 +185,10 @@ namespace IRis.ViewModels
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             // Get reference to main window
-            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+            var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
                 ?.MainWindow;
 
-            window.ShowDialog(mainWindow);
+            window.ShowDialog(mainWindow!);
         
         }
 
@@ -199,7 +199,7 @@ namespace IRis.ViewModels
         public ICommand OpenCommand { get; }
         private async Task Open()
         {
-            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             if (mainWindow == null) return;
 
             var files = await mainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
@@ -226,7 +226,7 @@ namespace IRis.ViewModels
         public ICommand SaveCommand { get; }
         private async Task Save()
         {
-            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             if (mainWindow == null) return;
 
             if (string.IsNullOrEmpty(_openedFileName))
@@ -322,7 +322,7 @@ namespace IRis.ViewModels
             // Center it relative to main window
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             // Get reference to main window
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
+            if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
             {
                 aboutWindow.ShowDialog(mainWindow);
             }
@@ -347,7 +347,7 @@ namespace IRis.ViewModels
             // Center it relative to main window
             otherComponentsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             // Get reference to main window
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
+            if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
             {
                 otherComponentsWindow.ShowDialog(mainWindow);
             }

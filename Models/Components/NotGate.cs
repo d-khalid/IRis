@@ -25,7 +25,7 @@ public class NotGate : Gate
         };
 
         // Left vertical line down
-        figure.Segments.Add(new LineSegment { Point = new Point(0, Height) });
+        figure.Segments!.Add(new LineSegment { Point = new Point(0, Height) });
 
         // Diagonal to tip (right-middle)
         figure.Segments.Add(new LineSegment { Point = new Point(Width, Height / 2) });
@@ -33,7 +33,7 @@ public class NotGate : Gate
         // Diagonal back to start
         figure.Segments.Add(new LineSegment { Point = new Point(0, 0) });
 
-        gatePath.Figures.Add(figure);
+        gatePath.Figures!.Add(figure);
 
         // 4. Draw terminals (lines + circles)
         DrawTerminals(ctx);
@@ -56,6 +56,7 @@ public class NotGate : Gate
     public override void ComputeOutput()
     {
         // Check if input and output terminals have at least one wire
+        if (Terminals == null) return;
         var inputTerminal = Terminals[0];
         var outputTerminal = Terminals[^1];
 

@@ -24,9 +24,9 @@ public class LogicToggle : Component, IOutputProvider
             InvalidateVisual();
 
             // Propagate it into the wire if we have any
-            if (Terminals[0].Wire != null)
+            if (Terminals![0].Wire != null)
             {
-                Terminals[0].Wire.Value = value;
+                Terminals[0].Wire!.Value = value;
             }
         }
     }
@@ -44,7 +44,7 @@ public class LogicToggle : Component, IOutputProvider
         double x = Snap(Width + ComponentDefaults.TerminalWireLength);
         double y = Snap(Height / 2);
         // Left-oriented
-        Terminals[0] = new Terminal(new Point(x, y), null);
+        Terminals[0] = new Terminal(new Point(x, y), null!);
 
         Value = LogicState.Low;
         
@@ -95,7 +95,7 @@ public class LogicToggle : Component, IOutputProvider
         // Component-specific things
         if (clone.Terminals is not null && this.Terminals is not null)
         {
-            clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire);
+            clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire!);
         }
         clone.Value = this.Value;
         
@@ -109,7 +109,7 @@ public class LogicToggle : Component, IOutputProvider
     public void ComputeOutput()
     {
         // Propagate the toggle value to ALL connected wires
-        foreach (var wire in Terminals[0].Wires)
+        foreach (var wire in Terminals![0].Wires)
         {
             if (wire != null)
             {
@@ -127,7 +127,8 @@ public class LogicToggle : Component, IOutputProvider
         {
             LogicState.High => ComponentDefaults.TrueBrush,
             LogicState.Low => ComponentDefaults.FalseBrush,
-            LogicState.DontCare => ComponentDefaults.DontCareBrush
+            LogicState.DontCare => ComponentDefaults.DontCareBrush,
+            _ => ComponentDefaults.DontCareBrush
         };
 
         content = Value switch
@@ -135,6 +136,7 @@ public class LogicToggle : Component, IOutputProvider
             LogicState.High => "1",
             LogicState.Low => "0",
             LogicState.DontCare => "X",
+            _ => "X"
         };
 
 
@@ -144,7 +146,7 @@ public class LogicToggle : Component, IOutputProvider
             new Rect(0, 0, Width, Height)
         );
 
-        ctx.DrawLine(ComponentDefaults.WirePen, Terminals[0].Position, new Point(Width, Terminals[0].Position.Y));
+        ctx.DrawLine(ComponentDefaults.WirePen, Terminals![0].Position, new Point(Width, Terminals[0].Position.Y));
         ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
             Terminals[0].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 

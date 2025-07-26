@@ -58,7 +58,7 @@ public abstract class Component : Control, ICustomHitTest
     // Override for child classes
     public virtual object Clone()
     {
-        return null;
+        return null!;
     }
 
     // Override for wires
@@ -114,7 +114,7 @@ public abstract class Component : Control, ICustomHitTest
             Type = this.GetType().Name,
             X = Canvas.GetLeft(this),
             Y = Canvas.GetTop(this),
-            Terminals = this.Terminals.Select(p => p.ToDto()).ToList(),
+            Terminals = this.Terminals!.Select(p => p.ToDto()).ToList(),
             
             
             Properties = GetSerializableProperties()
@@ -155,11 +155,10 @@ public abstract class Component : Control, ICustomHitTest
                 return new LogicProbe();
             case "TOGGLE":
                 return new LogicToggle();
-                break;
             case "WIRE":
                 return new Wire();
             default:
-                return null; // TODO: DANGEROUS, THIS IS A FUCKING NULLPO WAITING TO HAPPEN
+                return null!; // TODO: DANGEROUS, THIS IS A FUCKING NULLPO WAITING TO HAPPEN
         }
     }
 

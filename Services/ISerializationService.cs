@@ -126,7 +126,7 @@ public interface ISerializationService
         // Special handling for enums
         if (targetType.IsEnum)
         {
-            if (Enum.TryParse(targetType, prop.Value, out object result))
+            if (Enum.TryParse(targetType, prop.Value, out object? result))
             {
                 return (T)result;
             }
@@ -134,7 +134,7 @@ public interface ISerializationService
         }
     
         // Special handling for nullable types
-        Type underlyingType = Nullable.GetUnderlyingType(targetType);
+        Type underlyingType = Nullable.GetUnderlyingType(targetType)!;
         if (underlyingType != null)
         {
             if (string.IsNullOrEmpty(prop.Value)) return default!;
@@ -144,7 +144,7 @@ public interface ISerializationService
         // Default conversion for other types
         try
         {
-            return (T)Convert.ChangeType(prop.Value, targetType);
+            return (T)Convert.ChangeType(prop.Value, targetType)!;
         }
         catch
         {
