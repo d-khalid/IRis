@@ -102,6 +102,7 @@ namespace IRis.ViewModels
             AiImageCommand = new RelayCommand(AiGenerationFromImage);
 
             AddComponentCommand = new RelayCommand<string>(AddComponent);
+            OtherComponentsCommand = new RelayCommand(OtherComponents);
 
             GridToggleCommand = new RelayCommand(GridToggle);
             SimulationToggleCommand = new RelayCommand(SimulationToggle);
@@ -320,7 +321,6 @@ namespace IRis.ViewModels
 
             // Center it relative to main window
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
             // Get reference to main window
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
             {
@@ -336,6 +336,21 @@ namespace IRis.ViewModels
 
             _simulation.PreviewCompType = componentType;
             LastAction = $"Selected Component [{componentType}]";
+        }
+
+        // Other components window
+        public ICommand OtherComponentsCommand { get; }
+        private void OtherComponents()
+        {
+            var otherComponentsWindow = new OtherComponentsWindow();
+
+            // Center it relative to main window
+            otherComponentsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            // Get reference to main window
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
+            {
+                otherComponentsWindow.ShowDialog(mainWindow);
+            }
         }
     }
 }

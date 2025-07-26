@@ -26,15 +26,25 @@ internal class SelectionManager
     {
         _selectionStart = mousePos;
 
-        // Check if we're clicking on a selected component to start dragging
+        // Check if we're clicking on a selected component to prepare for potential dragging
         foreach (var child in canvas.Children)
         {
             if (child is Component component && IsComponentHit(component, mousePos))
             {
                 if (component.IsSelected)
                 {
-                    // Start dragging all selected components
-                    StartDrag(selectedComponents, mousePos);
+                    // DON'T start dragging immediately - just prepare for it
+                    // Store the drag start position and offsets, but don't set _isDragging = true yet
+                    _dragStart = mousePos;
+                    _dragOffsets.Clear();
+
+                    // Store initial offsets for all selected components
+                    foreach (var selectedComponent in selectedComponents)
+                    {
+                        Point componentPos = new Point(Canvas.GetLeft(selectedComponent), Canvas.GetTop(selectedComponent));
+                        Point offset = new Point(componentPos.X - mousePos.X, componentPos.Y - mousePos.Y);
+                        _dragOffsets[selectedComponent] = offset;
+                    }
                     return;
                 }
                 else
@@ -56,17 +66,21 @@ internal class SelectionManager
         StartSelectionRectangle(canvas);
     }
 
-    // NEW METHOD: Select all wires connected to a component
+    // Select all wires connected to a component
     private void SelectConnectedWires(Component component, Canvas canvas, List<Component> selectedComponents)
     {
         if (component.Terminals == null) return;
 
         foreach (var terminal in component.Terminals)
         {
-            if (terminal.Wire != null && !terminal.Wire.IsSelected)
+            // Change from single wire to multiple wires
+            foreach (var wire in terminal.Wires)
             {
-                terminal.Wire.IsSelected = true;
-                selectedComponents.Add(terminal.Wire);
+                if (wire != null && !wire.IsSelected)
+                {
+                    wire.IsSelected = true;
+                    selectedComponents.Add(wire);
+                }
             }
         }
     }
@@ -171,11 +185,24 @@ internal class SelectionManager
         canvas.Children.Add(_selectionRect);
     }
 
-    // UPDATED METHOD: Added allComponents and simulation parameters for wire snapping
+    // Add allComponents and simulation parameters for wire snapping
     public void HandleUpdate(Canvas canvas, List<Component> selectedComponents, Point currentMousePos, 
         List<Component> allComponents, Simulation simulation,
         bool snapToGridEnabled = false, Func<Point, Point>? snapToGrid = null)
     {
+        // Check if we should start dragging (mouse moved far enough from start position)
+        if (!_isDragging && _dragOffsets.Count > 0)
+        {
+            double dragThreshold = 3.0; // Minimum distance to start dragging
+            double distance = Math.Sqrt(Math.Pow(currentMousePos.X - _dragStart.X, 2) + 
+                                    Math.Pow(currentMousePos.Y - _dragStart.Y, 2));
+            
+            if (distance > dragThreshold)
+            {
+                _isDragging = true;
+            }
+        }
+
         // Handle dragging selected components
         if (_isDragging)
         {
@@ -314,7 +341,8 @@ internal class SelectionManager
             
             foreach (var terminal in component.Terminals)
             {
-                if (terminal.Wire == wire)
+                // Change from single wire check to multiple wires check
+                if (terminal.Wires.Contains(wire))
                 {
                     connectedTerminals.Add(terminal);
                 }
@@ -485,7 +513,7 @@ internal class SelectionManager
                 var selectedComponents = _dragOffsets.Keys.ToList();
                 var originalPositions = selectedComponents.Select(c => 
                     new Point(Canvas.GetLeft(c) - _dragOffsets[c].X - (_dragStart.X - _dragStart.X), 
-                             Canvas.GetTop(c) - _dragOffsets[c].Y - (_dragStart.Y - _dragStart.Y))).ToList();
+                            Canvas.GetTop(c) - _dragOffsets[c].Y - (_dragStart.Y - _dragStart.Y))).ToList();
                 var newPositions = selectedComponents.Select(c => 
                     new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
                 
@@ -495,7 +523,7 @@ internal class SelectionManager
                 {
                     var originalPos = new Point(Canvas.GetLeft(selectedComponents[i]), Canvas.GetTop(selectedComponents[i]));
                     originalPos = new Point(originalPos.X - _dragOffsets[selectedComponents[i]].X, 
-                                          originalPos.Y - _dragOffsets[selectedComponents[i]].Y);
+                                        originalPos.Y - _dragOffsets[selectedComponents[i]].Y);
                     originalPos = new Point(originalPos.X + _dragStart.X, originalPos.Y + _dragStart.Y);
                     
                     if (Math.Abs(originalPos.X - newPositions[i].X) > 0.1 || 
@@ -515,9 +543,10 @@ internal class SelectionManager
             }
             
             _isDragging = false;
-            _dragOffsets.Clear();
-            return;
         }
+        
+        // Clean up drag preparation state even if we never actually started dragging
+        _dragOffsets.Clear();
 
         // Remove the selection rect if its there
         if (_selectionRect != null)

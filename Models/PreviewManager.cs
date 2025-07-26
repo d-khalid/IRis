@@ -87,7 +87,10 @@ internal class PreviewManager
         Terminal? target = simulation.FindClosestSnapTerminal(mousePos, ComponentDefaults.TerminalSnappingRange, out var pos);
 
         if (target != null)
-            target.Wire = wirePreview;
+        {
+            // Change from overwriting to adding
+            target.AddWire(wirePreview);
+        }
 
         // Use command for adding point
         var addPointCommand = new AddWirePointCommand(wirePreview, pos);
@@ -154,11 +157,11 @@ internal class PreviewManager
     {
         if (wirePreview.Points.Count > 0)
         {
-            Point snappedMousePos = mousePos;
-            // NOTE: This is a patch. Fix variable name later.
-            if (snapToGridEnabled) {snappedMousePos = SnapToGrid(mousePos);}   // For wire snapping
+            Point finalmousepos = mousePos;
+            // Wire Grid Snapping
+            if (snapToGridEnabled) {finalmousepos = SnapToGrid(mousePos);}   // For wire snapping
             // Make wires snap to the closest terminal in range
-            Terminal? snap = simulation.FindClosestSnapTerminal(snappedMousePos, ComponentDefaults.TerminalSnappingRange, out Point pos);
+            Terminal? snap = simulation.FindClosestSnapTerminal(finalmousepos, ComponentDefaults.TerminalSnappingRange, out Point pos);
             
             wirePreview.Points[^1] = pos;
             wirePreview.InvalidateVisual();

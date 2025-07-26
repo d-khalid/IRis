@@ -121,7 +121,7 @@ public partial class Simulation : ObservableObject
             _gridManager.SnapToGrid, this))
             return;
         
-        // FIXED: Pass the correct selectedComponents reference and grid functions
+        // Pass the selectedComponents reference and grid functions
         _selectionManager.HandleUpdate(_canvas, _selectedComponents, CurrentMousePos, _components, this,
             _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
     }

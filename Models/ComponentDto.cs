@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using Avalonia;
+using System.Linq;
 
 [Serializable]
 [XmlRoot("Circuit")]  // Changed from "Component" to avoid confusion
@@ -37,8 +38,21 @@ public class ComponentDto
 [Serializable]
 public class TerminalDto
 {
-    [XmlElement(IsNullable = true)]
-    public Guid? ConnectedWireId { get; set; }
+    public List<Guid> ConnectedWireIds { get; set; } = new List<Guid>();
+    
+    // Keep for backward compatibility
+    public Guid? ConnectedWireId 
+    { 
+        get => ConnectedWireIds.FirstOrDefault(); 
+        set 
+        { 
+            if (value.HasValue && value != Guid.Empty)
+            {
+                ConnectedWireIds.Clear();
+                ConnectedWireIds.Add(value.Value);
+            }
+        } 
+    }
 }
 
 [Serializable]

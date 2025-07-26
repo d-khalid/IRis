@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Circuit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Components>
+    <Component Type="AndGate" X="290" Y="200">
+      <Terminals>
+        <Terminal>
+          <ConnectedWireId>872df83a-81b9-443a-9e0c-9948add57921</ConnectedWireId>
+        </Terminal>
+        <Terminal>
+          <ConnectedWireId>a30066dc-6953-4880-b870-2d8f092b6791</ConnectedWireId>
+        </Terminal>
+        <Terminal>
+          <ConnectedWireId>50cb0b7d-fb11-4b88-a2ea-c1a190ce500d</ConnectedWireId>
+        </Terminal>
+      </Terminals>
+      <Properties>
+        <Property Name="Width">70</Property>
+        <Property Name="Height">60</Property>
+        <Property Name="Rotation">0</Property>
+        <Property Name="NumInputs">2</Property>
+      </Properties>
+    </Component>
+    <Component Type="LogicToggle" X="130" Y="180">
+      <Terminals>
+        <Terminal>
+          <ConnectedWireId>872df83a-81b9-443a-9e0c-9948add57921</ConnectedWireId>
+        </Terminal>
+      </Terminals>
+      <Properties>
+        <Property Name="Width">46.666666666666664</Property>
+        <Property Name="Height">40</Property>
+        <Property Name="Rotation">0</Property>
+        <Property Name="Value">Low</Property>
+      </Properties>
+    </Component>
+    <Component Type="LogicToggle" X="130" Y="230">
+      <Terminals>
+        <Terminal>
+          <ConnectedWireId>a30066dc-6953-4880-b870-2d8f092b6791</ConnectedWireId>
+        </Terminal>
+      </Terminals>
+      <Properties>
+        <Property Name="Width">46.666666666666664</Property>
+        <Property Name="Height">40</Property>
+        <Property Name="Rotation">0</Property>
+        <Property Name="Value">Low</Property>
+      </Properties>
+    </Component>
+    <Wire Type="Wire" X="0" Y="0">
+      <Terminals />
+      <Properties>
+        <Property Name="Rotation">0</Property>
+      </Properties>
+      <Points>
+        <Point X="200" Y="200" />
+        <Point X="270" Y="220" />
+        <Point X="270" Y="220" />
+        <Point X="270" Y="220" />
+      </Points>
+      <Id>872df83a-81b9-443a-9e0c-9948add57921</Id>
+    </Wire>
+    <Wire Type="Wire" X="0" Y="0">
+      <Terminals />
+      <Properties>
+        <Property Name="Rotation">0</Property>
+      </Properties>
+      <Points>
+        <Point X="200" Y="250" />
+        <Point X="270" Y="240" />
+        <Point X="270" Y="240" />
+        <Point X="270" Y="240" />
+      </Points>
+      <Id>a30066dc-6953-4880-b870-2d8f092b6791</Id>
+    </Wire>
+    <Component Type="LogicProbe" X="480" Y="210">
+      <Terminals>
+        <Terminal>
+          <ConnectedWireId>50cb0b7d-fb11-4b88-a2ea-c1a190ce500d</ConnectedWireId>
+        </Terminal>
+      </Terminals>
+      <Properties>
+        <Property Name="Width">46.666666666666664</Property>
+        <Property Name="Height">40</Property>
+        <Property Name="Rotation">0</Property>
+      </Properties>
+    </Component>
+    <Wire Type="Wire" X="0" Y="0">
+      <Terminals />
+      <Properties>
+        <Property Name="Rotation">0</Property>
+      </Properties>
+      <Points>
+        <Point X="380" Y="230" />
+        <Point X="460" Y="230" />
+        <Point X="460" Y="230" />
+        <Point X="460" Y="230" />
+      </Points>
+      <Id>50cb0b7d-fb11-4b88-a2ea-c1a190ce500d</Id>
+    </Wire>
+  </Components>
+</Circuit>

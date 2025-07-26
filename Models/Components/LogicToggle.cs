@@ -108,10 +108,13 @@ public class LogicToggle : Component, IOutputProvider
 
     public void ComputeOutput()
     {
-        // If there is a wire, propagate the value to it
-        if (Terminals[0].Wire != null)
+        // Propagate the toggle value to ALL connected wires
+        foreach (var wire in Terminals[0].Wires)
         {
-            Terminals[0].Wire.Value = this.Value;
+            if (wire != null)
+            {
+                wire.Value = this.Value;
+            }
         }
     }
 
