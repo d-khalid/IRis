@@ -4,6 +4,8 @@ using System;
 using System.IO;
 using System.Linq;
 using Avalonia;
+using IRis.Services;
+using System.Collections.Generic;
 
 namespace IRis.Views
 {
@@ -43,6 +45,8 @@ namespace IRis.Views
             if (ComponentListBox.SelectedItem is ListBoxItem item)
             {
                 Console.WriteLine("Selected component: " + item.Content);
+                // TODO: Implement custom components logic here
+                test("RuntimeComponents/" + item.Content!.ToString()! + ".xml");
 
                 Close(SelectedComponent);
             }
@@ -60,6 +64,22 @@ namespace IRis.Views
                     }
                 };
                 dlg.ShowDialog(this);
+            }
+        }
+
+        private void test(string fileName)
+        {
+            // 2. Get number of inputs and outputs from XML string
+            string xmlContent = File.ReadAllText(fileName);
+            int inputCount2 = CircuitFormulaConversionService.GetNumberOfInputs(xmlContent);
+            int outputCount2 = CircuitFormulaConversionService.GetNumberOfOutputs(xmlContent);
+            var formulas2 = CircuitFormulaConversionService.ConvertXmlContentToFormulas(xmlContent);
+
+            // 5. Display the formulas
+            foreach (var formula in formulas2)
+            {
+                Console.WriteLine($"{formula.OutputName} = {formula.Formula}");
+                Console.WriteLine($"Input Variables: {string.Join(", ", formula.InputVariables)}");
             }
         }
 

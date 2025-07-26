@@ -93,7 +93,12 @@
                 <MenuItem Header="New" Command="{Binding NewCommand}"/>
                 <MenuItem Header="Open..." Command="{Binding OpenCommand}"/>
                 <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
-                <!-- <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}"/> -->
+                <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}"/>
+                <Separator/>
+                <MenuItem Header="Export">
+                    <MenuItem Header="Component" Command="{Binding ExportComponentCommand}" />
+                    <MenuItem Header="Circuit" Command="{Binding ExportCircuitCommand}" />
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
             </MenuItem>

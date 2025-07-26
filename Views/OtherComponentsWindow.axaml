@@ -16,8 +16,10 @@
         </ListBox>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-            <Button Content="Add" Click="OnAddClick" Width="80"/>
-            <Button Content="Cancel" Click="OnCancelClick" Width="80"/>
+            <Button Content="Add" Click="OnAddClick" 
+                    HorizontalContentAlignment="Center" Width="80"/>
+            <Button Content="Cancel" Click="OnCancelClick" 
+                    HorizontalContentAlignment="Center" Width="80"/>
         </StackPanel>
     </StackPanel>
 </Window>

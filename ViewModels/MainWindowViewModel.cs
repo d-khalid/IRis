@@ -87,7 +87,10 @@ namespace IRis.ViewModels
             OpenCommand = new AsyncRelayCommand(Open);
 
             SaveCommand = new AsyncRelayCommand(Save);
-            SaveAsCommand = new RelayCommand(SaveAs);
+            SaveAsCommand = new AsyncRelayCommand(SaveAs);
+
+            ExportComponentCommand = new AsyncRelayCommand(ExportComponent);
+            ExportCircuitCommand = new RelayCommand(ExportCircuit);
             ExitCommand = new RelayCommand(Exit);
 
             UndoCommand = new RelayCommand(Undo);
@@ -115,7 +118,7 @@ namespace IRis.ViewModels
         {
             _simulation.SnapToGridEnabled = !_simulation.SnapToGridEnabled;
             _simulation.GridEnabled = !_simulation.GridEnabled;
-            
+
             GridToggleText = _simulation.GridEnabled ? "Grid: ON" : "Grid: OFF";
         }
 
@@ -124,7 +127,7 @@ namespace IRis.ViewModels
         public void SimulationToggle()
         {
             _simulation.Simulating = !_simulation.Simulating;
-            
+
             SimulationToggleText = _simulation.Simulating ? "Simulation: ON" : "Simulation: OFF";
         }
 
@@ -139,7 +142,7 @@ namespace IRis.ViewModels
         {
             var window = new AIGenerationWindow();
             // _currentPromptVm = new AIGenerationWindowViewModel(window);
-            
+
             var vm = window.DataContext as AIGenerationWindowViewModel;
 
             vm!.XmlGenerated += (xml) =>
@@ -151,7 +154,7 @@ namespace IRis.ViewModels
                 _simulation.LoadComponents(components);
             };
 
-            
+
             // Center it relative to main window
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
@@ -168,9 +171,9 @@ namespace IRis.ViewModels
         {
             var window = new ImageProcessingWindow();
             // _currentPromptVm = new AIGenerationWindowViewModel(window);
-            
+
             var vm = window.DataContext as ImageProcessingWindowViewModel;
-        
+
             vm!.XmlGenerated += (xml) =>
             {
                 Console.WriteLine("Event received");
@@ -180,7 +183,7 @@ namespace IRis.ViewModels
                 _simulation.LoadComponents(components);
             };
 
-            
+
             // Center it relative to main window
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
@@ -189,7 +192,7 @@ namespace IRis.ViewModels
                 ?.MainWindow;
 
             window.ShowDialog(mainWindow!);
-        
+
         }
 
         private void New()
@@ -257,15 +260,48 @@ namespace IRis.ViewModels
         }
 
         public ICommand SaveAsCommand { get; }
-
-        private void SaveAs()
+        private async Task SaveAs()
         {
+            var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            if (mainWindow == null) return;
+
+            var result = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+            {
+                Title = "Save Circuit XML",
+                SuggestedFileName = "circuit.xml",
+                DefaultExtension = "xml",
+                FileTypeChoices = new List<FilePickerFileType>
+                {
+                    new FilePickerFileType("XML Files") { Patterns = new[] { "*.xml" } },
+                    new FilePickerFileType("All Files") { Patterns = new[] { "*" } }
+                }
+            });
+
+            if (result != null)
+            {
+                _openedFileName = result.Path.LocalPath;
+            }
+
+            if (!string.IsNullOrEmpty(_openedFileName))
+            {
+                _serializer.SerializeComponents(_simulation, _openedFileName);
+                Console.WriteLine("Saved to: " + _openedFileName);
+            }
         }
 
         public ICommand ExitCommand { get; }
-
         private void Exit()
         {
+            // Close the application
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.Shutdown();
+            }
+            else
+            {
+                // Fallback for other application lifetime types
+                Environment.Exit(0);
+            }
         }
 
         // Edit commands
@@ -350,6 +386,35 @@ namespace IRis.ViewModels
             if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
             {
                 otherComponentsWindow.ShowDialog(mainWindow);
+            }
+        }
+
+        public ICommand ExportCircuitCommand { get; }
+        private void ExportCircuit()
+        {
+
+        }
+        
+        public ICommand ExportComponentCommand { get; }
+        private async Task ExportComponent()
+        {
+            var window = new ExportComponentWindow();
+            // Center it relative to main window
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            
+            // Get reference to main window (same pattern as OtherComponents method)
+            if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
+            {
+                var result = await window.ShowDialog<string?>(mainWindow);
+
+                if (!string.IsNullOrEmpty(result)) // User clicked Export and entered a name
+                {
+                    string componentName = result;
+                    Console.WriteLine($"Component name: {componentName}");
+                    _serializer.SerializeComponents(_simulation, "RuntimeComponents/" + componentName + ".xml");
+                    Console.WriteLine("Saved to: " + _openedFileName);
+                }
+                // If result is null, user clicked Cancel or closed the window
             }
         }
     }
