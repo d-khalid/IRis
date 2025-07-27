@@ -16,8 +16,8 @@ public class LogicProbe : Component
     public LogicProbe(double width = ComponentDefaults.DefaultWidth, double height = ComponentDefaults.DefaultHeight)
         : base(width, height)
     {
-        Width = width * 2 / 3;
-        Height = height * 2 / 3;
+        Width = width * 1 / 2;
+        Height = height * 1 / 2;
         
         Terminals = new Terminal[1];
         // Helper Method for snapping to grid
@@ -71,14 +71,14 @@ public class LogicProbe : Component
                 LogicState.High => "1",
                 LogicState.Low => "0",
                 LogicState.DontCare => "X",
-                null => "X!",
+                null => "?",
                 _ => "?"
             };
 
         }
         else
         {
-            content = "X!";
+            content = "?";
             fill = ComponentDefaults.DontCareBrush;
         }
 

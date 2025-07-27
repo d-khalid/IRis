@@ -8,17 +8,17 @@ public class CircuitFormulaConversionService
 {
     public class CircuitComponent
     {
-        public string Id { get; set; }
-        public string Type { get; set; }
+        public required string Id { get; set; }
+        public required string Type { get; set; }
         public List<string> InputWires { get; set; } = new List<string>();
-        public string OutputWire { get; set; }
-        public string Value { get; set; } // For LogicToggle components
+        public string OutputWire { get; set; } = null!;
+        public string Value { get; set; } = null!; // For LogicToggle components
     }
 
     public class CircuitFormula
     {
-        public string OutputName { get; set; }
-        public string Formula { get; set; }
+        public required string OutputName { get; set; }
+        public required string Formula { get; set; }
         public List<string> InputVariables { get; set; } = new List<string>();
     }
 
@@ -40,7 +40,7 @@ public class CircuitFormulaConversionService
         // Parse components
         foreach (var componentEl in doc.Descendants("Component"))
         {
-            string type = componentEl.Attribute("Type")?.Value;
+            string type = componentEl.Attribute("Type")?.Value!;
             string componentId = Guid.NewGuid().ToString(); // Generate unique ID for component
             
             var component = new CircuitComponent

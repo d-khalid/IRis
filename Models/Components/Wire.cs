@@ -25,12 +25,15 @@ public class Wire : Component, ICloneable
 
     // This value is propagated to everything connected to this wire
     private LogicState? _value;
+    public bool IsCommitted { get; set; } = false;
+    public bool IsBeingEdited { get; set; } = true;
+
     public LogicState? Value
     {
         get => _value;
         set
         {
-            _value = value; 
+            _value = value;
         }
     }
 
@@ -39,11 +42,12 @@ public class Wire : Component, ICloneable
         get => points;
         set => points = value;
     }
-    
 
-    public Wire() : base(0,0)
+
+    public Wire() : base(0, 0)
     {
         Id = Guid.NewGuid();
+        IsCommitted = false;
     }
     
     // DTO pattern for serializing
@@ -85,22 +89,57 @@ public class Wire : Component, ICloneable
          // Reset the visuals
          this.InvalidateVisual();
     }
+    
+    public bool IsPointOnWire(Point point, double tolerance)
+    {
+        // Check if point is close to any line segment of the wire
+        for (int i = 0; i < Points.Count - 1; i++)
+        {
+            if (DistanceToLineSegment(point, Points[i], Points[i + 1]) <= tolerance)
+                return true;
+        }
+        return false;
+    }
+
+    private double DistanceToLineSegment(Point point, Point lineStart, Point lineEnd)
+    {
+        double dx = lineEnd.X - lineStart.X;
+        double dy = lineEnd.Y - lineStart.Y;
+        
+        // If line segment is actually a point
+        if (dx == 0 && dy == 0)
+            return Point.Distance(point, lineStart);
+        
+        // Calculate the parameter t for the closest point on the line
+        double t = ((point.X - lineStart.X) * dx + (point.Y - lineStart.Y) * dy) / (dx * dx + dy * dy);
+        
+        // Clamp t to [0, 1] to stay within the line segment
+        t = Math.Max(0, Math.Min(1, t));
+        
+        // Find the closest point on the line segment
+        Point closestPoint = new Point(
+            lineStart.X + t * dx,
+            lineStart.Y + t * dy
+        );
+        
+        return Point.Distance(point, closestPoint);
+    }
 
     public override bool HitTest(Point point)
     {
-      
+
         // Check each wire segment
         for (int i = 0; i < points.Count - 1; i++)
         {
             Point segmentStart = points[i];
-            Point segmentEnd = points[i + 1] ;
-        
+            Point segmentEnd = points[i + 1];
+
             if (IsPointNearLineSegment(point, segmentStart, segmentEnd, ComponentDefaults.WirePen.Thickness / 2))
             {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -127,40 +166,87 @@ public class Wire : Component, ICloneable
     public override void Draw(DrawingContext ctx)
     {
         if (points.Count == 0) return;
+
+        // Use ghost styling if wire is not committed OR is being edited
+        bool useGhostStyling = IsBeingEdited && !IsCommitted;
+        // if (!useGhostStyling)
+        // {
+        //     Console.WriteLine("Eliminating ghost styling");
+        // }
+        var penToUse = useGhostStyling ? ComponentDefaults.GhostWirePen : ComponentDefaults.WirePen;
         
-        if (points.Count == 1)
+        if (points.Count == 1 && points[0] != new Point(-1, -1))
         {
-            ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
+            var brushToUse = useGhostStyling ? ComponentDefaults.GhostTerminalBrush : ComponentDefaults.TerminalBrush;
+            ctx.DrawEllipse(brushToUse, null,
                 points[0], ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
             return;
         }
-    
-        // Draw lines for >2 points
+
+        // Draw lines, breaking at (-1,-1) points
         var polyline = new StreamGeometry();
         using (var ctxGeo = polyline.Open())
         {
-            ctxGeo.BeginFigure(points[0], false);
-            for (int i = 1; i < points.Count; i++)
+            bool figureStarted = false;
+            
+            for (int i = 0; i < points.Count; i++)
             {
-                ctxGeo.LineTo(points[i]);
+                Point currentPoint = points[i];
+                
+                // Break point detected
+                if (currentPoint == new Point(-1, -1))
+                {
+                    if (figureStarted)
+                    {
+                        ctxGeo.EndFigure(false);
+                        figureStarted = false;
+                    }
+                    continue;
+                }
+                
+                // Start new figure or continue current one
+                if (!figureStarted)
+                {
+                    ctxGeo.BeginFigure(currentPoint, false);
+                    figureStarted = true;
+                }
+                else
+                {
+                    ctxGeo.LineTo(currentPoint);
+                }
             }
-            ctxGeo.EndFigure(false);
+            
+            // End the last figure if it was started
+            if (figureStarted)
+            {
+                ctxGeo.EndFigure(false);
+            }
         }
-        ctx.DrawGeometry(null, ComponentDefaults.WirePen, polyline);
+        ctx.DrawGeometry(null, penToUse, polyline);
     }
     
     public override void DrawSelection(DrawingContext ctx)
     {
         if (points.Count < 2) return;
-
+        // Debug: Print all points
+        Console.WriteLine($"DrawSelection called with {points.Count} points:");
+        for (int i = 0; i < points.Count; i++)
+        {
+            Console.WriteLine($"  Point[{i}]: {points[i]}");
+        }
+        Console.WriteLine("---");
         double selectionThickness = ComponentDefaults.WirePen.Thickness * 2;
-       
 
+        // Draw selection rectangles for line segments (skipping break points)
         for (int i = 0; i < points.Count - 1; i++)
         {
             Point start = points[i];
             Point end = points[i + 1];
-        
+            
+            // Skip if either point is a break point
+            if (start == new Point(-1, -1) || end == new Point(-1, -1))
+                continue;
+            
             // Calculate segment vector and perpendicular
             Vector segment = end - start;
             Vector normal = new Vector(-segment.Y, segment.X);
@@ -180,9 +266,12 @@ public class Wire : Component, ICloneable
             ctx.DrawGeometry(ComponentDefaults.SelectionBrush, ComponentDefaults.SelectionPen, rect);
         }
 
-        // Draw selection circles at connection points
+        // Draw selection circles at connection points (excluding break points)
         foreach (var point in points)
         {
+            if (point == new Point(-1, -1))
+                continue;
+                
             ctx.DrawEllipse(
                 ComponentDefaults.SelectionBrush,
                 ComponentDefaults.SelectionPen,

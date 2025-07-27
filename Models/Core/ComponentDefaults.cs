@@ -12,6 +12,7 @@ public static class ComponentDefaults
 
     // For controlling the thickness/colors of lines
     public static Pen WirePen = new Pen(Brushes.Black, 4);
+    public static Pen GhostWirePen = new Pen(Brushes.Gray, 4);
     public static Pen GatePen = new Pen(Brushes.Black, 4);
     
     public static IImmutableSolidColorBrush GateFillBrush = Brushes.White;
@@ -19,6 +20,7 @@ public static class ComponentDefaults
 
     public static double TerminalRadius = 7;
     public static IImmutableSolidColorBrush TerminalBrush = Brushes.DarkSlateGray;
+    public static IImmutableSolidColorBrush GhostTerminalBrush = Brushes.LightSlateGray;
 
     public static Pen SelectionPen = new Pen(Brushes.DodgerBlue, 2);
     public static SolidColorBrush SelectionBrush = new SolidColorBrush(Colors.DodgerBlue, 0.2);

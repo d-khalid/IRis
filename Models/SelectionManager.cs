@@ -121,21 +121,6 @@ internal class SelectionManager
         return connectedComponents;
     }
 
-    private void StartDrag(List<Component> selectedComponents, Point mousePos)
-    {
-        _isDragging = true;
-        _dragStart = mousePos;
-        _dragOffsets.Clear();
-
-        // Store initial offsets for all selected components
-        foreach (var component in selectedComponents)
-        {
-            Point componentPos = new Point(Canvas.GetLeft(component), Canvas.GetTop(component));
-            Point offset = new Point(componentPos.X - mousePos.X, componentPos.Y - mousePos.Y);
-            _dragOffsets[component] = offset;
-        }
-    }
-
     private bool IsComponentHit(Component component, Point point)
     {
         var componentPos = new Point(Canvas.GetLeft(component), Canvas.GetTop(component));
@@ -146,20 +131,6 @@ internal class SelectionManager
 
         // Check For wires
         return component is Wire wire && component.HitTest(point);
-    }
-
-    private void ToggleSelection(Component component, List<Component> selectedComponents)
-    {
-        if (component.IsSelected)
-        {
-            selectedComponents.Remove(component);
-            component.IsSelected = false;
-        }
-        else
-        {
-            selectedComponents.Add(component);
-            component.IsSelected = true;
-        }
     }
 
     public void UnselectAll(List<Component> selectedComponents)
@@ -217,7 +188,7 @@ internal class SelectionManager
         UpdateSelectedComponents(canvas, selectedComponents);
     }
 
-    // UPDATED METHOD: Added wire endpoint snapping functionality
+    // Added wire endpoint snapping functionality
     private void UpdateDraggedComponents(List<Component> selectedComponents, Point currentMousePos,
         List<Component> allComponents, Simulation simulation,
         bool snapToGridEnabled, Func<Point, Point>? snapToGrid)
@@ -235,102 +206,44 @@ internal class SelectionManager
             Canvas.SetLeft(component, newPos.X);
             Canvas.SetTop(component, newPos.Y);
             
-            // NEW: Snap wire endpoints to their connected terminals
+            // Snap wire endpoints to their connected terminals
             if (component is Wire wire)
             {
                 SnapWireEndpointsToTerminals(wire, allComponents);
             }
-            
             // Force redraw for components that need it (like wires)
             component.InvalidateVisual();
         }
     }
 
-    // UPDATED METHOD: Snaps wire endpoints to their connected terminals and cleans up old paths
+    // Only updates wire endpoints connected to terminals, preserves internal path
     private void SnapWireEndpointsToTerminals(Wire wire, List<Component> allComponents)
     {
         var connectedTerminals = FindTerminalsConnectedToWire(wire, allComponents);
         
-        if (connectedTerminals.Count == 0) return;
-        
-        // Clear the old wire path to avoid junk segments
-        wire.Points.Clear();
+        if (connectedTerminals.Count == 0 || wire.Points.Count == 0) return;
         
         // Get the current wire position
         Point wirePos = new Point(Canvas.GetLeft(wire), Canvas.GetTop(wire));
         
-        // If we have connected terminals, recreate the wire path
+        // Update first endpoint if connected to a terminal
         if (connectedTerminals.Count >= 1)
         {
-            // For the first terminal, add it as the starting point
             Point firstTerminalWorldPos = GetTerminalWorldPosition(connectedTerminals[0], allComponents);
             Point firstTerminalLocalPos = firstTerminalWorldPos - wirePos;
-            wire.Points.Add(firstTerminalLocalPos);
-            
-            // If there's a second terminal, create a simple path to it
-            if (connectedTerminals.Count >= 2)
-            {
-                Point secondTerminalWorldPos = GetTerminalWorldPosition(connectedTerminals[1], allComponents);
-                Point secondTerminalLocalPos = secondTerminalWorldPos - wirePos;
-                
-                // Create a simple L-shaped or direct path between terminals
-                CreateWirePath(wire, firstTerminalLocalPos, secondTerminalLocalPos);
-            }
-            else
-            {
-                // If only one terminal is connected, the wire should extend from that point
-                // You might want to add logic here for partially connected wires
-                // For now, just add a small extension in the current direction
-                Point extension = new Point(firstTerminalLocalPos.X + 20, firstTerminalLocalPos.Y);
-                wire.Points.Add(extension);
-            }
+            wire.Points[0] = firstTerminalLocalPos;
+        }
+        
+        // Update last endpoint if connected to a second terminal
+        if (connectedTerminals.Count >= 2 && wire.Points.Count > 1)
+        {
+            Point secondTerminalWorldPos = GetTerminalWorldPosition(connectedTerminals[1], allComponents);
+            Point secondTerminalLocalPos = secondTerminalWorldPos - wirePos;
+            wire.Points[wire.Points.Count - 1] = secondTerminalLocalPos;
         }
     }
 
-    // NEW METHOD: Creates an optimal path between two terminal points
-    private void CreateWirePath(Wire wire, Point startLocal, Point endLocal)
-    {
-        // Clear any existing points except the start point (which should already be added)
-        if (wire.Points.Count > 1)
-        {
-            // Keep only the first point and clear the rest
-            Point startPoint = wire.Points[0];
-            wire.Points.Clear();
-            wire.Points.Add(startPoint);
-        }
-        
-        double dx = endLocal.X - startLocal.X;
-        double dy = endLocal.Y - startLocal.Y;
-        
-        // Create path based on direction and distance
-        if (Math.Abs(dx) < 10 && Math.Abs(dy) < 10)
-        {
-            // Very close - direct connection
-            wire.Points.Add(endLocal);
-        }
-        else if (Math.Abs(dx) > Math.Abs(dy) * 2)
-        {
-            // Primarily horizontal - go horizontal then vertical
-            wire.Points.Add(new Point(startLocal.X + dx * 0.7, startLocal.Y));
-            wire.Points.Add(new Point(startLocal.X + dx * 0.7, endLocal.Y));
-            wire.Points.Add(endLocal);
-        }
-        else if (Math.Abs(dy) > Math.Abs(dx) * 2)
-        {
-            // Primarily vertical - go vertical then horizontal
-            wire.Points.Add(new Point(startLocal.X, startLocal.Y + dy * 0.7));
-            wire.Points.Add(new Point(endLocal.X, startLocal.Y + dy * 0.7));
-            wire.Points.Add(endLocal);
-        }
-        else
-        {
-            // Diagonal - create L-shape
-            wire.Points.Add(new Point(endLocal.X, startLocal.Y));
-            wire.Points.Add(endLocal);
-        }
-    }
-
-    // NEW METHOD: Find all terminals connected to a specific wire
+    // Find all terminals connected to a specific wire
     private List<Terminal> FindTerminalsConnectedToWire(Wire wire, List<Component> allComponents)
     {
         var connectedTerminals = new List<Terminal>();
@@ -352,7 +265,7 @@ internal class SelectionManager
         return connectedTerminals;
     }
 
-    // NEW METHOD: Get the world position of a terminal
+    // Get the world position of a terminal
     private Point GetTerminalWorldPosition(Terminal terminal, List<Component> allComponents)
     {
         // Find the component that owns this terminal
@@ -387,7 +300,7 @@ internal class SelectionManager
         return componentPos + terminalLocalPos;
     }
 
-    // NEW METHOD: Rotate a point around a center point by a given angle
+    // Rotate a point around a center point by a given angle
     private Point RotatePoint(Point point, double angleDegrees, Point center)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0;
@@ -404,38 +317,6 @@ internal class SelectionManager
         
         // Translate back
         return new Point(rotatedX + center.X, rotatedY + center.Y);
-    }
-
-    // NEW METHOD: Find the wire point closest to a target position
-    private int FindClosestWirePoint(Wire wire, Point targetPos)
-    {
-        if (wire.Points.Count == 0) return -1;
-        
-        double minDistance = double.MaxValue;
-        int closestIndex = -1;
-        Point wirePos = new Point(Canvas.GetLeft(wire), Canvas.GetTop(wire));
-        
-        for (int i = 0; i < wire.Points.Count; i++)
-        {
-            Point worldWirePoint = wirePos + wire.Points[i];
-            double distance = CalculateDistance(worldWirePoint, targetPos);
-            
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                closestIndex = i;
-            }
-        }
-        
-        return closestIndex;
-    }
-
-    // NEW METHOD: Calculate distance between two points
-    private double CalculateDistance(Point p1, Point p2)
-    {
-        double dx = p1.X - p2.X;
-        double dy = p1.Y - p2.Y;
-        return Math.Sqrt(dx * dx + dy * dy);
     }
 
     private void UpdateSelectionRectangle(Point currentMousePos)

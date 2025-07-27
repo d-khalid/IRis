@@ -123,6 +123,9 @@ namespace IRis.Models.Commands
 
         public void Execute()
         {
+            _wire.IsBeingEdited = false;
+            _wire.IsCommitted = true;
+            _wire.InvalidateVisual();
             _components.Add(_wire);
         }
 

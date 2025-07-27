@@ -34,8 +34,8 @@ public class LogicToggle : Component, IOutputProvider
     public LogicToggle(double width = ComponentDefaults.DefaultWidth, double height = ComponentDefaults.DefaultHeight)
         : base(width, height)
     {
-        Width = width * 2 / 3;
-        Height = height * 2 / 3;
+        Width = width * 1 / 2;
+        Height = height * 1 / 2;
 
         Terminals = new Terminal[1];
 

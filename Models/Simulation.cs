@@ -40,7 +40,7 @@ public partial class Simulation : ObservableObject
     // For simulation
     private bool _simulating;
     private DispatcherTimer? _updateTimer;
-    
+
     // Expose selected components
     public List<Component> SelectedComponents => _selectedComponents;
 
@@ -117,10 +117,10 @@ public partial class Simulation : ObservableObject
         // Update the mouse pos
         CurrentMousePos = e.GetPosition(_canvas);
 
-        if (_previewManager.HandleUpdate(_canvas!, CurrentMousePos, _gridManager.SnapToGridEnabled, 
+        if (_previewManager.HandleUpdate(_canvas!, CurrentMousePos, _gridManager.SnapToGridEnabled,
             _gridManager.SnapToGrid, this))
             return;
-        
+
         // Pass the selectedComponents reference and grid functions
         _selectionManager.HandleUpdate(_canvas!, _selectedComponents, CurrentMousePos, _components, this,
             _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
@@ -131,7 +131,7 @@ public partial class Simulation : ObservableObject
     {
         // Handle preview manager first
         _previewManager.HandleKeyCommand(e, _components, _canvas!, _commandManager);
-        
+
         // FIXED: Correct condition check
         if (_selectedComponents.Count > 0 && _previewManager.PreviewCompType == null)
         {
@@ -142,7 +142,7 @@ public partial class Simulation : ObservableObject
     private void HandleMoveSelectedComponents(KeyEventArgs e)
     {
         if (_selectedComponents.Count == 0) return;
-        
+
         double moveDistance = _gridManager.SnapToGridEnabled ? ComponentDefaults.GridSpacing : 10;
         Point offset = new Point(0, 0);
 
@@ -167,7 +167,7 @@ public partial class Simulation : ObservableObject
         // Use command for undo/redo support
         var moveCommand = new MoveComponentsCommand(_selectedComponents, offset);
         _commandManager.ExecuteCommand(moveCommand);
-        
+
         e.Handled = true;
     }
 
@@ -228,7 +228,7 @@ public partial class Simulation : ObservableObject
     public string? PreviewCompType
     {
         get => _previewManager.PreviewCompType;
-        set => _previewManager.SetPreviewComponent(value, _canvas!, CurrentMousePos);
+        set => _previewManager.SetPreviewComponent(value, _canvas!, CurrentMousePos, this);
     }
 
     // Grid management
@@ -285,11 +285,28 @@ public partial class Simulation : ObservableObject
         return closestTerminal; // Returns null if no terminal is within snapping range
     }
 
+    private Wire? FindWireAtPosition(Point position)
+    {
+        return _components.OfType<Wire>()
+            .FirstOrDefault(wire => wire.IsPointOnWire(position, 5.0)); // 5.0 is click tolerance
+    }
+
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        // Handle wire extension when clicking on existing wire
+        if (_previewManager.PreviewCompType == "WIRE" && _previewManager.PreviewComponent != null)
+        {
+            Console.WriteLine("Handle wire extension");
+            var clickedWire = FindWireAtPosition(CurrentMousePos);
+            if (clickedWire != null)
+            {
+                _previewManager.StartWireExtension(clickedWire, _canvas!, CurrentMousePos, Components);
+                return;
+            }
+        }
         if (_previewManager.HandleCommit(sender, e, _components, _canvas!, CurrentMousePos, _commandManager, this))
             return;
-        
+
         // Add drag handling
         _previewManager.OnPointerPressed(sender, e, _selectedComponents);
         _selectionManager.HandleStart(_canvas!, _selectedComponents, CurrentMousePos);
@@ -299,8 +316,90 @@ public partial class Simulation : ObservableObject
     {
         // Handle preview manager drag completion first
         _previewManager.OnPointerReleased(sender, e, _commandManager);
-        
+
         // Then handle selection manager
         _selectionManager.HandleEnd(_canvas!, _commandManager);
+    }
+
+    public bool WouldWireOverlapComponent(Point startPoint, Point endPoint)
+    {
+        foreach (Component component in _components)
+        {
+            // Skip wires - only check gates/components
+            if (component is Wire) continue;
+
+            // Get component bounds
+            double left = Canvas.GetLeft(component);
+            double top = Canvas.GetTop(component);
+            double right = left + component.Width;
+            double bottom = top + component.Height;
+
+            // Check if the line segment intersects with the component rectangle
+            if (LineIntersectsRectangle(startPoint, endPoint, left, top, right, bottom))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool LineIntersectsRectangle(Point p1, Point p2, double rectLeft, double rectTop, double rectRight, double rectBottom)
+    {
+        // Check if either endpoint is inside the rectangle
+        if (IsPointInRectangle(p1, rectLeft, rectTop, rectRight, rectBottom) ||
+            IsPointInRectangle(p2, rectLeft, rectTop, rectRight, rectBottom))
+        {
+            return true;
+        }
+
+        // Check if line intersects any of the four rectangle edges
+        return LineIntersectsLine(p1, p2, new Point(rectLeft, rectTop), new Point(rectRight, rectTop)) ||     // Top edge
+            LineIntersectsLine(p1, p2, new Point(rectRight, rectTop), new Point(rectRight, rectBottom)) || // Right edge
+            LineIntersectsLine(p1, p2, new Point(rectRight, rectBottom), new Point(rectLeft, rectBottom)) || // Bottom edge
+            LineIntersectsLine(p1, p2, new Point(rectLeft, rectBottom), new Point(rectLeft, rectTop));     // Left edge
+    }
+
+    private bool IsPointInRectangle(Point point, double left, double top, double right, double bottom)
+    {
+        return point.X >= left && point.X <= right && point.Y >= top && point.Y <= bottom;
+    }
+
+    private bool LineIntersectsLine(Point p1, Point p2, Point p3, Point p4)
+    {
+        double denominator = (p1.X - p2.X) * (p3.Y - p4.Y) - (p1.Y - p2.Y) * (p3.X - p4.X);
+        if (Math.Abs(denominator) < 1e-10) return false; // Lines are parallel
+
+        double t = ((p1.X - p3.X) * (p3.Y - p4.Y) - (p1.Y - p3.Y) * (p3.X - p4.X)) / denominator;
+        double u = -((p1.X - p2.X) * (p1.Y - p3.Y) - (p1.Y - p2.Y) * (p1.X - p3.X)) / denominator;
+
+        return t >= 0 && t <= 1 && u >= 0 && u <= 1;
+    }
+    
+    public bool WouldWireOverlapExistingWire(Point startPoint, Point endPoint, Wire currentWire)
+    {
+        foreach (Component component in _components)
+        {
+            if (!(component is Wire existingWire) || existingWire == currentWire) continue;
+            
+            int overlapCount = 0;
+            
+            // Check each segment of the existing wire
+            for (int i = 0; i < existingWire.Points.Count - 1; i++)
+            {
+                Point segStart = existingWire.Points[i];
+                Point segEnd = existingWire.Points[i + 1];
+                
+                // Check if the new wire segment intersects this existing segment
+                if (LineIntersectsLine(startPoint, endPoint, segStart, segEnd))
+                {
+                    overlapCount++;
+                    if (overlapCount > 1)
+                    {
+                        return true; // More than 1 intersection point
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
