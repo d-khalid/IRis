@@ -18,6 +18,8 @@ public class Terminal
     // Value is nullable to account for dont cares
     public Wire? Wire { get; set; }
 
+    public string? Label { get; set; }
+
     public Terminal(Point position, Wire wire)
     {
         Position = position;

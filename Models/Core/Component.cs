@@ -42,7 +42,7 @@ public abstract class Component : Control, ICustomHitTest
             InvalidateVisual(); 
         }
     }
-    public Component( double width , double height)
+    public Component(double width , double height)
     {
         Width = width;
         Height = height;
@@ -133,24 +133,27 @@ public abstract class Component : Control, ICustomHitTest
     }
     
     // A method for making components by type
-    public static Component Create(string componentType)
+    public static Component Create(string componentType, int numInputs=2)
     {
         switch (componentType)
         {
             case "AND":
-                return new AndGate(2);
+                return new AndGate(numInputs);
             case "OR":
-                return new OrGate(2);
+                return new OrGate(numInputs);
             case "NOT":
                 return new NotGate();
             case "NAND":
-                return new NandGate(2);
+                return new NandGate(numInputs);
             case "NOR":
-                return new NorGate(2);
+                return new NorGate(numInputs);
             case "XOR":
-                return new XorGate(2);
+                return new XorGate(numInputs);
             case "XNOR":
-                return new XnorGate(2);
+                return new XnorGate(numInputs);
+            case "MUX":
+                return new Multiplexer(numInputs + 2);
+            
             case "PROBE":
                 return new LogicProbe();
             case "TOGGLE":
@@ -158,6 +161,7 @@ public abstract class Component : Control, ICustomHitTest
                 break;
             case "WIRE":
                 return new Wire();
+            
             default:
                 return null; // TODO: DANGEROUS, THIS IS A FUCKING NULLPO WAITING TO HAPPEN
         }

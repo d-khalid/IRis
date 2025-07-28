@@ -117,6 +117,9 @@ public partial class Simulation : ObservableObject
         if (_previewManager.HandleCommit(sender, e, _components, _canvas, CurrentMousePos, _commandManager, this))
             return;
         _selectionManager.HandleStart(_canvas, _selectedComponents, CurrentMousePos);
+
+        
+       
     }
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
@@ -231,6 +234,7 @@ public partial class Simulation : ObservableObject
         _canvas.Children.AddRange(_components);
     }
 
+    // sus? amogus?
     public void DeleteAllComponents()
     {
         _canvas.Children.RemoveAll(_components);
