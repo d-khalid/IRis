@@ -65,7 +65,8 @@ internal class PreviewManager
         }
     }
 
-    public bool HandleCommit(object? sender, PointerPressedEventArgs? e, List<Component> components, 
+    // Invoked externally by Simulation.cs
+    public bool HandleCommit(object? sender, PointerPressedEventArgs? e, List<Component> components,
         Canvas canvas, Point mousePos, CommandManager commandManager, Simulation simulation)
     {
         if (_previewComponent is Wire wirePreview)
@@ -84,7 +85,15 @@ internal class PreviewManager
 
     public static List<Point> RemoveDuplicatePoints(List<Point> points)
     {
-        return points.Distinct().ToList();
+        // Only remove adjacent duplicates
+        for (int i = 0; i < points.Count - 1; i++)
+        {
+            if (points[i] == points[i + 1])
+            {
+                points.RemoveAt(i + 1);
+            }
+        }
+        return points;
     }
 
     private bool HandleWireCommit(object? sender, PointerPressedEventArgs? e, List<Component> components,
@@ -93,18 +102,21 @@ internal class PreviewManager
         if (e == null) return true;
         Terminal? target = simulation.FindClosestSnapTerminal(mousePos, ComponentDefaults.TerminalSnappingRange, out var pos);
 
-        if (target != null)
+        if (target != null)     // Condition: Wire is starting from a gate terminal
         {
-            // Change from overwriting to adding
             target.AddWire(wirePreview);
+        }
+        else if (simulation.FindWireAtPosition(mousePos) != null) // Edit this to reject is wire is on top of a wire 
+        {
+            Console.WriteLine($"Wire rejected due to being on top of another wire.");
+            return false;       // Couldn't handle
         }
 
         if (removelShapePoint)
-        {
-            // Console.WriteLine("removing L shape");
-            wirePreview.Points.RemoveAt(wirePreview.Points.Count - 1);
-            removelShapePoint = false;
-        }
+            {
+                wirePreview.Points.RemoveAt(wirePreview.Points.Count - 1);
+                removelShapePoint = false;
+            }
 
         // Use command for adding point
         pos = SnapToGrid(pos);
@@ -115,14 +127,7 @@ internal class PreviewManager
         // Commits the WIRE ON DOUBLE-CLICK, or RIGHT-CLICK
         if (wirePreview.Points.Count >= 2 && (point.Properties.IsRightButtonPressed || e.ClickCount >= 2))
         {
-            // Use command for committing wire
-            if (removelShapePoint)
-            {
-                // Console.WriteLine("removing L shape");
-                wirePreview.Points.RemoveAt(wirePreview.Points.Count - 1);
-                removelShapePoint = false;
-            }
-            // Snap to grid if anything is off
+            // Snap to grid all points
             for (int i = 0; i < wirePreview.Points.Count - 1; i++)
             {
                 if (wirePreview.Points[i] != new Point(-1, -1))
@@ -130,12 +135,6 @@ internal class PreviewManager
             }
             // Remove duplicates
             wirePreview.Points = RemoveDuplicatePoints(wirePreview.Points);
-            Console.WriteLine($"HandleWireCommit called with {wirePreview.Points.Count} points:");
-            for (int i = 0; i < wirePreview.Points.Count; i++)
-            {
-                Console.WriteLine($"  Point[{i}]: {wirePreview.Points[i]}");
-            }
-            Console.WriteLine("---");
             var commitCommand = new CommitWireCommand(components, wirePreview);
             commandManager.ExecuteCommand(commitCommand);
             _previewComponent = null;
@@ -190,69 +189,107 @@ internal class PreviewManager
 
     private bool HandleWireUpdate(Wire wirePreview, Point mousePos, bool snapToGridEnabled, Simulation simulation)
     {
-        if (wirePreview.Points.Count > 0)
+        if (wirePreview.Points.Count == 0) return true;
+
+        // Clean up temporary L-shape point if it exists
+        if (removelShapePoint)
         {
-            if (removelShapePoint)
-            {
-                wirePreview.Points.RemoveAt(wirePreview.Points.Count - 1);
-                removelShapePoint = false;
-            }
-            
-            Point finalmousepos = SnapToGrid(mousePos);
-            
-            // Constrain to right angles and check for overlaps
-            if (wirePreview.Points.Count > 1)
-            {
-                Point previousPoint = wirePreview.Points[^2];
-                double deltaX = Math.Abs(finalmousepos.X - previousPoint.X);
-                double deltaY = Math.Abs(finalmousepos.Y - previousPoint.Y);
-
-                Point horizontalPos = new Point(finalmousepos.X, previousPoint.Y);
-                Point verticalPos = new Point(previousPoint.X, finalmousepos.Y);
-                
-                // Try preferred direction first (greater change)
-                Point preferredPos = (deltaX > deltaY) ? horizontalPos : verticalPos;
-                Point alternatePos = (deltaX > deltaY) ? verticalPos : horizontalPos;
-                
-                // Check if preferred direction is clear
-                if (!simulation.WouldWireOverlapComponent(previousPoint, preferredPos) &&
-                    !simulation.WouldWireOverlapExistingWire(previousPoint, preferredPos, wirePreview))
-                {
-                    finalmousepos = preferredPos;
-                }
-                // Try alternate direction
-                else if (!simulation.WouldWireOverlapComponent(previousPoint, alternatePos) &&
-                        !simulation.WouldWireOverlapExistingWire(previousPoint, alternatePos, wirePreview))
-                {
-                    finalmousepos = alternatePos;
-                }
-                else
-                {
-                    return true; // Both directions blocked, can't move
-                }
-            }
-
-            // Now snap to terminal if available
-            Terminal? snap = simulation.FindClosestSnapTerminal(finalmousepos, ComponentDefaults.TerminalSnappingRange, out Point pos);
-            pos = SnapToGrid(pos);
-            wirePreview.Points[^1] = pos;
-            
-            // Add L-shape point
-            if (wirePreview.Points.Count > 1)
-            {
-                Point lShapePoint = SnapToGrid(mousePos);
-                if (!simulation.WouldWireOverlapComponent(pos, lShapePoint) &&
-                    !simulation.WouldWireOverlapExistingWire(pos, lShapePoint, wirePreview))
-                {
-                    lShapePoint = SnapToGrid(mousePos);
-                    wirePreview.Points.Add(lShapePoint);
-                    removelShapePoint = true;
-                }
-            }
-            
-            wirePreview.InvalidateVisual();
+            wirePreview.Points.RemoveAt(wirePreview.Points.Count - 1);
+            removelShapePoint = false;
         }
+
+        Point snappedMousePos = SnapToGrid(mousePos);
+
+        // Handle single point - just add the second point directly
+        if (wirePreview.Points.Count == 1)
+        {
+            wirePreview.Points[^1] = snappedMousePos;
+            wirePreview.InvalidateVisual();
+            return true;
+        }
+
+        // Handle multiple points with L-shape routing
+        Point previousPoint = wirePreview.Points[^2];
+        Point targetPoint = CalculateRoutedPoint(previousPoint, snappedMousePos, simulation, wirePreview);
+
+        // Update the last point
+        wirePreview.Points[^1] = targetPoint;
+
+        // Add L-shape completion point if needed
+        if (targetPoint != snappedMousePos && ShouldAddLShapePoint(targetPoint, snappedMousePos, simulation, wirePreview))
+        {
+            wirePreview.Points.Add(snappedMousePos);
+            removelShapePoint = true;
+        }
+
+        wirePreview.InvalidateVisual();
         return true;
+    }
+
+    private Point CalculateRoutedPoint(Point fromPoint, Point toPoint, Simulation simulation, Wire wirePreview)
+    {
+        // Calculate horizontal and vertical routing options
+        double deltaX = Math.Abs(toPoint.X - fromPoint.X);
+        double deltaY = Math.Abs(toPoint.Y - fromPoint.Y);
+
+        Point horizontalFirst = new Point(toPoint.X, fromPoint.Y);
+        Point verticalFirst = new Point(fromPoint.X, toPoint.Y);
+
+        // Determine preferred direction based on larger delta
+        Point preferredPoint = (deltaX > deltaY) ? horizontalFirst : verticalFirst;
+        Point alternatePoint = (deltaX > deltaY) ? verticalFirst : horizontalFirst;
+
+        // Check for terminal snapping on preferred route
+        Terminal? preferredSnap = simulation.FindClosestSnapTerminal(preferredPoint, 
+            ComponentDefaults.TerminalSnappingRange, out Point preferredSnapPos);
+        if (preferredSnap != null)
+        {
+            preferredPoint = SnapToGrid(preferredSnapPos);
+        }
+
+        // Check for terminal snapping on alternate route
+        Terminal? alternateSnap = simulation.FindClosestSnapTerminal(alternatePoint, 
+            ComponentDefaults.TerminalSnappingRange, out Point alternateSnapPos);
+        if (alternateSnap != null)
+        {
+            alternatePoint = SnapToGrid(alternateSnapPos);
+        }
+
+        // Check path clearance and return the best option
+        bool preferredClear = IsPathClearForWire(fromPoint, preferredPoint, wirePreview, simulation);
+        bool alternateClear = IsPathClearForWire(fromPoint, alternatePoint, wirePreview, simulation);
+
+        if (preferredClear)
+            return preferredPoint;
+        else if (alternateClear)
+            return alternatePoint;
+        else
+            return preferredPoint; // Default to preferred even if blocked
+    }
+
+    private bool ShouldAddLShapePoint(Point routedPoint, Point finalTarget, Simulation simulation, Wire wirePreview)
+    {
+        // Don't add L-shape if we're already at the target
+        if (routedPoint == finalTarget)
+            return false;
+
+        // Check if the second leg of the L-shape is clear
+        return IsPathClearForWire(routedPoint, finalTarget, wirePreview, simulation);
+    }
+
+    private bool IsPathClearForWire(Point start, Point end, Wire wirePreview, Simulation simulation)
+    {
+        Console.WriteLine(simulation.WouldWireOverlapExistingWire(start, end));
+        // Check if preferred direction is clear
+        if (!simulation.WouldWireOverlapComponent(start, end) &&
+            !simulation.WouldWireOverlapExistingWire(start, end))
+        {
+            return true;
+        }
+        else
+        {
+            return false; // Both directions blocked, can't move
+        }
     }
 
     Point SnapToGrid(Point pt)
@@ -289,13 +326,6 @@ internal class PreviewManager
     private void HandleWireEnterCommit(Wire wire, List<Component> components, Canvas canvas, CommandManager commandManager)
     {
         // Debug: Print all points
-        Console.WriteLine($"DrawSelection called with {wire.Points.Count} points:");
-        for (int i = 0; i < wire.Points.Count; i++)
-        {
-            Console.WriteLine($"  Point[{i}]: {wire.Points[i]}");
-        }
-        Console.WriteLine("---");
-        Console.WriteLine("Committing wire");
         if (wire.Points.Count >= 2)
         {
             var commitCommand = new CommitWireCommand(components, wire);
@@ -307,14 +337,16 @@ internal class PreviewManager
         _previewComponent = null;
     }
 
-    public void StartWireExtension(Wire existingWire, Canvas canvas, Point clickPoint, List<Component> components)
+    public void StartWireExtension(Wire existingWire, Canvas canvas, Point clickPoint,
+                                    List<Component> components, List<Component> MovedWires)
     {
         Console.WriteLine("Starting wire extension");
         existingWire.IsBeingEdited = true; 
         components.Remove(existingWire);
         _previewComponent = existingWire;
-        
+
         // Add a break point
+        removelShapePoint = false;
         existingWire.Points.Add(new Point(-1, -1));
         // Get the closest point on the line segment instead of using click point
         clickPoint = SnapToGrid(clickPoint);

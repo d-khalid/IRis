@@ -193,23 +193,37 @@ internal class SelectionManager
         List<Component> allComponents, Simulation simulation,
         bool snapToGridEnabled, Func<Point, Point>? snapToGrid)
     {
+        // Add a check for validating wires
+        foreach (var component in selectedComponents)
+        {
+            if (component is Wire wire)
+            {
+                if (WireHasBreaks(wire))
+                {
+                    Console.WriteLine("Movement not allowed for extended wires!");
+                    return;
+                }
+            }
+        }
+
         foreach (var component in selectedComponents)
         {
             if (!_dragOffsets.TryGetValue(component, out Point offset)) continue;
 
             Point newPos = new Point(currentMousePos.X + offset.X, currentMousePos.Y + offset.Y);
-            
+
             // Apply grid snapping if enabled
             if (snapToGridEnabled && snapToGrid != null)
                 newPos = snapToGrid(newPos);
 
             Canvas.SetLeft(component, newPos.X);
             Canvas.SetTop(component, newPos.Y);
-            
+
             // Snap wire endpoints to their connected terminals
             if (component is Wire wire)
             {
                 SnapWireEndpointsToTerminals(wire, allComponents);
+                AddCornerPointsToWire(wire);
             }
             // Force redraw for components that need it (like wires)
             component.InvalidateVisual();
@@ -217,15 +231,15 @@ internal class SelectionManager
     }
 
     // Only updates wire endpoints connected to terminals, preserves internal path
+    // TODO: fix this function for wires with break points
     private void SnapWireEndpointsToTerminals(Wire wire, List<Component> allComponents)
     {
         var connectedTerminals = FindTerminalsConnectedToWire(wire, allComponents);
-        
         if (connectedTerminals.Count == 0 || wire.Points.Count == 0) return;
-        
+
         // Get the current wire position
         Point wirePos = new Point(Canvas.GetLeft(wire), Canvas.GetTop(wire));
-        
+
         // Update first endpoint if connected to a terminal
         if (connectedTerminals.Count >= 1)
         {
@@ -233,13 +247,51 @@ internal class SelectionManager
             Point firstTerminalLocalPos = firstTerminalWorldPos - wirePos;
             wire.Points[0] = firstTerminalLocalPos;
         }
-        
+
         // Update last endpoint if connected to a second terminal
         if (connectedTerminals.Count >= 2 && wire.Points.Count > 1)
         {
             Point secondTerminalWorldPos = GetTerminalWorldPosition(connectedTerminals[1], allComponents);
             Point secondTerminalLocalPos = secondTerminalWorldPos - wirePos;
-            wire.Points[wire.Points.Count - 1] = secondTerminalLocalPos;
+            wire.Points[^1] = secondTerminalLocalPos;
+        }
+    }
+
+    // TODO: remove this function & references when wire extension movement is fixed
+    private bool WireHasBreaks(Wire wire)
+    {
+        for (int i = 0; i < wire.Points.Count - 1; i++)
+        {
+            if (wire.Points[i] == new Point(-1, -1)) return true;
+        }
+        return false;
+    }
+
+    private void AddCornerPointsToWire(Wire wire)
+    {
+        for (int i = 0; i < wire.Points.Count - 1; i++)
+        {
+            // If two points are not orthogonal then add a point in-between
+            if (!(wire.Points[i].X == wire.Points[i + 1].X || wire.Points[i].Y == wire.Points[i + 1].Y))
+            {
+                wire.Points.Insert(i + 1, new Point(wire.Points[i].X, wire.Points[i + 1].Y));
+            }
+        }
+
+        // Remove unnecessary points added by this function
+        for (int i = 0; i < wire.Points.Count - 2; i++)
+        {
+            // Save the points of extensions
+            if (i >= 1 && (wire.Points[i - 1] == new Point(-1, -1))) continue;
+            // If three points are on the same axis then remove one
+            if (wire.Points[i].X == wire.Points[i + 1].X && wire.Points[i + 1].X == wire.Points[i + 2].X)
+            {
+                wire.Points.RemoveAt(i + 1);
+            }
+            else if (wire.Points[i].Y == wire.Points[i + 1].Y && wire.Points[i + 1].Y == wire.Points[i + 2].Y)
+            {
+                wire.Points.RemoveAt(i + 1);
+            }
         }
     }
 
@@ -247,11 +299,11 @@ internal class SelectionManager
     private List<Terminal> FindTerminalsConnectedToWire(Wire wire, List<Component> allComponents)
     {
         var connectedTerminals = new List<Terminal>();
-        
+
         foreach (var component in allComponents)
         {
             if (component.Terminals == null) continue;
-            
+
             foreach (var terminal in component.Terminals)
             {
                 // Change from single wire check to multiple wires check
@@ -261,7 +313,7 @@ internal class SelectionManager
                 }
             }
         }
-        
+
         return connectedTerminals;
     }
 

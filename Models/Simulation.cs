@@ -21,11 +21,18 @@ public partial class Simulation : ObservableObject
     private Canvas? _canvas;
     private List<Component> _components;
     private List<Component> _selectedComponents;
+    private List<Component> _movedWires;
 
     public List<Component> Components
     {
         get => _components;
         set => _components = value;
+    }
+
+    public List<Component> MovedWires
+    {
+        get => _movedWires;
+        set => _movedWires = value;
     }
 
     [ObservableProperty] private Point _currentMousePos = new Point(0, 0);
@@ -69,6 +76,7 @@ public partial class Simulation : ObservableObject
         // Initialize lists
         _components = new List<Component>();
         _selectedComponents = new List<Component>();
+        _movedWires = new List<Component>();
 
         // Initialize managers
         _selectionManager = new SelectionManager();
@@ -110,33 +118,6 @@ public partial class Simulation : ObservableObject
         _canvas.PointerExited += (s, e) => _previewManager.OnExit();
         _canvas.KeyDown += OnKeyDown;
         _canvas.PointerWheelChanged += OnPointerWheel;
-    }
-
-    private void OnPointerMoved(object? sender, PointerEventArgs e)
-    {
-        // Update the mouse pos
-        CurrentMousePos = e.GetPosition(_canvas);
-
-        if (_previewManager.HandleUpdate(_canvas!, CurrentMousePos, _gridManager.SnapToGridEnabled,
-            _gridManager.SnapToGrid, this))
-            return;
-
-        // Pass the selectedComponents reference and grid functions
-        _selectionManager.HandleUpdate(_canvas!, _selectedComponents, CurrentMousePos, _components, this,
-            _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
-    }
-
-    // Keyboard shortcut support for moving selected components
-    private void OnKeyDown(object? sender, KeyEventArgs e)
-    {
-        // Handle preview manager first
-        _previewManager.HandleKeyCommand(e, _components, _canvas!, _commandManager);
-
-        // FIXED: Correct condition check
-        if (_selectedComponents.Count > 0 && _previewManager.PreviewCompType == null)
-        {
-            HandleMoveSelectedComponents(e);
-        }
     }
 
     private void HandleMoveSelectedComponents(KeyEventArgs e)
@@ -285,40 +266,10 @@ public partial class Simulation : ObservableObject
         return closestTerminal; // Returns null if no terminal is within snapping range
     }
 
-    private Wire? FindWireAtPosition(Point position)
+    public Wire? FindWireAtPosition(Point position)
     {
         return _components.OfType<Wire>()
             .FirstOrDefault(wire => wire.IsPointOnWire(position, 5.0)); // 5.0 is click tolerance
-    }
-
-    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        // Handle wire extension when clicking on existing wire
-        if (_previewManager.PreviewCompType == "WIRE" && _previewManager.PreviewComponent != null)
-        {
-            Console.WriteLine("Handle wire extension");
-            var clickedWire = FindWireAtPosition(CurrentMousePos);
-            if (clickedWire != null)
-            {
-                _previewManager.StartWireExtension(clickedWire, _canvas!, CurrentMousePos, Components);
-                return;
-            }
-        }
-        if (_previewManager.HandleCommit(sender, e, _components, _canvas!, CurrentMousePos, _commandManager, this))
-            return;
-
-        // Add drag handling
-        _previewManager.OnPointerPressed(sender, e, _selectedComponents);
-        _selectionManager.HandleStart(_canvas!, _selectedComponents, CurrentMousePos);
-    }
-
-    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
-    {
-        // Handle preview manager drag completion first
-        _previewManager.OnPointerReleased(sender, e, _commandManager);
-
-        // Then handle selection manager
-        _selectionManager.HandleEnd(_canvas!, _commandManager);
     }
 
     public bool WouldWireOverlapComponent(Point startPoint, Point endPoint)
@@ -374,32 +325,167 @@ public partial class Simulation : ObservableObject
 
         return t >= 0 && t <= 1 && u >= 0 && u <= 1;
     }
-    
-    public bool WouldWireOverlapExistingWire(Point startPoint, Point endPoint, Wire currentWire)
+
+    public bool WouldWireOverlapExistingWire(Point startPoint, Point endPoint)
     {
         foreach (Component component in _components)
         {
-            if (!(component is Wire existingWire) || existingWire == currentWire) continue;
-            
-            int overlapCount = 0;
-            
+            if (!(component is Wire existingWire)) continue;
+
+            int intersectionCount = 0;
+
             // Check each segment of the existing wire
             for (int i = 0; i < existingWire.Points.Count - 1; i++)
             {
+                // Skip invalid points
+                if (existingWire.Points[i] == new Point(-1, -1) || 
+                    existingWire.Points[i + 1] == new Point(-1, -1)) 
+                    continue;
+
                 Point segStart = existingWire.Points[i];
                 Point segEnd = existingWire.Points[i + 1];
-                
+
                 // Check if the new wire segment intersects this existing segment
                 if (LineIntersectsLine(startPoint, endPoint, segStart, segEnd))
                 {
-                    overlapCount++;
-                    if (overlapCount > 1)
-                    {
-                        return true; // More than 1 intersection point
-                    }
+                    intersectionCount++;
                 }
+                
+                // Also check for collinear overlap (same path, overlapping segments)
+                else if (AreSegmentsCollinearAndOverlapping(startPoint, endPoint, segStart, segEnd))
+                {
+                    return true; // Collinear overlap is always an overlap
+                }
+            }
+            
+            // If we have 2 or more intersections with this wire, it's an overlap
+            if (intersectionCount >= 2)
+            {
+                return true;
             }
         }
         return false;
     }
+
+    private bool AreSegmentsCollinearAndOverlapping(Point line1Start, Point line1End, Point line2Start, Point line2End)
+    {
+        // Check if all four points are collinear
+        if (!ArePointsCollinear(line1Start, line1End, line2Start) || 
+            !ArePointsCollinear(line1Start, line1End, line2End))
+        {
+            return false;
+        }
+
+        // Points are collinear, now check if segments overlap
+        // Determine if the line is more horizontal or vertical
+        bool isHorizontal = Math.Abs(line1End.X - line1Start.X) >= Math.Abs(line1End.Y - line1Start.Y);
+        
+        if (isHorizontal)
+        {
+            // Check X-axis overlap
+            double line1Min = Math.Min(line1Start.X, line1End.X);
+            double line1Max = Math.Max(line1Start.X, line1End.X);
+            double line2Min = Math.Min(line2Start.X, line2End.X);
+            double line2Max = Math.Max(line2Start.X, line2End.X);
+            
+            // Segments overlap if they're not completely separate
+            return !(line1Max < line2Min || line2Max < line1Min);
+        }
+        else
+        {
+            // Check Y-axis overlap
+            double line1Min = Math.Min(line1Start.Y, line1End.Y);
+            double line1Max = Math.Max(line1Start.Y, line1End.Y);
+            double line2Min = Math.Min(line2Start.Y, line2End.Y);
+            double line2Max = Math.Max(line2Start.Y, line2End.Y);
+            
+            // Segments overlap if they're not completely separate
+            return !(line1Max < line2Min || line2Max < line1Min);
+        }
+    }
+
+    private bool ArePointsCollinear(Point p1, Point p2, Point p3)
+    {
+        // Use cross product to check if points are collinear
+        double crossProduct = (p2.X - p1.X) * (p3.Y - p1.Y) - (p2.Y - p1.Y) * (p3.X - p1.X);
+        return Math.Abs(crossProduct) < 1e-10;
+    }
+
+    // ________________________________________________
+    // ____________ Pointer/Key Handling ______________
+    // ________________________________________________
+
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        // Handle wire extension when clicking on existing wire
+        if (_previewManager.PreviewCompType == "WIRE" && _previewManager.PreviewComponent != null)
+        {
+            var clickedWire = FindWireAtPosition(CurrentMousePos);
+            if (clickedWire != null)
+            {
+                if (IsWireInMovedWires(clickedWire, MovedWires))
+                {
+                    Console.WriteLine("Moved wire cannot be extended!");
+                    return;
+                }
+                else
+                {
+                    _previewManager.StartWireExtension(clickedWire, _canvas!, CurrentMousePos, Components, MovedWires);
+                    return;
+                }
+            }
+        }
+        if (_previewManager.HandleCommit(sender, e, _components, _canvas!, CurrentMousePos, _commandManager, this))
+            return;
+
+        // Add drag handling
+        _previewManager.OnPointerPressed(sender, e, _selectedComponents);
+        _selectionManager.HandleStart(_canvas!, _selectedComponents, CurrentMousePos);
+    }
+    
+    private bool IsWireInMovedWires(Wire wire, List<Component> MovedWires)
+    {
+        foreach (var movedWire in MovedWires)
+        {
+            if (movedWire == wire) return true;
+        }
+        return false;
+    }
+
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        // Handle preview manager drag completion first
+        _previewManager.OnPointerReleased(sender, e, _commandManager);
+
+        // Then handle selection manager
+        _selectionManager.HandleEnd(_canvas!, _commandManager);
+    }
+    
+    private void OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        // Update the mouse pos
+        CurrentMousePos = e.GetPosition(_canvas);
+
+        if (_previewManager.HandleUpdate(_canvas!, CurrentMousePos, _gridManager.SnapToGridEnabled,
+            _gridManager.SnapToGrid, this))
+            return;
+
+        // Pass the selectedComponents reference and grid functions
+        _selectionManager.HandleUpdate(_canvas!, _selectedComponents, CurrentMousePos, _components, this,
+            _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
+    }
+
+    // Keyboard shortcut support for moving selected components
+    private void OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        // Handle preview manager first
+        _previewManager.HandleKeyCommand(e, _components, _canvas!, _commandManager);
+
+        // FIXED: Correct condition check
+        if (_selectedComponents.Count > 0 && _previewManager.PreviewCompType == null)
+        {
+            HandleMoveSelectedComponents(e);
+        }
+    }
+
 }

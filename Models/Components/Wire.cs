@@ -166,13 +166,9 @@ public class Wire : Component, ICloneable
     public override void Draw(DrawingContext ctx)
     {
         if (points.Count == 0) return;
-
+        
         // Use ghost styling if wire is not committed OR is being edited
         bool useGhostStyling = IsBeingEdited && !IsCommitted;
-        // if (!useGhostStyling)
-        // {
-        //     Console.WriteLine("Eliminating ghost styling");
-        // }
         var penToUse = useGhostStyling ? ComponentDefaults.GhostWirePen : ComponentDefaults.WirePen;
         
         if (points.Count == 1 && points[0] != new Point(-1, -1))
