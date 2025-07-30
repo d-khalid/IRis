@@ -9,7 +9,7 @@ on:
     types: [ published ]
 
 env:
-  DOTNET_VERSION: '8.0.x'
+  DOTNET_VERSION: '9.0.x'
   PROJECT_NAME: 'IRis'
   SOLUTION_FILE: 'IRis.sln'
 
@@ -50,7 +50,7 @@ jobs:
     needs: build-and-test
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [windows-latest, ubuntu-latest]
         include:
           - os: windows-latest
             runtime: win-x64
@@ -58,9 +58,6 @@ jobs:
           - os: ubuntu-latest
             runtime: linux-x64
             artifact-name: linux-x64
-          - os: macos-latest
-            runtime: osx-x64
-            artifact-name: macos-x64
 
     runs-on: ${{ matrix.os }}
 
@@ -78,7 +75,7 @@ jobs:
 
     - name: Publish application
       run: |
-        dotnet publish src/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj \
+        dotnet publish IRis/IRis.csproj \
           --configuration Release \
           --runtime ${{ matrix.runtime }} \
           --self-contained true \
@@ -107,7 +104,7 @@ jobs:
           ${{ env.PROJECT_NAME }}-${{ matrix.artifact-name }}.zip
           ${{ env.PROJECT_NAME }}-${{ matrix.artifact-name }}.tar.gz
 
-  # Optional: Package as Flatpak for Linux
+  # Package as Flatpak for Linux
   build-flatpak:
     needs: build-and-test
     runs-on: ubuntu-latest
@@ -127,11 +124,11 @@ jobs:
         sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         sudo flatpak install -y flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08 org.freedesktop.Sdk.Extension.dotnet8//23.08
 
-    # Note: eed to create a flatpak manifest file for this step
+    # TODO: create a flatpak manifest file for this step
     # - name: Build Flatpak
     #   run: flatpak-builder build-dir com.yourcompany.CircuitSimulation.json
 
-  # Release job (only on release events)
+  # Release job
   release:
     needs: [build-and-test, build-cross-platform]
     runs-on: ubuntu-latest
@@ -155,7 +152,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Optional: Code quality checks
+  # Code quality checks
   code-quality:
     runs-on: ubuntu-latest
     
@@ -172,5 +169,4 @@ jobs:
       run: dotnet tool install -g dotnet-format
 
     - name: Check code formatting
-      run: dotnet format --verify-no-changes --verbosity diagnostic
-
+      run: dotnet format IRis.sln --verify-no-changes --verbosity diagnostic
