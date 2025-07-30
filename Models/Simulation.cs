@@ -154,6 +154,7 @@ public partial class Simulation : ObservableObject
         _canvas!.Children.AddRange(_components);
     }
 
+    // sus? amogus?
     public void DeleteAllComponents()
     {
         _canvas!.Children.RemoveAll(_components);

@@ -135,6 +135,11 @@
                 <Button Content="NOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="NOR"/>
                 <Button Content="XOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="XOR"/>
                 <Button Content="XNOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="XNOR"/>
+                <Button Content="Multiplexer" Command="{Binding AddComponentCommand}" CommandParameter="MUX"/>
+
+                
+                <TextBlock Text="Input/Output" FontWeight="Bold" Margin="0,10,0,5"/>
+                
                 <Button Content="Toggle Switch" Command="{Binding AddComponentCommand}" CommandParameter="TOGGLE"/>
                 <Button Content="Logic Probe" Command="{Binding AddComponentCommand}" CommandParameter="PROBE"/>
                 <Button Content="Other" Command="{Binding OtherComponentsCommand}"/>
@@ -182,7 +187,28 @@
             <Canvas x:Name="MainCanvas" Background="LightGray" MinWidth="2000" MinHeight="2000">
                 <!-- Circuit elements will be added here programmatically -->
                 
-                <!-- <Line EndPoint="0,20" StartPoint="20,20" Stroke="Black"  StrokeThickness="3"/> -->
+                <!-- Context Menu Setup -->
+                <Canvas.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy" 
+                                  Command="{Binding CopyCommand}"
+                                  />
+                        <MenuItem Header="Cut" 
+                                  Command="{Binding CutCommand}"
+                        />
+                        <MenuItem Header="Paste" 
+                                  Command="{Binding PasteCommand}"
+                        />
+                        <MenuItem Header="Delete" 
+                                  Command="{Binding DeleteCommand}"
+                        />
+                        <MenuItem Header="Properties" 
+                                  Command="{Binding ShowPropertiesCommand}"
+                        />
+                        
+                    </ContextMenu>
+                </Canvas.ContextMenu>
+                
                 
             </Canvas>
         </ScrollViewer>

@@ -22,7 +22,7 @@ using IRis.Views;
 
 namespace IRis.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
+    public partial class MainWindowViewModel : ViewModelBase
     {
         private readonly Simulation _simulation;
 
@@ -363,6 +363,20 @@ namespace IRis.ViewModels
                 aboutWindow.ShowDialog(mainWindow);
             }
         }
+
+        [RelayCommand]
+        public void ShowProperties()
+        {
+            var propertiesWindow = new ComponentPropertiesWindow();
+            propertiesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            // Get reference to main window
+            var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+                ?.MainWindow;
+
+            propertiesWindow.ShowDialog(mainWindow!);
+        }
+
 
         // Component command
         public ICommand AddComponentCommand { get; }
