@@ -105,7 +105,7 @@ namespace IRis.ViewModels
             AiImageCommand = new RelayCommand(AiGenerationFromImage);
 
             AddComponentCommand = new RelayCommand<string>(AddComponent!);
-            OtherComponentsCommand = new RelayCommand(OtherComponents);
+            OtherComponentsCommand = new AsyncRelayCommand(OtherComponents);
 
             GridToggleCommand = new RelayCommand(GridToggle);
             SimulationToggleCommand = new RelayCommand(SimulationToggle);
@@ -376,16 +376,31 @@ namespace IRis.ViewModels
 
         // Other components window
         public ICommand OtherComponentsCommand { get; }
-        private void OtherComponents()
+        private async Task OtherComponents()
         {
-            var otherComponentsWindow = new OtherComponentsWindow();
-
-            // Center it relative to main window
-            otherComponentsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            // Get reference to main window
-            if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
+            var otherComponentsWindow = new OtherComponentsWindow
             {
-                otherComponentsWindow.ShowDialog(mainWindow);
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
+            {
+                CustomComponentData? result = await otherComponentsWindow.ShowDialog<CustomComponentData?>(mainWindow);
+
+                if (result is not null)
+                {
+                    // Console.WriteLine($"Inputs: {result.InputCount}, Outputs: {result.OutputCount}");
+                    Console.WriteLine("Sucess");
+                    _simulation.CustomComponent = result;
+                    
+                    Console.WriteLine($"Adding component: {result.Name}");
+                    _simulation.PreviewCompType = "CUSTOM";
+                    LastAction = $"Selected Component [{result.Name}]";
+                }
+                else
+                {
+                    Console.WriteLine("Dialog was canceled or no selection made.");
+                }
             }
         }
 
@@ -401,7 +416,7 @@ namespace IRis.ViewModels
             var window = new ExportComponentWindow();
             // Center it relative to main window
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            
+
             // Get reference to main window (same pattern as OtherComponents method)
             if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
             {
@@ -413,6 +428,10 @@ namespace IRis.ViewModels
                     Console.WriteLine($"Component name: {componentName}");
                     _serializer.SerializeComponents(_simulation, "RuntimeComponents/" + componentName + ".xml");
                     Console.WriteLine("Saved to: " + _openedFileName);
+                }
+                else
+                {
+                    Console.WriteLine("User clicked Cancel or closed the window.");
                 }
                 // If result is null, user clicked Cancel or closed the window
             }

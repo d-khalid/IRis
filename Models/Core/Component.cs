@@ -133,7 +133,7 @@ public abstract class Component : Control, ICustomHitTest
     }
     
     // A method for making components by type
-    public static Component Create(string componentType)
+    public static Component Create(string componentType, Simulation simulation)
     {
         switch (componentType)
         {
@@ -156,7 +156,8 @@ public abstract class Component : Control, ICustomHitTest
             case "TOGGLE":
                 return new LogicToggle();
             case "CUSTOM":
-                return new CustomComponent();
+                return new CustomComponent(simulation.CustomComponent.Name, simulation.CustomComponent.InputCount,
+                    simulation.CustomComponent.OutputCount, simulation.CustomComponent.Formulas);
             case "WIRE":
                 return new Wire();
             default:

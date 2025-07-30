@@ -11,6 +11,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Components;
 using IRis.Models.Core;
 using IRis.Models.Commands;
+using IRis.Services;
+using IRis.Views;
 
 namespace IRis.Models;
 
@@ -22,6 +24,7 @@ public partial class Simulation : ObservableObject
     private List<Component> _components;
     private List<Component> _selectedComponents;
     private List<Component> _movedWires;
+    public CustomComponentData CustomComponent { get; set; } = null!;
 
     public List<Component> Components
     {

@@ -117,11 +117,6 @@ public class CircuitFormulaConversionService
             var probe = outputProbes[i];
             string outputName = $"Output_{i + 1}";
             
-            if (i == 0 && outputProbes.Count == 2)
-                outputName = "Sum"; // First output of full adder is typically sum
-            else if (i == 1 && outputProbes.Count == 2)
-                outputName = "Carry"; // Second output is typically carry
-            
             // Add safety check here
             if (!probe.InputWires.Any())
             {
@@ -185,34 +180,68 @@ public class CircuitFormulaConversionService
                 return inputToggleNames[componentId];
                 
             case "XorGate":
-                var xorInputs = component.InputWires.Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames)).ToList();
-                return $"({string.Join(" XOR ", xorInputs)})";
+                // XOR: A XOR B = (A & !B) | (!A & B)
+                if (component.InputWires.Count == 2)
+                {
+                    var input1 = BuildFormula(component.InputWires[0], components, wireToOutputComponent, inputToggleNames);
+                    var input2 = BuildFormula(component.InputWires[1], components, wireToOutputComponent, inputToggleNames);
+                    return $"(({input1}&!{input2})|(!{input1}&{input2}))";
+                }
+                else
+                {
+                    // For multiple inputs, chain XOR operations
+                    var inputs = component.InputWires.Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames)).ToList();
+                    var result = inputs[0];
+                    for (int i = 1; i < inputs.Count; i++)
+                    {
+                        result = $"(({result}&!{inputs[i]})|(!{result}&{inputs[i]}))";
+                    }
+                    return result;
+                }
                 
             case "AndGate":
                 var andInputs = component.InputWires.Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames)).ToList();
-                return $"({string.Join(" AND ", andInputs)})";
+                return $"({string.Join("&", andInputs)})";
                 
             case "OrGate":
                 var orInputs = component.InputWires.Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames)).ToList();
-                return $"({string.Join(" OR ", orInputs)})";
+                return $"({string.Join("|", orInputs)})";
 
             case "NotGate":
                 if (!component.InputWires.Any())
                     return "0";
                 var notInput = BuildFormula(component.InputWires.First(), components, wireToOutputComponent, inputToggleNames);
-                return $"(NOT {notInput})";
+                return $"(!{notInput})";
 
             case "NandGate":
+                // NAND: !(A & B & C...)
                 var nandInputs = component.InputWires.Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames)).ToList();
-                return $"(NOT ({string.Join(" AND ", nandInputs)}))";
+                return $"!({string.Join("&", nandInputs)})";
 
             case "NorGate":
+                // NOR: !(A | B | C...)
                 var norInputs = component.InputWires.Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames)).ToList();
-                return $"(NOT ({string.Join(" OR ", norInputs)}))";
+                return $"!({string.Join("|", norInputs)})";
 
             case "XnorGate":
-                var xnorInputs = component.InputWires.Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames)).ToList();
-                return $"(NOT ({string.Join(" XOR ", xnorInputs)}))";
+                // XNOR: !(A XOR B) = (A & B) | (!A & !B)
+                if (component.InputWires.Count == 2)
+                {
+                    var input1 = BuildFormula(component.InputWires[0], components, wireToOutputComponent, inputToggleNames);
+                    var input2 = BuildFormula(component.InputWires[1], components, wireToOutputComponent, inputToggleNames);
+                    return $"(({input1}&{input2})|(!{input1}&!{input2}))";
+                }
+                else
+                {
+                    // For multiple inputs, it's the negation of XOR
+                    var inputs = component.InputWires.Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames)).ToList();
+                    var xorResult = inputs[0];
+                    for (int i = 1; i < inputs.Count; i++)
+                    {
+                        xorResult = $"(({xorResult}&!{inputs[i]})|(!{xorResult}&{inputs[i]}))";
+                    }
+                    return $"!({xorResult})";
+                }
                 
             default:
                 return "Unknown";
@@ -222,7 +251,7 @@ public class CircuitFormulaConversionService
     private static List<string> ExtractInputVariables(string formula)
     {
         var inputs = new HashSet<string>();
-        var tokens = formula.Split(new[] { ' ', '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
+        var tokens = formula.Split(new[] { ' ', '(', ')', '&', '|', '!' }, StringSplitOptions.RemoveEmptyEntries);
         
         foreach (var token in tokens)
         {

@@ -36,7 +36,7 @@ public static class ComponentDefaults
     // For terminals
     public static double TerminalWireLength = 25;
     public static double TerminalSnappingRange = 15;
-    public const double TerminalSpacing = GridSpacing * 2;
+    public const double TerminalSpacing = 20;
 
     // For labels
     public static IBrush LabelBrush = new ImmutableSolidColorBrush(Color.FromRgb(40, 40, 40));
@@ -53,7 +53,7 @@ public static class ComponentDefaults
     public static double XorArcDistFactor = 3;
     
     // For the grid
-    public const double GridSpacing = 10; // pixels between grid lines (non-decimals only)
+    public const double GridSpacing = TerminalSpacing / 2; // pixels between grid lines (non-decimals only)
     public static IBrush GridBrush = new SolidColorBrush(Colors.Black, 0.3);
     public static double GridThickness = 0.5;
 

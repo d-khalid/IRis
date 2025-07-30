@@ -6,12 +6,15 @@ using System.Linq;
 using Avalonia;
 using IRis.Services;
 using System.Collections.Generic;
+using Tmds.DBus.Protocol;
 
 namespace IRis.Views
 {
     public partial class OtherComponentsWindow : Window
     {
-        public string? SelectedComponent { get; private set; }
+        public int InputCount { get; set; }
+        public int OutputCount { get; set; }
+        public List<CircuitFormulaConversionService.CircuitFormula> Formulas { get; set; } = [];
 
         private const string ComponentFolder = "RuntimeComponents";
 
@@ -44,11 +47,18 @@ namespace IRis.Views
         {
             if (ComponentListBox.SelectedItem is ListBoxItem item)
             {
-                Console.WriteLine("Selected component: " + item.Content);
+                // Console.WriteLine("Selected component: " + item.Content);
                 // TODO: Implement custom components logic here
-                test(Path.Combine("RuntimeComponents", item.Content!.ToString()! + ".xml"));
+                ExtractFormulasFromCircuit(Path.Combine("RuntimeComponents", item.Content!.ToString()! + ".xml"));
 
-                Close(SelectedComponent);
+                var result = new CustomComponentData
+                {
+                    Name = item.Content!.ToString()!,
+                    InputCount = this.InputCount,
+                    OutputCount = this.OutputCount,
+                    Formulas = this.Formulas
+                };
+                Close(result);
             }
             else
             {
@@ -67,16 +77,16 @@ namespace IRis.Views
             }
         }
 
-        private void test(string fileName)
+        private void ExtractFormulasFromCircuit(string fileName)
         {
             // 2. Get number of inputs and outputs from XML string
             string xmlContent = File.ReadAllText(fileName);
-            int inputCount2 = CircuitFormulaConversionService.GetNumberOfInputs(xmlContent);
-            int outputCount2 = CircuitFormulaConversionService.GetNumberOfOutputs(xmlContent);
-            var formulas2 = CircuitFormulaConversionService.ConvertXmlContentToFormulas(xmlContent);
+            InputCount = CircuitFormulaConversionService.GetNumberOfInputs(xmlContent);
+            OutputCount = CircuitFormulaConversionService.GetNumberOfOutputs(xmlContent);
+            Formulas = CircuitFormulaConversionService.ConvertXmlContentToFormulas(xmlContent);
 
             // 5. Display the formulas
-            foreach (var formula in formulas2)
+            foreach (CircuitFormulaConversionService.CircuitFormula formula in Formulas)
             {
                 Console.WriteLine($"{formula.OutputName} = {formula.Formula}");
                 Console.WriteLine($"Input Variables: {string.Join(", ", formula.InputVariables)}");
@@ -88,4 +98,13 @@ namespace IRis.Views
             Close();
         }
     }
+    
+    public class CustomComponentData
+    {
+        public required string Name { get; set; }
+        public int InputCount { get; set; }
+        public int OutputCount { get; set; }
+        public List<CircuitFormulaConversionService.CircuitFormula> Formulas { get; set; } = [];
+    }
+
 }
