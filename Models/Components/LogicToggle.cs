@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using IRis.Models.Core;
+using System;
 
 
 namespace IRis.Models.Components;
@@ -23,9 +24,9 @@ public class LogicToggle : Component, IOutputProvider
             InvalidateVisual();
 
             // Propagate it into the wire if we have any
-            if (Terminals[0].Wire != null)
+            if (Terminals![0].Wire != null)
             {
-                Terminals[0].Wire.Value = value;
+                Terminals[0].Wire!.Value = value;
             }
         }
     }
@@ -33,12 +34,17 @@ public class LogicToggle : Component, IOutputProvider
     public LogicToggle(double width = ComponentDefaults.DefaultWidth, double height = ComponentDefaults.DefaultHeight)
         : base(width, height)
     {
-        Width = width * 2 / 3;
-        Height = height * 2 / 3;
+        Width = width * 1 / 2;
+        Height = height * 1 / 2;
 
         Terminals = new Terminal[1];
+
+        // Snap to nearest grid line
+        static double Snap(double val) => Math.Round(val / 10.0) * 10;
+        double x = Snap(Width + ComponentDefaults.TerminalWireLength);
+        double y = Snap(Height / 2);
         // Left-oriented
-        Terminals[0] = new Terminal(new Point(Width + ComponentDefaults.TerminalWireLength, Height / 2), null);
+        Terminals[0] = new Terminal(new Point(x, y), null!);
 
         Value = LogicState.Low;
         
@@ -70,7 +76,7 @@ public class LogicToggle : Component, IOutputProvider
             new() { Name = "Width", Value = Width.ToString() },
             new() { Name = "Height", Value = Height.ToString() },
             new() { Name = "Rotation", Value = Rotation.ToString() },
-            new() { Name = "Value", Value = this.Value.ToString() }
+            new() { Name = "Value", Value = this.Value!.ToString() }
             
             // Add other serializable properties in subclasses
         };
@@ -87,7 +93,10 @@ public class LogicToggle : Component, IOutputProvider
         clone.IsSelected = this.IsSelected;
         
         // Component-specific things
-        clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire);
+        if (clone.Terminals is not null && this.Terminals is not null)
+        {
+            clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire!);
+        }
         clone.Value = this.Value;
         
         // Reset visual state
@@ -99,10 +108,13 @@ public class LogicToggle : Component, IOutputProvider
 
     public void ComputeOutput()
     {
-        // If there is a wire, propagate the value to it
-        if (Terminals[0].Wire != null)
+        // Propagate the toggle value to ALL connected wires
+        foreach (var wire in Terminals![0].Wires)
         {
-            Terminals[0].Wire.Value = this.Value;
+            if (wire != null)
+            {
+                wire.Value = this.Value;
+            }
         }
     }
 
@@ -115,7 +127,8 @@ public class LogicToggle : Component, IOutputProvider
         {
             LogicState.High => ComponentDefaults.TrueBrush,
             LogicState.Low => ComponentDefaults.FalseBrush,
-            LogicState.DontCare => ComponentDefaults.DontCareBrush
+            LogicState.DontCare => ComponentDefaults.DontCareBrush,
+            _ => ComponentDefaults.DontCareBrush
         };
 
         content = Value switch
@@ -123,6 +136,7 @@ public class LogicToggle : Component, IOutputProvider
             LogicState.High => "1",
             LogicState.Low => "0",
             LogicState.DontCare => "X",
+            _ => "X"
         };
 
 
@@ -132,7 +146,7 @@ public class LogicToggle : Component, IOutputProvider
             new Rect(0, 0, Width, Height)
         );
 
-        ctx.DrawLine(ComponentDefaults.WirePen, Terminals[0].Position, new Point(Width, Terminals[0].Position.Y));
+        ctx.DrawLine(ComponentDefaults.WirePen, Terminals![0].Position, new Point(Width, Terminals[0].Position.Y));
         ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
             Terminals[0].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 

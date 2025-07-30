@@ -6,6 +6,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using IRis.Models.Components;
 using Avalonia.Threading;
+using System.Linq;
 
 namespace IRis.Models.Core;
 
@@ -14,14 +15,47 @@ namespace IRis.Models.Core;
 public class Terminal
 {
     public Point Position { get; }
+    
+    // Change from single Wire to List of Wires
+    public List<Wire> Wires { get; set; } = new List<Wire>();
+    
+    // Keep this for backward compatibility if needed
+    public Wire? Wire 
+    { 
+        get => Wires.FirstOrDefault(); 
+        set 
+        { 
+            if (value != null && !Wires.Contains(value))
+            {
+                Wires.Add(value);
+            }
+        } 
+    }
 
-    // Value is nullable to account for dont cares
-    public Wire? Wire { get; set; }
-
-    public Terminal(Point position, Wire wire)
+    public Terminal(Point position)
     {
         Position = position;
-        Wire = wire;
+    }
+    
+    public Terminal(Point position, Wire wire) : this(position)
+    {
+        if (wire != null)
+            Wires.Add(wire);
+    }
+    
+    // Add a wire to this terminal
+    public void AddWire(Wire wire)
+    {
+        if (wire != null && !Wires.Contains(wire))
+        {
+            Wires.Add(wire);
+        }
+    }
+    
+    // Remove a wire from this terminal
+    public void RemoveWire(Wire wire)
+    {
+        Wires.Remove(wire);
     }
     
     // For serialization
@@ -29,7 +63,7 @@ public class Terminal
     {
         return new TerminalDto
         {
-            ConnectedWireId = this.Wire?.Id // Will be null if Wire is null
+            ConnectedWireIds = Wires.Where(w => w.Id.HasValue).Select(w => w.Id!.Value).ToList()
         };
     }
 }
@@ -39,9 +73,8 @@ public abstract class Gate : Component, IOutputProvider
 {
     protected int NumInputs;
     
-    private bool?[] _previousInputValues;
-
-    private DispatcherTimer _updateTimer;
+    // private bool?[] _previousInputValues;
+    // private DispatcherTimer _updateTimer;
 
     // Uses default values if none are given
     public Gate(int numInputs, double width = ComponentDefaults.DefaultWidth,
@@ -100,14 +133,14 @@ public abstract class Gate : Component, IOutputProvider
         // Copy terminal values (positions are set in constructor)
         for (int i = 0; i < this.NumInputs; i++)
         {
-            clone.Terminals[i] = new Terminal(
+            clone.Terminals![i] = new Terminal(
                 clone.Terminals[i].Position,  // Use new position
-                this.Terminals[i].Wire      // Copy original value
+                this.Terminals![i].Wire!      // Copy original value
             );
         }
-        clone.Terminals[^1] = new Terminal(
+        clone.Terminals![^1] = new Terminal(
             clone.Terminals[^1].Position,
-            this.Terminals[^1].Wire
+            this.Terminals![^1].Wire!
         );
 
         // Reset visual state
@@ -117,7 +150,7 @@ public abstract class Gate : Component, IOutputProvider
         return clone;
     }
 
-    // Draws an translucent box around the gate
+    // Draws a translucent box around the gate
     public override void DrawSelection(DrawingContext ctx)
     {
         double expandX = ComponentDefaults.TerminalWireLength + ComponentDefaults.TerminalRadius ;
@@ -139,17 +172,30 @@ public abstract class Gate : Component, IOutputProvider
     protected void AddTerminalPoints(bool notMode = false)
     {
         double spacing = Height / (NumInputs + 1);
+
+        // Helper to snap to nearest multiple of 10
+        Point SnapToGrid(Point pt)
+        {
+            double snapX = Math.Round(pt.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
+            double snapY = Math.Round(pt.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
+            return new Point(snapX, snapY);
+        }
+
+        // Input terminals
         for (int i = 0; i < NumInputs; i++)
         {
-            Terminals[i] = new Terminal(new Point(-ComponentDefaults.TerminalWireLength, spacing * (i + 1)), null);
-            
+            var pos = new Point(-ComponentDefaults.TerminalWireLength, spacing * (i + 1));
+            Terminals![i] = new Terminal(SnapToGrid(pos), null!);
         }
-        //Terminals[^1]
-        double outputX = Width + ComponentDefaults.TerminalWireLength;
-        if(notMode) outputX += ComponentDefaults.BubbleRadius * 2;
-        
-        Terminals[^1]= new Terminal(new Point(outputX, Height / 2), null);
+
+        // Output terminal
+        double outputX = Width + ComponentDefaults.TerminalWireLength -5;   // WARNING: this is a Patch
+        if (notMode) outputX += ComponentDefaults.BubbleRadius * 2;
+
+        var outputPos = SnapToGrid(new Point(outputX, Height / 2));
+        Terminals![^1] = new Terminal(SnapToGrid(outputPos), null!);
     }
+
 
     // For drawing the terminals
     // notMode: a bubble drawn with the output terminal
@@ -160,6 +206,7 @@ public abstract class Gate : Component, IOutputProvider
         // Input lines extend into the gate and covered up by the fill color
         for (int i = 0; i < NumInputs; i++)
         {
+            if (Terminals![i] == null) continue;
             ctx.DrawLine(ComponentDefaults.WirePen, Terminals[i].Position, new Point(Width / ComponentDefaults.OrArcFactor, Terminals[i].Position.Y));
             ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
                 Terminals[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
@@ -168,7 +215,7 @@ public abstract class Gate : Component, IOutputProvider
         // For Terminals[^1]
         // SUSPEND: I STOPPED HERE
      
-        ctx.DrawLine(ComponentDefaults.WirePen, Terminals[^1].Position,
+        ctx.DrawLine(ComponentDefaults.WirePen, Terminals![^1].Position,
             new Point(Terminals[^1].Position.X - ComponentDefaults.TerminalWireLength, Terminals[^1].Position.Y));
         ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
             Terminals[^1].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
@@ -187,7 +234,7 @@ public abstract class Gate : Component, IOutputProvider
         };
 
         // Arc 1: Top curve (right to left)
-        figure.Segments.Add(new ArcSegment
+        figure.Segments!.Add(new ArcSegment
         {
             Point = new Point(0, Height),
             Size = new Size(Width / ComponentDefaults.OrArcFactor, Height /2),
@@ -213,7 +260,7 @@ public abstract class Gate : Component, IOutputProvider
             IsLargeArc = false
         });
 
-        gatePath.Figures.Add(figure);
+        gatePath.Figures!.Add(figure);
         
         // 2. Draw the complete gate
         ctx.DrawGeometry(ComponentDefaults.GateFillBrush, ComponentDefaults.GatePen, gatePath);  
@@ -229,7 +276,7 @@ public abstract class Gate : Component, IOutputProvider
                 
             };
 
-            arcFigure.Segments.Add(new ArcSegment
+            arcFigure.Segments!.Add(new ArcSegment
             {
                 Point = new Point(-ComponentDefaults.TerminalWireLength / ComponentDefaults.XorArcDistFactor, Height * 0.98),
                 Size = new Size(Width / ComponentDefaults.OrArcFactor, Height /2),
@@ -237,7 +284,7 @@ public abstract class Gate : Component, IOutputProvider
                 IsLargeArc = false
             });
             
-            xorArc.Figures.Add(arcFigure);
+            xorArc.Figures!.Add(arcFigure);
             
             ctx.DrawGeometry(null, ComponentDefaults.GatePen, xorArc);
         }
@@ -256,7 +303,7 @@ public abstract class Gate : Component, IOutputProvider
         double arcLen = Width / 3;
 
         // Left vertical line
-        figure.Segments.Add(new LineSegment { Point = new Point(0, Height) });
+        figure.Segments!.Add(new LineSegment { Point = new Point(0, Height) });
 
         // Bottom horizontal line (left to right)
         figure.Segments.Add(new LineSegment { Point = new Point(Width - arcLen, Height) });
@@ -274,7 +321,7 @@ public abstract class Gate : Component, IOutputProvider
         // Top horizontal line (right to left)
         figure.Segments.Add(new LineSegment { Point = new Point(0, 0) });
 
-        gatePath.Figures.Add(figure);
+        gatePath.Figures!.Add(figure);
         
         // 2. Draw the complete gate
         ctx.DrawGeometry(ComponentDefaults.GateFillBrush, ComponentDefaults.GatePen, gatePath);

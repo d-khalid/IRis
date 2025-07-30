@@ -26,24 +26,31 @@ public class AndGate : Gate
 
     public override void ComputeOutput()
     {
-        // If there's a missing wire, don't bother
-        if (Terminals.Any(p => p.Wire == null)) return;
+        // For inputs: check if ANY input terminal has at least one wire
+        // For output: check if output terminal has at least one wire
+        if (Terminals == null) return;
+        var inputTerminals = Terminals.SkipLast(1);
+        var outputTerminal = Terminals[^1];
 
-        // Funny LINQ expression
-        if (Terminals.SkipLast(1).All(p => p.Wire.Value == LogicState.High))
+        if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
+
+        // For each input terminal, OR together all connected wire values
+        var inputValues = inputTerminals.Select(terminal => 
+                        terminal.Wires.Any(w => w.Value == LogicState.High)).ToList();
+
+        if (inputValues.All(value => value == true)) // All inputs must be high
         {
-            Terminals[^1].Wire.Value = LogicState.High;
+            foreach (var wire in outputTerminal.Wires)
+            {
+                wire.Value = LogicState.High;
+            }
         }
-        else Terminals[^1].Wire.Value = LogicState.Low;
-
+        else
+        {
+            foreach (var wire in outputTerminal.Wires)
+            {
+                wire.Value = LogicState.Low;
+            }
+        }
     }
-
-    // public override void UpdateOutputValue()
-    // {
-    //     var values = Inputs.Select(input => input.Wire.Value).ToArray();
-    //
-    //     // Logic applies for any no. of Inputs
-    //     if (values.Any(v => v == null)) Output.Wire.Value = null;
-    //     else Output.Wire.Value = values.All(v => v == true);
-    // }
 }

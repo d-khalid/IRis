@@ -1,3 +1,4 @@
+// File: SelectionManager.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using IRis.Models.Components;
 using IRis.Models.Core;
+using IRis.Models.Commands;
 
 namespace IRis.Models;
 
@@ -14,25 +16,37 @@ internal class SelectionManager
 {
     private Point _selectionStart;
     private Rectangle? _selectionRect;
-    
+
     // Dragging state
     private bool _isDragging;
     private Point _dragStart;
+    private List<Point> _dragStartPositions = new();
+    private List<Component> _draggedComponents = new();
     private Dictionary<Component, Point> _dragOffsets = new();
 
     public void HandleStart(Canvas canvas, List<Component> selectedComponents, Point mousePos)
     {
         _selectionStart = mousePos;
 
-        // Check if we're clicking on a selected component to start dragging
+        // Check if we're clicking on a selected component to prepare for potential dragging
         foreach (var child in canvas.Children)
         {
             if (child is Component component && IsComponentHit(component, mousePos))
             {
                 if (component.IsSelected)
                 {
-                    // Start dragging all selected components
-                    StartDrag(selectedComponents, mousePos);
+                    // DON'T start dragging immediately - just prepare for it
+                    // Store the drag start position and offsets, but don't set _isDragging = true yet
+                    _dragStart = mousePos;
+                    _dragOffsets.Clear();
+
+                    // Store initial offsets for all selected components
+                    foreach (var selectedComponent in selectedComponents)
+                    {
+                        Point componentPos = new Point(Canvas.GetLeft(selectedComponent), Canvas.GetTop(selectedComponent));
+                        Point offset = new Point(componentPos.X - mousePos.X, componentPos.Y - mousePos.Y);
+                        _dragOffsets[selectedComponent] = offset;
+                    }
                     return;
                 }
                 else
@@ -41,82 +55,66 @@ internal class SelectionManager
                     UnselectAll(selectedComponents);
                     selectedComponents.Add(component);
                     component.IsSelected = true;
-                    
+
                     // NEW: Select connected wires
-                    SelectConnectedWires(component, canvas, selectedComponents);
+                    SelectConnectedWires(component, selectedComponents);
                     return;
                 }
             }
         }
-
         // Unselect components if hitting empty space
         UnselectAll(selectedComponents);
         StartSelectionRectangle(canvas);
     }
 
-    // NEW METHOD: Select all wires connected to a component
-    private void SelectConnectedWires(Component component, Canvas canvas, List<Component> selectedComponents)
+    // Add allComponents and simulation parameters for wire snapping, Invoked Externally by Simulation.cs
+    public void HandleUpdate(Canvas canvas, List<Component> selectedComponents, Point currentMousePos,
+        List<Component> allComponents, Simulation simulation,
+        bool snapToGridEnabled = false, Func<Point, Point>? snapToGrid = null)
     {
+        // Check if we should start dragging (mouse moved far enough from start position)
+        if (!_isDragging && _dragOffsets.Count > 0)
+        {
+            double dragThreshold = 3.0; // Minimum distance to start dragging
+            double distance = Math.Sqrt(Math.Pow(currentMousePos.X - _dragStart.X, 2) +
+                                    Math.Pow(currentMousePos.Y - _dragStart.Y, 2));
+
+            if (distance > dragThreshold)
+            {
+                _isDragging = true;
+            }
+        }
+
+        // Handle dragging selected components
+        if (_isDragging)
+        {
+            UpdateDraggedComponents(selectedComponents, currentMousePos, allComponents, simulation, snapToGridEnabled, snapToGrid);
+            return;
+        }
+
+        // No selection area to update, let the event handler go on
+        if (_selectionRect == null) return;
+
+        UpdateSelectionRectangle(currentMousePos);
+        UpdateSelectedComponents(canvas, selectedComponents);
+    }
+
+
+    private void SelectConnectedWires(Component component, List<Component> selectedComponents)
+    {       // Select all wires connected to a component
         if (component.Terminals == null) return;
 
         foreach (var terminal in component.Terminals)
         {
-            if (terminal.Wire != null && !terminal.Wire.IsSelected)
+            // Change from single wire to multiple wires
+            foreach (var wire in terminal.Wires)
             {
-                terminal.Wire.IsSelected = true;
-                selectedComponents.Add(terminal.Wire);
-            }
-        }
-    }
-
-    // NEW METHOD: Select wires connected to any of the selected components
-    private void SelectConnectedWiresForComponents(List<Component> componentsToCheck, Canvas canvas, List<Component> selectedComponents)
-    {
-        foreach (var component in componentsToCheck)
-        {
-            if (component is Wire) continue; // Skip wires themselves
-            
-            SelectConnectedWires(component, canvas, selectedComponents);
-        }
-    }
-
-    // NEW METHOD: Get all components connected to selected wires
-    private List<Component> GetComponentsConnectedToWires(List<Component> selectedWires, Canvas canvas)
-    {
-        var connectedComponents = new List<Component>();
-        
-        foreach (var wire in selectedWires.OfType<Wire>())
-        {
-            foreach (var child in canvas.Children)
-            {
-                if (child is Component component && component != wire && component.Terminals != null)
+                if (wire != null && !wire.IsSelected)
                 {
-                    foreach (var terminal in component.Terminals)
-                    {
-                        if (terminal.Wire == wire && !connectedComponents.Contains(component))
-                        {
-                            connectedComponents.Add(component);
-                        }
-                    }
+                    wire.IsSelected = true;
+                    selectedComponents.Add(wire);
                 }
             }
-        }
-        
-        return connectedComponents;
-    }
-
-    private void StartDrag(List<Component> selectedComponents, Point mousePos)
-    {
-        _isDragging = true;
-        _dragStart = mousePos;
-        _dragOffsets.Clear();
-
-        // Store initial offsets for all selected components
-        foreach (var component in selectedComponents)
-        {
-            Point componentPos = new Point(Canvas.GetLeft(component), Canvas.GetTop(component));
-            Point offset = new Point(componentPos.X - mousePos.X, componentPos.Y - mousePos.Y);
-            _dragOffsets[component] = offset;
         }
     }
 
@@ -129,25 +127,12 @@ internal class SelectionManager
         if (componentBounds.Contains(point)) return true;
 
         // Check For wires
-        return component is Wire wire && component.HitTest(point);
-    }
-
-    private void ToggleSelection(Component component, List<Component> selectedComponents)
-    {
-        if (component.IsSelected)
-        {
-            selectedComponents.Remove(component);
-            component.IsSelected = false;
-        }
-        else
-        {
-            selectedComponents.Add(component);
-            component.IsSelected = true;
-        }
+        return component is Wire && component.HitTest(point);
     }
 
     public void UnselectAll(List<Component> selectedComponents)
     {
+        // Unselect all components
         foreach (Component c in selectedComponents)
             c.IsSelected = false;
         selectedComponents.Clear();
@@ -169,160 +154,134 @@ internal class SelectionManager
         canvas.Children.Add(_selectionRect);
     }
 
-    // UPDATED METHOD: Added allComponents and simulation parameters for wire snapping
-    public void HandleUpdate(Canvas canvas, List<Component> selectedComponents, Point currentMousePos, 
-        List<Component> allComponents, Simulation simulation,
-        bool snapToGridEnabled = false, Func<Point, Point>? snapToGrid = null)
-    {
-        // Handle dragging selected components
-        if (_isDragging)
-        {
-            UpdateDraggedComponents(selectedComponents, currentMousePos, allComponents, simulation, snapToGridEnabled, snapToGrid);
-            return;
-        }
-
-        // No selection area to update, let the event handler go on
-        if (_selectionRect == null) return;
-
-        UpdateSelectionRectangle(currentMousePos);
-        UpdateSelectedComponents(canvas, selectedComponents);
-    }
-
-    // UPDATED METHOD: Added wire endpoint snapping functionality
+    // Added wire endpoint snapping functionality
     private void UpdateDraggedComponents(List<Component> selectedComponents, Point currentMousePos,
         List<Component> allComponents, Simulation simulation,
         bool snapToGridEnabled, Func<Point, Point>? snapToGrid)
     {
+        // Add a check for validating wires
+        foreach (var component in selectedComponents)
+        {
+            if (component is Wire wire)
+            {
+                if (WireHasBreaks(wire))
+                {
+                    Console.WriteLine("Movement not allowed for extended wires!");
+                    return;
+                }
+            }
+        }
+
         foreach (var component in selectedComponents)
         {
             if (!_dragOffsets.TryGetValue(component, out Point offset)) continue;
 
             Point newPos = new Point(currentMousePos.X + offset.X, currentMousePos.Y + offset.Y);
-            
+
             // Apply grid snapping if enabled
             if (snapToGridEnabled && snapToGrid != null)
                 newPos = snapToGrid(newPos);
 
             Canvas.SetLeft(component, newPos.X);
             Canvas.SetTop(component, newPos.Y);
-            
-            // NEW: Snap wire endpoints to their connected terminals
+
+            // Snap wire endpoints to their connected terminals
             if (component is Wire wire)
             {
                 SnapWireEndpointsToTerminals(wire, allComponents);
+                AddCornerPointsToWire(wire);
             }
-            
             // Force redraw for components that need it (like wires)
             component.InvalidateVisual();
         }
     }
 
-    // UPDATED METHOD: Snaps wire endpoints to their connected terminals and cleans up old paths
     private void SnapWireEndpointsToTerminals(Wire wire, List<Component> allComponents)
     {
         var connectedTerminals = FindTerminalsConnectedToWire(wire, allComponents);
-        
-        if (connectedTerminals.Count == 0) return;
-        
-        // Clear the old wire path to avoid junk segments
-        wire.Points.Clear();
-        
+        if (connectedTerminals.Count == 0 || wire.Points.Count == 0) return;
+
         // Get the current wire position
         Point wirePos = new Point(Canvas.GetLeft(wire), Canvas.GetTop(wire));
-        
-        // If we have connected terminals, recreate the wire path
+
+        // Update first endpoint if connected to a terminal
         if (connectedTerminals.Count >= 1)
         {
-            // For the first terminal, add it as the starting point
             Point firstTerminalWorldPos = GetTerminalWorldPosition(connectedTerminals[0], allComponents);
             Point firstTerminalLocalPos = firstTerminalWorldPos - wirePos;
-            wire.Points.Add(firstTerminalLocalPos);
-            
-            // If there's a second terminal, create a simple path to it
-            if (connectedTerminals.Count >= 2)
-            {
-                Point secondTerminalWorldPos = GetTerminalWorldPosition(connectedTerminals[1], allComponents);
-                Point secondTerminalLocalPos = secondTerminalWorldPos - wirePos;
-                
-                // Create a simple L-shaped or direct path between terminals
-                CreateWirePath(wire, firstTerminalLocalPos, secondTerminalLocalPos);
-            }
-            else
-            {
-                // If only one terminal is connected, the wire should extend from that point
-                // You might want to add logic here for partially connected wires
-                // For now, just add a small extension in the current direction
-                Point extension = new Point(firstTerminalLocalPos.X + 20, firstTerminalLocalPos.Y);
-                wire.Points.Add(extension);
-            }
+            wire.Points[0] = firstTerminalLocalPos;
+        }
+
+        // Update last endpoint if connected to a second terminal
+        if (connectedTerminals.Count >= 2 && wire.Points.Count > 1)
+        {
+            Point secondTerminalWorldPos = GetTerminalWorldPosition(connectedTerminals[1], allComponents);
+            Point secondTerminalLocalPos = secondTerminalWorldPos - wirePos;
+            wire.Points[^1] = secondTerminalLocalPos;
         }
     }
 
-    // NEW METHOD: Creates an optimal path between two terminal points
-    private void CreateWirePath(Wire wire, Point startLocal, Point endLocal)
+    // TODO: remove this function & references when wire extension movement is fixed
+    private bool WireHasBreaks(Wire wire)
     {
-        // Clear any existing points except the start point (which should already be added)
-        if (wire.Points.Count > 1)
+        for (int i = 0; i < wire.Points.Count - 1; i++)
         {
-            // Keep only the first point and clear the rest
-            Point startPoint = wire.Points[0];
-            wire.Points.Clear();
-            wire.Points.Add(startPoint);
+            if (wire.Points[i] == new Point(-1, -1)) return true;
         }
-        
-        double dx = endLocal.X - startLocal.X;
-        double dy = endLocal.Y - startLocal.Y;
-        
-        // Create path based on direction and distance
-        if (Math.Abs(dx) < 10 && Math.Abs(dy) < 10)
+        return false;
+    }
+
+    private void AddCornerPointsToWire(Wire wire)
+    {
+        for (int i = 0; i < wire.Points.Count - 1; i++)
         {
-            // Very close - direct connection
-            wire.Points.Add(endLocal);
+            // If two points are not orthogonal then add a point in-between
+            if (wire.Points[i].X != wire.Points[i + 1].X && wire.Points[i].Y != wire.Points[i + 1].Y)
+            {
+                wire.Points.Insert(i + 1, new Point(wire.Points[i].X, wire.Points[i + 1].Y));
+            }
         }
-        else if (Math.Abs(dx) > Math.Abs(dy) * 2)
+
+        // Remove unnecessary points added by this function
+        for (int i = 0; i < wire.Points.Count - 2; i++)
         {
-            // Primarily horizontal - go horizontal then vertical
-            wire.Points.Add(new Point(startLocal.X + dx * 0.7, startLocal.Y));
-            wire.Points.Add(new Point(startLocal.X + dx * 0.7, endLocal.Y));
-            wire.Points.Add(endLocal);
-        }
-        else if (Math.Abs(dy) > Math.Abs(dx) * 2)
-        {
-            // Primarily vertical - go vertical then horizontal
-            wire.Points.Add(new Point(startLocal.X, startLocal.Y + dy * 0.7));
-            wire.Points.Add(new Point(endLocal.X, startLocal.Y + dy * 0.7));
-            wire.Points.Add(endLocal);
-        }
-        else
-        {
-            // Diagonal - create L-shape
-            wire.Points.Add(new Point(endLocal.X, startLocal.Y));
-            wire.Points.Add(endLocal);
+            // Do NOT remove the points of extensions
+            if (i >= 1 && (wire.Points[i - 1] == new Point(-1, -1))) continue;
+            // If three points are on the same axis then remove one
+            if (wire.Points[i].X == wire.Points[i + 1].X && wire.Points[i + 1].X == wire.Points[i + 2].X)
+            {
+                wire.Points.RemoveAt(i + 1);
+            }
+            else if (wire.Points[i].Y == wire.Points[i + 1].Y && wire.Points[i + 1].Y == wire.Points[i + 2].Y)
+            {
+                wire.Points.RemoveAt(i + 1);
+            }
         }
     }
 
-    // NEW METHOD: Find all terminals connected to a specific wire
+    // Find all terminals connected to a specific wire
     private List<Terminal> FindTerminalsConnectedToWire(Wire wire, List<Component> allComponents)
     {
         var connectedTerminals = new List<Terminal>();
-        
+
         foreach (var component in allComponents)
         {
             if (component.Terminals == null) continue;
-            
+
             foreach (var terminal in component.Terminals)
             {
-                if (terminal.Wire == wire)
+                // Change from single wire check to multiple wires check
+                if (terminal.Wires.Contains(wire))
                 {
                     connectedTerminals.Add(terminal);
                 }
             }
         }
-        
+
         return connectedTerminals;
     }
 
-    // NEW METHOD: Get the world position of a terminal
+    // Get the world position of a terminal
     private Point GetTerminalWorldPosition(Terminal terminal, List<Component> allComponents)
     {
         // Find the component that owns this terminal
@@ -335,77 +294,44 @@ internal class SelectionManager
                 break;
             }
         }
-        
+
         if (ownerComponent == null)
             return new Point(0, 0);
-        
+
         // Get component's world position
         Point componentPos = new Point(Canvas.GetLeft(ownerComponent), Canvas.GetTop(ownerComponent));
-        
+
         // Add terminal's relative position to component position
-        // Note: You may need to adjust this based on how Terminal.Position is defined
         // and whether it accounts for component rotation
         Point terminalLocalPos = terminal.Position;
-        
+
         // If the component is rotated, we need to transform the terminal position
         if (ownerComponent.Rotation != 0)
         {
-            terminalLocalPos = RotatePoint(terminalLocalPos, ownerComponent.Rotation, 
+            terminalLocalPos = RotatePoint(terminalLocalPos, ownerComponent.Rotation,
                 new Point(ownerComponent.Width / 2, ownerComponent.Height / 2));
         }
-        
+
         return componentPos + terminalLocalPos;
     }
 
-    // NEW METHOD: Rotate a point around a center point by a given angle
+    // Rotate a point around a center point by a given angle
     private Point RotatePoint(Point point, double angleDegrees, Point center)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0;
         double cos = Math.Cos(angleRadians);
         double sin = Math.Sin(angleRadians);
-        
+
         // Translate point to origin
         double translatedX = point.X - center.X;
         double translatedY = point.Y - center.Y;
-        
+
         // Rotate
         double rotatedX = translatedX * cos - translatedY * sin;
         double rotatedY = translatedX * sin + translatedY * cos;
-        
+
         // Translate back
         return new Point(rotatedX + center.X, rotatedY + center.Y);
-    }
-
-    // NEW METHOD: Find the wire point closest to a target position
-    private int FindClosestWirePoint(Wire wire, Point targetPos)
-    {
-        if (wire.Points.Count == 0) return -1;
-        
-        double minDistance = double.MaxValue;
-        int closestIndex = -1;
-        Point wirePos = new Point(Canvas.GetLeft(wire), Canvas.GetTop(wire));
-        
-        for (int i = 0; i < wire.Points.Count; i++)
-        {
-            Point worldWirePoint = wirePos + wire.Points[i];
-            double distance = CalculateDistance(worldWirePoint, targetPos);
-            
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                closestIndex = i;
-            }
-        }
-        
-        return closestIndex;
-    }
-
-    // NEW METHOD: Calculate distance between two points
-    private double CalculateDistance(Point p1, Point p2)
-    {
-        double dx = p1.X - p2.X;
-        double dy = p1.Y - p2.Y;
-        return Math.Sqrt(dx * dx + dy * dy);
     }
 
     private void UpdateSelectionRectangle(Point currentMousePos)
@@ -447,6 +373,16 @@ internal class SelectionManager
         SelectConnectedWiresForComponents(componentsInSelection, canvas, selectedComponents);
     }
 
+    private void SelectConnectedWiresForComponents(List<Component> componentsToCheck, Canvas canvas, List<Component> selectedComponents)
+    {
+        foreach (var component in componentsToCheck)
+        {
+            if (component is Wire) continue; // Skip wires themselves
+
+            SelectConnectedWires(component, selectedComponents);
+        }
+    }
+
     private Rect GetSelectionBounds()
     {
         if (_selectionRect == null) return new Rect();  // Not Expected to occur
@@ -472,15 +408,51 @@ internal class SelectionManager
         return false;
     }
 
-    public void HandleEnd(Canvas canvas)
+    public void HandleEnd(Canvas canvas, CommandManager? commandManager = null)
     {
         // End dragging
         if (_isDragging)
         {
+            // Create move command if components were actually moved
+            if (_dragOffsets.Count > 0)
+            {
+                var selectedComponents = _dragOffsets.Keys.ToList();
+                var originalPositions = selectedComponents.Select(c =>
+                    new Point(Canvas.GetLeft(c) - _dragOffsets[c].X - (_dragStart.X - _dragStart.X),
+                            Canvas.GetTop(c) - _dragOffsets[c].Y - (_dragStart.Y - _dragStart.Y))).ToList();
+                var newPositions = selectedComponents.Select(c =>
+                    new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
+
+                // Only create command if positions actually changed
+                bool moved = false;
+                for (int i = 0; i < originalPositions.Count; i++)
+                {
+                    var originalPos = new Point(Canvas.GetLeft(selectedComponents[i]), Canvas.GetTop(selectedComponents[i]));
+                    originalPos = new Point(originalPos.X - _dragOffsets[selectedComponents[i]].X,
+                                        originalPos.Y - _dragOffsets[selectedComponents[i]].Y);
+                    originalPos = new Point(originalPos.X + _dragStart.X, originalPos.Y + _dragStart.Y);
+
+                    if (Math.Abs(originalPos.X - newPositions[i].X) > 0.1 ||
+                        Math.Abs(originalPos.Y - newPositions[i].Y) > 0.1)
+                    {
+                        moved = true;
+                        break;
+                    }
+                }
+
+                if (moved && commandManager != null)
+                {
+                    // Use the 3-argument constructor: canvas, components, newPositions
+                    var moveCommand = new MoveComponentsCommand(canvas, selectedComponents, newPositions);
+                    commandManager.ExecuteCommand(moveCommand);
+                }
+            }
+
             _isDragging = false;
-            _dragOffsets.Clear();
-            return;
         }
+
+        // Clean up drag preparation state even if we never actually started dragging
+        _dragOffsets.Clear();
 
         // Remove the selection rect if its there
         if (_selectionRect != null)
@@ -498,5 +470,59 @@ internal class SelectionManager
             components.Remove(component);
         }
         selectedComponents.Clear();
+    }
+
+    // Drag handling
+    public void OnPointerPressed(object? sender, PointerPressedEventArgs e, List<Component> selectedComponents)
+    {
+        if (selectedComponents.Any())
+        {
+            _isDragging = true;
+            _draggedComponents = [.. selectedComponents];
+            _dragStartPositions = [.. _draggedComponents.Select(c => 
+                new Point(Canvas.GetLeft(c), Canvas.GetTop(c)))];
+        }
+    }
+
+    public void OnPointerReleased(object? sender, PointerReleasedEventArgs e, CommandManager commandManager)
+    {
+        if (_isDragging && _draggedComponents.Any())
+        {
+            // Calculate the total movement and create a move command
+            var currentPositions = _draggedComponents.Select(c => 
+                new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
+            
+            // Check if components actually moved
+            bool hasMoved = false;
+            for (int i = 0; i < _dragStartPositions.Count; i++)
+            {
+                if (_dragStartPositions[i] != currentPositions[i])
+                {
+                    hasMoved = true;
+                    break;
+                }
+            }
+
+            if (hasMoved)
+            {
+                // Calculate offset from first component
+                var offset = currentPositions[0] - _dragStartPositions[0];
+                
+                // Reset components to original positions
+                for (int i = 0; i < _draggedComponents.Count; i++)
+                {
+                    Canvas.SetLeft(_draggedComponents[i], _dragStartPositions[i].X);
+                    Canvas.SetTop(_draggedComponents[i], _dragStartPositions[i].Y);
+                }
+
+                // Create and execute move command
+                var moveCommand = new MoveComponentsCommand(_draggedComponents, offset);
+                commandManager.ExecuteCommand(moveCommand);
+            }
+        }
+
+        _isDragging = false;
+        _draggedComponents.Clear();
+        _dragStartPositions.Clear();
     }
 }

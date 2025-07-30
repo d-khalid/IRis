@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using Avalonia;
+using System.Linq;
 
 [Serializable]
 [XmlRoot("Circuit")]  // Changed from "Component" to avoid confusion
@@ -17,7 +18,7 @@ public class CircuitDto
 public class ComponentDto
 {
     [XmlAttribute("Type")] 
-    public string Type { get; set; }
+    public string? Type { get; set; }
 
     [XmlAttribute("X")] 
     public double X { get; set; }
@@ -37,16 +38,29 @@ public class ComponentDto
 [Serializable]
 public class TerminalDto
 {
-    [XmlElement(IsNullable = true)]
-    public Guid? ConnectedWireId { get; set; }
+    public List<Guid> ConnectedWireIds { get; set; } = new List<Guid>();
+    
+    // Keep for backward compatibility
+    public Guid? ConnectedWireId 
+    { 
+        get => ConnectedWireIds.FirstOrDefault(); 
+        set 
+        { 
+            if (value.HasValue && value != Guid.Empty)
+            {
+                ConnectedWireIds.Clear();
+                ConnectedWireIds.Add(value.Value);
+            }
+        } 
+    }
 }
 
 [Serializable]
 public class PropertyDto
 {
-    [XmlAttribute("Name")] public string Name { get; set; }
+    [XmlAttribute("Name")] public string? Name { get; set; }
 
-    [XmlText] public string Value { get; set; }
+    [XmlText] public string? Value { get; set; }
 }
 
 

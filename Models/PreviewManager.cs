@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using IRis.Models.Components;
 using IRis.Models.Core;
+using IRis.Models.Commands;
 
 namespace IRis.Models;
 
@@ -12,10 +14,13 @@ internal class PreviewManager
 {
     private string? _previewCompType;
     private Component? _previewComponent;
+    private bool removelShapePoint = false;
 
     public string? PreviewCompType => _previewCompType;
+    public Component? PreviewComponent => _previewComponent;
 
-    public void SetPreviewComponent(string? value, Canvas canvas, Point mousePos)
+    // Invoked externally by Simulation.cs
+    public void SetPreviewComponent(string? value, Canvas canvas, Point mousePos, Simulation simulation)
     {
         _previewCompType = value;
         // Remove the old preview comp if it exists
@@ -33,6 +38,7 @@ internal class PreviewManager
             {
                 PositionPreviewComponent(mousePos);
                 canvas.Children.Add(_previewComponent);
+
                 Console.WriteLine("Added component via setter");
             }
         }
@@ -40,94 +46,123 @@ internal class PreviewManager
 
     private void PositionPreviewComponent(Point mousePos)
     {
-        // TODO: THIS IS HACKY
         if (_previewComponent == null) return;
+        // TODO: fix this initial positioning of wire preview point
         if (_previewComponent is Wire wire)
         {
             wire.AddPoint(mousePos);
             Canvas.SetLeft(wire, 0);
             Canvas.SetTop(wire, 0);
         }
+        // Place the component outside the user's view
         else
         {
-            Canvas.SetLeft(_previewComponent, mousePos.X);
-            Canvas.SetTop(_previewComponent, mousePos.Y);
+            Canvas.SetLeft(_previewComponent,
+            -ComponentDefaults.DefaultWidth - ComponentDefaults.TerminalWireLength * 2);
+            Canvas.SetTop(_previewComponent, 0);
         }
     }
 
-    public bool HandleCommit(object? sender, PointerPressedEventArgs? e, List<Component> components, 
-        Canvas canvas, Point mousePos, Simulation simulation)
+    // Invoked externally by Simulation.cs
+    public bool HandleCommit(object? sender, PointerPressedEventArgs? e, List<Component> components,
+        Canvas canvas, Point mousePos, CommandManager commandManager, Simulation simulation)
     {
-        // Handle wire preview commit
         if (_previewComponent is Wire wirePreview)
         {
-            return HandleWireCommit(sender, e, components, wirePreview, mousePos, simulation);
+            return HandleWireCommit(sender, e, components, wirePreview, mousePos, simulation, commandManager);
         }
 
         // Commit component on click
         if (_previewComponent != null)
         {
-            return HandleComponentCommit(canvas, components, mousePos);
+            return HandleComponentCommit(canvas, components, mousePos, commandManager);
         }
 
         return false; // Continue
     }
 
     private bool HandleWireCommit(object? sender, PointerPressedEventArgs? e, List<Component> components,
-        Wire wirePreview, Point mousePos, Simulation simulation)
+        Wire wirePreview, Point mousePos, Simulation simulation, CommandManager commandManager)
     {
-        if (e == null) return true; // Can't handle wire commit without event args
-        // Check for a terminal we can snap to
+        if (e == null) return true;
         Terminal? target = simulation.FindClosestSnapTerminal(mousePos, ComponentDefaults.TerminalSnappingRange, out var pos);
 
-        if (target != null)
-            target.Wire = wirePreview;
-
-        wirePreview.AddPoint(pos);
-
-        // If RIGHT-CLICK or DOUBLE-CLICK, then commit the wire
-        // Finalize wire if it has at least 2 points
-        var point = e.GetCurrentPoint(sender as Control);
-        if (wirePreview.Points.Count >= 2 && (point.Properties.IsRightButtonPressed || e.ClickCount >= 2))
+        if (target != null)     // Condition: Wire is starting from a gate terminal
         {
-            components.Add(wirePreview);
-            _previewComponent = null;
+            target.AddWire(wirePreview);
+        }
+        else if (simulation.FindWireAtPosition(mousePos) != null) // Edit this to reject is wire is on top of a wire 
+        {
+            Console.WriteLine($"Wire rejected due to being on top of another wire.");
+            return false;       // Couldn't handle
         }
 
-        return true; // Terminate
+        if (removelShapePoint)
+            {
+                wirePreview.Points.RemoveAt(wirePreview.Points.Count - 1);
+                removelShapePoint = false;
+            }
+
+        // Use command for adding point
+        pos = SnapToGrid(pos);
+        var addPointCommand = new AddWirePointCommand(wirePreview, pos);
+        commandManager.ExecuteCommand(addPointCommand);
+
+        var point = e.GetCurrentPoint(sender as Control);
+        // Commits the WIRE ON DOUBLE-CLICK, or RIGHT-CLICK
+        if (wirePreview.Points.Count >= 2 && (point.Properties.IsRightButtonPressed || e.ClickCount >= 2))
+        {
+            // Snap to grid all points
+            for (int i = 0; i < wirePreview.Points.Count - 1; i++)
+            {
+                if (wirePreview.Points[i] != new Point(-1, -1))
+                    wirePreview.Points[i] = SnapToGrid(wirePreview.Points[i]);
+            }
+            // Remove duplicates
+            wirePreview.Points = RemoveDuplicatePoints(wirePreview.Points);
+            var commitCommand = new CommitWireCommand(components, wirePreview);
+            commandManager.ExecuteCommand(commitCommand);
+            _previewComponent = null;
+            simulation.PreviewCompType = "WIRE";   // Keep placing wires
+        }
+
+        return true;
     }
 
-    private bool HandleComponentCommit(Canvas canvas, List<Component> components, Point mousePos)
+    private bool HandleComponentCommit(Canvas canvas, List<Component> components, Point mousePos, CommandManager commandManager)
     {
-        if (string.IsNullOrEmpty(_previewCompType)) return true;    // Terminate
+        if (string.IsNullOrEmpty(_previewCompType)) return true;
         Component? component = Component.Create(_previewCompType);
-        if (component == null) return true; // Terminate
+        if (component == null) return true;
 
         if (_previewComponent != null)
         {
             component.Rotation = _previewComponent.Rotation;
-        } // If _previewComponent is null, component.Rotation will use its default value
-        Canvas.SetLeft(component, mousePos.X);
-        Canvas.SetTop(component, mousePos.Y);
+        }
+        
+        Point position = new Point(
+            Math.Round(mousePos.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing,
+            Math.Round(mousePos.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing
+        );
+        // Add command for undo/redo
+        var addCommand = new AddComponentCommand(canvas, components, component, position);
+        commandManager.ExecuteCommand(addCommand);
 
-        canvas.Children.Add(component);
-        components.Add(component);
         Console.WriteLine($"{_previewCompType} committed!");
-
-        return true; // Terminate
+        return true;
     }
 
-    public bool HandleUpdate(Canvas canvas, Point mousePos, bool snapToGridEnabled, 
+    // Invoked externally by Simulation.cs
+    public bool HandleUpdate(Canvas canvas, Point mousePos, bool snapToGridEnabled,
         Func<Point, Point> snapToGrid, Simulation simulation)
     {
         // For wires only
         if (_previewComponent is Wire wirePreview)
         {
-            return HandleWireUpdate(wirePreview, mousePos, simulation);
+            return HandleWireUpdate(wirePreview, mousePos, snapToGridEnabled, simulation);
         }
 
-        // Update the non-wire preview component
-        if (_previewComponent != null)
+        else if (_previewComponent != null) // Update the non-wire preview component
         {
             Point pos = snapToGridEnabled ? snapToGrid(mousePos) : mousePos;
             Canvas.SetLeft(_previewComponent, pos.X);
@@ -138,67 +173,78 @@ internal class PreviewManager
         return false; // Continue
     }
 
-    private bool HandleWireUpdate(Wire wirePreview, Point mousePos, Simulation simulation)
+    private bool HandleWireUpdate(Wire wirePreview, Point mousePos, bool snapToGridEnabled, Simulation simulation)
     {
-        if (wirePreview.Points.Count > 0)
+        // TODO: Remake this function
+        if (wirePreview.Points.Count == 0) return true;
+
+        // Clean up temporary L-shape point if it exists
+        if (removelShapePoint)
         {
-            // Make wires snap to the closest terminal in range
-            Terminal? snap = simulation.FindClosestSnapTerminal(mousePos, ComponentDefaults.TerminalSnappingRange, out Point pos);
-            wirePreview.Points[^1] = pos;
+            wirePreview.Points.RemoveAt(wirePreview.Points.Count - 1);
+            removelShapePoint = false;
+        }
+
+        Point snappedMousePos = SnapToGrid(mousePos);
+
+        // Handle single point - just add the second point directly
+        if (wirePreview.Points.Count == 1)
+        {
+            wirePreview.Points[^1] = snappedMousePos;
             wirePreview.InvalidateVisual();
+            return true;
         }
-        return true; // Terminate
+        Point targetPoint = snappedMousePos;
+
+        // Update the last point
+        wirePreview.Points[^1] = targetPoint;
+
+        wirePreview.InvalidateVisual();
+        return true;
     }
 
-    public void UpdateWheelPosition(Point mousePos)
+    Point SnapToGrid(Point pt)
     {
-        // Update the preview component
-        if (_previewComponent != null)
+        double snapX = (int)Math.Round(Math.Round(pt.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
+        double snapY = (int)Math.Round(Math.Round(pt.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
+        return new Point(snapX, snapY);
+    }
+
+    public void StartWireExtension(Wire existingWire, Canvas canvas, Point clickPoint,
+                                    List<Component> components, List<Component> MovedWires)
+    {
+        Console.WriteLine("Starting wire extension");
+        existingWire.IsBeingEdited = true; 
+        components.Remove(existingWire);
+        _previewComponent = existingWire;
+
+        // Add a break point
+        removelShapePoint = false;
+        existingWire.Points.Add(new Point(-1, -1));
+        // Get the closest point on the line segment instead of using click point
+        clickPoint = SnapToGrid(clickPoint);
+        existingWire.Points.Add(clickPoint);
+        existingWire.Points.Add(clickPoint); // Duplicate for dragging
+        
+        existingWire.InvalidateVisual();
+    }
+
+    public static List<Point> RemoveDuplicatePoints(List<Point> points)
+    {
+        // Only remove adjacent duplicates
+        for (int i = 0; i < points.Count - 1; i++)
         {
-            // Update rectangle
-            Canvas.SetLeft(_previewComponent, mousePos.X);
-            Canvas.SetTop(_previewComponent, mousePos.Y);
+            if (points[i] == points[i + 1])
+            {
+                points.RemoveAt(i + 1);
+            }
         }
+        return points;
     }
-
-    public void HandleKeyCommand(KeyEventArgs e, List<Component> components, Canvas canvas)
-    {
-        // Rotating wires is a terrible idea so no to that
-        if (_previewComponent == null) return; // terminate
-
-        // Press ENTER to commit a wire)
-        if (_previewComponent is Wire wire && e.Key == Key.Enter)
-        {
-            HandleWireEnterCommit(wire, components, canvas);
-            return; // Terminate
-        }
-
-        HandleRotationKeys(e);
-    }
-
-    private void HandleWireEnterCommit(Wire wire, List<Component> components, Canvas canvas)
-    {
-        // Finalize wire if it has at least 2 points
-        if (wire.Points.Count >= 2)
-            components.Add(wire);
-        else
-            canvas.Children.Remove(wire);
-
-        _previewComponent = null;
-    }
-
-    private void HandleRotationKeys(KeyEventArgs e)
-    {
-        if (_previewComponent == null) return;
-        _previewComponent.Rotation = e.Key switch
-        {
-            Key.Right => 0,
-            Key.Up => 270,
-            Key.Left => 180,
-            Key.Down => 90,
-            _ => _previewComponent.Rotation
-        };
-    }
+    
+    // ________________________________________________
+    // __________ Pointer/Key Event Handling __________
+    // ________________________________________________
 
     public void OnExit()
     {

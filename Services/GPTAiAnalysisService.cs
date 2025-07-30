@@ -24,7 +24,7 @@ public class GptAiAnalysisService : IAiPromptAnalysisService
         string json = await File.ReadAllTextAsync("config.json");
         var config = JsonSerializer.Deserialize<OpenAiConfig>(json);
 
-        Console.WriteLine($"ENDPOINT: {config.Endpoint}\n" +
+        Console.WriteLine($"ENDPOINT: {config!.Endpoint}\n" +
                           $"KEY: {config.Key}\n");
 
         var openAIClient = new AzureOpenAIClient(
@@ -49,6 +49,6 @@ public class GptAiAnalysisService : IAiPromptAnalysisService
 
 public class OpenAiConfig
 {
-    public string Endpoint { get; set; }
-    public string Key { get; set; }
+    public required string Endpoint { get; set; }
+    public required string Key { get; set; }
 }

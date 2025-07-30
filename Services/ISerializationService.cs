@@ -96,7 +96,7 @@ public interface ISerializationService
     public static T ParseProperty<T>(ComponentDto dto, string name)
     {
         PropertyDto? prop = dto.Properties.FirstOrDefault(p => p.Name == name);
-        if (prop == null) return default;
+        if (prop == null) return default!;
     
         Console.WriteLine($"Property: ({prop.Name}, {prop.Value})");
 
@@ -109,46 +109,46 @@ public interface ISerializationService
             {
                 return (T)(object)guid;
             }
-            return default;
+            return default!;
         }
     
         // Special handling for nullable GUIDs
         if (targetType == typeof(Guid?))
         {
-            if (string.IsNullOrEmpty(prop.Value)) return default;
+            if (string.IsNullOrEmpty(prop.Value)) return default!;
             if (Guid.TryParse(prop.Value, out Guid guid))
             {
                 return (T)(object)guid;
             }
-            return default;
+            return default!;
         }
 
         // Special handling for enums
         if (targetType.IsEnum)
         {
-            if (Enum.TryParse(targetType, prop.Value, out object result))
+            if (Enum.TryParse(targetType, prop.Value, out object? result))
             {
                 return (T)result;
             }
-            return default;
+            return default!;
         }
     
         // Special handling for nullable types
-        Type underlyingType = Nullable.GetUnderlyingType(targetType);
+        Type underlyingType = Nullable.GetUnderlyingType(targetType)!;
         if (underlyingType != null)
         {
-            if (string.IsNullOrEmpty(prop.Value)) return default;
+            if (string.IsNullOrEmpty(prop.Value)) return default!;
             targetType = underlyingType;
         }
 
         // Default conversion for other types
         try
         {
-            return (T)Convert.ChangeType(prop.Value, targetType);
+            return (T)Convert.ChangeType(prop.Value, targetType)!;
         }
         catch
         {
-            return default;
+            return default!;
         }
     }
 

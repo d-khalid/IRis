@@ -7,13 +7,13 @@ namespace IRis.Views;
 
 public partial class MainWindow : Window
 {
+    public MainWindow() : this(new Simulation()) {} // fallback for preview/designer/runtime
+
     public MainWindow(Simulation simulation)
     {
         InitializeComponent();
         // "MainCanvas" from the XAML is used for all the drawing
         simulation.Register(MainCanvas);
-        
-        
         
         
         // DataContext = MainWindowViewModel();

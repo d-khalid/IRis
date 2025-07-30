@@ -93,7 +93,12 @@
                 <MenuItem Header="New" Command="{Binding NewCommand}"/>
                 <MenuItem Header="Open..." Command="{Binding OpenCommand}"/>
                 <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
-                <!-- <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}"/> -->
+                <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}"/>
+                <Separator/>
+                <MenuItem Header="Export">
+                    <MenuItem Header="Component" Command="{Binding ExportComponentCommand}" />
+                    <MenuItem Header="Circuit" Command="{Binding ExportCircuitCommand}" />
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
             </MenuItem>
@@ -121,7 +126,7 @@
         <!-- Left Sidebar with Components -->
         <ScrollViewer DockPanel.Dock="Left" Width="150" BorderThickness="2">
             <StackPanel Margin="5" Spacing="5">
-                <TextBlock Text="Logic Gates" FontWeight="Bold" Margin="0,5"/>
+                <TextBlock Text="Components" FontWeight="Bold" Margin="0,5"/>
                 
                 <Button Content="AND Gate" Command="{Binding AddComponentCommand}" CommandParameter="AND"/>
                 <Button Content="OR Gate" Command="{Binding AddComponentCommand}" CommandParameter="OR"/>
@@ -130,11 +135,9 @@
                 <Button Content="NOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="NOR"/>
                 <Button Content="XOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="XOR"/>
                 <Button Content="XNOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="XNOR"/>
-                
-                <TextBlock Text="Input/Output" FontWeight="Bold" Margin="0,10,0,5"/>
-                
                 <Button Content="Toggle Switch" Command="{Binding AddComponentCommand}" CommandParameter="TOGGLE"/>
                 <Button Content="Logic Probe" Command="{Binding AddComponentCommand}" CommandParameter="PROBE"/>
+                <Button Content="Other" Command="{Binding OtherComponentsCommand}"/>
                 
                 <TextBlock Text="Connectors" FontWeight="Bold" Margin="0,10,0,5"/>
                 

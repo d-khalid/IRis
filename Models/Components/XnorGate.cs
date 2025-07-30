@@ -36,17 +36,27 @@ public class XnorGate : Gate
     
     public override void ComputeOutput()
     {
-        // If there's a missing wire, don't bother
-        if (Terminals.Any(p => p.Wire == null)) return;
+        // For inputs: check if ANY input terminal has at least one wire
+        // For output: check if output terminal has at least one wire
+        if (Terminals == null) return;
+        var inputTerminals = Terminals.SkipLast(1);
+        var outputTerminal = Terminals[^1];
 
-        // Funny LINQ expression
-        // Check if number of HIGH inputs is odd
-        if (Terminals.SkipLast(1).Where(p => p.Wire.Value == LogicState.High).Count() % 2 != 0)
+        if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
+
+        // For each input terminal, OR together all connected wire values
+        var inputValues = inputTerminals.Select(terminal => 
+            terminal.Wires.Any(w => w.Value == LogicState.High)).ToList();
+
+        // XNOR logic: output is HIGH when an even number of inputs are HIGH (inverted XOR)
+        int highInputCount = inputValues.Count(value => value == true);
+        LogicState outputValue = (highInputCount % 2 != 0) ? LogicState.Low : LogicState.High;
+
+        // Set output on ALL connected wires
+        foreach (var wire in outputTerminal.Wires)
         {
-            Terminals[^1].Wire.Value = LogicState.Low;
+            wire.Value = outputValue;
         }
-        else Terminals[^1].Wire.Value = LogicState.High;
-
     }
 
 }

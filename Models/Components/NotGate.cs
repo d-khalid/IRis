@@ -25,7 +25,7 @@ public class NotGate : Gate
         };
 
         // Left vertical line down
-        figure.Segments.Add(new LineSegment { Point = new Point(0, Height) });
+        figure.Segments!.Add(new LineSegment { Point = new Point(0, Height) });
 
         // Diagonal to tip (right-middle)
         figure.Segments.Add(new LineSegment { Point = new Point(Width, Height / 2) });
@@ -33,7 +33,7 @@ public class NotGate : Gate
         // Diagonal back to start
         figure.Segments.Add(new LineSegment { Point = new Point(0, 0) });
 
-        gatePath.Figures.Add(figure);
+        gatePath.Figures!.Add(figure);
 
         // 4. Draw terminals (lines + circles)
         DrawTerminals(ctx);
@@ -55,24 +55,49 @@ public class NotGate : Gate
 
     public override void ComputeOutput()
     {
-        // If there's a missing wire, don't bother
-        if (Terminals.Any(p => p.Wire == null)) return;
+        // Check if input and output terminals have at least one wire
+        if (Terminals == null) return;
+        var inputTerminal = Terminals[0];
+        var outputTerminal = Terminals[^1];
 
-        switch (Terminals[0].Wire.Value)
+        if (!inputTerminal.Wires.Any() || !outputTerminal.Wires.Any()) return;
+
+        // For input terminal, OR together all connected wire values
+        LogicState? inputValue = null;
+        if (inputTerminal.Wires.Any(w => w.Value == LogicState.High))
         {
-            case LogicState.DontCare:
-                Terminals[^1].Wire.Value = LogicState.DontCare;
-                break;
-            case LogicState.High:
-                Terminals[^1].Wire.Value = LogicState.Low;
-                break;
-            case LogicState.Low:
-                Terminals[^1].Wire.Value = LogicState.High;
-                break;
-            case null:
-                Terminals[^1].Wire.Value = null;
-                break;
+            inputValue = LogicState.High;
+        }
+        else if (inputTerminal.Wires.Any(w => w.Value == LogicState.Low))
+        {
+            inputValue = LogicState.Low;
+        }
+        else if (inputTerminal.Wires.Any(w => w.Value == LogicState.DontCare))
+        {
+            inputValue = LogicState.DontCare;
         }
 
+        if (inputValue is null)
+        {
+            foreach (var wire in outputTerminal.Wires)
+            {
+                wire.Value = null;
+            }
+            return;
+        }
+
+        // Compute NOT logic and set on ALL output wires
+        LogicState outputValue = inputValue switch
+        {
+            LogicState.DontCare => LogicState.DontCare,
+            LogicState.High => LogicState.Low,
+            LogicState.Low => LogicState.High,
+            _ => LogicState.Low // fallback
+        };
+
+        foreach (var wire in outputTerminal.Wires)
+        {
+            wire.Value = outputValue;
+        }
     }
 }

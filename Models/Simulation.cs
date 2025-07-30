@@ -10,6 +10,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Components;
 using IRis.Models.Core;
+using IRis.Models.Commands;
 
 namespace IRis.Models;
 
@@ -17,14 +18,21 @@ namespace IRis.Models;
 // Currently, this handles the preview
 public partial class Simulation : ObservableObject
 {
-    private Canvas _canvas;
+    private Canvas? _canvas;
     private List<Component> _components;
     private List<Component> _selectedComponents;
+    private List<Component> _movedWires;
 
     public List<Component> Components
     {
         get => _components;
         set => _components = value;
+    }
+
+    public List<Component> MovedWires
+    {
+        get => _movedWires;
+        set => _movedWires = value;
     }
 
     [ObservableProperty] private Point _currentMousePos = new Point(0, 0);
@@ -34,17 +42,23 @@ public partial class Simulation : ObservableObject
     private readonly PreviewManager _previewManager;
     private readonly ClipboardManager _clipboardManager;
     private readonly GridManager _gridManager;
+    private readonly CommandManager _commandManager = new();
 
     // For simulation
     private bool _simulating;
-    private DispatcherTimer _updateTimer;
-    
+    private DispatcherTimer? _updateTimer;
+
     // Expose selected components
     public List<Component> SelectedComponents => _selectedComponents;
 
     // External access to selection state
     public bool HasSelectedComponents => _selectedComponents.Count > 0;
-    
+
+    // Undo/Redo
+    public bool CanUndo => _commandManager.CanUndo;
+    public bool CanRedo => _commandManager.CanRedo;
+    public void Undo() => _commandManager.Undo();
+    public void Redo() => _commandManager.Redo();
 
     public bool Simulating
     {
@@ -52,8 +66,8 @@ public partial class Simulation : ObservableObject
         set
         {
             _simulating = value;
-            if (_simulating) _updateTimer.Start();
-            else _updateTimer.Stop();
+            if (_simulating) _updateTimer!.Start();
+            else _updateTimer!.Stop();
         }
     }
 
@@ -62,6 +76,7 @@ public partial class Simulation : ObservableObject
         // Initialize lists
         _components = new List<Component>();
         _selectedComponents = new List<Component>();
+        _movedWires = new List<Component>();
 
         // Initialize managers
         _selectionManager = new SelectionManager();
@@ -82,7 +97,7 @@ public partial class Simulation : ObservableObject
     private void SetupCanvas()
     {
         // Important: Enable keyboard focus
-        _canvas.Focusable = true;
+        _canvas!.Focusable = true;
         _canvas.Cursor = new Cursor(StandardCursorType.Arrow);
     }
 
@@ -96,7 +111,7 @@ public partial class Simulation : ObservableObject
 
     private void RegisterEventHandlers()
     {
-        _canvas.PointerPressed += OnPointerPressed;
+        _canvas!.PointerPressed += OnPointerPressed;
         _canvas.PointerMoved += OnPointerMoved;
         _canvas.PointerReleased += OnPointerReleased;
         _canvas.PointerEntered += (s, e) => _previewManager.OnEnter();
@@ -105,133 +120,56 @@ public partial class Simulation : ObservableObject
         _canvas.PointerWheelChanged += OnPointerWheel;
     }
 
-    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        if (_previewManager.HandleCommit(sender, e, _components, _canvas, CurrentMousePos, this))
-            return;
-        _selectionManager.HandleStart(_canvas, _selectedComponents, CurrentMousePos);
-    }
-
-    private void OnPointerMoved(object? sender, PointerEventArgs e)
-    {
-        // Update the mouse pos
-        CurrentMousePos = e.GetPosition(_canvas);
-
-        if (_previewManager.HandleUpdate(_canvas, CurrentMousePos, _gridManager.SnapToGridEnabled, 
-            _gridManager.SnapToGrid, this))
-            return;
-        
-        // FIXED: Pass the correct selectedComponents reference and grid functions
-        _selectionManager.HandleUpdate(_canvas, _selectedComponents, CurrentMousePos, _components, this,
-            _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
-    }
-
-    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
-    {
-        _selectionManager.HandleEnd(_canvas);
-    }
-
-    // Keyboard shortcut support for moving selected components
-    private void OnKeyDown(object? sender, KeyEventArgs e)
-    {
-        // Handle preview manager first
-        _previewManager.HandleKeyCommand(e, _components, _canvas);
-        
-        // FIXED: Correct condition check
-        if (_selectedComponents.Count > 0 && _previewManager.PreviewCompType == null)
-        {
-            HandleMoveSelectedComponents(e);
-        }
-    }
-
-    private void HandleMoveSelectedComponents(KeyEventArgs e)
-    {
-        double moveDistance = _gridManager.SnapToGridEnabled ? ComponentDefaults.GridSpacing : 10;
-        Point offset = new Point(0, 0);
-
-        switch (e.Key)
-        {
-            case Key.Left:
-                offset = new Point(-moveDistance, 0);
-                break;
-            case Key.Right:
-                offset = new Point(moveDistance, 0);
-                break;
-            case Key.Up:
-                offset = new Point(0, -moveDistance);
-                break;
-            case Key.Down:
-                offset = new Point(0, moveDistance);
-                break;
-            default:
-                return;
-        }
-
-        // Move all selected components
-        foreach (var component in _selectedComponents)
-        {
-            double newX = Canvas.GetLeft(component) + offset.X;
-            double newY = Canvas.GetTop(component) + offset.Y;
-            
-            Canvas.SetLeft(component, newX);
-            Canvas.SetTop(component, newY);
-            
-            component.InvalidateVisual();
-        }
-        
-        e.Handled = true;
-    }
-
-    private void OnPointerWheel(object? sender, PointerWheelEventArgs e)
-    {
-        // Update mouse pos and preview on scroll
-        // TODO: THIS IS ACCEPTABLE FOR NOW BUT 100% NEEDS POLISH LATER ON
-        CurrentMousePos = _gridManager.SnapToGrid(e.GetPosition(_canvas));
-        _previewManager.UpdateWheelPosition(CurrentMousePos);
-    }
-
     public void SimulationStep()
     {
-        //Console.WriteLine("SIMULATION STEP");
         foreach (var component in _components)
         {
+            // Compute outputs for everything first
+            if (component is IOutputProvider op)
+                op.ComputeOutput();
+
             // Redraw Toggles and Probes
             if (component is LogicProbe || component is LogicToggle)
                 component.InvalidateVisual();
-
-            // Compute outputs for everything
-            if (component is IOutputProvider op)
-                op.ComputeOutput();
         }
     }
 
-    // Component management
-    public void DeleteSelectedComponents() => _selectionManager.DeleteSelected(_canvas, _components, _selectedComponents);
+    // Component Management
+    public void DeleteSelectedComponents()
+    {
+        if (_selectedComponents.Count > 0)
+        {
+            var deleteCommand = new DeleteComponentsCommand(_canvas!, _components, _selectedComponents);
+            _commandManager.ExecuteCommand(deleteCommand);
+            _selectedComponents.Clear();
+        }
+    }
+
     public void UnselectComponents() => _selectionManager.UnselectAll(_selectedComponents);
 
     // TODO: THESE METHODS ARE SHALLOW AND BAD! (probably)
     public void LoadComponents(List<Component> components)
     {
         _components = components;
-        _canvas.Children.AddRange(_components);
+        _canvas!.Children.AddRange(_components);
     }
 
     public void DeleteAllComponents()
     {
-        _canvas.Children.RemoveAll(_components);
+        _canvas!.Children.RemoveAll(_components);
         _components.Clear();
     }
 
     // Clipboard operations
     public void CopySelected(bool cutMode = false) => _clipboardManager.Copy(_selectedComponents, cutMode, DeleteSelectedComponents);
     public void CutSelected() => CopySelected(true);
-    public void PasteSelected() => _clipboardManager.Paste(_canvas, CurrentMousePos);
+    public void PasteSelected() => _clipboardManager.Paste(_canvas!, CurrentMousePos);
 
     // Preview management
     public string? PreviewCompType
     {
         get => _previewManager.PreviewCompType;
-        set => _previewManager.SetPreviewComponent(value, _canvas, CurrentMousePos);
+        set => _previewManager.SetPreviewComponent(value, _canvas!, CurrentMousePos, this);
     }
 
     // Grid management
@@ -248,15 +186,16 @@ public partial class Simulation : ObservableObject
         {
             _gridManager.GridEnabled = value;
             if (value)
-                _gridManager.DrawGrid(_canvas);
+                _gridManager.DrawGrid(_canvas!);
             else
             {
-                _canvas.Children.Clear();
+                _canvas!.Children.Clear();
                 _canvas.Children.AddRange(_components);
             }
         }
     }
 
+    // Terminal Snapping
     public Terminal? FindClosestSnapTerminal(Point p, double snappingRange, out Point absolutePos)
     {
         absolutePos = p;
@@ -287,4 +226,95 @@ public partial class Simulation : ObservableObject
 
         return closestTerminal; // Returns null if no terminal is within snapping range
     }
+
+    public Wire? FindWireAtPosition(Point position)
+    {
+        return _components.OfType<Wire>()
+            .FirstOrDefault(wire => wire.IsPointOnWire(position, 5.0)); // 5.0 is click tolerance
+    }
+    
+    private bool IsWireInMovedWires(Wire wire, List<Component> MovedWires)
+    {
+        foreach (var movedWire in MovedWires)
+        {
+            if (movedWire == wire) return true;
+        }
+        return false;
+    }
+
+    // _______________________________________________
+    // ____________ Pointer/key handling _____________
+    // _______________________________________________
+
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        // Handle wire extension when clicking on existing wire
+        if (_previewManager.PreviewCompType == "WIRE" && _previewManager.PreviewComponent != null)
+        {
+            var clickedWire = FindWireAtPosition(CurrentMousePos);
+            if (clickedWire != null)
+            {
+                if (IsWireInMovedWires(clickedWire, MovedWires))
+                {
+                    Console.WriteLine("Moved wire cannot be extended!");
+                    return;
+                }
+                else
+                {
+                    _previewManager.StartWireExtension(clickedWire, _canvas!, CurrentMousePos, Components, MovedWires);
+                    return;
+                }
+            }
+        }
+        if (_previewManager.HandleCommit(sender, e, _components, _canvas!, CurrentMousePos, _commandManager, this))
+            return;
+
+        // Add drag handling
+        _selectionManager.OnPointerPressed(sender, e, _selectedComponents);
+        _selectionManager.HandleStart(_canvas!, _selectedComponents, CurrentMousePos);
+    }
+
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        // Handle preview manager drag completion first
+        _selectionManager.OnPointerReleased(sender, e, _commandManager);
+
+        // Then handle selection manager
+        _selectionManager.HandleEnd(_canvas!, _commandManager);
+    }
+    
+    private void OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        // Update the mouse pos
+        CurrentMousePos = e.GetPosition(_canvas);
+
+        if (_previewManager.HandleUpdate(_canvas!, CurrentMousePos, _gridManager.SnapToGridEnabled,
+            _gridManager.SnapToGrid, this))
+            return;
+
+        // Pass the selectedComponents reference and grid functions
+        _selectionManager.HandleUpdate(_canvas!, _selectedComponents, CurrentMousePos, _components, this,
+            _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
+    }
+
+    private void OnPointerWheel(object? sender, PointerWheelEventArgs e)
+    {
+        // TODO: THIS IS ACCEPTABLE FOR NOW BUT 100% NEEDS POLISH LATER ON
+        CurrentMousePos = _gridManager.SnapToGrid(e.GetPosition(_canvas));
+        
+        // Update the preview component
+        if (_previewManager.PreviewComponent != null)
+        {
+            // Update the canvas on Scroll
+            Canvas.SetLeft(_previewManager.PreviewComponent, CurrentMousePos.X);
+            Canvas.SetTop(_previewManager.PreviewComponent, CurrentMousePos.Y);
+        }
+    }
+
+    // Keyboard shortcut support for moving selected components
+    private void OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        // Use this to Handle keys
+    }
+
 }

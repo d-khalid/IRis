@@ -1,0 +1,64 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:IRis.ViewModels"
+        Title="Export Component"
+        Width="400" Height="250"
+        x:Class="IRis.Views.ExportComponentWindow"
+        x:DataType="vm:ExportComponentWindowViewModel"
+        MinWidth="350" MinHeight="200">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Export Component" 
+                       FontSize="18" 
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Text="Create a reusable component from your circuit" 
+                       FontSize="12" 
+                       Foreground="Gray"
+                       HorizontalAlignment="Center"
+                       Margin="0,5,0,0"/>
+        </StackPanel>
+        
+        <!-- Component Name Label -->
+        <TextBlock Grid.Row="1" 
+                   Text="Enter the name of your component:" 
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,5"/>
+        
+        <!-- Text Input -->
+        <TextBox Grid.Row="2"
+                 Name="ComponentNameTextBox"
+                 Watermark="e.g., MyLogicGate, Counter, Multiplexer..."
+                 Text="{Binding ComponentName}"
+                 Margin="0,0,0,15"/>
+        
+        <!-- Spacer -->
+        <Border Grid.Row="3"/>
+        
+        <!-- Button Panel -->
+        <StackPanel Grid.Row="4" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10">
+            <Button Content="Cancel"
+                    Width="80"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding CancelCommand}"/>
+            <Button Content="Export" 
+                    Width="80"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding ExportCommand}"
+                    IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

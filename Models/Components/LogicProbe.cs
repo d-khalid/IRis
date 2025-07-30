@@ -4,6 +4,7 @@ using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using Avalonia.Styling;
 using IRis.Models.Core;
+using System;
 
 
 namespace IRis.Models.Components;
@@ -15,13 +16,17 @@ public class LogicProbe : Component
     public LogicProbe(double width = ComponentDefaults.DefaultWidth, double height = ComponentDefaults.DefaultHeight)
         : base(width, height)
     {
-        Width = width * 2 / 3;
-        Height = height * 2 / 3;
+        Width = width * 1 / 2;
+        Height = height * 1 / 2;
         
         Terminals = new Terminal[1];
+        // Helper Method for snapping to grid
+        static double Snap(double val) => Math.Round(val / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
+        double x = Snap(-ComponentDefaults.TerminalWireLength);
+        double y = Snap(Height / 2);
         
         // Left-oriented
-        Terminals[0] = new Terminal(new Point(-ComponentDefaults.TerminalWireLength, Height/2), null);
+        Terminals[0] = new Terminal(new Point(x, y), null!);
         
     }
     
@@ -36,7 +41,7 @@ public class LogicProbe : Component
         clone.IsSelected = this.IsSelected;
         
         // Component-specific things
-        clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire);
+        clone.Terminals![0] = new Terminal(clone.Terminals[0].Position, this.Terminals![0].Wire!);
         
         // Reset visual state
         clone.VisualChildren.Clear();
@@ -50,28 +55,30 @@ public class LogicProbe : Component
     {
         IImmutableSolidColorBrush fill;
         string content;
-        if (Terminals[0].Wire != null)
+        if (Terminals![0].Wire != null)
         {
-            fill = Terminals[0].Wire.Value switch
+            fill = Terminals[0].Wire!.Value switch
             {
-               LogicState.High => ComponentDefaults.TrueBrush,
+                LogicState.High => ComponentDefaults.TrueBrush,
                 LogicState.Low => ComponentDefaults.FalseBrush,
                 LogicState.DontCare => ComponentDefaults.DontCareBrush,
-               null => ComponentDefaults.DontCareBrush,
+                null => ComponentDefaults.DontCareBrush,
+                _ => ComponentDefaults.DontCareBrush
             };
 
-            content = Terminals[0].Wire.Value switch
+            content = Terminals[0].Wire!.Value switch
             {
                 LogicState.High => "1",
                 LogicState.Low => "0",
                 LogicState.DontCare => "X",
-                null => "X!"
+                null => "?",
+                _ => "?"
             };
 
         }
         else
         {
-            content = "X!";
+            content = "?";
             fill = ComponentDefaults.DontCareBrush;
         }
 

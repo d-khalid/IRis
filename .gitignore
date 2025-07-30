@@ -1,6 +1,6 @@
 bin/
 obj/
-.idea/
 RuntimeComponents/
+.idea/
 config.json
 temp.txt
