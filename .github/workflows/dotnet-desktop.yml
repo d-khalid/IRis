@@ -1,12 +1,12 @@
-name: Avalonia Circuit Simulation CI/CD
+name: IRis Workflow CI/CD
 
 on:
   push:
     branches: [ "main", "develop" ]
   pull_request:
     branches: [ "main" ]
-  release:
-    types: [ published ]
+  # release:
+  #   types: [ published ]
 
 env:
   DOTNET_VERSION: '9.0.x'
@@ -75,7 +75,7 @@ jobs:
 
     - name: Publish application
       run: |
-        dotnet publish IRis/IRis.csproj \
+        dotnet publish ${{ env.SOLUTION_FILE }} \
           --configuration Release \
           --runtime ${{ matrix.runtime }} \
           --self-contained true \
@@ -128,30 +128,6 @@ jobs:
     # - name: Build Flatpak
     #   run: flatpak-builder build-dir com.yourcompany.CircuitSimulation.json
 
-  # Release job
-  release:
-    needs: [build-and-test, build-cross-platform]
-    runs-on: ubuntu-latest
-    if: github.event_name == 'release'
-
-    steps:
-    - name: Download all artifacts
-      uses: actions/download-artifact@v4
-      with:
-        path: ./artifacts
-
-    - name: Display structure of downloaded files
-      run: ls -la ./artifacts
-
-    - name: Upload release assets
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          ./artifacts//*.zip
-          ./artifacts//*.tar.gz
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   # Code quality checks
   code-quality:
     runs-on: ubuntu-latest
@@ -170,3 +146,4 @@ jobs:
 
     - name: Check code formatting
       run: dotnet format IRis.sln --verbosity diagnostic
+      
