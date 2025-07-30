@@ -1,68 +1,20 @@
-name: IRis Workflow CI/CD
+name: IRis CI/CD
 
 on:
   push:
     branches: [ "main", "develop" ]
   pull_request:
     branches: [ "main" ]
-  # release:
-  #   types: [ published ]
 
 env:
   DOTNET_VERSION: '9.0.x'
-  PROJECT_NAME: 'IRis'
-  SOLUTION_FILE: 'IRis.sln'
 
 jobs:
-  # Build and test job
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.SOLUTION_FILE }}
-
-    - name: Build solution
-      run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
-
-    - name: Run unit tests
-      run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
-
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-results
-        path: '/TestResults//*'
-
-  # Multi-platform build job
-  build-cross-platform:
-    needs: build-and-test
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest]
-        include:
-          - os: windows-latest
-            runtime: win-x64
-            artifact-name: windows-x64
-          - os: ubuntu-latest
-            runtime: linux-x64
-            artifact-name: linux-x64
-
-    runs-on: ${{ matrix.os }}
-
-    steps:
-    - name: Checkout code
+    - name: Checkout
       uses: actions/checkout@v4
 
     - name: Setup .NET
@@ -70,70 +22,21 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Restore dependencies
+    - name: Restore
       run: dotnet restore
 
-    - name: Publish application
-      run: |
-        dotnet publish ${{ env.SOLUTION_FILE }} \
-          --configuration Release \
-          --runtime ${{ matrix.runtime }} \
-          --self-contained true \
-          --output ./publish/${{ matrix.artifact-name }} \
-          -p:PublishSingleFile=true \
-          -p:PublishTrimmed=true \
-          -p:TrimMode=partial
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
 
-    - name: Create archive (Windows)
-      if: matrix.os == 'windows-latest'
-      run: |
-        Compress-Archive -Path ./publish/${{ matrix.artifact-name }}/* -DestinationPath ./${{ env.PROJECT_NAME }}-${{ matrix.artifact-name }}.zip
-      shell: pwsh
+    - name: Test
+      run: dotnet test --configuration Release --no-build
 
-    - name: Create archive (Unix)
-      if: matrix.os != 'windows-latest'
-      run: |
-        cd ./publish/${{ matrix.artifact-name }}
-        tar -czf ../../${{ env.PROJECT_NAME }}-${{ matrix.artifact-name }}.tar.gz *
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.PROJECT_NAME }}-${{ matrix.artifact-name }}
-        path: |
-          ${{ env.PROJECT_NAME }}-${{ matrix.artifact-name }}.zip
-          ${{ env.PROJECT_NAME }}-${{ matrix.artifact-name }}.tar.gz
-
-  # Package as Flatpak for Linux
-  build-flatpak:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.event_name == 'release'
+  build-windows:
+    runs-on: windows-latest
+    needs: build
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Flatpak
-      run: |
-        sudo apt-get update
-        sudo apt-get install flatpak flatpak-builder
-
-    - name: Setup Flatpak repository
-      run: |
-        sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-        sudo flatpak install -y flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08 org.freedesktop.Sdk.Extension.dotnet8//23.08
-
-    # TODO: create a flatpak manifest file for this step
-    # - name: Build Flatpak
-    #   run: flatpak-builder build-dir com.yourcompany.CircuitSimulation.json
-
-  # Code quality checks
-  code-quality:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
+    - name: Checkout
       uses: actions/checkout@v4
 
     - name: Setup .NET
@@ -141,9 +44,33 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Install format tool
-      run: dotnet tool install -g dotnet-format
+    - name: Publish Windows
+      run: dotnet publish --configuration Release --runtime win-x64 --self-contained --output ./publish-win
 
-    - name: Check code formatting
-      run: dotnet format IRis.sln --verbosity diagnostic
-      
+    - name: Upload Windows Build
+      uses: actions/upload-artifact@v4
+      with:
+        name: IRis-Windows
+        path: ./publish-win
+
+  build-linux:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Publish Linux
+      run: dotnet publish --configuration Release --runtime linux-x64 --self-contained --output ./publish-linux
+
+    - name: Upload Linux Build
+      uses: actions/upload-artifact@v4
+      with:
+        name: IRis-Linux
+        path: ./publish-linux
