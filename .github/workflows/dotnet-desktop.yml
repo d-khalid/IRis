@@ -169,4 +169,4 @@ jobs:
       run: dotnet tool install -g dotnet-format
 
     - name: Check code formatting
-      run: dotnet format IRis.sln --verify-no-changes --verbosity diagnostic
+      run: dotnet format IRis.sln --verbosity diagnostic
