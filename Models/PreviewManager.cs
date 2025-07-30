@@ -14,14 +14,12 @@ internal class PreviewManager
 {
     private string? _previewCompType;
     private Component? _previewComponent;
-    private bool _isDragging = false;
     private bool removelShapePoint = false;
-    private List<Point> _dragStartPositions = new();
-    private List<Component> _draggedComponents = new();
 
     public string? PreviewCompType => _previewCompType;
     public Component? PreviewComponent => _previewComponent;
 
+    // Invoked externally by Simulation.cs
     public void SetPreviewComponent(string? value, Canvas canvas, Point mousePos, Simulation simulation)
     {
         _previewCompType = value;
@@ -81,19 +79,6 @@ internal class PreviewManager
         }
 
         return false; // Continue
-    }
-
-    public static List<Point> RemoveDuplicatePoints(List<Point> points)
-    {
-        // Only remove adjacent duplicates
-        for (int i = 0; i < points.Count - 1; i++)
-        {
-            if (points[i] == points[i + 1])
-            {
-                points.RemoveAt(i + 1);
-            }
-        }
-        return points;
     }
 
     private bool HandleWireCommit(object? sender, PointerPressedEventArgs? e, List<Component> components,
@@ -167,14 +152,15 @@ internal class PreviewManager
         return true;
     }
 
-    public bool HandleUpdate(Canvas canvas, Point mousePos, bool snapToGridEnabled, 
+    // Invoked externally by Simulation.cs
+    public bool HandleUpdate(Canvas canvas, Point mousePos, bool snapToGridEnabled,
         Func<Point, Point> snapToGrid, Simulation simulation)
     {
         // For wires only
         if (_previewComponent is Wire wirePreview)
         {
             return HandleWireUpdate(wirePreview, mousePos, snapToGridEnabled, simulation);
-        } 
+        }
 
         else if (_previewComponent != null) // Update the non-wire preview component
         {
@@ -189,6 +175,7 @@ internal class PreviewManager
 
     private bool HandleWireUpdate(Wire wirePreview, Point mousePos, bool snapToGridEnabled, Simulation simulation)
     {
+        // TODO: Remake this function
         if (wirePreview.Points.Count == 0) return true;
 
         // Clean up temporary L-shape point if it exists
@@ -207,89 +194,13 @@ internal class PreviewManager
             wirePreview.InvalidateVisual();
             return true;
         }
-
-        // Handle multiple points with L-shape routing
-        Point previousPoint = wirePreview.Points[^2];
-        Point targetPoint = CalculateRoutedPoint(previousPoint, snappedMousePos, simulation, wirePreview);
+        Point targetPoint = snappedMousePos;
 
         // Update the last point
         wirePreview.Points[^1] = targetPoint;
 
-        // Add L-shape completion point if needed
-        if (targetPoint != snappedMousePos && ShouldAddLShapePoint(targetPoint, snappedMousePos, simulation, wirePreview))
-        {
-            wirePreview.Points.Add(snappedMousePos);
-            removelShapePoint = true;
-        }
-
         wirePreview.InvalidateVisual();
         return true;
-    }
-
-    private Point CalculateRoutedPoint(Point fromPoint, Point toPoint, Simulation simulation, Wire wirePreview)
-    {
-        // Calculate horizontal and vertical routing options
-        double deltaX = Math.Abs(toPoint.X - fromPoint.X);
-        double deltaY = Math.Abs(toPoint.Y - fromPoint.Y);
-
-        Point horizontalFirst = new Point(toPoint.X, fromPoint.Y);
-        Point verticalFirst = new Point(fromPoint.X, toPoint.Y);
-
-        // Determine preferred direction based on larger delta
-        Point preferredPoint = (deltaX > deltaY) ? horizontalFirst : verticalFirst;
-        Point alternatePoint = (deltaX > deltaY) ? verticalFirst : horizontalFirst;
-
-        // Check for terminal snapping on preferred route
-        Terminal? preferredSnap = simulation.FindClosestSnapTerminal(preferredPoint, 
-            ComponentDefaults.TerminalSnappingRange, out Point preferredSnapPos);
-        if (preferredSnap != null)
-        {
-            preferredPoint = SnapToGrid(preferredSnapPos);
-        }
-
-        // Check for terminal snapping on alternate route
-        Terminal? alternateSnap = simulation.FindClosestSnapTerminal(alternatePoint, 
-            ComponentDefaults.TerminalSnappingRange, out Point alternateSnapPos);
-        if (alternateSnap != null)
-        {
-            alternatePoint = SnapToGrid(alternateSnapPos);
-        }
-
-        // Check path clearance and return the best option
-        bool preferredClear = IsPathClearForWire(fromPoint, preferredPoint, wirePreview, simulation);
-        bool alternateClear = IsPathClearForWire(fromPoint, alternatePoint, wirePreview, simulation);
-
-        if (preferredClear)
-            return preferredPoint;
-        else if (alternateClear)
-            return alternatePoint;
-        else
-            return preferredPoint; // Default to preferred even if blocked
-    }
-
-    private bool ShouldAddLShapePoint(Point routedPoint, Point finalTarget, Simulation simulation, Wire wirePreview)
-    {
-        // Don't add L-shape if we're already at the target
-        if (routedPoint == finalTarget)
-            return false;
-
-        // Check if the second leg of the L-shape is clear
-        return IsPathClearForWire(routedPoint, finalTarget, wirePreview, simulation);
-    }
-
-    private bool IsPathClearForWire(Point start, Point end, Wire wirePreview, Simulation simulation)
-    {
-        Console.WriteLine(simulation.WouldWireOverlapExistingWire(start, end));
-        // Check if preferred direction is clear
-        if (!simulation.WouldWireOverlapComponent(start, end) &&
-            !simulation.WouldWireOverlapExistingWire(start, end))
-        {
-            return true;
-        }
-        else
-        {
-            return false; // Both directions blocked, can't move
-        }
     }
 
     Point SnapToGrid(Point pt)
@@ -297,44 +208,6 @@ internal class PreviewManager
         double snapX = (int)Math.Round(Math.Round(pt.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
         double snapY = (int)Math.Round(Math.Round(pt.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
         return new Point(snapX, snapY);
-    }
-
-    public void UpdateWheelPosition(Point mousePos)
-    {
-        // Update the preview component
-        if (_previewComponent != null)
-        {
-            // Update rectangle
-            Canvas.SetLeft(_previewComponent, mousePos.X);
-            Canvas.SetTop(_previewComponent, mousePos.Y);
-        }
-    }
-
-    public void HandleKeyCommand(KeyEventArgs e, List<Component> components, Canvas canvas, CommandManager commandManager)
-    {
-        if (_previewComponent == null) return;
-
-        if (_previewComponent is Wire wire && e.Key == Key.Enter)
-        {
-            HandleWireEnterCommit(wire, components, canvas, commandManager);
-            return;
-        }
-
-        HandleRotationKeys(e);
-    }
-
-    private void HandleWireEnterCommit(Wire wire, List<Component> components, Canvas canvas, CommandManager commandManager)
-    {
-        // Debug: Print all points
-        if (wire.Points.Count >= 2)
-        {
-            var commitCommand = new CommitWireCommand(components, wire);
-            commandManager.ExecuteCommand(commitCommand);
-        }
-        else
-            canvas.Children.Remove(wire);
-
-        _previewComponent = null;
     }
 
     public void StartWireExtension(Wire existingWire, Canvas canvas, Point clickPoint,
@@ -356,18 +229,22 @@ internal class PreviewManager
         existingWire.InvalidateVisual();
     }
 
-    private void HandleRotationKeys(KeyEventArgs e)
+    public static List<Point> RemoveDuplicatePoints(List<Point> points)
     {
-        if (_previewComponent == null) return;
-        _previewComponent.Rotation = e.Key switch
+        // Only remove adjacent duplicates
+        for (int i = 0; i < points.Count - 1; i++)
         {
-            Key.Right => 0,
-            Key.Up => 270,
-            Key.Left => 180,
-            Key.Down => 90,
-            _ => _previewComponent.Rotation
-        };
+            if (points[i] == points[i + 1])
+            {
+                points.RemoveAt(i + 1);
+            }
+        }
+        return points;
     }
+    
+    // ________________________________________________
+    // __________ Pointer/Key Event Handling __________
+    // ________________________________________________
 
     public void OnExit()
     {
@@ -381,58 +258,5 @@ internal class PreviewManager
         // Unhide the preview component
         if (_previewComponent != null)
             _previewComponent.Opacity = 1.0;
-    }
-
-    public void OnPointerPressed(object? sender, PointerPressedEventArgs e, List<Component> selectedComponents)
-    {
-        if (selectedComponents.Any())
-        {
-            _isDragging = true;
-            _draggedComponents = new List<Component>(selectedComponents);
-            _dragStartPositions = _draggedComponents.Select(c => 
-                new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
-        }
-    }
-
-    public void OnPointerReleased(object? sender, PointerReleasedEventArgs e, CommandManager commandManager)
-    {
-        if (_isDragging && _draggedComponents.Any())
-        {
-            // Calculate the total movement and create a move command
-            var currentPositions = _draggedComponents.Select(c => 
-                new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
-            
-            // Check if components actually moved
-            bool hasMoved = false;
-            for (int i = 0; i < _dragStartPositions.Count; i++)
-            {
-                if (_dragStartPositions[i] != currentPositions[i])
-                {
-                    hasMoved = true;
-                    break;
-                }
-            }
-
-            if (hasMoved)
-            {
-                // Calculate offset from first component
-                var offset = currentPositions[0] - _dragStartPositions[0];
-                
-                // Reset components to original positions
-                for (int i = 0; i < _draggedComponents.Count; i++)
-                {
-                    Canvas.SetLeft(_draggedComponents[i], _dragStartPositions[i].X);
-                    Canvas.SetTop(_draggedComponents[i], _dragStartPositions[i].Y);
-                }
-
-                // Create and execute move command
-                var moveCommand = new MoveComponentsCommand(_draggedComponents, offset);
-                commandManager.ExecuteCommand(moveCommand);
-            }
-        }
-
-        _isDragging = false;
-        _draggedComponents.Clear();
-        _dragStartPositions.Clear();
     }
 }
