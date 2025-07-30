@@ -46,7 +46,7 @@ namespace IRis.Views
             {
                 Console.WriteLine("Selected component: " + item.Content);
                 // TODO: Implement custom components logic here
-                test("RuntimeComponents/" + item.Content!.ToString()! + ".xml");
+                test(Path.Combine("RuntimeComponents", item.Content!.ToString()! + ".xml"));
 
                 Close(SelectedComponent);
             }

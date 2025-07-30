@@ -155,6 +155,8 @@ public abstract class Component : Control, ICustomHitTest
                 return new LogicProbe();
             case "TOGGLE":
                 return new LogicToggle();
+            case "CUSTOM":
+                return new CustomComponent();
             case "WIRE":
                 return new Wire();
             default:

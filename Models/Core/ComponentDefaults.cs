@@ -9,6 +9,9 @@ public static class ComponentDefaults
     // Common fields for all components
     public const double DefaultWidth = 70;
     public const double DefaultHeight = 60;
+    public const double DefaultMuxWidth = 80;
+    public const double DefaultMuxHeight = 180;
+
 
     // For controlling the thickness/colors of lines
     public static Pen WirePen = new Pen(Brushes.Black, 4);
@@ -33,6 +36,12 @@ public static class ComponentDefaults
     // For terminals
     public static double TerminalWireLength = 25;
     public static double TerminalSnappingRange = 15;
+    public const double TerminalSpacing = GridSpacing * 2;
+
+    // For labels
+    public static IBrush LabelBrush = new ImmutableSolidColorBrush(Color.FromRgb(40, 40, 40));
+    public static double LabelSize = 12;
+    public static Typeface LabelTypeface = new Typeface(fontFamily: "Source Code Pro", weight: FontWeight.SemiBold); 
 
     // For NOT-derived Gates
     public static double BubbleRadius = DefaultWidth / 15;
