@@ -33,17 +33,18 @@ internal class PreviewManager
         // Create and add new component if value is provided
         if (!string.IsNullOrEmpty(value))
         {
-            _previewComponent = Component.Create(value);
+            _previewComponent = Component.Create(value, simulation);
             if (_previewComponent != null)
             {
                 PositionPreviewComponent(mousePos);
                 canvas.Children.Add(_previewComponent);
 
-                Console.WriteLine("Added component via setter");
+                Console.WriteLine("Added component via SetPreviewComponent");
             }
         }
     }
 
+    // Helper for SetPreviewComponent
     private void PositionPreviewComponent(Point mousePos)
     {
         if (_previewComponent == null) return;
@@ -75,7 +76,7 @@ internal class PreviewManager
         // Commit component on click
         if (_previewComponent != null)
         {
-            return HandleComponentCommit(canvas, components, mousePos, commandManager);
+            return HandleComponentCommit(canvas, components, mousePos, commandManager, simulation);
         }
 
         return false; // Continue
@@ -129,10 +130,10 @@ internal class PreviewManager
         return true;
     }
 
-    private bool HandleComponentCommit(Canvas canvas, List<Component> components, Point mousePos, CommandManager commandManager)
+    private bool HandleComponentCommit(Canvas canvas, List<Component> components, Point mousePos, CommandManager commandManager, Simulation simulation)
     {
         if (string.IsNullOrEmpty(_previewCompType)) return true;
-        Component? component = Component.Create(_previewCompType);
+        Component? component = Component.Create(_previewCompType, simulation);
         if (component == null) return true;
 
         if (_previewComponent != null)
@@ -173,6 +174,7 @@ internal class PreviewManager
         return false; // Continue
     }
 
+    // Helper for HandleUpdate
     private bool HandleWireUpdate(Wire wirePreview, Point mousePos, bool snapToGridEnabled, Simulation simulation)
     {
         // TODO: Remake this function
@@ -241,18 +243,14 @@ internal class PreviewManager
         }
         return points;
     }
-    
-    // ________________________________________________
-    // __________ Pointer/Key Event Handling __________
-    // ________________________________________________
 
+    // Hide the preview component if the pointer leaves the canvas
     public void OnExit()
     {
         // Hide the preview component
         if (_previewComponent != null)
             _previewComponent.Opacity = 0.0;
     }
-
     public void OnEnter()
     {
         // Unhide the preview component

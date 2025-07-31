@@ -6,12 +6,20 @@ using System.Linq;
 using Avalonia;
 using IRis.Services;
 using System.Collections.Generic;
+using Tmds.DBus.Protocol;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
+using System.Threading.Tasks;
+using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace IRis.Views
 {
     public partial class OtherComponentsWindow : Window
     {
-        public string? SelectedComponent { get; private set; }
+        public int InputCount { get; set; }
+        public int OutputCount { get; set; }
+        public List<CircuitFormulaConversionService.CircuitFormula> Formulas { get; set; } = [];
 
         private const string ComponentFolder = "RuntimeComponents";
 
@@ -33,8 +41,31 @@ namespace IRis.Views
 
                     if (!string.IsNullOrEmpty(fileName))
                     {
-                        ComponentListBox.Items.Add(new ListBoxItem { Content = fileName });
-                        // Console.WriteLine($"Loaded component: {fileName}");
+                        var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+                        // Add the file name as the component name
+                        stackPanel.Children.Add(new TextBlock {
+                            Text = fileName, VerticalAlignment = VerticalAlignment.Center });
+
+                        // Add a label to it for differentiability
+                        var label = new Border
+                        {
+                            Child = new TextBlock
+                            {
+                                Text = "user created",
+                                FontSize = 11,
+                                Foreground = Brush.Parse("#00ffc8"),
+                                FontWeight = FontWeight.SemiBold
+                            },
+                            BorderBrush = Brush.Parse("#00744c"),
+                            Background = Brush.Parse("#003b33"),
+                            BorderThickness = new Thickness(0.5),
+                            CornerRadius = new CornerRadius(15),
+                            Padding = new Thickness(5, 2),
+                            Margin = new Thickness(10, 0, 0, 0)
+                        };
+
+                        stackPanel.Children.Add(label);
+                        ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel });
                     }
                 }
             }
@@ -44,39 +75,35 @@ namespace IRis.Views
         {
             if (ComponentListBox.SelectedItem is ListBoxItem item)
             {
-                Console.WriteLine("Selected component: " + item.Content);
+                // Console.WriteLine("Selected component: " + item.Content);
                 // TODO: Implement custom components logic here
-                test("RuntimeComponents/" + item.Content!.ToString()! + ".xml");
+                ExtractFormulasFromCircuit(Path.Combine("RuntimeComponents", item.Content!.ToString()! + ".xml"));
 
-                Close(SelectedComponent);
+                var result = new CustomComponentData
+                {
+                    Name = item.Content!.ToString()!,
+                    InputCount = this.InputCount,
+                    OutputCount = this.OutputCount,
+                    Formulas = this.Formulas
+                };
+                Close(result);
             }
             else
             {
-                var dlg = new Window
-                {
-                    Title = "Error",
-                    Width = 300,
-                    Height = 100,
-                    Content = new TextBlock
-                    {
-                        Text = "Please select a component first.",
-                        Margin = new Thickness(10)
-                    }
-                };
-                dlg.ShowDialog(this);
+                Console.WriteLine("No component selected.");
             }
         }
 
-        private void test(string fileName)
+        private void ExtractFormulasFromCircuit(string fileName)
         {
             // 2. Get number of inputs and outputs from XML string
             string xmlContent = File.ReadAllText(fileName);
-            int inputCount2 = CircuitFormulaConversionService.GetNumberOfInputs(xmlContent);
-            int outputCount2 = CircuitFormulaConversionService.GetNumberOfOutputs(xmlContent);
-            var formulas2 = CircuitFormulaConversionService.ConvertXmlContentToFormulas(xmlContent);
+            InputCount = CircuitFormulaConversionService.GetNumberOfInputs(xmlContent);
+            OutputCount = CircuitFormulaConversionService.GetNumberOfOutputs(xmlContent);
+            Formulas = CircuitFormulaConversionService.ConvertXmlContentToFormulas(xmlContent);
 
             // 5. Display the formulas
-            foreach (var formula in formulas2)
+            foreach (CircuitFormulaConversionService.CircuitFormula formula in Formulas)
             {
                 Console.WriteLine($"{formula.OutputName} = {formula.Formula}");
                 Console.WriteLine($"Input Variables: {string.Join(", ", formula.InputVariables)}");
@@ -87,5 +114,41 @@ namespace IRis.Views
         {
             Close();
         }
+
+        private async void OnDeleteClick(object? sender, RoutedEventArgs e)
+        {
+            if (ComponentListBox.SelectedItem is ListBoxItem item)
+            {
+                string fileName = item.Content!.ToString()!;
+                string fullFilePath = Path.Combine(ComponentFolder, fileName + ".xml");
+                bool confirmed;
+
+                // Dialog box to confirm deletion
+                var result = await MessageBoxManager
+                .GetMessageBoxStandard("Confirm", 
+                                     "Are you sure you want to delete this item?",
+                                     ButtonEnum.YesNo,
+                                     MsBox.Avalonia.Enums.Icon.Question)
+                .ShowAsync();
+
+                if (result == ButtonResult.Yes) confirmed = true;
+                else confirmed = false;
+                
+                if (confirmed)
+                {
+                    File.Delete(fullFilePath);
+                    LoadComponentList();
+                }
+            }
+        }
+
+    }
+    
+    public class CustomComponentData
+    {
+        public required string Name { get; set; }
+        public int InputCount { get; set; }
+        public int OutputCount { get; set; }
+        public List<CircuitFormulaConversionService.CircuitFormula> Formulas { get; set; } = [];
     }
 }
