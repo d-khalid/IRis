@@ -10,6 +10,8 @@ using Tmds.DBus.Protocol;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System.Threading.Tasks;
+using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace IRis.Views
 {
@@ -39,8 +41,31 @@ namespace IRis.Views
 
                     if (!string.IsNullOrEmpty(fileName))
                     {
-                        ComponentListBox.Items.Add(new ListBoxItem { Content = fileName });
-                        // Console.WriteLine($"Loaded component: {fileName}");
+                        var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+                        // Add the file name as the component name
+                        stackPanel.Children.Add(new TextBlock {
+                            Text = fileName, VerticalAlignment = VerticalAlignment.Center });
+
+                        // Add a label to it for differentiability
+                        var label = new Border
+                        {
+                            Child = new TextBlock
+                            {
+                                Text = "user created",
+                                FontSize = 11,
+                                Foreground = Brush.Parse("#00ffc8"),
+                                FontWeight = FontWeight.SemiBold
+                            },
+                            BorderBrush = Brush.Parse("#00744c"),
+                            Background = Brush.Parse("#003b33"),
+                            BorderThickness = new Thickness(0.5),
+                            CornerRadius = new CornerRadius(15),
+                            Padding = new Thickness(5, 2),
+                            Margin = new Thickness(10, 0, 0, 0)
+                        };
+
+                        stackPanel.Children.Add(label);
+                        ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel });
                     }
                 }
             }
