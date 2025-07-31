@@ -8,6 +8,7 @@ using IRis.Models.Components;
 using IRis.Models.Core;
 using IRis.Models.Commands;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 
 namespace IRis.Models;
 
@@ -158,11 +159,23 @@ internal class PreviewManager
             return true;
         }
         Point targetPoint = snappedMousePos;
-        if (simulation.FindClosestSnapTerminal(targetPoint) is Terminal terminal)
-            targetPoint = simulation.GetAbsoluteTerminalPosition(terminal);
 
+        bool pointSnappedToTerminal = false;
+        Terminal? terminal = simulation.FindClosestSnapTerminal(targetPoint);
+        if (terminal != null)
+        {
+            Point temp = simulation.GetAbsoluteTerminalPosition(terminal);
+
+            if (simulation.FindWireAtPosition(temp) == null ||
+                (simulation.FindWireAtPosition(temp) != null &&
+                !simulation.IsInputTerminal(terminal)))
+            {   // If no wire is on the terminal OR (If wire is on the terminal AND is not an input terminal)
+                targetPoint = temp;
+                pointSnappedToTerminal = true;
+            }
+        }
         // Update the last point
-        wirePreview.Points[^1] = targetPoint;
+        if (pointSnappedToTerminal || terminal == null) wirePreview.Points[^1] = targetPoint;
 
         wirePreview.InvalidateVisual();
         return true;
