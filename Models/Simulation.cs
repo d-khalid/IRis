@@ -17,7 +17,6 @@ using IRis.Views;
 namespace IRis.Models;
 
 // Contains all the data needed for a simulation
-// Currently, this handles the preview
 public partial class Simulation : ObservableObject
 {
     private Canvas? _canvas;
@@ -46,6 +45,8 @@ public partial class Simulation : ObservableObject
     private readonly ClipboardManager _clipboardManager;
     private readonly GridManager _gridManager;
     private readonly CommandManager _commandManager = new();
+
+    public CommandManager CommandManager => _commandManager;
 
     // For simulation
     private bool _simulating;
@@ -200,16 +201,14 @@ public partial class Simulation : ObservableObject
     }
 
     // Terminal Snapping
-    public Terminal? FindClosestSnapTerminal(Point p, double snappingRange, out Point absolutePos)
+    public Terminal? FindClosestSnapTerminal(Point p)
     {
-        absolutePos = p;
         Terminal? closestTerminal = null;
         double minDistance = double.MaxValue;
 
         foreach (Component component in _components)
         {
             if (component.Terminals == null) continue;
-
             foreach (Terminal terminal in component.Terminals)
             {
                 // Calculate absolute terminal position
@@ -219,16 +218,33 @@ public partial class Simulation : ObservableObject
                 );
 
                 double distance = Point.Distance(p, absTerminalPos);
-                if (distance < minDistance && distance <= snappingRange)
+                if (distance < minDistance && distance <= ComponentDefaults.TerminalSnappingRange)
                 {
                     minDistance = distance;
                     closestTerminal = terminal;
-                    absolutePos = absTerminalPos;
                 }
             }
         }
-
         return closestTerminal; // Returns null if no terminal is within snapping range
+    }
+
+    public Point GetAbsoluteTerminalPosition(Terminal terminal)
+    {
+        foreach (Component component in _components)
+        {
+            if (component.Terminals == null) continue;
+            foreach (Terminal compTerminal in component.Terminals)
+            {
+                if (compTerminal == terminal)
+                {
+                    return new Point(
+                        compTerminal.Position.X + Canvas.GetLeft(component),
+                        compTerminal.Position.Y + Canvas.GetTop(component)
+                    );
+                }
+            }
+        }
+        return new Point(-2, -2);   // Error case; should not occur
     }
 
     public Wire? FindWireAtPosition(Point position)
@@ -252,28 +268,43 @@ public partial class Simulation : ObservableObject
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        // Handle wire extension when clicking on existing wire
-        if (_previewManager.PreviewCompType == "WIRE" && _previewManager.PreviewComponent != null)
+        if (_previewManager.PreviewCompType != "NULL")  // If a component is being previewed
         {
-            var clickedWire = FindWireAtPosition(CurrentMousePos);
-            if (clickedWire != null)
+            if (_previewManager.PreviewCompType == "WIRE")  // If component is wire
             {
-                if (IsWireInMovedWires(clickedWire, MovedWires))
+                if (FindWireAtPosition(CurrentMousePos) != null)  // if Created on an already present wire
                 {
-                    Console.WriteLine("Moved wire cannot be extended!");
-                    return;
+                    if (FindClosestSnapTerminal(CurrentMousePos) != null)   // If wire & terminal are present bellow
+                    {
+                        Console.WriteLine("Terminal is Already connected to a wire!");
+                        return;
+                    }
+                    else    // Only wire is present bellow
+                    {
+                        // WIRE EXTENSION LOGIC
+                        Console.WriteLine("Registering Wire Extension...");
+                        Wire existingWire = FindWireAtPosition(CurrentMousePos)!;
+                        _previewManager.StartWireExtension(CurrentMousePos, existingWire, this);
+                        return;
+                    }
                 }
-                else
+                else    // if Created on some empty space
                 {
-                    _previewManager.StartWireExtension(clickedWire, _canvas!, CurrentMousePos, Components, MovedWires);
+                    // NEW WIRE LOGIC
+                    Console.WriteLine("Registering New Wire...");
+                    _previewManager.HandleWireCommit(sender, e, CurrentMousePos, this);
                     return;
                 }
             }
+            else
+            {
+                // NEW COMPONENT LOGIC
+                Console.WriteLine("Registering New Component...");
+                _previewManager.HandleComponentCommit(_canvas!, _components, CurrentMousePos, _commandManager, this);
+                return;
+            }
         }
-        if (_previewManager.HandleCommit(sender, e, _components, _canvas!, CurrentMousePos, _commandManager, this))
-            return;
-
-        // Add drag handling
+        // Selection handling through selection manager
         _selectionManager.OnPointerPressed(sender, e, _selectedComponents);
         _selectionManager.HandleStart(_canvas!, _selectedComponents, CurrentMousePos);
     }

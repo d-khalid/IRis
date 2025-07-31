@@ -7,6 +7,7 @@ using Avalonia.Input;
 using IRis.Models.Components;
 using IRis.Models.Core;
 using IRis.Models.Commands;
+using System.Runtime.InteropServices;
 
 namespace IRis.Models;
 
@@ -14,9 +15,8 @@ internal class PreviewManager
 {
     private string? _previewCompType;
     private Component? _previewComponent;
-    private bool removelShapePoint = false;
 
-    public string? PreviewCompType => _previewCompType;
+    public string? PreviewCompType => _previewCompType;     // in case of null, value is set to "NULL"
     public Component? PreviewComponent => _previewComponent;
 
     // Invoked externally by Simulation.cs
@@ -65,49 +65,20 @@ internal class PreviewManager
     }
 
     // Invoked externally by Simulation.cs
-    public bool HandleCommit(object? sender, PointerPressedEventArgs? e, List<Component> components,
-        Canvas canvas, Point mousePos, CommandManager commandManager, Simulation simulation)
-    {
-        if (_previewComponent is Wire wirePreview)
-        {
-            return HandleWireCommit(sender, e, components, wirePreview, mousePos, simulation, commandManager);
-        }
+    public void HandleWireCommit(object? sender, PointerPressedEventArgs? e, Point CurrentMousePos, Simulation simulation)
+    {   // Returns true if event is handled
+        // Explicit type conversion to avoid exception
+        if (e == null) return; 
+        Wire wirePreview = (Wire)_previewComponent!;
 
-        // Commit component on click
-        if (_previewComponent != null)
-        {
-            return HandleComponentCommit(canvas, components, mousePos, commandManager, simulation);
-        }
-
-        return false; // Continue
-    }
-
-    private bool HandleWireCommit(object? sender, PointerPressedEventArgs? e, List<Component> components,
-        Wire wirePreview, Point mousePos, Simulation simulation, CommandManager commandManager)
-    {
-        if (e == null) return true;
-        Terminal? target = simulation.FindClosestSnapTerminal(mousePos, ComponentDefaults.TerminalSnappingRange, out var pos);
-
-        if (target != null)     // Condition: Wire is starting from a gate terminal
-        {
-            target.AddWire(wirePreview);
-        }
-        else if (simulation.FindWireAtPosition(mousePos) != null) // Edit this to reject is wire is on top of a wire 
-        {
-            Console.WriteLine($"Wire rejected due to being on top of another wire.");
-            return false;       // Couldn't handle
-        }
-
-        if (removelShapePoint)
-            {
-                wirePreview.Points.RemoveAt(wirePreview.Points.Count - 1);
-                removelShapePoint = false;
-            }
+        Terminal? target = simulation.FindClosestSnapTerminal(CurrentMousePos);
+        // Condition: Wire is starting from a component terminal
+        if (target != null) target.AddWire(wirePreview);
 
         // Use command for adding point
-        pos = SnapToGrid(pos);
-        var addPointCommand = new AddWirePointCommand(wirePreview, pos);
-        commandManager.ExecuteCommand(addPointCommand);
+        CurrentMousePos = SnapToGrid(CurrentMousePos);
+        var addPointCommand = new AddWirePointCommand(wirePreview, CurrentMousePos);
+        simulation.CommandManager.ExecuteCommand(addPointCommand);
 
         var point = e.GetCurrentPoint(sender as Control);
         // Commits the WIRE ON DOUBLE-CLICK, or RIGHT-CLICK
@@ -121,16 +92,14 @@ internal class PreviewManager
             }
             // Remove duplicates
             wirePreview.Points = RemoveDuplicatePoints(wirePreview.Points);
-            var commitCommand = new CommitWireCommand(components, wirePreview);
-            commandManager.ExecuteCommand(commitCommand);
+            var commitCommand = new CommitWireCommand(simulation.Components, wirePreview);
+            simulation.CommandManager.ExecuteCommand(commitCommand);
             _previewComponent = null;
             simulation.PreviewCompType = "WIRE";   // Keep placing wires
         }
-
-        return true;
     }
 
-    private bool HandleComponentCommit(Canvas canvas, List<Component> components, Point mousePos, CommandManager commandManager, Simulation simulation)
+    public bool HandleComponentCommit(Canvas canvas, List<Component> components, Point mousePos, CommandManager commandManager, Simulation simulation)
     {
         if (string.IsNullOrEmpty(_previewCompType)) return true;
         Component? component = Component.Create(_previewCompType, simulation);
@@ -180,13 +149,6 @@ internal class PreviewManager
         // TODO: Remake this function
         if (wirePreview.Points.Count == 0) return true;
 
-        // Clean up temporary L-shape point if it exists
-        if (removelShapePoint)
-        {
-            wirePreview.Points.RemoveAt(wirePreview.Points.Count - 1);
-            removelShapePoint = false;
-        }
-
         Point snappedMousePos = SnapToGrid(mousePos);
 
         // Handle single point - just add the second point directly
@@ -197,6 +159,8 @@ internal class PreviewManager
             return true;
         }
         Point targetPoint = snappedMousePos;
+        if (simulation.FindClosestSnapTerminal(targetPoint) is Terminal terminal)
+            targetPoint = simulation.GetAbsoluteTerminalPosition(terminal);
 
         // Update the last point
         wirePreview.Points[^1] = targetPoint;
@@ -212,21 +176,18 @@ internal class PreviewManager
         return new Point(snapX, snapY);
     }
 
-    public void StartWireExtension(Wire existingWire, Canvas canvas, Point clickPoint,
-                                    List<Component> components, List<Component> MovedWires)
+    public void StartWireExtension(Point clickPoint, Wire existingWire,  Simulation simulation)
     {
-        Console.WriteLine("Starting wire extension");
-        existingWire.IsBeingEdited = true; 
-        components.Remove(existingWire);
+        existingWire.IsBeingEdited = true;
+        simulation.Components.Remove(existingWire);
         _previewComponent = existingWire;
 
         // Add a break point
-        removelShapePoint = false;
         existingWire.Points.Add(new Point(-1, -1));
         // Get the closest point on the line segment instead of using click point
         clickPoint = SnapToGrid(clickPoint);
         existingWire.Points.Add(clickPoint);
-        existingWire.Points.Add(clickPoint); // Duplicate for dragging
+        // existingWire.Points.Add(clickPoint); // Duplicate for dragging
         
         existingWire.InvalidateVisual();
     }
