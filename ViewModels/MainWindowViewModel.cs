@@ -403,6 +403,14 @@ namespace IRis.ViewModels
 
                 if (result is not null)
                 {
+                    // Add conditions for other complex components as well
+                    if (result.Name == "MUX")
+                    {
+                        Console.WriteLine($"Adding component: {result.Name}");
+                        _simulation.PreviewCompType = result.Name;
+                        LastAction = $"Selected Component [{result.Name}]";
+                        return;
+                    }
                     // Console.WriteLine($"Inputs: {result.InputCount}, Outputs: {result.OutputCount}");
                     Console.WriteLine("Sucess");
                     _simulation.CustomComponent = result;

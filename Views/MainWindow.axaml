@@ -135,14 +135,12 @@
                 <Button Content="NOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="NOR"/>
                 <Button Content="XOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="XOR"/>
                 <Button Content="XNOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="XNOR"/>
-                <Button Content="Multiplexer" Command="{Binding AddComponentCommand}" CommandParameter="MUX"/>
-
+                <Button Content="Other" Command="{Binding OtherComponentsCommand}"/>
                 
                 <TextBlock Text="Input/Output" FontWeight="Bold" Margin="0,10,0,5"/>
                 
                 <Button Content="Toggle Switch" Command="{Binding AddComponentCommand}" CommandParameter="TOGGLE"/>
                 <Button Content="Logic Probe" Command="{Binding AddComponentCommand}" CommandParameter="PROBE"/>
-                <Button Content="Other" Command="{Binding OtherComponentsCommand}"/>
                 
                 <TextBlock Text="Connectors" FontWeight="Bold" Margin="0,10,0,5"/>
                 
