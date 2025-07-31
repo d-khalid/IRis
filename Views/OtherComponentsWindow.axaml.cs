@@ -164,25 +164,35 @@ namespace IRis.Views
         {
             if (ComponentListBox.SelectedItem is ListBoxItem item)
             {
-                string fileName = item.Content!.ToString()!;
-                string fullFilePath = Path.Combine(ComponentFolder, fileName + ".xml");
-                bool confirmed;
-
-                // Dialog box to confirm deletion
-                var result = await MessageBoxManager
-                .GetMessageBoxStandard("Confirm", 
-                                     "Are you sure you want to delete this item?",
-                                     ButtonEnum.YesNo,
-                                     MsBox.Avalonia.Enums.Icon.Question)
-                .ShowAsync();
-
-                if (result == ButtonResult.Yes) confirmed = true;
-                else confirmed = false;
-                
-                if (confirmed)
+                if (item.Content is StackPanel stackPanel && stackPanel.Children[0] is TextBlock textBlock)
                 {
-                    File.Delete(fullFilePath);
-                    LoadComponentList();
+                    string componentName = textBlock.Text!;
+
+                    // Check the label type from the second child (Border -> TextBlock)
+                    if (stackPanel.Children[1] is Border border && border.Child is TextBlock labelText)
+                    {
+                        string labelType = labelText.Text!;
+                        if (labelType != "user created")
+                        {
+                            Console.WriteLine("Only user created components can be deleted.");
+                            return;
+                        }
+                        string fullFilePath = Path.Combine(ComponentFolder, componentName + ".xml");
+
+                        // Dialog box to confirm deletion
+                        var result = await MessageBoxManager
+                        .GetMessageBoxStandard("Confirm",
+                                            "Are you sure you want to delete this item?",
+                                            ButtonEnum.YesNo,
+                                            MsBox.Avalonia.Enums.Icon.Question)
+                        .ShowAsync();
+                        if (result == ButtonResult.Yes)
+                        {
+                            Console.WriteLine(fullFilePath);
+                            File.Delete(fullFilePath);
+                            LoadComponentList();
+                        }
+                    }
                 }
             }
         }

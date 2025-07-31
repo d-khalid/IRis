@@ -7,7 +7,7 @@ namespace IRis.Models.Core;
 public static class ComponentDefaults
 {
     // Common fields for all components
-    public const double DefaultWidth = 80;
+    public const double DefaultWidth = 65;
     public const double DefaultHeight = 60;
     public const double DefaultMuxWidth = 80;
     public const double DefaultMuxHeight = 180;
