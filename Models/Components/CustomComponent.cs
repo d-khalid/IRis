@@ -13,7 +13,7 @@ namespace IRis.Models.Components;
 public class CustomComponent : Component, IOutputProvider
 {
     protected string ComponentName;
-    protected int InputCount;
+    public int InputCount;
     protected int OutputCount;
     protected List<CircuitFormulaConversionService.CircuitFormula> OutputFormulas;
     

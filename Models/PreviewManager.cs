@@ -146,7 +146,6 @@ internal class PreviewManager
     // Helper for HandleUpdate
     private bool HandleWireUpdate(Wire wirePreview, Point mousePos, bool snapToGridEnabled, Simulation simulation)
     {
-        // TODO: Remake this function
         if (wirePreview.Points.Count == 0) return true;
 
         Point snappedMousePos = SnapToGrid(mousePos);

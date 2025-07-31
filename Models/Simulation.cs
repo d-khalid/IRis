@@ -247,6 +247,50 @@ public partial class Simulation : ObservableObject
         return new Point(-2, -2);   // Error case; should not occur
     }
 
+    public bool IsInputTerminal(Terminal terminal)
+    {
+        if (terminal == null) return false;
+        
+        foreach (Component component in _components)
+        {
+            if (component.Terminals == null) continue;
+            
+            // For Gate components, check if terminal is not the last one (output)
+            if (component is Gate gate)
+            {
+                for (int i = 0; i < gate.Terminals!.Length - 1; i++) // Exclude last terminal (output)
+                {
+                    if (gate.Terminals[i] == terminal)
+                        return true;
+                }
+            }
+            // For Multiplexer components
+            else if (component is Multiplexer mux)
+            {
+                // Selection lines (indices 0 to SelectionLineCount-1) and 
+                // Input lines (indices SelectionLineCount to SelectionLineCount+InputLineCount-1) are inputs
+                // Only the last terminal (^1) is output
+                for (int i = 0; i < mux.Terminals!.Length - 1; i++) // Exclude last terminal (output)
+                {
+                    if (mux.Terminals[i] == terminal)
+                        return true;
+                }
+            }
+            // For CustomComponent
+            else if (component is CustomComponent customComp)
+            {
+                // First InputCount terminals are inputs, remaining are outputs
+                for (int i = 0; i < customComp.InputCount; i++)
+                {
+                    if (i < customComp.Terminals!.Length && customComp.Terminals[i] == terminal)
+                        return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
     public Wire? FindWireAtPosition(Point position)
     {
         return _components.OfType<Wire>()
@@ -274,7 +318,14 @@ public partial class Simulation : ObservableObject
             {
                 if (FindWireAtPosition(CurrentMousePos) != null)  // if Created on an already present wire
                 {
-                    if (FindClosestSnapTerminal(CurrentMousePos) != null)   // If wire & terminal are present bellow
+                    Terminal? terminal = FindClosestSnapTerminal(CurrentMousePos);
+                    if (terminal != null && !IsInputTerminal(terminal))   // if no terminal is present
+                    {
+                        Console.WriteLine("Registering new wire ()...");
+                        _previewManager.HandleWireCommit(sender, e, CurrentMousePos, this);
+                        return;
+                    }
+                    else if (terminal != null && IsInputTerminal(terminal))   // If wire & terminal are present bellow
                     {
                         Console.WriteLine("Terminal is Already connected to a wire!");
                         return;
