@@ -107,22 +107,6 @@ public class CustomComponent : Component, IOutputProvider
         return inputs;
     }
 
-    // Keep the old EvaluateFormula method for backward compatibility, but mark it as obsolete
-    [Obsolete("Use CircuitFormulaConversionService.EvaluateFormula instead")]
-    private LogicState EvaluateFormula(string formula)
-    {
-        try
-        {
-            var inputs = GetInputValues();
-            bool result = CircuitFormulaConversionService.EvaluateFormula(formula, inputs);
-            return result ? LogicState.High : LogicState.Low;
-        }
-        catch
-        {
-            return LogicState.Low; // Default to low on error
-        }
-    }
-
     public override void Draw(DrawingContext ctx)
     {
         // Component Body

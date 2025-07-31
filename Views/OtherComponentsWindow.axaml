@@ -16,6 +16,8 @@
         </ListBox>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+            <Button Content="Delete" Click="OnDeleteClick" 
+                    HorizontalContentAlignment="Center" Width="80"/>
             <Button Content="Add" Click="OnAddClick" 
                     HorizontalContentAlignment="Center" Width="80"/>
             <Button Content="Cancel" Click="OnCancelClick" 

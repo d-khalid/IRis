@@ -7,6 +7,9 @@ using Avalonia;
 using IRis.Services;
 using System.Collections.Generic;
 using Tmds.DBus.Protocol;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
+using System.Threading.Tasks;
 
 namespace IRis.Views
 {
@@ -62,18 +65,7 @@ namespace IRis.Views
             }
             else
             {
-                var dlg = new Window
-                {
-                    Title = "Error",
-                    Width = 300,
-                    Height = 100,
-                    Content = new TextBlock
-                    {
-                        Text = "Please select a component first.",
-                        Margin = new Thickness(10)
-                    }
-                };
-                dlg.ShowDialog(this);
+                Console.WriteLine("No component selected.");
             }
         }
 
@@ -97,6 +89,34 @@ namespace IRis.Views
         {
             Close();
         }
+
+        private async void OnDeleteClick(object? sender, RoutedEventArgs e)
+        {
+            if (ComponentListBox.SelectedItem is ListBoxItem item)
+            {
+                string fileName = item.Content!.ToString()!;
+                string fullFilePath = Path.Combine(ComponentFolder, fileName + ".xml");
+                bool confirmed;
+
+                // Dialog box to confirm deletion
+                var result = await MessageBoxManager
+                .GetMessageBoxStandard("Confirm", 
+                                     "Are you sure you want to delete this item?",
+                                     ButtonEnum.YesNo,
+                                     MsBox.Avalonia.Enums.Icon.Question)
+                .ShowAsync();
+
+                if (result == ButtonResult.Yes) confirmed = true;
+                else confirmed = false;
+                
+                if (confirmed)
+                {
+                    File.Delete(fullFilePath);
+                    LoadComponentList();
+                }
+            }
+        }
+
     }
     
     public class CustomComponentData
@@ -106,5 +126,4 @@ namespace IRis.Views
         public int OutputCount { get; set; }
         public List<CircuitFormulaConversionService.CircuitFormula> Formulas { get; set; } = [];
     }
-
 }
