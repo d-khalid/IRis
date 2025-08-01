@@ -296,6 +296,11 @@ public partial class Simulation : ObservableObject
         return _components.OfType<Wire>()
             .FirstOrDefault(wire => wire.IsPointOnWire(position, 5.0)); // 5.0 is click tolerance
     }
+
+    public bool IsPointInsideAnyComponent(Point point)
+    {
+        return Components.Any(component => component is not Wire && component.Bounds.Contains(point));
+    }
     
     private bool IsWireInMovedWires(Wire wire, List<Component> MovedWires)
     {

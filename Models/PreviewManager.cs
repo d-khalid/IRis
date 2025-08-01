@@ -174,10 +174,14 @@ internal class PreviewManager
                 pointSnappedToTerminal = true;
             }
         }
-        // If there is a terminal
-        if (terminal != null && !pointSnappedToTerminal)// snappedMousePos == simulation.GetAbsoluteTerminalPosition(terminal))
+        // If there is a terminal and snapping rejected it
+        bool condition1 = terminal != null && !pointSnappedToTerminal;
+        // If the point is drawn on a component
+        bool condition2 = simulation.IsPointInsideAnyComponent(targetPoint);
+        if (condition1 || condition2)
         {   // PATCH: Annihiliate the wire completely
-            Console.WriteLine("Wire cannot be drawn on a used input terminal, annihiliating it...");
+            if (condition1) Console.WriteLine("Wire cannot be drawn on a used input terminal, annihiliating it...");
+            else if (condition2) Console.WriteLine("Wire cannot be drawn on a component, annihiliating it...");
             _previewComponent = null;
             simulation.PreviewCompType = "WIRE";   // Keep the wire preview dot
             wirePreview.Points.Clear();
