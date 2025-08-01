@@ -307,8 +307,11 @@ public partial class Simulation : ObservableObject
         var existingWirePoints = Components.OfType<Wire>()
             .SelectMany(w => w.Points.Where(p => p.X != -1 && p.Y != -1))
             .ToHashSet();
+        List<Point> validPoints = points;
+        foreach (Point point in points)
+            if (FindClosestSnapTerminal(point) == null) validPoints.Add(point);
         
-        return points.Any(existingWirePoints.Contains);
+        return validPoints.Any(existingWirePoints.Contains);
     }
 
     public bool DoesWireSelfOverlap(List<Point> points)
