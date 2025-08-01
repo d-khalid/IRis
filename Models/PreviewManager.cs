@@ -9,6 +9,7 @@ using IRis.Models.Core;
 using IRis.Models.Commands;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Runtime.Serialization;
 
 namespace IRis.Models;
 
@@ -48,11 +49,12 @@ internal class PreviewManager
     // Helper for SetPreviewComponent
     private void PositionPreviewComponent(Point mousePos)
     {
+        Point snappedMousePos = SnapToGrid(mousePos);
         if (_previewComponent == null) return;
         // TODO: fix this initial positioning of wire preview point
         if (_previewComponent is Wire wire)
         {
-            wire.AddPoint(mousePos);
+            wire.AddPoint(snappedMousePos);
             Canvas.SetLeft(wire, 0);
             Canvas.SetTop(wire, 0);
         }
@@ -176,12 +178,22 @@ internal class PreviewManager
         }
         // If there is a terminal and snapping rejected it
         bool condition1 = terminal != null && !pointSnappedToTerminal;
-        // If the point is drawn on a component
+        // Their names should be self-explanatory
         bool condition2 = simulation.IsPointInsideAnyComponent(targetPoint);
-        if (condition1 || condition2)
+        bool condition3 = simulation.DoesWireOverlapAnotherWire(wirePreview.Points);
+        bool condition4 = simulation.DoesWireSelfOverlap(wirePreview.Points);
+        // If snapping was rejected and wire crosses a terminal
+        List<Point> tempPoints = [.. wirePreview.Points];
+        tempPoints[^1] = targetPoint;
+        bool condition5 = !pointSnappedToTerminal && simulation.DoesWireCrossTerminal(tempPoints);
+
+        if (condition1 || condition2 || condition3 || condition4 || condition5)
         {   // PATCH: Annihiliate the wire completely
             if (condition1) Console.WriteLine("Wire cannot be drawn on a used input terminal, annihiliating it...");
             else if (condition2) Console.WriteLine("Wire cannot be drawn on a component, annihiliating it...");
+            else if (condition3) Console.WriteLine("Wire cannot overlap another wire, annihiliating it...");
+            else if (condition4) Console.WriteLine("Wire cannot self overlap, annihiliating it...");
+            else if (condition5) Console.WriteLine("Wire cannot cross a terminal, annihiliating it...");
             _previewComponent = null;
             simulation.PreviewCompType = "WIRE";   // Keep the wire preview dot
             wirePreview.Points.Clear();

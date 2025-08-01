@@ -301,6 +301,59 @@ public partial class Simulation : ObservableObject
     {
         return Components.Any(component => component is not Wire && component.Bounds.Contains(point));
     }
+
+    public bool DoesWireOverlapAnotherWire(List<Point> points)
+    {
+        var existingWirePoints = Components.OfType<Wire>()
+            .SelectMany(w => w.Points.Where(p => p.X != -1 && p.Y != -1))
+            .ToHashSet();
+        
+        return points.Any(existingWirePoints.Contains);
+    }
+
+    public bool DoesWireSelfOverlap(List<Point> points)
+    {
+        var allLinePoints = new HashSet<Point>();
+        var validPoints = points.Where(p => p.X != -1 && p.Y != -1).ToList();
+        
+        for (int i = 0; i < validPoints.Count - 1; i++)
+        {
+            int dx = (int)(validPoints[i + 1].X - validPoints[i].X);
+            int dy = (int)(validPoints[i + 1].Y - validPoints[i].Y);
+            int steps = (int)(Math.Max(Math.Abs(dx), Math.Abs(dy)) / ComponentDefaults.GridSpacing);
+            if (steps == 0) continue;
+            
+            for (int j = 1; j < steps; j++) // Skip endpoints to avoid false positives
+            {
+                var point = new Point((int)(validPoints[i].X + dx * j / steps), (int)(validPoints[i].Y + dy * j / steps));
+                if (!allLinePoints.Add(point)) return true;
+            }
+        }
+        return false;
+    }
+
+    public bool DoesWireCrossTerminal(List<Point> points)
+    {
+        var terminalPositions = Components.Where(c => c is not Wire && c.Terminals != null)
+            .SelectMany(c => c.Terminals!.Select(t => GetAbsoluteTerminalPosition(t)))
+            .ToHashSet();
+        
+        var valid = points.Where(p => p.X != -1 && p.Y != -1).ToList();
+        
+        for (int i = 0; i < valid.Count - 1; i++)
+        {
+            int dx = (int)(valid[i + 1].X - valid[i].X), dy = (int)(valid[i + 1].Y - valid[i].Y);
+            int steps = (int)(Math.Max(Math.Abs(dx), Math.Abs(dy)) / ComponentDefaults.GridSpacing);
+            
+            if (steps == 0) continue;
+            for (int j = 0; j <= steps; j++)
+            {
+                var p = new Point((int)(valid[i].X + dx * j / steps), (int)(valid[i].Y + dy * j / steps));
+                if (terminalPositions.Contains(p)) return true;
+            }
+        }
+        return false;
+    }
     
     private bool IsWireInMovedWires(Wire wire, List<Component> MovedWires)
     {
@@ -309,6 +362,13 @@ public partial class Simulation : ObservableObject
             if (movedWire == wire) return true;
         }
         return false;
+    }
+
+    Point SnapToGrid(Point pt)
+    {
+        double snapX = (int)Math.Round(Math.Round(pt.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
+        double snapY = (int)Math.Round(Math.Round(pt.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
+        return new Point(snapX, snapY);
     }
 
     // _______________________________________________
@@ -337,19 +397,36 @@ public partial class Simulation : ObservableObject
                     }
                     else    // Only wire is present bellow
                     {
-                        // WIRE EXTENSION LOGIC
-                        Console.WriteLine("Registering Wire Extension...");
-                        Wire existingWire = FindWireAtPosition(CurrentMousePos)!;
-                        _previewManager.StartWireExtension(CurrentMousePos, existingWire, this);
-                        return;
+                        if (_previewManager.PreviewComponent is not null)
+                        {   // Trying to put a checkpoint on a wire
+                            Console.WriteLine("Cannot Put a Checkpoint on a Wire!");
+                            return;
+                        }
+                        else
+                        {
+                            // WIRE EXTENSION LOGIC
+                            Console.WriteLine("Registering Wire Extension...");
+                            Wire existingWire = FindWireAtPosition(CurrentMousePos)!;
+                            _previewManager.StartWireExtension(CurrentMousePos, existingWire, this);
+                            return;
+                        }
                     }
                 }
                 else    // if Created on some empty space
                 {
-                    // NEW WIRE LOGIC
-                    Console.WriteLine("Registering New Wire...");
-                    _previewManager.HandleWireCommit(sender, e, CurrentMousePos, this);
-                    return;
+                    if (_previewManager.PreviewComponent is not null)
+                    {
+                        Console.WriteLine("Registering a Checkpoint...");
+                        _previewManager.HandleWireCommit(sender, e, CurrentMousePos, this);
+                        return;
+                    }
+                    else
+                    {
+                        // NEW WIRE LOGIC
+                        Console.WriteLine("Registering New Wire...");
+                        _previewManager.HandleWireCommit(sender, e, CurrentMousePos, this);
+                        return;
+                    }
                 }
             }
             else
