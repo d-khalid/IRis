@@ -12,7 +12,8 @@
         <TextBlock Text="Select a Component to Add" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
 
         <ListBox x:Name="ComponentListBox" Height="350">
-        <!-- Loaded at runtime from RuntimeComponents -->
+        
+        <!-- Custom Components Loaded at runtime from RuntimeComponents -->
         </ListBox>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">

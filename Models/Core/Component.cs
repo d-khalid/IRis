@@ -152,7 +152,7 @@ public abstract class Component : Control, ICustomHitTest
             case "XNOR":
                 return new XnorGate(numInputs);
             case "MUX":
-                return new Multiplexer(numInputs + 2);
+                return new Multiplexer(numInputs);
             
             case "PROBE":
                 return new LogicProbe();

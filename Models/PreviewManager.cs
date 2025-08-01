@@ -174,8 +174,18 @@ internal class PreviewManager
                 pointSnappedToTerminal = true;
             }
         }
-        // Update the last point
-        if (pointSnappedToTerminal || terminal == null) wirePreview.Points[^1] = targetPoint;
+        // If there is a terminal
+        if (terminal != null && !pointSnappedToTerminal)// snappedMousePos == simulation.GetAbsoluteTerminalPosition(terminal))
+        {   // PATCH: Annihiliate the wire completely
+            Console.WriteLine("Wire cannot be drawn on a used input terminal, annihiliating it...");
+            _previewComponent = null;
+            simulation.PreviewCompType = "WIRE";   // Keep the wire preview dot
+            wirePreview.Points.Clear();
+        }
+        else
+        {
+            wirePreview.Points[^1] = targetPoint;
+        }
 
         wirePreview.InvalidateVisual();
         return true;
