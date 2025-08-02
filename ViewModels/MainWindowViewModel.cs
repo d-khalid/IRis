@@ -56,8 +56,8 @@ namespace IRis.ViewModels
             set => SetProperty(ref _gridToggleText, value);
         }
 
+        public string SimulationButtonColor => _simulation.Simulating ? "Green" : "DarkRed";
         private string _simulationToggleText = "Simulation: OFF";
-
         public string SimulationToggleText
         {
             get => _simulationToggleText;
@@ -129,6 +129,7 @@ namespace IRis.ViewModels
             _simulation.Simulating = !_simulation.Simulating;
 
             SimulationToggleText = _simulation.Simulating ? "Simulation: ON" : "Simulation: OFF";
+            OnPropertyChanged(nameof(SimulationButtonColor));   // Changes the color of the button
         }
 
         // File commands
@@ -412,7 +413,6 @@ namespace IRis.ViewModels
                         return;
                     }
                     // Console.WriteLine($"Inputs: {result.InputCount}, Outputs: {result.OutputCount}");
-                    Console.WriteLine("Sucess");
                     _simulation.CustomComponent = result;
                     
                     Console.WriteLine($"Adding component: {result.Name}");

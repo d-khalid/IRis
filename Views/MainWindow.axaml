@@ -121,6 +121,7 @@
             <MenuItem Header="Help">
                 <MenuItem Header="About" Command="{Binding AboutCommand}"/>
             </MenuItem>
+
         </Menu>
 
         <!-- Left Sidebar with Components -->
@@ -146,18 +147,21 @@
                 
                 <Button Content="Wire" Command="{Binding AddComponentCommand}" CommandParameter="WIRE"/>
                 
-                <TextBlock Text="Options" FontWeight="Bold" Margin="0,10,0,5"/>
-                <Button Content="{Binding SimulationToggleText}" 
-                        Command="{Binding SimulationToggleCommand}"/>
-                
-                <Button Content="{Binding GridToggleText}" 
-                        Command="{Binding GridToggleCommand}"/>
-                
-                
-                
-                
             </StackPanel>
         </ScrollViewer>
+
+        <!-- Top Bar: Toolbar below menu -->
+        <Border DockPanel.Dock="Top" Padding="5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="{Binding SimulationToggleText}" 
+                        Command="{Binding SimulationToggleCommand}"
+                        Background="{Binding SimulationButtonColor}"
+                        Margin="5,0"/>
+                <Button Content="{Binding GridToggleText}" 
+                        Command="{Binding GridToggleCommand}"
+                        Margin="5,0"/>
+            </StackPanel>
+        </Border>
         
         <!-- Bottom Status Bar -->
         <Border Background="DarkSlateGray" Height="25" DockPanel.Dock="Bottom" Padding="5">
