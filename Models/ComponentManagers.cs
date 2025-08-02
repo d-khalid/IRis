@@ -72,7 +72,8 @@ internal class ClipboardManager
 
             Canvas.SetLeft(c, Canvas.GetLeft(component));
             Canvas.SetTop(c, Canvas.GetTop(component));
-            component.IsSelected = false;
+            component.IsSelected = false;   // This line is a syntax error
+            c.IsSelected = false;
         }
 
         return clonedComponents;
@@ -110,11 +111,15 @@ internal class ClipboardManager
         {
             Points = originalWire.Points,
             Id = Guid.NewGuid(),
-            Value = originalWire.Value // enums are value types!
+            Value = originalWire.Value, // enums are value types!
+            IsSelected = false
         };
 
         Canvas.SetLeft(newWire, Canvas.GetLeft(originalWire));
         Canvas.SetTop(newWire, Canvas.GetTop(originalWire));
+        // FIX: prevent wires from being drawn as ghosts
+        newWire.IsBeingEdited = false;
+        newWire.IsCommitted = true;
 
         return newWire;
     }

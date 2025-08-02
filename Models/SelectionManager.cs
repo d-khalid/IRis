@@ -53,10 +53,11 @@ internal class SelectionManager
                 {
                     // FIXED: Clear other selections first, then select this component
                     UnselectAll(selectedComponents);
+                    Console.WriteLine("Component added to selected components");
                     selectedComponents.Add(component);
                     component.IsSelected = true;
 
-                    // NEW: Select connected wires
+                    // Select wires connected to the components
                     SelectConnectedWires(component, selectedComponents);
                     return;
                 }
@@ -132,6 +133,7 @@ internal class SelectionManager
 
     public void UnselectAll(List<Component> selectedComponents)
     {
+        Console.WriteLine("Unselecting all components");
         // Unselect all components
         foreach (Component c in selectedComponents)
             c.IsSelected = false;
@@ -369,7 +371,7 @@ internal class SelectionManager
             }
         }
 
-        // NEW: Select connected wires for all selected components
+        // Select connected wires for all selected components
         SelectConnectedWiresForComponents(componentsInSelection, canvas, selectedComponents);
     }
 
@@ -477,6 +479,7 @@ internal class SelectionManager
     {
         if (selectedComponents.Any())
         {
+            Console.WriteLine("Drag started");
             _isDragging = true;
             _draggedComponents = [.. selectedComponents];
             _dragStartPositions = [.. _draggedComponents.Select(c => 

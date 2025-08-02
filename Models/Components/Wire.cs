@@ -169,6 +169,7 @@ public class Wire : Component, ICloneable
         
         // Use ghost styling if wire is not committed OR is being edited
         bool useGhostStyling = IsBeingEdited && !IsCommitted;
+        Console.WriteLine($"Drawing wire with ghost styling: edit: {IsBeingEdited}, commit: {IsCommitted}, ghost: {useGhostStyling}");
         var penToUse = useGhostStyling ? ComponentDefaults.GhostWirePen : ComponentDefaults.WirePen;
         
         if (points.Count == 1 && points[0] != new Point(-1, -1))
