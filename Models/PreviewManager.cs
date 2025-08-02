@@ -187,7 +187,8 @@ internal class PreviewManager
         bool condition2 = simulation.IsPointInsideAnyComponent(targetPoint);
         // If Wire is not snapped to terminal and overlaps another wire
         // The snapping handles used input terminals so this works.
-        bool condition3 = !pointSnappedToTerminal && simulation.DoesWireOverlapAnotherWire(wirePreview.Points);
+        bool condition3 = !pointSnappedToTerminal &&
+            simulation.DoesWireOverlapAnotherWire(wirePreview.Points);
         bool condition4 = simulation.DoesWireSelfOverlap(wirePreview.Points);
         // If snapping was rejected and wire crosses a terminal
         List<Point> tempPoints = [.. wirePreview.Points];
@@ -223,16 +224,22 @@ internal class PreviewManager
 
                 // Handle the Closest to mouse point, its there for preview
                 Point closestPoint = snappedMousePos;
+                // Snap the closest point too
+                Terminal? terminal2 = simulation.FindClosestSnapTerminal(closestPoint);
+                if (terminal2 != null) closestPoint = simulation.GetAbsoluteTerminalPosition(terminal2);
                 wirePreview.Points.Add(closestPoint);
 
                 // Since we have a new type of Wire, we check for the conditions again.
                 bool condition6 = simulation.IsPointInsideAnyComponent(targetPoint);
                 bool condition7 = simulation.FindClosestSnapTerminal(wirePreview.Points[^1]) == null &&
                     simulation.DoesWireOverlapAnotherWire(wirePreview.Points);
-                if (condition6 || condition7)
+                bool condition8 = simulation.IsWireSupersetOfAnotherWire(wirePreview.Points);
+
+                if (condition6 || condition7 || condition8)
                 {
                     if (condition6) Console.WriteLine("Corner Point cannot be drawn on a component, annihiliating it...");
-                    else if (condition7) Console.WriteLine("New Wire cannot overlap another wire, annihiliating it...");
+                    else if (condition7) Console.WriteLine("Orthogonal Wire cannot overlap another wire, annihiliating it...");
+                    else if (condition8) Console.WriteLine("Wire cannot be a superset of another wire, annihiliating it...");
                     _previewComponent = null;
                     simulation.PreviewCompType = "WIRE";   // Keep the wire preview dot
                     wirePreview.Points.Clear();

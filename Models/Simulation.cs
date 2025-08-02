@@ -313,19 +313,40 @@ public partial class Simulation : ObservableObject
     
     return validPoints.Any(existingWirePoints.Contains);
     }
+    
+    public bool IsWireSupersetOfAnotherWire(List<Point> wirePoints)
+    {
+        var wirePointsSet = wirePoints.Where(p => p.X != -1 && p.Y != -1).ToHashSet();
+        bool IsWireSuperset = false;
+        // Check if wire is a superset of another wire
+        foreach (Component component in _components)
+        {
+            if (component is Wire existingWire)
+            {
+                if (Components.OfType<Wire>().ToList()
+                    .Any(existingWire => existingWire.Points.Where(p => p.X != -1 && p.Y != -1)
+                        .All(wirePointsSet.Contains)))
+                {
+                    IsWireSuperset = true;
+                    break;
+                }
+            }
+        }
+        return IsWireSuperset;
+    }
 
     public bool DoesWireSelfOverlap(List<Point> points)
     {
         var allLinePoints = new HashSet<Point>();
         var validPoints = points.Where(p => p.X != -1 && p.Y != -1).ToList();
-        
+
         for (int i = 0; i < validPoints.Count - 1; i++)
         {
             int dx = (int)(validPoints[i + 1].X - validPoints[i].X);
             int dy = (int)(validPoints[i + 1].Y - validPoints[i].Y);
             int steps = (int)(Math.Max(Math.Abs(dx), Math.Abs(dy)) / ComponentDefaults.GridSpacing);
             if (steps == 0) continue;
-            
+
             for (int j = 1; j < steps; j++) // Skip endpoints to avoid false positives
             {
                 var point = new Point((int)(validPoints[i].X + dx * j / steps), (int)(validPoints[i].Y + dy * j / steps));
