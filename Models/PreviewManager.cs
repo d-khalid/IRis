@@ -17,7 +17,7 @@ internal class PreviewManager
 {
     private string? _previewCompType;
     private Component? _previewComponent;
-
+    private bool IsCornerPointAdded = false;
     public string? PreviewCompType => _previewCompType;     // in case of null, value is set to "NULL"
     public Component? PreviewComponent => _previewComponent;
 
@@ -159,6 +159,12 @@ internal class PreviewManager
             wirePreview.InvalidateVisual();
             return true;
         }
+        // Remove the endpoint (after the corner point) if present
+        if (IsCornerPointAdded)
+        {
+            wirePreview.Points.RemoveAt(wirePreview.Points.Count - 1);
+            IsCornerPointAdded = false;
+        }
         Point targetPoint = snappedMousePos;
 
         bool pointSnappedToTerminal = false;
@@ -179,6 +185,8 @@ internal class PreviewManager
         bool condition1 = terminal != null && !pointSnappedToTerminal;
         // Their names should be self-explanatory
         bool condition2 = simulation.IsPointInsideAnyComponent(targetPoint);
+        // If Wire is not snapped to terminal and overlaps another wire
+        // The snapping handles used input terminals so this works.
         bool condition3 = !pointSnappedToTerminal && simulation.DoesWireOverlapAnotherWire(wirePreview.Points);
         bool condition4 = simulation.DoesWireSelfOverlap(wirePreview.Points);
         // If snapping was rejected and wire crosses a terminal
@@ -201,9 +209,40 @@ internal class PreviewManager
         }
         else
         {
-            wirePreview.Points[^1] = targetPoint;
-        }
+            // If target point is non-orthogonal relative to the last point
+            if (wirePreview.Points.Count >= 2 && targetPoint.X != wirePreview.Points[^2].X && targetPoint.Y != wirePreview.Points[^2].Y)
+            {   // Build an othogonal wire
+                IsCornerPointAdded = true;
+                double dx = Math.Abs(targetPoint.X - wirePreview.Points[^2].X);
+                double dy = Math.Abs(targetPoint.Y - wirePreview.Points[^2].Y);
+                // Prefer the shorter distance for the Corner Point
+                if (dx < dy) targetPoint = new Point(targetPoint.X, wirePreview.Points[^2].Y);
+                else targetPoint = new Point(wirePreview.Points[^2].X, targetPoint.Y);
 
+                wirePreview.Points[^1] = targetPoint;
+
+                // Handle the Closest to mouse point, its there for preview
+                Point closestPoint = snappedMousePos;
+                wirePreview.Points.Add(closestPoint);
+
+                // Since we have a new type of Wire, we check for the conditions again.
+                bool condition6 = simulation.IsPointInsideAnyComponent(targetPoint);
+                bool condition7 = simulation.FindClosestSnapTerminal(wirePreview.Points[^1]) == null &&
+                    simulation.DoesWireOverlapAnotherWire(wirePreview.Points);
+                if (condition6 || condition7)
+                {
+                    if (condition6) Console.WriteLine("Corner Point cannot be drawn on a component, annihiliating it...");
+                    else if (condition7) Console.WriteLine("New Wire cannot overlap another wire, annihiliating it...");
+                    _previewComponent = null;
+                    simulation.PreviewCompType = "WIRE";   // Keep the wire preview dot
+                    wirePreview.Points.Clear();
+                }
+            }
+            else    // target point is orthogonal to the last point, make a straight line
+            {
+                wirePreview.Points[^1] = targetPoint;
+            }
+        }
         wirePreview.InvalidateVisual();
         return true;
     }
