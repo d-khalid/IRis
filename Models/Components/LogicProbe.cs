@@ -11,8 +11,6 @@ namespace IRis.Models.Components;
 
 public class LogicProbe : Component
 {
-   
-
     public LogicProbe(double width = ComponentDefaults.DefaultWidth, double height = ComponentDefaults.DefaultHeight)
         : base(width, height)
     {
@@ -50,7 +48,6 @@ public class LogicProbe : Component
         return clone;
     }
     
-
     public override void Draw(DrawingContext ctx)
     {
         IImmutableSolidColorBrush fill;
@@ -86,34 +83,34 @@ public class LogicProbe : Component
 
 
         ctx.DrawEllipse(
-            fill, 
+            fill,
             ComponentDefaults.GatePen,
-            new Point(Width/2, Height/2),
-            Width/2, Height/2
+            new Point(Width / 2, Height / 2),
+            Width / 2, Height / 2
             );
-        
+
         ctx.DrawLine(ComponentDefaults.WirePen, Terminals[0].Position, new Point(0, Terminals[0].Position.Y));
-        ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
+        ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
             Terminals[0].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
-        
+
         // Draw the text label
         var text = new FormattedText(
             content,
             CultureInfo.CurrentCulture,
             FlowDirection.LeftToRight,
-            new Typeface(fontFamily:"Arial", weight:FontWeight.Bold), 
-            24, 
-            Brushes.White 
+            new Typeface(fontFamily: "Arial", weight: FontWeight.Bold),
+            24,
+            Brushes.White
         );
-        
-        
-    
+
+
+
         // Center the text in the ellipse
         ctx.DrawText(
             text,
             new Point(
-                Width/2 - text.Width/2,
-                Height/2 - text.Height/2
+                Width / 2 - text.Width / 2,
+                Height / 2 - text.Height / 2
             )
         );
     }

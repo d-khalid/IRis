@@ -130,6 +130,17 @@ namespace IRis.ViewModels
 
             SimulationToggleText = _simulation.Simulating ? "Simulation: ON" : "Simulation: OFF";
             OnPropertyChanged(nameof(SimulationButtonColor));   // Changes the color of the button
+            
+            // Reset the probes to null
+            foreach (var component in _simulation.Components)
+            {
+                if (component is LogicProbe lp)
+                {
+                    Console.WriteLine("LP value set to null");
+                    lp.Terminals![0].Wire!.Value = null;
+                    lp.InvalidateVisual();
+                }
+            }
         }
 
         // File commands
