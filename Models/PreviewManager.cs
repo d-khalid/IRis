@@ -61,9 +61,8 @@ internal class PreviewManager
         // Place the component outside the user's view
         else
         {
-            Canvas.SetLeft(_previewComponent,
-            -ComponentDefaults.DefaultWidth - ComponentDefaults.TerminalWireLength * 2);
-            Canvas.SetTop(_previewComponent, 0);
+            Canvas.SetLeft(_previewComponent, snappedMousePos.X);
+            Canvas.SetTop(_previewComponent, snappedMousePos.Y);
         }
     }
 
@@ -180,12 +179,14 @@ internal class PreviewManager
         bool condition1 = terminal != null && !pointSnappedToTerminal;
         // Their names should be self-explanatory
         bool condition2 = simulation.IsPointInsideAnyComponent(targetPoint);
-        bool condition3 = simulation.DoesWireOverlapAnotherWire(wirePreview.Points);
+        bool condition3 = !pointSnappedToTerminal && simulation.DoesWireOverlapAnotherWire(wirePreview.Points);
         bool condition4 = simulation.DoesWireSelfOverlap(wirePreview.Points);
         // If snapping was rejected and wire crosses a terminal
         List<Point> tempPoints = [.. wirePreview.Points];
         tempPoints[^1] = targetPoint;
-        bool condition5 = !pointSnappedToTerminal && simulation.DoesWireCrossTerminal(tempPoints);
+        // Exclude the starting terminal
+        Terminal? exceptionCase = simulation.FindClosestSnapTerminal(wirePreview.Points[0]);
+        bool condition5 = !pointSnappedToTerminal && simulation.DoesWireCrossTerminal(tempPoints, exceptionCase);
 
         if (condition1 || condition2 || condition3 || condition4 || condition5)
         {   // PATCH: Annihiliate the wire completely

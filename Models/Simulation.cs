@@ -304,14 +304,14 @@ public partial class Simulation : ObservableObject
 
     public bool DoesWireOverlapAnotherWire(List<Point> points)
     {
-        var existingWirePoints = Components.OfType<Wire>()
-            .SelectMany(w => w.Points.Where(p => p.X != -1 && p.Y != -1))
-            .ToHashSet();
-        List<Point> validPoints = points;
-        foreach (Point point in points)
-            if (FindClosestSnapTerminal(point) == null) validPoints.Add(point);
-        
-        return validPoints.Any(existingWirePoints.Contains);
+    var existingWirePoints = Components.OfType<Wire>().ToList()
+        .SelectMany(w => w.Points.Where(p => p.X != -1 && p.Y != -1))
+        .ToHashSet();
+    List<Point> validPoints = [.. points];
+    foreach (Point point in points)
+        if (FindClosestSnapTerminal(point) == null) validPoints.Add(point);
+    
+    return validPoints.Any(existingWirePoints.Contains);
     }
 
     public bool DoesWireSelfOverlap(List<Point> points)
@@ -335,10 +335,10 @@ public partial class Simulation : ObservableObject
         return false;
     }
 
-    public bool DoesWireCrossTerminal(List<Point> points)
+    public bool DoesWireCrossTerminal(List<Point> points, Terminal? exceptionCase=null)
     {
-        var terminalPositions = Components.Where(c => c is not Wire && c.Terminals != null)
-            .SelectMany(c => c.Terminals!.Select(t => GetAbsoluteTerminalPosition(t)))
+        var terminalPositions = Components.ToList().Where(c => c is not Wire && c.Terminals != null)
+            .SelectMany(c => c.Terminals!.Where(t => t != exceptionCase).Select(t => GetAbsoluteTerminalPosition(t)))
             .ToHashSet();
         
         var valid = points.Where(p => p.X != -1 && p.Y != -1).ToList();
@@ -400,7 +400,8 @@ public partial class Simulation : ObservableObject
                     }
                     else    // Only wire is present bellow
                     {
-                        if (_previewManager.PreviewComponent is not null)
+                        if (_previewManager.PreviewComponent is Wire temp &&
+                            temp.Points.Count > 1)  // if trying to put a checkpoint on an existing wire
                         {   // Trying to put a checkpoint on a wire
                             Console.WriteLine("Cannot Put a Checkpoint on a Wire!");
                             return;
