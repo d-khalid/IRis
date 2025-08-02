@@ -11,9 +11,6 @@ public class Multiplexer : Component, IOutputProvider
     protected int SelectionLineCount;
     protected int InputLineCount;
     
-    
-    
-    
     public Multiplexer(int selectionLineCount, double width = ComponentDefaults.DefaultMuxWidth,
         double height = ComponentDefaults.DefaultMuxHeight)
         : base(width, height)
@@ -43,8 +40,6 @@ public class Multiplexer : Component, IOutputProvider
             
             selectedIndex += Terminals![i].Wire!.Value == LogicState.High ? (int)Math.Pow(2, SelectionLineCount - i - 1) : 0;
         }
-
-        Console.WriteLine("MUX Selected Index: " + selectedIndex);
         Terminals![^1].Wire!.Value = Terminals[SelectionLineCount + selectedIndex].Wire!.Value;
     }
 
@@ -84,10 +79,9 @@ public class Multiplexer : Component, IOutputProvider
         // Helper to snap to nearest multiple of 10
         Point SnapToGrid(Point pt)
         {
-            // double snapX = Math.Round(pt.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
-            // double snapY = Math.Round(pt.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
-            // return new Point(snapX, snapY);
-            return pt;
+            double snapX = Math.Round(pt.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
+            double snapY = Math.Round(pt.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
+            return new Point(snapX, snapY);
         }
         
         // For selection lines
