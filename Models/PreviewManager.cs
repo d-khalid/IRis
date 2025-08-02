@@ -188,14 +188,18 @@ internal class PreviewManager
         // If Wire is not snapped to terminal and overlaps another wire
         // The snapping handles used input terminals so this works.
         bool condition3 = !pointSnappedToTerminal &&
+            !simulation.DoesWireHaveExtension(wirePreview) &&
             simulation.DoesWireOverlapAnotherWire(wirePreview.Points);
-        bool condition4 = simulation.DoesWireSelfOverlap(wirePreview.Points);
+        bool condition4 = !simulation.DoesWireHaveExtension(wirePreview) &&
+            simulation.DoesWireSelfOverlap(wirePreview.Points);
         // If snapping was rejected and wire crosses a terminal
         List<Point> tempPoints = [.. wirePreview.Points];
         tempPoints[^1] = targetPoint;
         // Exclude the starting terminal
         Terminal? exceptionCase = simulation.FindClosestSnapTerminal(wirePreview.Points[0]);
-        bool condition5 = !pointSnappedToTerminal && simulation.DoesWireCrossTerminal(tempPoints, exceptionCase);
+        bool condition5 = !pointSnappedToTerminal &&
+            !simulation.DoesWireHaveExtension(wirePreview) &&
+            simulation.DoesWireCrossTerminal(tempPoints, exceptionCase);
 
         if (condition1 || condition2 || condition3 || condition4 || condition5)
         {   // PATCH: Annihiliate the wire completely
@@ -211,7 +215,8 @@ internal class PreviewManager
         else
         {
             // If target point is non-orthogonal relative to the last point
-            if (wirePreview.Points.Count >= 2 && targetPoint.X != wirePreview.Points[^2].X && targetPoint.Y != wirePreview.Points[^2].Y)
+            if (wirePreview.Points.Count >= 2 &&
+                targetPoint.X != wirePreview.Points[^2].X && targetPoint.Y != wirePreview.Points[^2].Y)
             {   // Build an othogonal wire
                 IsCornerPointAdded = true;
                 double dx = Math.Abs(targetPoint.X - wirePreview.Points[^2].X);
@@ -221,6 +226,7 @@ internal class PreviewManager
                 else targetPoint = new Point(wirePreview.Points[^2].X, targetPoint.Y);
 
                 wirePreview.Points[^1] = targetPoint;
+                Console.WriteLine("Corner Point added " + targetPoint);
 
                 // Handle the Closest to mouse point, its there for preview
                 Point closestPoint = snappedMousePos;
@@ -250,6 +256,7 @@ internal class PreviewManager
                 wirePreview.Points[^1] = targetPoint;
             }
         }
+        // foreach (Point point in wirePreview.Points) Console.WriteLine(point);
         wirePreview.InvalidateVisual();
         return true;
     }
@@ -264,17 +271,22 @@ internal class PreviewManager
     public void StartWireExtension(Point clickPoint, Wire existingWire,  Simulation simulation)
     {
         existingWire.IsBeingEdited = true;
+        existingWire.IsCommitted = false;
         simulation.Components.Remove(existingWire);
         _previewComponent = existingWire;
-
+        Wire wirePreview = (Wire)_previewComponent!;
+        
         // Add a break point
-        existingWire.Points.Add(new Point(-1, -1));
+        wirePreview.Points.Add(new Point(-1, -1));
         // Get the closest point on the line segment instead of using click point
         clickPoint = SnapToGrid(clickPoint);
-        existingWire.Points.Add(clickPoint);
-        // existingWire.Points.Add(clickPoint); // Duplicate for dragging
-        
-        existingWire.InvalidateVisual();
+        wirePreview.Points.Add(clickPoint);
+        wirePreview.Points.Add(clickPoint); // Double for dragging
+        wirePreview.Points.Add(clickPoint); // Triple for Corner Point
+        // var addPointCommand = new AddWirePointCommand(wirePreview, CurrentMousePos);
+        // simulation.CommandManager.ExecuteCommand(addPointCommand);
+
+        wirePreview.InvalidateVisual();
     }
 
     public static List<Point> RemoveDuplicatePoints(List<Point> points)

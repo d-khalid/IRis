@@ -378,6 +378,15 @@ public partial class Simulation : ObservableObject
         }
         return false;
     }
+
+    public bool DoesWireHaveExtension(Wire wire)
+    {
+        foreach (Point point in wire.Points)
+        {
+            if (point == new Point(-1, -1)) return true;
+        }
+        return false;
+    }
     
     private bool IsWireInMovedWires(Wire wire, List<Component> MovedWires)
     {
@@ -430,8 +439,13 @@ public partial class Simulation : ObservableObject
                         else
                         {
                             // WIRE EXTENSION LOGIC
-                            Console.WriteLine("Registering Wire Extension...");
                             Wire existingWire = FindWireAtPosition(CurrentMousePos)!;
+                            if (FindClosestSnapTerminal(CurrentMousePos) != null)
+                            {
+                                Console.WriteLine("Invalid Extension! Please choose a distance away from the terminals.");
+                                return;
+                            }
+                            Console.WriteLine("Registering Wire Extension...");
                             _previewManager.StartWireExtension(CurrentMousePos, existingWire, this);
                             return;
                         }

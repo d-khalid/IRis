@@ -40,8 +40,6 @@ public class Multiplexer : Component, IOutputProvider
             
             selectedIndex += Terminals![i].Wire!.Value == LogicState.High ? (int)Math.Pow(2, SelectionLineCount - i - 1) : 0;
         }
-
-        Console.WriteLine("MUX Selected Index: " + selectedIndex);
         Terminals![^1].Wire!.Value = Terminals[SelectionLineCount + selectedIndex].Wire!.Value;
     }
 

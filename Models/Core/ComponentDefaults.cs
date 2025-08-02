@@ -39,7 +39,7 @@ public static class ComponentDefaults
 
     // For terminals
     public static double TerminalWireLength = 25;
-    public static double TerminalSnappingRange = 25;
+    public static double TerminalSnappingRange = 15;
     public const double TerminalSpacing = 20;
 
     // For labels
