@@ -71,6 +71,7 @@ public class LogicProbe : Component
                 null => "?",
                 _ => "?"
             };
+            Console.WriteLine(Terminals[0].Wire!.Value == null);
 
         }
         else

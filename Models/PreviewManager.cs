@@ -74,7 +74,7 @@ internal class PreviewManager
         Wire wirePreview = (Wire)_previewComponent!;
 
         Terminal? target = simulation.FindClosestSnapTerminal(CurrentMousePos);
-        // Condition: Wire is starting from a component terminal
+        // Add wire to the terminal
         if (target != null) target.AddWire(wirePreview);
 
         // Use command for adding point

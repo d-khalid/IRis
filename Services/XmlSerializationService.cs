@@ -15,8 +15,10 @@ namespace IRis.Services;
 
 public class XmlSerializationService : ISerializationService
 {
+    private Simulation? _simulation;
     public void SerializeComponents(Simulation simulation, string? filePath)
     {
+        this._simulation = simulation;
         if (filePath == null)
         {
             Console.WriteLine("No file selected!");
@@ -26,75 +28,67 @@ public class XmlSerializationService : ISerializationService
         XmlSerializer serializer = new XmlSerializer(typeof(CircuitDto));
         List<ComponentDto> dtoList = simulation.Components.Select(p => p.ToDto()).ToList();
         CircuitDto circuit = new CircuitDto() { Components = dtoList };
-        
+
 
         StreamWriter writer = new StreamWriter(filePath);
         serializer.Serialize(writer, circuit);
 
         writer.Close();
     }
-    
+
 
     public List<Component> DeserializeComponentsAsync(string xmlContent)
     {
         var serializer = new XmlSerializer(typeof(CircuitDto));
-    
+
         using (var reader = new StringReader(xmlContent))
         {
             CircuitDto dto = (CircuitDto)serializer.Deserialize(reader)!;
-        
             // Convert to components
             List<Component> components = dto.Components
                 .Select(p => ISerializationService.ConvertDtoToComponent(p))
                 .ToList();
 
-
-            
-            // Do post-processing, connect wires
-            // If a wire has no points, give it points
-            
-            Dictionary<Guid, Wire> wireDict = new();
-            
-            Dictionary<Guid, Wire> pointlessWireDict = new();
-            
-            
-            foreach (Component c in components)
+            // Connect the wires to components
+            foreach (Component thisComponent in components)
             {
-                if (c is Wire wire && wire.Id != null)
+                if (thisComponent is Wire || thisComponent.Terminals == null) continue;
+                foreach (Terminal terminal in thisComponent.Terminals)
                 {
-                    wireDict.Add((Guid)wire.Id, wire);
-            
-                    // Add wires with no points to a seperate dictionary
-                    if (wire.Points.Count == 0)
+                    List<Wire> connectedWires = GetConnectedWires(components, thisComponent, terminal);
+                    if (connectedWires == null) break;
+                    // Add connected wires to terminals
+                    foreach (Wire wire in connectedWires)
                     {
-                        pointlessWireDict.Add((Guid)wire.Id, wire);
+                        terminal.AddWire(wire);
                     }
-            
                 }
             }
-            
-            // Now perform replacements
-            foreach (Component c in components)
-            {
-                if (c.Terminals == null) continue;
-            
-                foreach (Terminal t in c.Terminals)
-                {
-                    if(t.Wire == null || t.Wire.Id == null) continue;
-                
-                    t.Wire = wireDict[(Guid)t.Wire.Id];
-            
-                    // If the wire had no points,
-                    // then add the position of every terminal that references it.
-                    if (pointlessWireDict.TryGetValue((Guid)t.Wire.Id!, out var pointlessWire))
-                    {
-                        pointlessWire.AddPoint(t.Position + new Point(Canvas.GetLeft(c), Canvas.GetTop(c)));
-                    }
-            
-                }
-            }
-
             return components;
         }
+    }
+
+    private static List<Wire> GetConnectedWires(List<Component> components, Component thisComponent, Terminal terminal)
+    {
+        // Get absolute position of the terminal
+        Point absolutePosition = new(
+                        terminal.Position.X + Canvas.GetLeft(thisComponent),
+                        terminal.Position.Y + Canvas.GetTop(thisComponent)
+                    );
+        List<Wire> connectedWires = []; // Initialize an empty list
+
+        foreach (Component component in components)
+        {
+            if (component is not Wire wire) continue;   // We're looking for wires
+
+            foreach (Point point in wire.Points)
+            {
+                if (point == absolutePosition)  // If the wire point is exactly on the terminal
+                {
+                    connectedWires.Add(wire);
+                }
+            }
+        }
+        return connectedWires;
     }
 }

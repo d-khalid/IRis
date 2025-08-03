@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
+using System;
 using System.Linq;
 
 
@@ -40,15 +41,17 @@ public class AndGate : Gate
 
         if (inputValues.All(value => value == true)) // All inputs must be high
         {
-            foreach (var wire in outputTerminal.Wires)
+            foreach (Wire wire in outputTerminal.Wires)
             {
+                Console.WriteLine("AND result: high");
                 wire.Value = LogicState.High;
             }
         }
         else
         {
-            foreach (var wire in outputTerminal.Wires)
+            foreach (Wire wire in outputTerminal.Wires)
             {
+                Console.WriteLine("AND result: low");
                 wire.Value = LogicState.Low;
             }
         }
