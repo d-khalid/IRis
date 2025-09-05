@@ -86,6 +86,7 @@ internal class PreviewManager
         // Commits the WIRE ON DOUBLE-CLICK, or RIGHT-CLICK
         if (wirePreview.Points.Count >= 2 && (point.Properties.IsRightButtonPressed || e.ClickCount >= 2))
         {
+            IsCornerPointAdded = false; // fix: prevent blocking the next wire
             // Snap to grid all points
             for (int i = 0; i < wirePreview.Points.Count - 1; i++)
             {
@@ -268,11 +269,16 @@ internal class PreviewManager
         return new Point(snapX, snapY);
     }
 
-    public void StartWireExtension(Point clickPoint, Wire existingWire,  Simulation simulation)
+    public void StartWireExtension(Canvas canvas, Point clickPoint, Wire existingWire,  Simulation simulation)
     {
+        // if (_previewComponent is Wire wire)
+        // {
+        //     canvas.Children.Remove(wire);
+        // }
         existingWire.IsBeingEdited = true;
         existingWire.IsCommitted = false;
         simulation.Components.Remove(existingWire);
+        canvas.Children.Remove(_previewComponent!);
         _previewComponent = existingWire;
         Wire wirePreview = (Wire)_previewComponent!;
         
