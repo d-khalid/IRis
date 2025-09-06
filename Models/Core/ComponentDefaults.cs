@@ -15,6 +15,7 @@ public static class ComponentDefaults
     // For controlling the thickness/colors of lines
     public static Pen WirePen = new Pen(Brushes.Black, 4);
     public static Pen GhostWirePen = new Pen(Brushes.Gray, 4);
+    public static Pen InvalidWirePen = new Pen(Brushes.DarkRed, 4);
     public static Pen GatePen = new Pen(Brushes.Black, 4);
     public static IImmutableSolidColorBrush GateFillBrush = Brushes.White;
 
