@@ -446,7 +446,7 @@ public partial class Simulation : ObservableObject
                                 return;
                             }
                             Console.WriteLine("Registering Wire Extension...");
-                            _previewManager.StartWireExtension(CurrentMousePos, existingWire, this);
+                            _previewManager.StartWireExtension(_canvas!, CurrentMousePos, existingWire, this);
                             return;
                         }
                     }
