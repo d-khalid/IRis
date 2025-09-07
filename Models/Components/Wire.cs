@@ -167,13 +167,13 @@ public class Wire : Component, ICloneable
     public override void Draw(DrawingContext ctx)
     {
         if (points.Count == 0) return;
-        
+
         // Use ghost styling if wire is not committed OR is being edited
         bool useGhostStyling = IsBeingEdited && !IsCommitted;
         var penToUse = useGhostStyling ? ComponentDefaults.GhostWirePen : ComponentDefaults.WirePen;
         if (!IsValid) penToUse = ComponentDefaults.InvalidWirePen;
         
-        if (points.Count == 1 && points[0] != new Point(-1, -1))
+        if (points.Count == 1)
         {
             var brushToUse = useGhostStyling ? ComponentDefaults.GhostTerminalBrush : ComponentDefaults.TerminalBrush;
             ctx.DrawEllipse(brushToUse, null,
@@ -186,11 +186,11 @@ public class Wire : Component, ICloneable
         using (var ctxGeo = polyline.Open())
         {
             bool figureStarted = false;
-            
+
             for (int i = 0; i < points.Count; i++)
             {
                 Point currentPoint = points[i];
-                
+
                 // Break point detected
                 if (currentPoint == new Point(-1, -1))
                 {
@@ -213,7 +213,7 @@ public class Wire : Component, ICloneable
                     ctxGeo.LineTo(currentPoint);
                 }
             }
-            
+
             // End the last figure if it was started
             if (figureStarted)
             {
@@ -221,6 +221,19 @@ public class Wire : Component, ICloneable
             }
         }
         ctx.DrawGeometry(null, penToUse, polyline);
+        
+        for (int i = 0; i < points.Count; i++)
+        {
+            // Draw first point, last point, extension point
+            if (i == 0 || points[i - 1] == new Point(-1, -1) ||
+                (i < points.Count-1 && points[i + 1] == new Point(-1, -1)) ||
+                i == points.Count - 1)
+            {
+                var brushToUse = useGhostStyling ? ComponentDefaults.GhostTerminalBrush : ComponentDefaults.TerminalBrush;
+                ctx.DrawEllipse(brushToUse, null,
+                    points[i], ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
+            }
+        }
     }
     
     public override void DrawSelection(DrawingContext ctx)
