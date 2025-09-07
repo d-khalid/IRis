@@ -23,6 +23,7 @@ public static class ComponentDefaults
     public static double TerminalRadius = 7;
     public static IImmutableSolidColorBrush TerminalBrush = Brushes.DarkSlateGray;
     public static IImmutableSolidColorBrush GhostTerminalBrush = Brushes.LightSlateGray;
+    public static IImmutableSolidColorBrush InvalidTerminalBrush = Brushes.DarkRed;
 
     // Selection
     public static Pen SelectionPen = new Pen(Brushes.DodgerBlue, 2);

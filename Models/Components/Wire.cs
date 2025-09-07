@@ -230,6 +230,7 @@ public class Wire : Component, ICloneable
                 i == points.Count - 1)
             {
                 var brushToUse = useGhostStyling ? ComponentDefaults.GhostTerminalBrush : ComponentDefaults.TerminalBrush;
+                if (!IsValid) brushToUse = ComponentDefaults.InvalidTerminalBrush;
                 ctx.DrawEllipse(brushToUse, null,
                     points[i], ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
             }

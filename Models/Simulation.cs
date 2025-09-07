@@ -297,21 +297,58 @@ public partial class Simulation : ObservableObject
             .FirstOrDefault(wire => wire.IsPointOnWire(position, 5.0)); // 5.0 is click tolerance
     }
 
-    public bool IsPointInsideAnyComponent(Point point)
+    private bool IsPointInsideAnyComponent(Point point)
     {
         return Components.Any(component => component is not Wire && component.Bounds.Contains(point));
     }
 
+    public bool IsWireInsideAnyComponent(List<Point> points)
+    {
+        for (int i = 0; i < points.Count-1; i++)
+        {
+            if (points[i] == new Point(-1, -1) || points[i+1] == new Point(-1, -1)) continue;
+            List<Point> checkablePoints = [points[i]];
+            double dx = Math.Abs(points[i].X - points[i + 1].X);
+            double dy = Math.Abs(points[i].Y - points[i + 1].Y);
+
+            if (dx > 0)
+            {
+                while (dx != 0)
+                {
+                    checkablePoints.Add(new Point(points[i].X + dx, points[i].Y));
+                    dx -= 10;
+                }
+            }
+            else if (dy > 0)
+            {
+                while (dy != 0)
+                {
+                    checkablePoints.Add(new Point(points[i].X, points[i].Y + dy));
+                    dy -= 10;
+                }
+            }
+            else
+            {
+                continue;   // Handling for duplicate points
+            }
+            foreach (Point pt in checkablePoints)
+            {
+                if (IsPointInsideAnyComponent(pt)) return true;
+            }
+        }
+        return false;
+    }
+
     public bool DoesWireOverlapAnotherWire(List<Point> points)
     {
-    var existingWirePoints = Components.OfType<Wire>().ToList()
-        .SelectMany(w => w.Points.Where(p => p.X != -1 && p.Y != -1))
-        .ToHashSet();
-    List<Point> validPoints = [.. points];
-    foreach (Point point in points)
-        if (FindClosestSnapTerminal(point) == null) validPoints.Add(point);
-    
-    return validPoints.Any(existingWirePoints.Contains);
+        var existingWirePoints = Components.OfType<Wire>().ToList()
+            .SelectMany(w => w.Points.Where(p => p.X != -1 && p.Y != -1))
+            .ToHashSet();
+        List<Point> validPoints = [.. points];
+        foreach (Point point in points)
+            if (FindClosestSnapTerminal(point) == null) validPoints.Add(point);
+
+        return validPoints.Any(existingWirePoints.Contains);
     }
     
     public bool IsWireSupersetOfAnotherWire(List<Point> wirePoints)
