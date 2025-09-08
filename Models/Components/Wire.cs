@@ -26,6 +26,7 @@ public class Wire : Component, ICloneable
     // This value is propagated to everything connected to this wire
     private LogicState? _value;
     public bool IsCommitted { get; set; } = false;
+    public bool IsValid { get; set; } = true;
     public bool IsBeingEdited { get; set; } = true;
 
     public LogicState? Value
@@ -170,7 +171,8 @@ public class Wire : Component, ICloneable
         // Use ghost styling if wire is not committed OR is being edited
         bool useGhostStyling = IsBeingEdited && !IsCommitted;
         var penToUse = useGhostStyling ? ComponentDefaults.GhostWirePen : ComponentDefaults.WirePen;
-
+        if (!IsValid) penToUse = ComponentDefaults.InvalidWirePen;
+        
         if (points.Count == 1)
         {
             var brushToUse = useGhostStyling ? ComponentDefaults.GhostTerminalBrush : ComponentDefaults.TerminalBrush;
@@ -228,6 +230,7 @@ public class Wire : Component, ICloneable
                 i == points.Count - 1)
             {
                 var brushToUse = useGhostStyling ? ComponentDefaults.GhostTerminalBrush : ComponentDefaults.TerminalBrush;
+                if (!IsValid) brushToUse = ComponentDefaults.InvalidTerminalBrush;
                 ctx.DrawEllipse(brushToUse, null,
                     points[i], ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
             }
