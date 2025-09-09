@@ -299,32 +299,55 @@ public partial class Simulation : ObservableObject
 
     private bool IsPointInsideAnyComponent(Point point)
     {
-        return Components.Any(component => component is not Wire && component.Bounds.Contains(point));
+        return Components.Any(component =>
+        {
+            if (component is Wire) return false;
+
+            Rect bounds = component.Bounds;
+
+            if (component.Rotation == 0)    // PATCH: this is a safe check for when rotations are added
+            {
+                Rect adjustedBounds = new Rect(
+                    bounds.X - 10,
+                    bounds.Y,
+                    bounds.Width + 20,  // prevent negative width
+                    bounds.Height
+                );
+                return adjustedBounds.Contains(point);
+            }
+            else
+            {
+                return bounds.Contains(point);
+            }
+        });
     }
 
     public bool IsWireInsideAnyComponent(List<Point> points)
     {
-        for (int i = 0; i < points.Count-1; i++)
+        Point InvalidPoint = new Point(-1, -1);
+        for (int i = 0; i < points.Count - 1; i++)
         {
-            if (points[i] == new Point(-1, -1) || points[i+1] == new Point(-1, -1)) continue;
+            if (points[i] == InvalidPoint || points[i + 1] == InvalidPoint) continue;
             List<Point> checkablePoints = [points[i]];
-            double dx = Math.Abs(points[i].X - points[i + 1].X);
-            double dy = Math.Abs(points[i].Y - points[i + 1].Y);
+            double dx = points[i].X - points[i + 1].X;
+            double dy = points[i].Y - points[i + 1].Y;
 
-            if (dx > 0)
+            if (dx != 0)
             {
                 while (dx != 0)
                 {
-                    checkablePoints.Add(new Point(points[i].X + dx, points[i].Y));
-                    dx -= 10;
+                    checkablePoints.Add(new Point(points[i].X - dx, points[i].Y));
+                    if (dx > 0) dx -= 10;
+                    else dx += 10;
                 }
             }
-            else if (dy > 0)
+            else if (dy != 0)
             {
                 while (dy != 0)
                 {
-                    checkablePoints.Add(new Point(points[i].X, points[i].Y + dy));
-                    dy -= 10;
+                    checkablePoints.Add(new Point(points[i].X, points[i].Y - dy));
+                    if (dy > 0) dy -= 10;
+                    else dy += 10;
                 }
             }
             else

@@ -75,17 +75,27 @@ internal class PreviewManager
         if (!wirePreview.IsValid) return;
 
         Terminal? target = simulation.FindClosestSnapTerminal(CurrentMousePos);
+        Terminal? startingTerminal = simulation.FindClosestSnapTerminal(wirePreview.Points[0]);
         // Add wire to the terminal
         if (target != null) target.AddWire(wirePreview);
 
-        // Use command for adding point
+        // Use command for adding corner point
         CurrentMousePos = SnapToGrid(CurrentMousePos);
         var addPointCommand = new AddWirePointCommand(wirePreview, CurrentMousePos);
         simulation.CommandManager.ExecuteCommand(addPointCommand);
 
+        // Adds the point after the corner point
         var point = e.GetCurrentPoint(sender as Control);
+        Point pointToAdd = SnapToGrid(new Point(point.Position.X, point.Position.Y));
+        Terminal? targetTerminal = simulation.FindClosestSnapTerminal(pointToAdd);
+        if (targetTerminal != null) pointToAdd = simulation.GetAbsoluteTerminalPosition(targetTerminal);
+
+        var addPointCommand2 = new AddWirePointCommand(wirePreview, pointToAdd);
+        simulation.CommandManager.ExecuteCommand(addPointCommand2);
+        
         // Commits the WIRE ON DOUBLE-CLICK, or RIGHT-CLICK
-        if (wirePreview.Points.Count >= 2 && (point.Properties.IsRightButtonPressed || e.ClickCount >= 2))
+        if (wirePreview.Points.Count >= 2 && ((target != null && target != startingTerminal) ||
+            e.ClickCount == 2))
         {
             IsCornerPointAdded = false; // fix: prevent blocking the next wire
             // Snap to grid all points
@@ -206,7 +216,7 @@ internal class PreviewManager
         if (condition1 || condition2 || condition3 || condition4 || condition5)
         {   // PATCH: Annihiliate the wire completely
             if (condition1) Console.WriteLine("Wire cannot be drawn on a used input terminal...");
-            if (condition1) Console.WriteLine("Wire cannot be drawn on a component...");
+            if (condition2) Console.WriteLine("Wire cannot be drawn on a component...");
             else if (condition3) Console.WriteLine("Wire cannot overlap another wire...");
             else if (condition4) Console.WriteLine("Wire cannot self overlap...");
             else if (condition5) Console.WriteLine("Wire cannot cross a terminal...");
@@ -241,12 +251,14 @@ internal class PreviewManager
             bool condition7 = simulation.FindClosestSnapTerminal(wirePreview.Points[^1]) == null &&
                 simulation.DoesWireOverlapAnotherWire(wirePreview.Points);
             bool condition8 = simulation.IsWireSupersetOfAnotherWire(wirePreview.Points);
+            bool condition9 = simulation.DoesWireCrossTerminal(wirePreview.Points, exceptionCase);
 
             if (condition6 || condition7 || condition8)
             {
                 if (condition6) Console.WriteLine("Corner Point cannot be drawn on a component...");
                 else if (condition7) Console.WriteLine("Orthogonal Wire cannot overlap another wire...");
                 else if (condition8) Console.WriteLine("Wire cannot be a superset of another wire...");
+                else if (condition9) Console.WriteLine("Wire cannot cross terminals...");
                 wirePreview.IsValid = false;
             }
             else
