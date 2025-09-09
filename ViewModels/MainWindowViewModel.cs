@@ -152,6 +152,11 @@ namespace IRis.ViewModels
 
         private void AiGenerationFromPrompt()
         {
+            if (_simulation.Simulating || !_simulation.GridEnabled)
+            {
+                Console.WriteLine("Cannot generate from prompt while simulating");
+                return;
+            }
             var window = new AIGenerationWindow();
             // _currentPromptVm = new AIGenerationWindowViewModel(window);
 
@@ -181,6 +186,11 @@ namespace IRis.ViewModels
 
         private void AiGenerationFromImage()
         {
+            if (_simulation.Simulating || !_simulation.GridEnabled)
+            {
+                Console.WriteLine("Cannot generate from prompt while simulating");
+                return;
+            }
             var window = new ImageProcessingWindow();
             // _currentPromptVm = new AIGenerationWindowViewModel(window);
 
@@ -241,6 +251,11 @@ namespace IRis.ViewModels
         public ICommand SaveCommand { get; }
         private async Task Save()
         {
+            if (_simulation.Simulating || !_simulation.GridEnabled)
+            {
+                Console.WriteLine("Cannot save while simulating");
+                return;
+            }
             var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             if (mainWindow == null) return;
 
@@ -274,6 +289,11 @@ namespace IRis.ViewModels
         public ICommand SaveAsCommand { get; }
         private async Task SaveAs()
         {
+            if (_simulation.Simulating || !_simulation.GridEnabled)
+            {
+                Console.WriteLine("Cannot save As while simulating");
+                return;
+            }
             var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
             if (mainWindow == null) return;
 
@@ -321,6 +341,11 @@ namespace IRis.ViewModels
 
         private void Undo()
         {
+            if (_simulation.Simulating || !_simulation.GridEnabled)
+            {
+                Console.WriteLine("Cannot undo while simulating");
+                return;
+            }
             _simulation.Undo();
             LastAction = "Undo";
         }
@@ -328,6 +353,11 @@ namespace IRis.ViewModels
         public ICommand RedoCommand { get; }
         private void Redo()
         {
+            if (_simulation.Simulating || !_simulation.GridEnabled)
+            {
+                Console.WriteLine("Cannot redo while simulating");
+                return;
+            }
             _simulation.Redo();
             LastAction = "Redo";
         }
@@ -365,6 +395,11 @@ namespace IRis.ViewModels
         public ICommand AboutCommand { get; }
         private void About()
         {
+            if (_simulation.Simulating || !_simulation.GridEnabled)
+            {
+                Console.WriteLine("Cannot show about while simulating");
+                return;
+            }
             var aboutWindow = new AboutWindow();
 
             // Center it relative to main window
@@ -394,6 +429,11 @@ namespace IRis.ViewModels
         public ICommand AddComponentCommand { get; }
         private void AddComponent(string componentType)
         {
+            if (_simulation.Simulating || !_simulation.GridEnabled)
+            {
+                Console.WriteLine("Cannot add component while simulating");
+                return;
+            }
             Console.WriteLine($"Adding component: {componentType}");
 
             _simulation.PreviewCompType = componentType;
@@ -404,6 +444,11 @@ namespace IRis.ViewModels
         public ICommand OtherComponentsCommand { get; }
         private async Task OtherComponents()
         {
+            if (_simulation.Simulating || !_simulation.GridEnabled)
+            {
+                Console.WriteLine("Cannot add other components while simulating");
+                return;
+            }
             var otherComponentsWindow = new OtherComponentsWindow
             {
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -446,6 +491,11 @@ namespace IRis.ViewModels
         public ICommand ExportComponentCommand { get; }
         private async Task ExportComponent()
         {
+            if (_simulation.Simulating || !_simulation.GridEnabled)
+            {
+                Console.WriteLine("Cannot export while simulating");
+                return;
+            }
             var window = new ExportComponentWindow();
             // Center it relative to main window
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;

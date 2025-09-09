@@ -18,8 +18,16 @@ internal class PreviewManager
     private string? _previewCompType;
     private Component? _previewComponent;
     private bool IsCornerPointAdded = false;
-    public string? PreviewCompType => _previewCompType;     // in case of null, value is set to "NULL"
-    public Component? PreviewComponent => _previewComponent;
+    public string? PreviewCompType      // in case of null, value is set to "NULL"
+    {
+        get => _previewCompType;
+        set => _previewCompType = value;
+    } 
+    public Component? PreviewComponent
+    {
+        get => _previewComponent;
+        set => _previewComponent = value;
+    }
 
     // Invoked externally by Simulation.cs
     public void SetPreviewComponent(string? value, Canvas canvas, Point mousePos, Simulation simulation)
