@@ -427,19 +427,46 @@ public partial class Simulation : ObservableObject
         var terminalPositions = Components.ToList().Where(c => c is not Wire && c.Terminals != null)
             .SelectMany(c => c.Terminals!.Where(t => t != exceptionCase).Select(t => GetAbsoluteTerminalPosition(t)))
             .ToHashSet();
-        
-        var valid = points.Where(p => p.X != -1 && p.Y != -1).ToList();
-        
-        for (int i = 0; i < valid.Count - 1; i++)
+
+        Point InvalidPoint = new Point(-1, -1);
+        for (int i = 0; i < points.Count - 1; i++)
         {
-            int dx = (int)(valid[i + 1].X - valid[i].X), dy = (int)(valid[i + 1].Y - valid[i].Y);
-            int steps = (int)(Math.Max(Math.Abs(dx), Math.Abs(dy)) / ComponentDefaults.GridSpacing);
-            
-            if (steps == 0) continue;
-            for (int j = 0; j <= steps; j++)
+            if (points[i] == InvalidPoint || points[i + 1] == InvalidPoint) continue;
+            List<Point> checkablePoints = [];
+            double dx = points[i].X - points[i + 1].X;
+            double dy = points[i].Y - points[i + 1].Y;
+
+            if (dx != 0)
             {
-                var p = new Point((int)(valid[i].X + dx * j / steps), (int)(valid[i].Y + dy * j / steps));
-                if (terminalPositions.Contains(p)) return true;
+                while (dx != 0)
+                {
+                    checkablePoints.Add(new Point(points[i].X - dx, points[i].Y));
+                    if (dx > 0) dx -= 10;
+                    else dx += 10;
+                }
+            }
+            else if (dy != 0)
+            {
+                while (dy != 0)
+                {
+                    checkablePoints.Add(new Point(points[i].X, points[i].Y - dy));
+                    if (dy > 0) dy -= 10;
+                    else dy += 10;
+                }
+            }
+            else
+            {
+                continue;   // Handling for duplicate points
+            }
+            foreach (Point pt in checkablePoints)
+            {
+                foreach (Point pos in terminalPositions)
+                {
+                    if (pt == pos)
+                    {
+                        return true;
+                    }
+                }
             }
         }
         return false;

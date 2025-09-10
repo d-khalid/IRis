@@ -97,13 +97,12 @@ public class Multiplexer : Component, IOutputProvider
             var pos = new Point(-ComponentDefaults.TerminalWireLength, ComponentDefaults.TerminalSpacing * (i - SelectionLineCount + 1));
             Terminals![i] = new Terminal(SnapToGrid(pos), null!);
         }
-        
-        // For output
-        Point outputPos = new Point(Width + ComponentDefaults.TerminalWireLength, Height/2);
-        Terminals![^1] = new Terminal(SnapToGrid(outputPos), null!);
-    }
 
-   
+        // For outputoutputPos
+        // Fix: do not snap the X value of the outputPos
+        Point outputPos = new Point(Width + ComponentDefaults.TerminalWireLength + 1, Height/2);
+        Terminals![^1] = new Terminal(new Point(outputPos.X, SnapToGrid(outputPos).Y), null!);
+    }
 
     protected void DrawTerminalsAndLabels(DrawingContext ctx, char inputLabel, char selectionLabel)
     {
@@ -111,15 +110,15 @@ public class Multiplexer : Component, IOutputProvider
         for (int i = 0; i < SelectionLineCount; i++)
         {
             ctx.DrawLine(ComponentDefaults.WirePen, Terminals![i].Position, new Point(Terminals[i].Position.X, Height));
-            ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
+            ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
                 Terminals[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
-            
+
             var text = new FormattedText(
                 $"{selectionLabel}{SelectionLineCount - i - 1}",
                 CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize, 
+                ComponentDefaults.LabelSize,
                 ComponentDefaults.LabelBrush
             );
             ctx.DrawText(
@@ -128,20 +127,20 @@ public class Multiplexer : Component, IOutputProvider
                 );
 
         }
-        
+
         // For input lines
         for (int i = SelectionLineCount; i < InputLineCount + SelectionLineCount; i++)
         {
             ctx.DrawLine(ComponentDefaults.WirePen, Terminals![i].Position, new Point(0, Terminals[i].Position.Y));
-            ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
+            ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
                 Terminals[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
-            
+
             var text = new FormattedText(
                 $"{inputLabel}{i - SelectionLineCount}",
                 CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize, 
+                ComponentDefaults.LabelSize,
                 ComponentDefaults.LabelBrush
             );
             ctx.DrawText(
@@ -153,7 +152,7 @@ public class Multiplexer : Component, IOutputProvider
         // For output
         ctx.DrawLine(ComponentDefaults.WirePen, Terminals![^1].Position,
             new Point(Terminals[^1].Position.X - ComponentDefaults.TerminalWireLength, Terminals[^1].Position.Y));
-        ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
+        ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
             Terminals[^1].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
     }
     
