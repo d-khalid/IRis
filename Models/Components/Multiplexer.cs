@@ -100,7 +100,7 @@ public class Multiplexer : Component, IOutputProvider
 
         // For outputoutputPos
         // Fix: do not snap the X value of the outputPos
-        Point outputPos = new Point(Width + ComponentDefaults.TerminalWireLength + 1, Height/2);
+        Point outputPos = new Point(Width + ComponentDefaults.TerminalWireLength - 5, Height/2);
         Terminals![^1] = new Terminal(new Point(outputPos.X, SnapToGrid(outputPos).Y), null!);
     }
 
@@ -151,7 +151,7 @@ public class Multiplexer : Component, IOutputProvider
         }
         // For output
         ctx.DrawLine(ComponentDefaults.WirePen, Terminals![^1].Position,
-            new Point(Terminals[^1].Position.X - ComponentDefaults.TerminalWireLength, Terminals[^1].Position.Y));
+            new Point(Terminals[^1].Position.X - ComponentDefaults.TerminalWireLength + 5, Terminals[^1].Position.Y));
         ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
             Terminals[^1].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
     }
