@@ -456,14 +456,25 @@ public partial class Simulation : ObservableObject
             }
             else
             {
+
                 continue;   // Handling for duplicate points
             }
+
+            // PATCH: this needs a replacement later
+            checkablePoints.RemoveAll((point) =>
+            {
+                return points.Contains(point);
+            });
+
             foreach (Point pt in checkablePoints)
             {
+                Console.WriteLine(pt);
                 foreach (Point pos in terminalPositions)
                 {
                     if (pt == pos)
                     {
+                        Console.WriteLine("FOUND");
+                        Console.WriteLine(pt);
                         return true;
                     }
                 }
