@@ -79,6 +79,34 @@ namespace IRis.Views
             stackPanel5.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel5 });
 
+            // Add SRLatch
+            var stackPanel6 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel6.Children.Add(new TextBlock{ Text = "SR Latch",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel6.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel6 });
+
+            // Add DLatch
+            var stackPanel7 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel7.Children.Add(new TextBlock{ Text = "D Latch",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel7.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel7 });
+
+            // Add JKLatch
+            var stackPanel8 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel8.Children.Add(new TextBlock{ Text = "JK Latch",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel8.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel8 });
+
+            // Add TLatch
+            var stackPanel9 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel9.Children.Add(new TextBlock{ Text = "T Latch",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel9.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel9 });
+
             if (Directory.Exists(ComponentFolder))
             {
 
@@ -144,7 +172,14 @@ namespace IRis.Views
                             else if (componentName == "Demultiplexer") defaultComponentName = "DEMUX";
                             else if (componentName == "Encoder") defaultComponentName = "ENCODER";
                             else if (componentName == "Decoder") defaultComponentName = "DECODER";
-                            else return;    // This should not happen
+                            else if (componentName == "SR Latch") defaultComponentName = "SRL";
+                            else if (componentName == "D Latch") defaultComponentName = "DL";
+                            else if (componentName == "JK Latch") defaultComponentName = "JKL";
+                            else if (componentName == "T Latch") defaultComponentName = "TL";
+                            else
+                            {
+                                throw new InvalidOperationException($"the operation for {componentName} is invalid.");
+                            }
                             var result = new CustomComponentData { Name=defaultComponentName };
                             Close(result);
                         }

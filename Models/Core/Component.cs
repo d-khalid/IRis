@@ -159,6 +159,14 @@ public abstract class Component : Control, ICustomHitTest
                 return new Encoder(selectionLineCount: numInputs);
             case "DECODER":
                 return new Decoder(selectionLineCount: numInputs);
+            case "SRL":
+                return new SRLatch();
+            case "DL":
+                return new DLatch();
+            case "JKL":
+                return new JKLatch();
+            case "TL":
+                return new TLatch();
 
             case "PROBE":
                 return new LogicProbe();
