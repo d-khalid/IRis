@@ -34,12 +34,15 @@ public class Multiplexer : Component, IOutputProvider
     {
         // Find the selected line
         int selectedIndex = 0;
-
         for (int i = 0; i < SelectionLineCount; i++)
         {
-            
-            selectedIndex += Terminals![i].Wire!.Value == LogicState.High ? (int)Math.Pow(2, SelectionLineCount - i - 1) : 0;
+            if (Terminals![i].Wire!.Value == LogicState.High)
+            {
+                // Top is MSB, bottom is LSB
+                selectedIndex |= (1 << (SelectionLineCount - i - 1));
+            }
         }
+
         Terminals![^1].Wire!.Value = Terminals[SelectionLineCount + selectedIndex].Wire!.Value;
     }
 
