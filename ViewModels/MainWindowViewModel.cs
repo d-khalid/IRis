@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
@@ -460,8 +461,9 @@ namespace IRis.ViewModels
 
                 if (result is not null)
                 {
+                    string[] validNames = ["MUX", "DEMUX", "ENCODER", "DECODER", "SRL", "DL", "JKL", "TL"];
                     // Add conditions for other complex components as well
-                    if (result.Name == "MUX")
+                    if (validNames.Contains(result.Name))
                     {
                         Console.WriteLine($"Adding component: {result.Name}");
                         _simulation.PreviewCompType = result.Name;

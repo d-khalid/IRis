@@ -34,22 +34,78 @@ namespace IRis.Views
         {
             ComponentListBox.Items.Clear();
 
-            // Add Multiplexer
-            var stackPanel2 = new StackPanel { Orientation = Orientation.Horizontal };
-            stackPanel2.Children.Add(new TextBlock{ Text = "Multiplexer",
-                VerticalAlignment = VerticalAlignment.Center });
-            var label2 = new Border { Child = new TextBlock {
-                    Text = "default", FontSize = 11,
+            Border createDefaultLabel() => new()
+            {
+                Child = new TextBlock
+                {
+                    Text = "default",
+                    FontSize = 11,
                     Foreground = Brush.Parse("#00a2ff"),
-                    FontWeight = FontWeight.SemiBold },
+                    FontWeight = FontWeight.SemiBold
+                },
                 BorderBrush = Brush.Parse("#016d9e"),
                 Background = Brush.Parse("#00173b"),
                 BorderThickness = new Thickness(0.5),
                 CornerRadius = new CornerRadius(15),
                 Padding = new Thickness(5, 2),
-                Margin = new Thickness(10, 0, 0, 0) };
-            stackPanel2.Children.Add(label2);
+                Margin = new Thickness(10, 0, 0, 0)
+            };
+
+            // Add Multiplexer
+            var stackPanel2 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel2.Children.Add(new TextBlock{ Text = "Multiplexer",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel2.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel2 });
+
+            // Add Demultiplexer
+            var stackPanel3 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel3.Children.Add(new TextBlock{ Text = "Demultiplexer",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel3.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel3 });
+
+            // Add Encoder
+            var stackPanel4 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel4.Children.Add(new TextBlock{ Text = "Encoder",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel4.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel4 });
+
+            // Add Decoder
+            var stackPanel5 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel5.Children.Add(new TextBlock{ Text = "Decoder",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel5.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel5 });
+
+            // Add SRLatch
+            var stackPanel6 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel6.Children.Add(new TextBlock{ Text = "SR Latch",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel6.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel6 });
+
+            // Add DLatch
+            var stackPanel7 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel7.Children.Add(new TextBlock{ Text = "D Latch",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel7.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel7 });
+
+            // Add JKLatch
+            var stackPanel8 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel8.Children.Add(new TextBlock{ Text = "JK Latch",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel8.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel8 });
+
+            // Add TLatch
+            var stackPanel9 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel9.Children.Add(new TextBlock{ Text = "T Latch",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel9.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel9 });
 
             if (Directory.Exists(ComponentFolder))
             {
@@ -113,7 +169,17 @@ namespace IRis.Views
                             // defaultComponentName will be set as previewComponent on closing
                             string defaultComponentName = null!;
                             if (componentName == "Multiplexer") defaultComponentName = "MUX";
-                            else return;    // This should not happen
+                            else if (componentName == "Demultiplexer") defaultComponentName = "DEMUX";
+                            else if (componentName == "Encoder") defaultComponentName = "ENCODER";
+                            else if (componentName == "Decoder") defaultComponentName = "DECODER";
+                            else if (componentName == "SR Latch") defaultComponentName = "SRL";
+                            else if (componentName == "D Latch") defaultComponentName = "DL";
+                            else if (componentName == "JK Latch") defaultComponentName = "JKL";
+                            else if (componentName == "T Latch") defaultComponentName = "TL";
+                            else
+                            {
+                                throw new InvalidOperationException($"the operation for {componentName} is invalid.");
+                            }
                             var result = new CustomComponentData { Name=defaultComponentName };
                             Close(result);
                         }
