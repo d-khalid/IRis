@@ -158,7 +158,7 @@ public abstract class Component : Control, ICustomHitTest
             case "ENCODER":
                 return new Encoder(selectionLineCount: numInputs);
             case "DECODER":
-                return new Multiplexer(numInputs);
+                return new Decoder(selectionLineCount: numInputs);
 
             case "PROBE":
                 return new LogicProbe();
