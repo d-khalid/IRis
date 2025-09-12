@@ -65,6 +65,13 @@ namespace IRis.Views
             stackPanel3.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel3 });
 
+            // Add Encoder
+            var stackPanel4 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel4.Children.Add(new TextBlock{ Text = "Encoder",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel4.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel4 });
+
             if (Directory.Exists(ComponentFolder))
             {
 
@@ -128,6 +135,7 @@ namespace IRis.Views
                             string defaultComponentName = null!;
                             if (componentName == "Multiplexer") defaultComponentName = "MUX";
                             else if (componentName == "Demultiplexer") defaultComponentName = "DEMUX";
+                            else if (componentName == "Encoder") defaultComponentName = "ENCODER";
                             else return;    // This should not happen
                             var result = new CustomComponentData { Name=defaultComponentName };
                             Close(result);

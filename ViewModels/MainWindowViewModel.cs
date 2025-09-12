@@ -461,7 +461,7 @@ namespace IRis.ViewModels
 
                 if (result is not null)
                 {
-                    string[] validNames = ["MUX", "DEMUX"];
+                    string[] validNames = ["MUX", "DEMUX", "ENCODER"];
                     // Add conditions for other complex components as well
                     if (validNames.Contains(result.Name))
                     {

@@ -156,7 +156,7 @@ public abstract class Component : Control, ICustomHitTest
             case "DEMUX":
                 return new Demultiplexer(selectionLineCount: numInputs);
             case "ENCODER":
-                return new Multiplexer(numInputs);
+                return new Encoder(selectionLineCount: numInputs);
             case "DECODER":
                 return new Multiplexer(numInputs);
 
