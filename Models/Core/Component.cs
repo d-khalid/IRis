@@ -152,8 +152,14 @@ public abstract class Component : Control, ICustomHitTest
             case "XNOR":
                 return new XnorGate(numInputs);
             case "MUX":
+                return new Multiplexer(selectionLineCount: numInputs);
+            case "DEMUX":
+                return new Demultiplexer(selectionLineCount: numInputs);
+            case "ENCODER":
                 return new Multiplexer(numInputs);
-            
+            case "DECODER":
+                return new Multiplexer(numInputs);
+
             case "PROBE":
                 return new LogicProbe();
             case "TOGGLE":

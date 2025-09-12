@@ -34,22 +34,36 @@ namespace IRis.Views
         {
             ComponentListBox.Items.Clear();
 
-            // Add Multiplexer
-            var stackPanel2 = new StackPanel { Orientation = Orientation.Horizontal };
-            stackPanel2.Children.Add(new TextBlock{ Text = "Multiplexer",
-                VerticalAlignment = VerticalAlignment.Center });
-            var label2 = new Border { Child = new TextBlock {
-                    Text = "default", FontSize = 11,
+            Border createDefaultLabel() => new()
+            {
+                Child = new TextBlock
+                {
+                    Text = "default",
+                    FontSize = 11,
                     Foreground = Brush.Parse("#00a2ff"),
-                    FontWeight = FontWeight.SemiBold },
+                    FontWeight = FontWeight.SemiBold
+                },
                 BorderBrush = Brush.Parse("#016d9e"),
                 Background = Brush.Parse("#00173b"),
                 BorderThickness = new Thickness(0.5),
                 CornerRadius = new CornerRadius(15),
                 Padding = new Thickness(5, 2),
-                Margin = new Thickness(10, 0, 0, 0) };
-            stackPanel2.Children.Add(label2);
+                Margin = new Thickness(10, 0, 0, 0)
+            };
+
+            // Add Multiplexer
+            var stackPanel2 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel2.Children.Add(new TextBlock{ Text = "Multiplexer",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel2.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel2 });
+
+            // Add Demultiplexer
+            var stackPanel3 = new StackPanel { Orientation = Orientation.Horizontal };
+            stackPanel3.Children.Add(new TextBlock{ Text = "Demultiplexer",
+                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel3.Children.Add(createDefaultLabel());
+            ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel3 });
 
             if (Directory.Exists(ComponentFolder))
             {
@@ -113,6 +127,7 @@ namespace IRis.Views
                             // defaultComponentName will be set as previewComponent on closing
                             string defaultComponentName = null!;
                             if (componentName == "Multiplexer") defaultComponentName = "MUX";
+                            else if (componentName == "Demultiplexer") defaultComponentName = "DEMUX";
                             else return;    // This should not happen
                             var result = new CustomComponentData { Name=defaultComponentName };
                             Close(result);
