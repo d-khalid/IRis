@@ -14,7 +14,6 @@ public class TLatch : Component, IOutputProvider
     // 2: Q   (right, top)
     // 3: Q'  (right, bottom)
 
-    private LogicState _q = LogicState.Low; // Stored state
 
     public TLatch(double width = ComponentDefaults.DefaultMuxWidth * 5,
                   double height = ComponentDefaults.DefaultMuxHeight)
@@ -26,6 +25,9 @@ public class TLatch : Component, IOutputProvider
         Terminals = new Terminal[4];
         AddTerminalPoints();
         IsHitTestVisible = true;
+        
+        // Dictionary entry for state
+        StoredStates["Q"] = LogicState.Low;
     }
 
     public void ComputeOutput()
@@ -38,14 +40,14 @@ public class TLatch : Component, IOutputProvider
             if (t == LogicState.High)
             {
                 // Toggle
-                _q = _q == LogicState.High ? LogicState.Low : LogicState.High;
+                StoredStates["Q"] = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
             }
             // else t==0 → hold
         }
         // else EN==Low → hold
 
-        Terminals[2].Wire!.Value = _q;
-        Terminals[3].Wire!.Value = _q == LogicState.High ? LogicState.Low : LogicState.High;
+        Terminals[2].Wire!.Value = StoredStates["Q"];
+        Terminals[3].Wire!.Value = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
     }
 
     public override void Draw(DrawingContext ctx)

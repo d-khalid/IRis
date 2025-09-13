@@ -8,9 +8,7 @@ namespace IRis.Models.Components;
 
 public class Multiplexer : Component, IOutputProvider
 {
-    protected int SelectionLineCount;
-    protected int InputLineCount;
-    
+ 
     public Multiplexer(int selectionLineCount, double width = ComponentDefaults.DefaultMuxWidth,
         double height = ComponentDefaults.DefaultMuxHeight)
         : base(width, height)

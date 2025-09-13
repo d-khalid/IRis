@@ -8,8 +8,6 @@ namespace IRis.Models.Components;
 
 public class Demultiplexer : Component, IOutputProvider
 {
-    protected int SelectionLineCount;
-    protected int OutputLineCount;
 
     public Demultiplexer(int selectionLineCount, double width = ComponentDefaults.DefaultMuxWidth,
         double height = ComponentDefaults.DefaultMuxHeight)

@@ -58,31 +58,21 @@ public class Terminal
         Wires.Remove(wire);
     }
     
-    // For serialization
-    public TerminalDto ToDto()
-    {
-        return new TerminalDto
-        {
-            ConnectedWireIds = Wires.Where(w => w.Id.HasValue).Select(w => w.Id!.Value).ToList()
-        };
-    }
+    
 }
 
 // Has some gate specific things
 public abstract class Gate : Component, IOutputProvider
 {
-    protected int NumInputs;
     
-    // private bool?[] _previousInputValues;
-    // private DispatcherTimer _updateTimer;
 
     // Uses default values if none are given
     public Gate(int numInputs, double width = ComponentDefaults.DefaultWidth,
         double height = ComponentDefaults.DefaultHeight, bool notMode = false)
         : base(width, height)
     {
-        NumInputs = numInputs;
-        Terminals = new Terminal[NumInputs + 1];
+        InputLineCount = numInputs;
+        Terminals = new Terminal[InputLineCount + 1];
 
         AddTerminalPoints(notMode);
 
@@ -95,18 +85,7 @@ public abstract class Gate : Component, IOutputProvider
     }
 
     public abstract void ComputeOutput();
-   
-    // DTO pattern for serialization
-    protected override List<PropertyDto> GetSerializableProperties()
-    {
-        return new List<PropertyDto>
-        {
-            new() { Name = "Width", Value = Width.ToString() },
-            new() { Name = "Height", Value = Height.ToString() },
-            new() { Name = "Rotation", Value = Rotation.ToString() },
-            new() { Name = "NumInputs", Value = NumInputs.ToString()}
-        };
-    }
+    
     
     // Implement ICloneable for copies
     public override object Clone()
@@ -114,13 +93,13 @@ public abstract class Gate : Component, IOutputProvider
         // Create new instance based on concrete type
         Gate clone = this switch
         {
-            AndGate _ => new AndGate(this.NumInputs),
-            OrGate _ => new OrGate(this.NumInputs),
+            AndGate _ => new AndGate(this.InputLineCount),
+            OrGate _ => new OrGate(this.InputLineCount),
             NotGate _ => new NotGate(),  // Special constructor
-            NandGate _ => new NandGate(this.NumInputs),
-            NorGate _ => new NorGate(this.NumInputs),
-            XorGate _ => new XorGate(this.NumInputs),
-            XnorGate _ => new XnorGate(this.NumInputs),
+            NandGate _ => new NandGate(this.InputLineCount),
+            NorGate _ => new NorGate(this.InputLineCount),
+            XorGate _ => new XorGate(this.InputLineCount),
+            XnorGate _ => new XnorGate(this.InputLineCount),
             _ => throw new NotSupportedException($"Unsupported gate type: {this.GetType().Name}")
         };
 
@@ -131,7 +110,7 @@ public abstract class Gate : Component, IOutputProvider
         clone.IsSelected = this.IsSelected;
 
         // Copy terminal values (positions are set in constructor)
-        for (int i = 0; i < this.NumInputs; i++)
+        for (int i = 0; i < this.InputLineCount; i++)
         {
             clone.Terminals![i] = new Terminal(
                 clone.Terminals[i].Position,  // Use new position
@@ -171,7 +150,7 @@ public abstract class Gate : Component, IOutputProvider
     // notMode: Extra wire length to account for the bubble
     protected void AddTerminalPoints(bool notMode = false)
     {
-        double spacing = Height / (NumInputs + 1);
+        double spacing = Height / (InputLineCount + 1);
 
         // Helper to snap to nearest multiple of 10
         Point SnapToGrid(Point pt)
@@ -182,7 +161,7 @@ public abstract class Gate : Component, IOutputProvider
         }
 
         // Input terminals
-        for (int i = 0; i < NumInputs; i++)
+        for (int i = 0; i < InputLineCount; i++)
         {
             var pos = new Point(-ComponentDefaults.TerminalWireLength, spacing * (i + 1));
             Terminals![i] = new Terminal(SnapToGrid(pos), null!);
@@ -204,7 +183,7 @@ public abstract class Gate : Component, IOutputProvider
        
 
         // Input lines extend into the gate and covered up by the fill color
-        for (int i = 0; i < NumInputs; i++)
+        for (int i = 0; i < InputLineCount; i++)
         {
             if (Terminals![i] == null) continue;
             ctx.DrawLine(ComponentDefaults.WirePen, Terminals[i].Position, new Point(Width / ComponentDefaults.OrArcFactor, Terminals[i].Position.Y));

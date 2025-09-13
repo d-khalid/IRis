@@ -8,8 +8,6 @@ namespace IRis.Models.Components;
 
 public class Encoder : Component, IOutputProvider
 {
-    protected int SelectionLineCount;
-    protected int InputLineCount;
 
     public Encoder(int selectionLineCount,
         double width = ComponentDefaults.DefaultMuxWidth,

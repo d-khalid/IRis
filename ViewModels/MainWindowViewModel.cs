@@ -27,7 +27,7 @@ namespace IRis.ViewModels
     {
         private readonly Simulation _simulation;
 
-        private ISerializationService _serializer = new XmlSerializationService();
+        private ISerializationService _serializer = new JsonSerializationService();
 
         private string? _openedFileName = null;
 
@@ -230,11 +230,11 @@ namespace IRis.ViewModels
 
             var files = await mainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = "Select Circuit XML File",
+                Title = "Select Circuit JSON File",
                 AllowMultiple = false,
                 FileTypeFilter = new List<FilePickerFileType>
                 {
-                    new FilePickerFileType("XML Files") { Patterns = new[] { "*.xml" } },
+                    new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } },
                     new FilePickerFileType("All Files") { Patterns = new[] { "*" } }
                 }
             });
@@ -264,12 +264,12 @@ namespace IRis.ViewModels
             {
                 var result = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                 {
-                    Title = "Save Circuit XML",
-                    SuggestedFileName = "circuit.xml",
-                    DefaultExtension = "xml",
+                    Title = "Save Circuit JSON",
+                    SuggestedFileName = "circuit.json",
+                    DefaultExtension = "json",
                     FileTypeChoices = new List<FilePickerFileType>
                     {
-                        new FilePickerFileType("XML Files") { Patterns = new[] { "*.xml" } },
+                        new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } },
                         new FilePickerFileType("All Files") { Patterns = new[] { "*" } }
                     }
                 });
@@ -300,12 +300,12 @@ namespace IRis.ViewModels
 
             var result = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
-                Title = "Save Circuit XML",
-                SuggestedFileName = "circuit.xml",
-                DefaultExtension = "xml",
+                Title = "Save Circuit JSON",
+                SuggestedFileName = "circuit.json",
+                DefaultExtension = "json",
                 FileTypeChoices = new List<FilePickerFileType>
                 {
-                    new FilePickerFileType("XML Files") { Patterns = new[] { "*.xml" } },
+                    new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } },
                     new FilePickerFileType("All Files") { Patterns = new[] { "*" } }
                 }
             });

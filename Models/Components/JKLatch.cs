@@ -14,7 +14,6 @@ public class JKLatch : Component, IOutputProvider
     // 2: Q   (right, top)
     // 3: Q'  (right, bottom)
 
-    private LogicState _q = LogicState.Low; // Stored state
 
     public JKLatch(double width = ComponentDefaults.DefaultMuxWidth * 5,
                    double height = ComponentDefaults.DefaultMuxHeight)
@@ -26,6 +25,9 @@ public class JKLatch : Component, IOutputProvider
         Terminals = new Terminal[4];
         AddTerminalPoints();
         IsHitTestVisible = true;
+        
+        // Dictionary entry for state
+        StoredStates["Q"] = LogicState.Low;
     }
 
     public void ComputeOutput()
@@ -39,20 +41,20 @@ public class JKLatch : Component, IOutputProvider
         }
         else if (j == LogicState.High && k == LogicState.Low)
         {
-            _q = LogicState.High;
+            StoredStates["Q"] = LogicState.High;
         }
         else if (j == LogicState.Low && k == LogicState.High)
         {
-            _q = LogicState.Low;
+            StoredStates["Q"] = LogicState.Low;
         }
         else if (j == LogicState.High && k == LogicState.High)
         {
             // Toggle
-            _q = _q == LogicState.High ? LogicState.Low : LogicState.High;
+            StoredStates["Q"] = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
         }
 
-        Terminals[2].Wire!.Value = _q;
-        Terminals[3].Wire!.Value = _q == LogicState.High ? LogicState.Low : LogicState.High;
+        Terminals[2].Wire!.Value = StoredStates["Q"];
+        Terminals[3].Wire!.Value = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
     }
 
     public override void Draw(DrawingContext ctx)

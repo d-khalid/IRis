@@ -14,35 +14,22 @@ namespace IRis.Models.Components;
 // THIS WORKS, THEY GET DRAWN
 public class Wire : Component, ICloneable
 {
-    private List<Point> points = new List<Point>();
     
     
     // To identify wires in serialization
-    public Guid? Id { get; set; }
+    public Guid Id { get; set; }
 
     
    // private Component? _lastSetter = null;
 
     // This value is propagated to everything connected to this wire
-    private LogicState? _value;
     public bool IsCommitted { get; set; } = false;
     public bool IsValid { get; set; } = true;
     public bool IsBeingEdited { get; set; } = true;
 
-    public LogicState? Value
-    {
-        get => _value;
-        set
-        {
-            _value = value;
-        }
-    }
+    public LogicState? Value { get; set; }
 
-    public List<Point> Points
-    {
-        get => points;
-        set => points = value;
-    }
+    public List<Point> Points { get; set; } = new List<Point>();
 
 
     public Wire() : base(0, 0)
@@ -52,40 +39,19 @@ public class Wire : Component, ICloneable
     }
     
     // DTO pattern for serializing
-    public override ComponentDto ToDto()
-    {
-        return new WireDto
-        {
-            Type = this.GetType().Name,
-            X = Canvas.GetLeft(this),
-            Y = Canvas.GetTop(this),
-            // Terminals = this.Terminals.Select(p => p.ToDto()).ToList(),
-
-            Points = this.Points.Select(p => new PointDto(){X = p.X, Y = p.Y}).ToList(),
-            Id = this.Id,
-            
-            Properties = GetSerializableProperties()
-        };
-    }
-
-    protected override List<PropertyDto> GetSerializableProperties()
-    {
-        return new List<PropertyDto>
-        {
-            new() { Name = "Rotation", Value = Rotation.ToString() },
-        };
-    }
+  
+    
 
     public void AddPoint(Point point)
     {
-        points.Add(point);
+        Points.Add(point);
         // Reset the visuals
         this.InvalidateVisual();
     }
 
     public void PopPoint()
     {
-         points.RemoveAt(points.Count - 1);  // Removes last element
+         Points.RemoveAt(Points.Count - 1);  // Removes last element
          
          // Reset the visuals
          this.InvalidateVisual();
@@ -130,10 +96,10 @@ public class Wire : Component, ICloneable
     {
 
         // Check each wire segment
-        for (int i = 0; i < points.Count - 1; i++)
+        for (int i = 0; i < Points.Count - 1; i++)
         {
-            Point segmentStart = points[i];
-            Point segmentEnd = points[i + 1];
+            Point segmentStart = Points[i];
+            Point segmentEnd = Points[i + 1];
 
             if (IsPointNearLineSegment(point, segmentStart, segmentEnd, ComponentDefaults.WirePen.Thickness / 2))
             {
@@ -166,30 +132,30 @@ public class Wire : Component, ICloneable
 
     public override void Draw(DrawingContext ctx)
     {
-        if (points.Count == 0) return;
+        if (Points.Count == 0) return;
 
         // Use ghost styling if wire is not committed OR is being edited
         bool useGhostStyling = IsBeingEdited && !IsCommitted;
         var penToUse = useGhostStyling ? ComponentDefaults.GhostWirePen : ComponentDefaults.WirePen;
         if (!IsValid) penToUse = ComponentDefaults.InvalidWirePen;
         
-        if (points.Count == 1)
+        if (Points.Count == 1)
         {
             var brushToUse = useGhostStyling ? ComponentDefaults.GhostTerminalBrush : ComponentDefaults.TerminalBrush;
             ctx.DrawEllipse(brushToUse, null,
-                points[0], ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
+                Points[0], ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
             return;
         }
 
-        // Draw lines, breaking at (-1,-1) points
+        // Draw lines, breaking at (-1,-1) Points
         var polyline = new StreamGeometry();
         using (var ctxGeo = polyline.Open())
         {
             bool figureStarted = false;
 
-            for (int i = 0; i < points.Count; i++)
+            for (int i = 0; i < Points.Count; i++)
             {
-                Point currentPoint = points[i];
+                Point currentPoint = Points[i];
 
                 // Break point detected
                 if (currentPoint == new Point(-1, -1))
@@ -222,38 +188,38 @@ public class Wire : Component, ICloneable
         }
         ctx.DrawGeometry(null, penToUse, polyline);
         
-        for (int i = 0; i < points.Count; i++)
+        for (int i = 0; i < Points.Count; i++)
         {
             // Draw first point, last point, extension point
-            if (i == 0 || points[i - 1] == new Point(-1, -1) ||
-                (i < points.Count-1 && points[i + 1] == new Point(-1, -1)) ||
-                i == points.Count - 1)
+            if (i == 0 || Points[i - 1] == new Point(-1, -1) ||
+                (i < Points.Count-1 && Points[i + 1] == new Point(-1, -1)) ||
+                i == Points.Count - 1)
             {
                 var brushToUse = useGhostStyling ? ComponentDefaults.GhostTerminalBrush : ComponentDefaults.TerminalBrush;
                 if (!IsValid) brushToUse = ComponentDefaults.InvalidTerminalBrush;
                 ctx.DrawEllipse(brushToUse, null,
-                    points[i], ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
+                    Points[i], ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
             }
         }
     }
     
     public override void DrawSelection(DrawingContext ctx)
     {
-        if (points.Count < 2) return;
-        // Debug: Print all points
-        Console.WriteLine($"DrawSelection called with {points.Count} points:");
-        for (int i = 0; i < points.Count; i++)
+        if (Points.Count < 2) return;
+        // Debug: Print all Points
+        Console.WriteLine($"DrawSelection called with {Points.Count} Points:");
+        for (int i = 0; i < Points.Count; i++)
         {
-            Console.WriteLine($"  Point[{i}]: {points[i]}");
+            Console.WriteLine($"  Point[{i}]: {Points[i]}");
         }
         Console.WriteLine("---");
         double selectionThickness = ComponentDefaults.WirePen.Thickness * 2;
 
-        // Draw selection rectangles for line segments (skipping break points)
-        for (int i = 0; i < points.Count - 1; i++)
+        // Draw selection rectangles for line segments (skipping break Points)
+        for (int i = 0; i < Points.Count - 1; i++)
         {
-            Point start = points[i];
-            Point end = points[i + 1];
+            Point start = Points[i];
+            Point end = Points[i + 1];
             
             // Skip if either point is a break point
             if (start == new Point(-1, -1) || end == new Point(-1, -1))
@@ -278,8 +244,8 @@ public class Wire : Component, ICloneable
             ctx.DrawGeometry(ComponentDefaults.SelectionBrush, ComponentDefaults.SelectionPen, rect);
         }
 
-        // Draw selection circles at connection points (excluding break points)
-        foreach (var point in points)
+        // Draw selection circles at connection Points (excluding break Points)
+        foreach (var point in Points)
         {
             if (point == new Point(-1, -1))
                 continue;
@@ -299,9 +265,9 @@ public class Wire : Component, ICloneable
         var clone = new Wire();
         clone.Value = this.Value;
         clone.Id = this.Id;
-        for (int i = 0; i < points.Count; i++)
+        for (int i = 0; i < Points.Count; i++)
         {
-            clone.AddPoint(points[i]);
+            clone.AddPoint(Points[i]);
         }
         
         // // Copy source and sinks by value (Terminal is a struct)
