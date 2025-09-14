@@ -21,6 +21,17 @@ public abstract class Component : Control, ICustomHitTest
     
     // Last one is output
     public Terminal[]? Terminals = null;
+    
+    // Most components won't use all 3
+    public int InputLineCount { get; protected set; } = 0;
+    public int SelectionLineCount { get; protected set; } = 0;
+    public int OutputLineCount { get; protected set; } = 0;
+    
+    // Used by Latches/Flip-Flops
+    public Dictionary<string, LogicState> StoredStates { get; set; } = new();
+    
+    
+    
 
     public double Rotation
     {
@@ -104,32 +115,6 @@ public abstract class Component : Control, ICustomHitTest
     public virtual void DrawSelection(DrawingContext ctx)
     {
         
-    }
-    
-    // DTO pattern implementation for serialization
-    public virtual ComponentDto ToDto()
-    {
-        return new ComponentDto
-        {
-            Type = this.GetType().Name,
-            X = Canvas.GetLeft(this),
-            Y = Canvas.GetTop(this),
-            Terminals = this.Terminals!.Select(p => p.ToDto()).ToList(),
-            
-            
-            Properties = GetSerializableProperties()
-        };
-    }
-
-    protected virtual List<PropertyDto> GetSerializableProperties()
-    {
-        return new List<PropertyDto>
-        {
-            new() { Name = "Width", Value = Width.ToString() },
-            new() { Name = "Height", Value = Height.ToString() },
-            new() { Name = "Rotation", Value = Rotation.ToString() }
-            // Add other serializable properties in subclasses
-        };
     }
     
     // A method for making components by type

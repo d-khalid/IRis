@@ -8,9 +8,7 @@ namespace IRis.Models.Components;
 
 public class Decoder : Component, IOutputProvider
 {
-    protected int SelectionLineCount;
-    protected int OutputLineCount;
-
+  
     public Decoder(int selectionLineCount,
         double width = ComponentDefaults.DefaultMuxWidth,
         double height = ComponentDefaults.DefaultMuxHeight)

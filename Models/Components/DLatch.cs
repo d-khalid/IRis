@@ -14,7 +14,6 @@ public class DLatch : Component, IOutputProvider
     // 2: Q   (right, top)
     // 3: Q'  (right, bottom)
 
-    private LogicState _q = LogicState.Low;
 
     public DLatch(double width = ComponentDefaults.DefaultMuxWidth * 5,  // x5 width as you mentioned
                   double height = ComponentDefaults.DefaultMuxHeight)
@@ -26,6 +25,9 @@ public class DLatch : Component, IOutputProvider
         Terminals = new Terminal[4];
         AddTerminalPoints();
         IsHitTestVisible = true;
+        
+        // Dictionary entry for state
+        StoredStates["Q"] = LogicState.Low;
     }
 
     public void ComputeOutput()
@@ -36,12 +38,12 @@ public class DLatch : Component, IOutputProvider
         if (en == LogicState.High)
         {
             // Transparent: output follows input
-            _q = (LogicState)d!;
+            StoredStates["Q"] = (LogicState)d!;
         }
-        // else en==Low → hold _q
+        // else en==Low → hold StoredStates["Q"]
 
-        Terminals[2].Wire!.Value = _q;
-        Terminals[3].Wire!.Value = _q == LogicState.High ? LogicState.Low : LogicState.High;
+        Terminals[2].Wire!.Value = StoredStates["Q"];
+        Terminals[3].Wire!.Value = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
     }
 
     public override void Draw(DrawingContext ctx)

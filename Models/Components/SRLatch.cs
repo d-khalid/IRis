@@ -14,7 +14,6 @@ public class SRLatch : Component, IOutputProvider
     // 2: Q (right, top)
     // 3: Q' (right, bottom)
 
-    private LogicState _q = LogicState.Low; // latched state
 
     public SRLatch(double width = ComponentDefaults.DefaultMuxWidth,
                    double height = ComponentDefaults.DefaultMuxHeight)
@@ -26,6 +25,9 @@ public class SRLatch : Component, IOutputProvider
         Terminals = new Terminal[4];
         AddTerminalPoints();
         IsHitTestVisible = true;
+        
+        // Dictionary entry for state
+        StoredStates["Q"] = LogicState.Low;
     }
 
     public void ComputeOutput()
@@ -35,11 +37,11 @@ public class SRLatch : Component, IOutputProvider
 
         if (s == LogicState.High && r == LogicState.Low)
         {
-            _q = LogicState.High;
+            StoredStates["Q"] = LogicState.High;
         }
         else if (s == LogicState.Low && r == LogicState.High)
         {
-            _q = LogicState.Low;
+            StoredStates["Q"] = LogicState.Low;
         }
         else if (s == LogicState.High && r == LogicState.High)
         {
@@ -51,8 +53,8 @@ public class SRLatch : Component, IOutputProvider
         }
         // else s=0, r=0 → hold previous state
 
-        Terminals[2].Wire!.Value = _q;
-        Terminals[3].Wire!.Value = _q == LogicState.High ? LogicState.Low : LogicState.High;
+        Terminals[2].Wire!.Value = StoredStates["Q"];
+        Terminals[3].Wire!.Value = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
     }
 
     public override void Draw(DrawingContext ctx)

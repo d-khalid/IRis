@@ -11,14 +11,12 @@ namespace IRis.Models.Components;
 
 public class LogicToggle : Component, IOutputProvider
 {
-    private LogicState? _value;
-
-    public LogicState? Value
+    public LogicState Value
     {
-        get => _value;
+        get => StoredStates["Value"];
         set
         {
-            _value = value;
+            StoredStates["Value"] = value;
 
             // Redraw
             InvalidateVisual();
@@ -46,7 +44,8 @@ public class LogicToggle : Component, IOutputProvider
         // Left-oriented
         Terminals[0] = new Terminal(new Point(x, y), null!);
 
-        Value = LogicState.Low;
+        // Create a dictionary entry for its value
+        StoredStates["Value"] = LogicState.Low;
         
         // Register an event handler for DoubleClicks
         this.DoubleTapped += (s, e) =>
@@ -69,18 +68,7 @@ public class LogicToggle : Component, IOutputProvider
     }
 
 
-    protected override List<PropertyDto> GetSerializableProperties()
-    {
-        return new List<PropertyDto>
-        {
-            new() { Name = "Width", Value = Width.ToString() },
-            new() { Name = "Height", Value = Height.ToString() },
-            new() { Name = "Rotation", Value = Rotation.ToString() },
-            new() { Name = "Value", Value = this.Value!.ToString() }
-            
-            // Add other serializable properties in subclasses
-        };
-    }
+  
 
     public override object Clone()
     {
