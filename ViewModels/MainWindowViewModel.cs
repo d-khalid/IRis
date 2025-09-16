@@ -32,6 +32,8 @@ namespace IRis.ViewModels
         private string? _openedFileName = null;
 
         private string _lastAction = " - ";
+        
+        public KeyGestureConfig KeyConfig { get; set; }
 
         public string? OpenedFileName
         {
@@ -79,12 +81,17 @@ namespace IRis.ViewModels
                     OnPropertyChanged(nameof(CursorPosition));
                 }
             };
+            
+            // TODO: A mismatch between a property name and constructor name is preventing deserialization
+            // Fix it
+            // Load Key Config
+            KeyConfig = KeyGestureConfig.LoadKeyGestureConfig();
+            // Immediately save whatever was loaded, in case of any modifications on Disk
+            KeyGestureConfig.SaveKeyGestureConfig(KeyConfig);
 
 
             // Initialize all commands
             NewCommand = new RelayCommand(New);
-
-
             OpenCommand = new AsyncRelayCommand(Open);
 
             SaveCommand = new AsyncRelayCommand(Save);
