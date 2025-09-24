@@ -76,7 +76,7 @@ public class TLatch : Component, IOutputProvider
         );
     }
 
-    private void AddTerminalPoints()
+    public override void AddTerminalPoints(bool notMode = false)
     {
         Point SnapToGrid(Point pt)
         {

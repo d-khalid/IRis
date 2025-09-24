@@ -148,7 +148,7 @@ public abstract class Gate : Component, IOutputProvider
 
     // The points are added differently for NOT-variants (NAND, NOT, NOR, XNOR)
     // notMode: Extra wire length to account for the bubble
-    protected void AddTerminalPoints(bool notMode = false)
+    public override void AddTerminalPoints(bool notMode = false)
     {
         double spacing = Height / (InputLineCount + 1);
 

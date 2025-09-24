@@ -38,6 +38,7 @@ public class CircuitDto
             {
                 terminal.Wires = terminal.Wires.Select(w => wireDict[w.Id]).ToList();
             }
+         
         }
         
         

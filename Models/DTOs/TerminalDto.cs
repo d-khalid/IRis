@@ -9,7 +9,6 @@ namespace IRis.Models.DTOs;
 
 public class TerminalDto
 {
-    public Point Position { get; set; }
     
     public List<Guid> ConnectedWireIds { get; set; }
 
@@ -17,7 +16,6 @@ public class TerminalDto
     {
         return new TerminalDto()
         {
-            Position = t.Position,
             ConnectedWireIds = t.Wires.Select(w => w.Id).ToList(),
         };
     }
@@ -26,7 +24,8 @@ public class TerminalDto
     // This is required for post processing
     public static Terminal ToTerminal(TerminalDto dto)
     {
-        return new Terminal(dto.Position)
+        // Placeholder position
+        return new Terminal(new Point(1,1))
         {
             Wires = dto.ConnectedWireIds.Select(p => new Wire(){Id = p}).ToList()
         };

@@ -85,7 +85,7 @@ public class Encoder : Component, IOutputProvider
         );
     }
 
-    protected void AddTerminalPoints()
+    public override void AddTerminalPoints(bool notMode = false)
     {
         Point SnapToGrid(Point pt)
         {

@@ -80,6 +80,11 @@ public abstract class Component : Control, ICustomHitTest
         return new Rect(0,0,Width,Height).Contains(point);
     }
 
+    public virtual void AddTerminalPoints(bool notMode = false)
+    {
+        
+    }
+
     public override void Render(DrawingContext context)
     {
         // Applies rotation to the drawing

@@ -75,7 +75,7 @@ public class Multiplexer : Component, IOutputProvider
     }
 
     // Inputs are on the left, output on right, selection lines at bottom
-    protected void AddTerminalPoints()
+    public override void AddTerminalPoints(bool notMode = false)
     {
         // Helper to snap to nearest multiple of 10
         Point SnapToGrid(Point pt)

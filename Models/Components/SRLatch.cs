@@ -83,7 +83,7 @@ public class SRLatch : Component, IOutputProvider
         );
     }
 
-    private void AddTerminalPoints()
+    public override void AddTerminalPoints(bool notMode = false)
     {
         Point SnapToGrid(Point pt)
         {
