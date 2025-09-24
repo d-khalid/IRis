@@ -135,7 +135,7 @@ public class CustomComponent : Component, IOutputProvider
         );
     }
 
-    protected void AddTerminalPoints()
+    public override void AddTerminalPoints(bool notMode = false)
     {
         // Snap to multiples of Grid Spacing
         Point SnapToGrid(Point pt)

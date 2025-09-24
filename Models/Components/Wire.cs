@@ -38,10 +38,7 @@ public class Wire : Component, ICloneable
         IsCommitted = false;
     }
     
-    // DTO pattern for serializing
-  
     
-
     public void AddPoint(Point point)
     {
         Points.Add(point);

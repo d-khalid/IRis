@@ -82,7 +82,7 @@ public class Demultiplexer : Component, IOutputProvider
     }
 
     // Layout: one data input on the left (centered vertically), selection lines at bottom, many outputs on right
-    protected void AddTerminalPoints()
+    public override void AddTerminalPoints(bool notMode = false)
     {
         // Helper to snap to nearest grid
         Point SnapToGrid(Point pt)

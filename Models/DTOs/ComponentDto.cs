@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Avalonia;
 using Avalonia.Controls;
 using IRis.Models.Components;
 using IRis.Models.Core;
@@ -78,8 +79,14 @@ public class ComponentDto
         result.Rotation = dto.Rotation;
         result.IsSelected = dto.IsSelected;
         result.StoredStates = dto.StoredStates;
-        result.Terminals = dto.Terminals.Select(p => TerminalDto.ToTerminal(p)).ToArray();
-
+        
+        // Add terminal positions here by calling the function that generates them
+        result.AddTerminalPoints();
+        for (int i = 0; i < dto.Terminals.Count; i++)
+        {
+            result.Terminals[i].Wires = TerminalDto.ToTerminal(dto.Terminals[i]).Wires;
+        }
+      
         Canvas.SetLeft(result, dto.X);
         Canvas.SetTop(result, dto.Y);
         
