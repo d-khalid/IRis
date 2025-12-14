@@ -261,7 +261,7 @@ internal class PreviewManager
             bool condition8 = simulation.IsWireSupersetOfAnotherWire(wirePreview.Points);
             bool condition9 = simulation.DoesWireCrossTerminal(wirePreview.Points, exceptionCase);
 
-            if (condition6 || condition7 || condition8 || condition9)
+            if (condition6 || condition7 || condition9)
             {
                 if (condition6) Console.WriteLine("Corner Point cannot be drawn on a component...");
                 else if (condition7) Console.WriteLine("Orthogonal Wire cannot overlap another wire...");
