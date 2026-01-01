@@ -19,10 +19,30 @@ namespace IRis.Models;
 // Contains all the data needed for a simulation
 public partial class Simulation : ObservableObject
 {
+    // --------------------
+    // Private attributes
+    // --------------------
     private Canvas? _canvas;
     private List<Component> _components;
     private List<Component> _selectedComponents;
     private List<Component> _movedWires;
+    [ObservableProperty] private Point _currentMousePos = new Point(0, 0);
+
+    // Selection and interaction managers
+    private readonly SelectionManager _selectionManager;
+    private readonly PreviewManager _previewManager;
+    private readonly ClipboardManager _clipboardManager;
+    private readonly GridManager _gridManager;
+    private readonly CommandManager _commandManager = new();
+
+    // For simulation
+    private bool _simulating;
+    private DispatcherTimer? _updateTimer;
+
+
+    // --------------------
+    // Public attributes
+    // --------------------
     public CustomComponentData CustomComponent { get; set; } = null!;
 
     public List<Component> Components
@@ -37,20 +57,7 @@ public partial class Simulation : ObservableObject
         set => _movedWires = value;
     }
 
-    [ObservableProperty] private Point _currentMousePos = new Point(0, 0);
-
-    // Selection and interaction managers
-    private readonly SelectionManager _selectionManager;
-    private readonly PreviewManager _previewManager;
-    private readonly ClipboardManager _clipboardManager;
-    private readonly GridManager _gridManager;
-    private readonly CommandManager _commandManager = new();
-
     public CommandManager CommandManager => _commandManager;
-
-    // For simulation
-    private bool _simulating;
-    private DispatcherTimer? _updateTimer;
 
     // Expose selected components
     public List<Component> SelectedComponents => _selectedComponents;
@@ -113,8 +120,9 @@ public partial class Simulation : ObservableObject
 
     private void SetupSimulation()
     {
-        // For updating the simulation
-        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) }; // Adjust to reduce CPU load
+        // For updating the simulation everytime after some time span
+        // Adjust time span from here to reduce CPU load
+        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) }; 
         _updateTimer.Tick += (s, e) => SimulationStep();
         Simulating = false;
     }
