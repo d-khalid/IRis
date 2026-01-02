@@ -1,4 +1,4 @@
-// File: SelectionManager.cs
+// Models/SelectionManager.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ using IRis.Models.Commands;
 
 namespace IRis.Models;
 
-internal class SelectionManager
+public class SelectionManager
 {
     private Point _selectionStart;
     private Rectangle? _selectionRect;

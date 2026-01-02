@@ -23,7 +23,9 @@ public partial class App : Application
         // Set the default theme as 'Dark'
         // ThemeManager.ChangeTheme(Application.Current, "Dark");
         
-        // Create a CanvasService object and pass its reference to both MainWindow and MainWindowViewModel
+        // Create a CanvasService object and pass its reference 
+        // to both MainWindow and MainWindowViewModel
+        // This is the main service object for drawings and simulation
         Simulation simulation = new Simulation();
 
     

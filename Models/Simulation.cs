@@ -1,29 +1,59 @@
+// Models/Simulation.cs
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
 using Avalonia.Input;
-using Avalonia.Media;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Components;
 using IRis.Models.Core;
 using IRis.Models.Commands;
-using IRis.Services;
 using IRis.Views;
 
 namespace IRis.Models;
 
-// Contains all the data needed for a simulation
+// Main section of the Simulation class
 public partial class Simulation : ObservableObject
 {
-    private Canvas? _canvas;
+    // --------------------
+    // Private attributes
+    // --------------------
+    // NOTE: _canvas is set to nullable to suppress warnings since it is not 
+    // initialized in the constructor but by app.axaml.cs instead.
+    // --------------------
+    private Canvas? _canvas;       // nullable attribute to store the canvas
+    private Canvas Canvas =>       // Use this private getter to access canvas
+        _canvas ?? throw new InvalidOperationException("Register(canvas) first.");
     private List<Component> _components;
     private List<Component> _selectedComponents;
     private List<Component> _movedWires;
+    [ObservableProperty] private Point _currentMousePos = new Point(0, 0);
+
+    // Selection and interaction managers
+    private readonly SelectionManager _selectionManager;
+    private readonly PreviewManager _previewManager;
+    private readonly ClipboardManager _clipboardManager;
+    private readonly GridManager _gridManager;
+    private readonly CommandManager _commandManager = new();
+
+    // For simulation
+    private bool _simulating;
+    private DispatcherTimer? _updateTimer;
+
+    // --------------------
+    // Public attributes
+    // --------------------
     public CustomComponentData CustomComponent { get; set; } = null!;
+
+    // Public access for Managers
+    public CommandManager CommandManager => _commandManager;
+    public PreviewManager PreviewManager => _previewManager;
+    public SelectionManager SelectionManager => _selectionManager;
+
+    // Public access for Components-related
+    public List<Component> SelectedComponents => _selectedComponents;
+    public bool HasSelectedComponents => _selectedComponents.Count > 0;
 
     public List<Component> Components
     {
@@ -37,33 +67,53 @@ public partial class Simulation : ObservableObject
         set => _movedWires = value;
     }
 
-    [ObservableProperty] private Point _currentMousePos = new Point(0, 0);
+    // Preview management
+    public string? PreviewCompType
+    {
+        get => _previewManager.PreviewCompType;
+        set => _previewManager.SetPreviewComponent(value, Canvas, CurrentMousePos, this);
+    }
 
-    // Selection and interaction managers
-    private readonly SelectionManager _selectionManager;
-    private readonly PreviewManager _previewManager;
-    private readonly ClipboardManager _clipboardManager;
-    private readonly GridManager _gridManager;
-    private readonly CommandManager _commandManager = new();
+    // Grid management
+    public bool SnapToGridEnabled
+    {
+        get => _gridManager.SnapToGridEnabled;
+        set => _gridManager.SnapToGridEnabled = value;
+    }
 
-    public CommandManager CommandManager => _commandManager;
+    public bool GridEnabled
+    {
+        get => _gridManager.GridEnabled;
+        set
+        {
+            _gridManager.GridEnabled = value;
+            if (value)
+                _gridManager.DrawGrid(Canvas);
+            else
+            {
+                Canvas.Children.Clear();
+                Canvas.Children.AddRange(_components);
+            }
+        }
+    }
 
-    // For simulation
-    private bool _simulating;
-    private DispatcherTimer? _updateTimer;
+    // -------------------------------------------------
+    // Public methods for simulation construction
+    // -------------------------------------------------
+    public Simulation()
+    {
+        // Initialize empty lists
+        _components = [];
+        _selectedComponents = [];
+        _movedWires = [];
 
-    // Expose selected components
-    public List<Component> SelectedComponents => _selectedComponents;
-
-    // External access to selection state
-    public bool HasSelectedComponents => _selectedComponents.Count > 0;
-
-    // Undo/Redo
-    public bool CanUndo => _commandManager.CanUndo;
-    public bool CanRedo => _commandManager.CanRedo;
-    public void Undo() => _commandManager.Undo();
-    public void Redo() => _commandManager.Redo();
-
+        // Initialize managers
+        _selectionManager = new SelectionManager();
+        _previewManager = new PreviewManager();
+        _clipboardManager = new ClipboardManager();
+        _gridManager = new GridManager();
+    }
+    
     public bool Simulating
     {
         get => _simulating;
@@ -81,20 +131,6 @@ public partial class Simulation : ObservableObject
         }
     }
 
-    public Simulation()
-    {
-        // Initialize lists
-        _components = new List<Component>();
-        _selectedComponents = new List<Component>();
-        _movedWires = new List<Component>();
-
-        // Initialize managers
-        _selectionManager = new SelectionManager();
-        _previewManager = new PreviewManager();
-        _clipboardManager = new ClipboardManager();
-        _gridManager = new GridManager();
-    }
-
     public void Register(Canvas canvas)
     {
         _canvas = canvas;
@@ -104,33 +140,10 @@ public partial class Simulation : ObservableObject
         _gridManager.DrawGrid(_canvas); // Draws the main grid
     }
 
-    private void SetupCanvas()
-    {
-        // Important: Enable keyboard focus
-        _canvas!.Focusable = true;
-        _canvas.Cursor = new Cursor(StandardCursorType.Arrow);
-    }
-
-    private void SetupSimulation()
-    {
-        // For updating the simulation
-        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) }; // Adjust to reduce CPU load
-        _updateTimer.Tick += (s, e) => SimulationStep();
-        Simulating = false;
-    }
-
-    private void RegisterEventHandlers()
-    {
-        _canvas!.PointerPressed += OnPointerPressed;
-        _canvas.PointerMoved += OnPointerMoved;
-        _canvas.PointerReleased += OnPointerReleased;
-        _canvas.PointerEntered += (s, e) => _previewManager.OnEnter();
-        _canvas.PointerExited += (s, e) => _previewManager.OnExit();
-        _canvas.KeyDown += OnKeyDown;
-        _canvas.PointerWheelChanged += OnPointerWheel;
-    }
-
-    public void SimulationStep()
+    // ----------------------------------------------------
+    // Private helper Methods for the above constructors
+    // ----------------------------------------------------
+    private void SimulationStep()
     {
         foreach (var component in _components)
         {
@@ -144,374 +157,71 @@ public partial class Simulation : ObservableObject
         }
     }
 
-    // Component Management
+    private void SetupCanvas()
+    {
+        // Important: Enable keyboard focus
+        Canvas.Focusable = true;
+        Canvas.Cursor = new Cursor(StandardCursorType.Arrow);
+    }
+
+    private void SetupSimulation()
+    {
+        // For updating the simulation everytime after some time span
+        // Adjust time span from here to reduce CPU load
+        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) }; 
+        _updateTimer.Tick += (s, e) => SimulationStep();
+        Simulating = false;
+    }
+
+    private void RegisterEventHandlers()
+    {
+        Canvas.PointerPressed += OnPointerPressed;
+        Canvas.PointerMoved += OnPointerMoved;
+        Canvas.PointerReleased += OnPointerReleased;
+        Canvas.PointerEntered += (s, e) => _previewManager.OnEnter();
+        Canvas.PointerExited += (s, e) => _previewManager.OnExit();
+        Canvas.KeyDown += OnKeyDown;
+        Canvas.PointerWheelChanged += OnPointerWheel;
+    }
+
+    // --------------------------------
+    // Component Management Methods
+    // --------------------------------
     public void DeleteSelectedComponents()
     {
         if (_selectedComponents.Count > 0)
         {
-            var deleteCommand = new DeleteComponentsCommand(_canvas!, _components, _selectedComponents);
+            var deleteCommand = new DeleteComponentsCommand(
+                Canvas, _components, _selectedComponents);
             _commandManager.ExecuteCommand(deleteCommand);
             _selectedComponents.Clear();
         }
     }
 
-    public void UnselectComponents() => _selectionManager.UnselectAll(_selectedComponents);
-
     // TODO: THESE METHODS ARE SHALLOW AND BAD! (probably)
     public void LoadComponents(List<Component> components)
     {
         _components = components;
-        _canvas!.Children.AddRange(_components);
+        Canvas.Children.AddRange(_components);
     }
 
     // sus? amogus?
     public void DeleteAllComponents()
     {
-        _canvas!.Children.RemoveAll(_components);
+        Canvas.Children.RemoveAll(_components);
         _components.Clear();
     }
 
-    // Clipboard operations
+    // ----------------------------------------------
+    // Important Wrappers for Clipboard Managers
+    // ----------------------------------------------
     public void CopySelected(bool cutMode = false) => _clipboardManager.Copy(_selectedComponents, cutMode, DeleteSelectedComponents);
     public void CutSelected() => CopySelected(true);
-    public void PasteSelected() => _clipboardManager.Paste(_canvas!, CurrentMousePos);
+    public void PasteSelected() => _clipboardManager.Paste(Canvas, CurrentMousePos);
 
-    // Preview management
-    public string? PreviewCompType
-    {
-        get => _previewManager.PreviewCompType;
-        set => _previewManager.SetPreviewComponent(value, _canvas!, CurrentMousePos, this);
-    }
-
-    // Grid management
-    public bool SnapToGridEnabled
-    {
-        get => _gridManager.SnapToGridEnabled;
-        set => _gridManager.SnapToGridEnabled = value;
-    }
-
-    public bool GridEnabled
-    {
-        get => _gridManager.GridEnabled;
-        set
-        {
-            _gridManager.GridEnabled = value;
-            if (value)
-                _gridManager.DrawGrid(_canvas!);
-            else
-            {
-                _canvas!.Children.Clear();
-                _canvas.Children.AddRange(_components);
-            }
-        }
-    }
-
-    // Terminal Snapping
-    public Terminal? FindClosestSnapTerminal(Point p)
-    {
-        Terminal? closestTerminal = null;
-        double minDistance = double.MaxValue;
-
-        foreach (Component component in _components)
-        {
-            if (component.Terminals == null) continue;
-            foreach (Terminal terminal in component.Terminals)
-            {
-                // Calculate absolute terminal position
-                Point absTerminalPos = new Point(
-                    terminal.Position.X + Canvas.GetLeft(component),
-                    terminal.Position.Y + Canvas.GetTop(component)
-                );
-
-                double distance = Point.Distance(p, absTerminalPos);
-                if (distance < minDistance && distance <= ComponentDefaults.TerminalSnappingRange)
-                {
-                    minDistance = distance;
-                    closestTerminal = terminal;
-                }
-            }
-        }
-        return closestTerminal; // Returns null if no terminal is within snapping range
-    }
-
-    public Point GetAbsoluteTerminalPosition(Terminal terminal)
-    {
-        foreach (Component component in _components)
-        {
-            if (component.Terminals == null) continue;
-            foreach (Terminal compTerminal in component.Terminals)
-            {
-                if (compTerminal == terminal)
-                {
-                    return new Point(
-                        compTerminal.Position.X + Canvas.GetLeft(component),
-                        compTerminal.Position.Y + Canvas.GetTop(component)
-                    );
-                }
-            }
-        }
-        return new Point(-2, -2);   // Error case; should not occur
-    }
-
-    public bool IsInputTerminal(Terminal terminal)
-    {
-        if (terminal == null) return false;
-        
-        foreach (Component component in _components)
-        {
-            if (component.Terminals == null) continue;
-            
-            // For Gate components, check if terminal is not the last one (output)
-            if (component is Gate gate)
-            {
-                for (int i = 0; i < gate.Terminals!.Length - 1; i++) // Exclude last terminal (output)
-                {
-                    if (gate.Terminals[i] == terminal)
-                        return true;
-                }
-            }
-            // For Multiplexer components
-            else if (component is Multiplexer mux)
-            {
-                // Selection lines (indices 0 to SelectionLineCount-1) and 
-                // Input lines (indices SelectionLineCount to SelectionLineCount+InputLineCount-1) are inputs
-                // Only the last terminal (^1) is output
-                for (int i = 0; i < mux.Terminals!.Length - 1; i++) // Exclude last terminal (output)
-                {
-                    if (mux.Terminals[i] == terminal)
-                        return true;
-                }
-            }
-            // For CustomComponent
-            else if (component is CustomComponent customComp)
-            {
-                // First InputCount terminals are inputs, remaining are outputs
-                for (int i = 0; i < customComp.InputCount; i++)
-                {
-                    if (i < customComp.Terminals!.Length && customComp.Terminals[i] == terminal)
-                        return true;
-                }
-            }
-        }
-        
-        return false;
-    }
-
-    public Wire? FindWireAtPosition(Point position)
-    {
-        return _components.OfType<Wire>()
-            .FirstOrDefault(wire => wire.IsPointOnWire(position, 5.0)); // 5.0 is click tolerance
-    }
-
-    private bool IsPointInsideAnyComponent(Point point)
-    {
-        return Components.Any(component =>
-        {
-            if (component is Wire) return false;
-
-            Rect bounds = component.Bounds;
-
-            if (component.Rotation == 0)    // PATCH: this is a safe check for when rotations are added
-            {
-                Rect adjustedBounds = new Rect(
-                    bounds.X - 10,
-                    bounds.Y,
-                    bounds.Width + 20,  // prevent negative width
-                    bounds.Height
-                );
-                return adjustedBounds.Contains(point);
-            }
-            else
-            {
-                return bounds.Contains(point);
-            }
-        });
-    }
-
-    public bool IsWireInsideAnyComponent(List<Point> points)
-    {
-        Point InvalidPoint = new Point(-1, -1);
-        for (int i = 0; i < points.Count - 1; i++)
-        {
-            if (points[i] == InvalidPoint || points[i + 1] == InvalidPoint) continue;
-            List<Point> checkablePoints = [points[i]];
-            double dx = points[i].X - points[i + 1].X;
-            double dy = points[i].Y - points[i + 1].Y;
-
-            if (dx != 0)
-            {
-                while (dx != 0)
-                {
-                    checkablePoints.Add(new Point(points[i].X - dx, points[i].Y));
-                    if (dx > 0) dx -= 10;
-                    else dx += 10;
-                }
-            }
-            else if (dy != 0)
-            {
-                while (dy != 0)
-                {
-                    checkablePoints.Add(new Point(points[i].X, points[i].Y - dy));
-                    if (dy > 0) dy -= 10;
-                    else dy += 10;
-                }
-            }
-            else
-            {
-                continue;   // Handling for duplicate points
-            }
-            foreach (Point pt in checkablePoints)
-            {
-                if (IsPointInsideAnyComponent(pt)) return true;
-            }
-        }
-        return false;
-    }
-
-    public bool DoesWireOverlapAnotherWire(List<Point> points)
-    {
-        var existingWirePoints = Components.OfType<Wire>().ToList()
-            .SelectMany(w => w.Points.Where(p => p.X != -1 && p.Y != -1))
-            .ToHashSet();
-        List<Point> validPoints = [.. points];
-        foreach (Point point in points)
-            if (FindClosestSnapTerminal(point) == null) validPoints.Add(point);
-
-        return validPoints.Any(existingWirePoints.Contains);
-    }
-    
-    public bool IsWireSupersetOfAnotherWire(List<Point> wirePoints)
-    {
-        var wirePointsSet = wirePoints.Where(p => p.X != -1 && p.Y != -1).ToHashSet();
-        bool IsWireSuperset = false;
-        // Check if wire is a superset of another wire
-        foreach (Component component in _components)
-        {
-            if (component is Wire existingWire)
-            {
-                if (Components.OfType<Wire>().ToList()
-                    .Any(existingWire => existingWire.Points.Where(p => p.X != -1 && p.Y != -1)
-                        .All(wirePointsSet.Contains)))
-                {
-                    IsWireSuperset = true;
-                    break;
-                }
-            }
-        }
-        return IsWireSuperset;
-    }
-
-    public bool DoesWireSelfOverlap(List<Point> points)
-    {
-        var allLinePoints = new HashSet<Point>();
-        var validPoints = points.Where(p => p.X != -1 && p.Y != -1).ToList();
-
-        for (int i = 0; i < validPoints.Count - 1; i++)
-        {
-            int dx = (int)(validPoints[i + 1].X - validPoints[i].X);
-            int dy = (int)(validPoints[i + 1].Y - validPoints[i].Y);
-            int steps = (int)(Math.Max(Math.Abs(dx), Math.Abs(dy)) / ComponentDefaults.GridSpacing);
-            if (steps == 0) continue;
-
-            for (int j = 1; j < steps; j++) // Skip endpoints to avoid false positives
-            {
-                var point = new Point((int)(validPoints[i].X + dx * j / steps), (int)(validPoints[i].Y + dy * j / steps));
-                if (!allLinePoints.Add(point)) return true;
-            }
-        }
-        return false;
-    }
-
-    public bool DoesWireCrossTerminal(List<Point> points, Terminal? exceptionCase=null)
-    {
-        var terminalPositions = Components.ToList().Where(c => c is not Wire && c.Terminals != null)
-            .SelectMany(c => c.Terminals!.Where(t => t != exceptionCase).Select(t => GetAbsoluteTerminalPosition(t)))
-            .ToHashSet();
-
-        Point InvalidPoint = new Point(-1, -1);
-        for (int i = 0; i < points.Count - 1; i++)
-        {
-            if (points[i] == InvalidPoint || points[i + 1] == InvalidPoint) continue;
-            List<Point> checkablePoints = [];
-            double dx = points[i].X - points[i + 1].X;
-            double dy = points[i].Y - points[i + 1].Y;
-
-            if (dx != 0)
-            {
-                while (dx != 0)
-                {
-                    checkablePoints.Add(new Point(points[i].X - dx, points[i].Y));
-                    if (dx > 0) dx -= 10;
-                    else dx += 10;
-                }
-            }
-            else if (dy != 0)
-            {
-                while (dy != 0)
-                {
-                    checkablePoints.Add(new Point(points[i].X, points[i].Y - dy));
-                    if (dy > 0) dy -= 10;
-                    else dy += 10;
-                }
-            }
-            else
-            {
-
-                continue;   // Handling for duplicate points
-            }
-
-            // PATCH: this needs a replacement later
-            checkablePoints.RemoveAll((point) =>
-            {
-                return points.Contains(point);
-            });
-
-            foreach (Point pt in checkablePoints)
-            {
-                Console.WriteLine(pt);
-                foreach (Point pos in terminalPositions)
-                {
-                    if (pt == pos)
-                    {
-                        Console.WriteLine("FOUND");
-                        Console.WriteLine(pt);
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public bool DoesWireHaveExtension(Wire wire)
-    {
-        foreach (Point point in wire.Points)
-        {
-            if (point == new Point(-1, -1)) return true;
-        }
-        return false;
-    }
-    
-    private bool IsWireInMovedWires(Wire wire, List<Component> MovedWires)
-    {
-        foreach (var movedWire in MovedWires)
-        {
-            if (movedWire == wire) return true;
-        }
-        return false;
-    }
-
-    Point SnapToGrid(Point pt)
-    {
-        double snapX = (int)Math.Round(Math.Round(pt.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
-        double snapY = (int)Math.Round(Math.Round(pt.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
-        return new Point(snapX, snapY);
-    }
-
-    // _______________________________________________
-    // ____________ Pointer/key handling _____________
-    // _______________________________________________
-
+    // -------------------------
+    // Handling Mouse Actions
+    // -------------------------
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (Simulating || !GridEnabled)
@@ -555,7 +265,7 @@ public partial class Simulation : ObservableObject
                                     return;
                                 }
                                 Console.WriteLine("Registering Wire Extension...");
-                                _previewManager.StartWireExtension(_canvas!, CurrentMousePos, existingWire, this);
+                                _previewManager.StartWireExtension(Canvas, CurrentMousePos, existingWire, this);
                                 return;
                             }
                         }
@@ -581,13 +291,13 @@ public partial class Simulation : ObservableObject
                 {
                     // NEW COMPONENT LOGIC
                     Console.WriteLine("Registering New Component...");
-                    _previewManager.HandleComponentCommit(_canvas!, _components, CurrentMousePos, _commandManager, this);
+                    _previewManager.HandleComponentCommit(Canvas, _components, CurrentMousePos, _commandManager, this);
                     return;
                 }
             }
         // Selection handling through selection manager
         _selectionManager.OnPointerPressed(sender, e, _selectedComponents);
-        _selectionManager.HandleStart(_canvas!, _selectedComponents, CurrentMousePos);
+        _selectionManager.HandleStart(Canvas, _selectedComponents, CurrentMousePos);
     }
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -596,27 +306,27 @@ public partial class Simulation : ObservableObject
         _selectionManager.OnPointerReleased(sender, e, _commandManager);
 
         // Then handle selection manager
-        _selectionManager.HandleEnd(_canvas!, _commandManager);
+        _selectionManager.HandleEnd(Canvas, _commandManager);
     }
     
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
         // Update the mouse pos
-        CurrentMousePos = e.GetPosition(_canvas);
+        CurrentMousePos = e.GetPosition(Canvas);
 
-        if (_previewManager.HandleUpdate(_canvas!, CurrentMousePos, _gridManager.SnapToGridEnabled,
+        if (_previewManager.HandleUpdate(Canvas, CurrentMousePos, _gridManager.SnapToGridEnabled,
             _gridManager.SnapToGrid, this))
             return;
 
         // Pass the selectedComponents reference and grid functions
-        _selectionManager.HandleUpdate(_canvas!, _selectedComponents, CurrentMousePos, _components, this,
+        _selectionManager.HandleUpdate(Canvas, _selectedComponents, CurrentMousePos, _components, this,
             _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
     }
 
     private void OnPointerWheel(object? sender, PointerWheelEventArgs e)
     {
         // TODO: THIS IS ACCEPTABLE FOR NOW BUT 100% NEEDS POLISH LATER ON
-        CurrentMousePos = _gridManager.SnapToGrid(e.GetPosition(_canvas));
+        CurrentMousePos = _gridManager.SnapToGrid(e.GetPosition(Canvas));
         
         // Update the preview component
         if (_previewManager.PreviewComponent != null)

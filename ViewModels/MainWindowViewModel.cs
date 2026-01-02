@@ -15,10 +15,12 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using IRis.Models;
+using IRis.Models.Commands;
 using IRis.Models.Components;
 using IRis.Models.Core;
 using IRis.Services;
 using IRis.Views;
+using ICommand = System.Windows.Input.ICommand;
 
 
 namespace IRis.ViewModels
@@ -354,7 +356,7 @@ namespace IRis.ViewModels
                 Console.WriteLine("Cannot undo while simulating");
                 return;
             }
-            _simulation.Undo();
+            _simulation.CommandManager.Undo();
             LastAction = "Undo";
         }
 
@@ -366,7 +368,7 @@ namespace IRis.ViewModels
                 Console.WriteLine("Cannot redo while simulating");
                 return;
             }
-            _simulation.Redo();
+            _simulation.CommandManager.Redo();
             LastAction = "Redo";
         }
 
