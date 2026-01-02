@@ -1,15 +1,12 @@
+// Models/PreviewManager.cs
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using IRis.Models.Components;
 using IRis.Models.Core;
 using IRis.Models.Commands;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Runtime.Serialization;
 
 namespace IRis.Models;
 
@@ -207,9 +204,9 @@ public class PreviewManager
         // If Wire is not snapped to terminal and overlaps another wire
         // The snapping handles used input terminals so this works.
         bool condition3 = !pointSnappedToTerminal &&
-            !simulation.DoesWireHaveExtension(wirePreview) &&
+            !Simulation.DoesWireHaveExtension(wirePreview) &&
             simulation.DoesWireOverlapAnotherWire(wirePreview.Points);
-        bool condition4 = !simulation.DoesWireHaveExtension(wirePreview) &&
+        bool condition4 = !Simulation.DoesWireHaveExtension(wirePreview) &&
             simulation.DoesWireSelfOverlap(wirePreview.Points);
         // If snapping was rejected and wire crosses a terminal
         List<Point> tempPoints = [.. wirePreview.Points];
@@ -218,7 +215,7 @@ public class PreviewManager
         bool condition2 = simulation.IsWireInsideAnyComponent(tempPoints);
         Terminal? exceptionCase = simulation.FindClosestSnapTerminal(wirePreview.Points[0]);
         bool condition5 = !pointSnappedToTerminal &&
-            !simulation.DoesWireHaveExtension(wirePreview) &&
+            !Simulation.DoesWireHaveExtension(wirePreview) &&
             simulation.DoesWireCrossTerminal(tempPoints, exceptionCase);
 
         if (condition1 || condition2 || condition3 || condition4 || condition5)
