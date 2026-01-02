@@ -10,6 +10,7 @@ using IRis.Models.Core;
 
 namespace IRis.Models;
 
+// Contains Wire drawing Helpers
 public partial class Simulation : ObservableObject
 {
     // --------------------------------
