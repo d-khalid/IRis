@@ -13,7 +13,7 @@ using System.Runtime.Serialization;
 
 namespace IRis.Models;
 
-internal class PreviewManager
+public class PreviewManager
 {
     private string? _previewCompType;
     private Component? _previewComponent;

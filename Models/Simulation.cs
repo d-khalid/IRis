@@ -13,6 +13,7 @@ using IRis.Models.Core;
 using IRis.Models.Commands;
 using IRis.Services;
 using IRis.Views;
+using System.ComponentModel.DataAnnotations;
 
 namespace IRis.Models;
 
@@ -21,6 +22,8 @@ public partial class Simulation : ObservableObject
 {
     // --------------------
     // Private attributes
+    // --------------------
+    // NOTE: _canvas is set to nullable since it is not initialized in the constructor
     // --------------------
     private Canvas? _canvas;
     private List<Component> _components;
@@ -56,11 +59,32 @@ public partial class Simulation : ObservableObject
         set => _movedWires = value;
     }
 
-    // Public access for CommandManager
+    // Public access for Managers
     public CommandManager CommandManager => _commandManager;
+    public PreviewManager PreviewManager => _previewManager;
+    public SelectionManager SelectionManager => _selectionManager;
+
+    // Public access for Components-related
     public List<Component> SelectedComponents => _selectedComponents;
     public bool HasSelectedComponents => _selectedComponents.Count > 0;
 
+    // -------------------------------------------------
+    // Contructor and public methods for construction
+    // -------------------------------------------------
+    public Simulation()
+    {
+        // Initialize empty lists
+        _components = [];
+        _selectedComponents = [];
+        _movedWires = [];
+
+        // Initialize managers
+        _selectionManager = new SelectionManager();
+        _previewManager = new PreviewManager();
+        _clipboardManager = new ClipboardManager();
+        _gridManager = new GridManager();
+    }
+    
     public bool Simulating
     {
         get => _simulating;
@@ -78,20 +102,6 @@ public partial class Simulation : ObservableObject
         }
     }
 
-    public Simulation()
-    {
-        // Initialize lists
-        _components = new List<Component>();
-        _selectedComponents = new List<Component>();
-        _movedWires = new List<Component>();
-
-        // Initialize managers
-        _selectionManager = new SelectionManager();
-        _previewManager = new PreviewManager();
-        _clipboardManager = new ClipboardManager();
-        _gridManager = new GridManager();
-    }
-
     public void Register(Canvas canvas)
     {
         _canvas = canvas;
@@ -101,10 +111,30 @@ public partial class Simulation : ObservableObject
         _gridManager.DrawGrid(_canvas); // Draws the main grid
     }
 
+    // -------------------------------------------
+    // Private helper Methods for constructors
+    // -------------------------------------------
+    private void SimulationStep()
+    {
+        foreach (var component in _components)
+        {
+            // Compute outputs for everything first
+            if (component is IOutputProvider op)
+                op.ComputeOutput();
+
+            // Redraw Toggles and Probes
+            if (component is LogicProbe || component is LogicToggle)
+                component.InvalidateVisual();
+        }
+    }
+
     private void SetupCanvas()
     {
+        if (_canvas is null) throw new InvalidOperationException(
+            "Simulation.Register(Canvas) must be called before registering event handlers."
+        );
         // Important: Enable keyboard focus
-        _canvas!.Focusable = true;
+        _canvas.Focusable = true;
         _canvas.Cursor = new Cursor(StandardCursorType.Arrow);
     }
 
@@ -119,7 +149,10 @@ public partial class Simulation : ObservableObject
 
     private void RegisterEventHandlers()
     {
-        _canvas!.PointerPressed += OnPointerPressed;
+        if (_canvas is null) throw new InvalidOperationException(
+            "Simulation.Register(Canvas) must be called before registering event handlers."
+        );
+        _canvas.PointerPressed += OnPointerPressed;
         _canvas.PointerMoved += OnPointerMoved;
         _canvas.PointerReleased += OnPointerReleased;
         _canvas.PointerEntered += (s, e) => _previewManager.OnEnter();
@@ -128,21 +161,9 @@ public partial class Simulation : ObservableObject
         _canvas.PointerWheelChanged += OnPointerWheel;
     }
 
-    public void SimulationStep()
-    {
-        foreach (var component in _components)
-        {
-            // Compute outputs for everything first
-            if (component is IOutputProvider op)
-                op.ComputeOutput();
-
-            // Redraw Toggles and Probes
-            if (component is LogicProbe || component is LogicToggle)
-                component.InvalidateVisual();
-        }
-    }
-
-    // Component Management
+    // --------------------------------
+    // Component Management Methods
+    // --------------------------------
     public void DeleteSelectedComponents()
     {
         if (_selectedComponents.Count > 0)
@@ -153,23 +174,29 @@ public partial class Simulation : ObservableObject
         }
     }
 
-    public void UnselectComponents() => _selectionManager.UnselectAll(_selectedComponents);
-
     // TODO: THESE METHODS ARE SHALLOW AND BAD! (probably)
     public void LoadComponents(List<Component> components)
     {
+        if (_canvas is null) throw new InvalidOperationException(
+            "Simulation.Register(Canvas) must be called before registering event handlers."
+        );
         _components = components;
-        _canvas!.Children.AddRange(_components);
+        _canvas.Children.AddRange(_components);
     }
 
     // sus? amogus?
     public void DeleteAllComponents()
     {
-        _canvas!.Children.RemoveAll(_components);
+        if (_canvas is null) throw new InvalidOperationException(
+            "Simulation.Register(Canvas) must be called before registering event handlers."
+        );
+        _canvas.Children.RemoveAll(_components);
         _components.Clear();
     }
 
-    // Clipboard operations
+    // ----------------------------------------------
+    // Important Wrappers for Clipboard Managers
+    // ----------------------------------------------
     public void CopySelected(bool cutMode = false) => _clipboardManager.Copy(_selectedComponents, cutMode, DeleteSelectedComponents);
     public void CutSelected() => CopySelected(true);
     public void PasteSelected() => _clipboardManager.Paste(_canvas!, CurrentMousePos);
@@ -514,6 +541,9 @@ public partial class Simulation : ObservableObject
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        if (_canvas is null) throw new InvalidOperationException(
+            "Simulation.Register(Canvas) must be called before registering event handlers."
+        );
         if (Simulating || !GridEnabled)
         {
             Console.WriteLine("Cannot edit while simulating");
@@ -555,7 +585,7 @@ public partial class Simulation : ObservableObject
                                     return;
                                 }
                                 Console.WriteLine("Registering Wire Extension...");
-                                _previewManager.StartWireExtension(_canvas!, CurrentMousePos, existingWire, this);
+                                _previewManager.StartWireExtension(_canvas, CurrentMousePos, existingWire, this);
                                 return;
                             }
                         }
@@ -581,35 +611,41 @@ public partial class Simulation : ObservableObject
                 {
                     // NEW COMPONENT LOGIC
                     Console.WriteLine("Registering New Component...");
-                    _previewManager.HandleComponentCommit(_canvas!, _components, CurrentMousePos, _commandManager, this);
+                    _previewManager.HandleComponentCommit(_canvas, _components, CurrentMousePos, _commandManager, this);
                     return;
                 }
             }
         // Selection handling through selection manager
         _selectionManager.OnPointerPressed(sender, e, _selectedComponents);
-        _selectionManager.HandleStart(_canvas!, _selectedComponents, CurrentMousePos);
+        _selectionManager.HandleStart(_canvas, _selectedComponents, CurrentMousePos);
     }
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
+        if (_canvas is null) throw new InvalidOperationException(
+            "Simulation.Register(Canvas) must be called before registering event handlers."
+        );
         // Handle preview manager drag completion first
         _selectionManager.OnPointerReleased(sender, e, _commandManager);
 
         // Then handle selection manager
-        _selectionManager.HandleEnd(_canvas!, _commandManager);
+        _selectionManager.HandleEnd(_canvas, _commandManager);
     }
     
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
+        if (_canvas is null) throw new InvalidOperationException(
+            "Simulation.Register(Canvas) must be called before registering event handlers."
+        );
         // Update the mouse pos
         CurrentMousePos = e.GetPosition(_canvas);
 
-        if (_previewManager.HandleUpdate(_canvas!, CurrentMousePos, _gridManager.SnapToGridEnabled,
+        if (_previewManager.HandleUpdate(_canvas, CurrentMousePos, _gridManager.SnapToGridEnabled,
             _gridManager.SnapToGrid, this))
             return;
 
         // Pass the selectedComponents reference and grid functions
-        _selectionManager.HandleUpdate(_canvas!, _selectedComponents, CurrentMousePos, _components, this,
+        _selectionManager.HandleUpdate(_canvas, _selectedComponents, CurrentMousePos, _components, this,
             _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
     }
 

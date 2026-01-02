@@ -12,7 +12,7 @@ using IRis.Models.Commands;
 
 namespace IRis.Models;
 
-internal class SelectionManager
+public class SelectionManager
 {
     private Point _selectionStart;
     private Rectangle? _selectionRect;
