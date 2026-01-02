@@ -39,7 +39,6 @@ public partial class Simulation : ObservableObject
     private bool _simulating;
     private DispatcherTimer? _updateTimer;
 
-
     // --------------------
     // Public attributes
     // --------------------
@@ -57,19 +56,10 @@ public partial class Simulation : ObservableObject
         set => _movedWires = value;
     }
 
+    // Public access for CommandManager
     public CommandManager CommandManager => _commandManager;
-
-    // Expose selected components
     public List<Component> SelectedComponents => _selectedComponents;
-
-    // External access to selection state
     public bool HasSelectedComponents => _selectedComponents.Count > 0;
-
-    // Undo/Redo
-    public bool CanUndo => _commandManager.CanUndo;
-    public bool CanRedo => _commandManager.CanRedo;
-    public void Undo() => _commandManager.Undo();
-    public void Redo() => _commandManager.Redo();
 
     public bool Simulating
     {
@@ -214,7 +204,9 @@ public partial class Simulation : ObservableObject
         }
     }
 
-    // Terminal Snapping
+    // -----------------------
+    // Wire drawing Helpers
+    // -----------------------
     public Terminal? FindClosestSnapTerminal(Point p)
     {
         Terminal? closestTerminal = null;
@@ -500,25 +492,25 @@ public partial class Simulation : ObservableObject
         return false;
     }
     
-    private bool IsWireInMovedWires(Wire wire, List<Component> MovedWires)
-    {
-        foreach (var movedWire in MovedWires)
-        {
-            if (movedWire == wire) return true;
-        }
-        return false;
-    }
+    // private bool IsWireInMovedWires(Wire wire, List<Component> MovedWires)
+    // {
+    //     foreach (var movedWire in MovedWires)
+    //     {
+    //         if (movedWire == wire) return true;
+    //     }
+    //     return false;
+    // }
 
-    Point SnapToGrid(Point pt)
-    {
-        double snapX = (int)Math.Round(Math.Round(pt.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
-        double snapY = (int)Math.Round(Math.Round(pt.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
-        return new Point(snapX, snapY);
-    }
+    // Point SnapToGrid(Point pt)
+    // {
+    //     double snapX = (int)Math.Round(Math.Round(pt.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
+    //     double snapY = (int)Math.Round(Math.Round(pt.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing);
+    //     return new Point(snapX, snapY);
+    // }
 
-    // _______________________________________________
-    // ____________ Pointer/key handling _____________
-    // _______________________________________________
+    // -------------------------
+    // Handling Mouse Actions
+    // -------------------------
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
