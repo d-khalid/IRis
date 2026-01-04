@@ -31,7 +31,6 @@ public partial class Simulation : ObservableObject
     [ObservableProperty] private Point _currentMousePos = new Point(0, 0);
 
     // Selection and interaction managers
-    private readonly SelectionManager _selectionManager;
     private readonly PreviewManager _previewManager;
     private readonly ClipboardManager _clipboardManager;
     private readonly GridManager _gridManager;
@@ -49,7 +48,6 @@ public partial class Simulation : ObservableObject
     // Public access for Managers
     public CommandManager CommandManager => _commandManager;
     public PreviewManager PreviewManager => _previewManager;
-    public SelectionManager SelectionManager => _selectionManager;
 
     // Public access for Components-related
     public List<Component> SelectedComponents => _selectedComponents;
@@ -108,7 +106,6 @@ public partial class Simulation : ObservableObject
         _movedWires = [];
 
         // Initialize managers
-        _selectionManager = new SelectionManager();
         _previewManager = new PreviewManager();
         _clipboardManager = new ClipboardManager();
         _gridManager = new GridManager();
@@ -122,7 +119,7 @@ public partial class Simulation : ObservableObject
             _simulating = value;
             if (_simulating)
             {
-                _selectionManager.UnselectAll(SelectedComponents);
+                Selection_UnselectAll();
                 _previewManager.PreviewComponent = null;
                 _previewManager.PreviewCompType = "NULL";
                 _updateTimer!.Start();
@@ -296,17 +293,13 @@ public partial class Simulation : ObservableObject
                 }
             }
         // Selection handling through selection manager
-        _selectionManager.OnPointerPressed(sender, e, _selectedComponents);
-        _selectionManager.HandleStart(Canvas, _selectedComponents, CurrentMousePos);
+        Selection_OnPointerPressed(e);
+        Selection_HandleStart(CurrentMousePos);
     }
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        // Handle preview manager drag completion first
-        _selectionManager.OnPointerReleased(sender, e, _commandManager);
-
-        // Then handle selection manager
-        _selectionManager.HandleEnd(Canvas, _commandManager);
+        Selection_HandleEnd(_commandManager);
     }
     
     private void OnPointerMoved(object? sender, PointerEventArgs e)
@@ -319,8 +312,7 @@ public partial class Simulation : ObservableObject
             return;
 
         // Pass the selectedComponents reference and grid functions
-        _selectionManager.HandleUpdate(Canvas, _selectedComponents, CurrentMousePos, _components, this,
-            _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
+        Selection_HandleUpdate(CurrentMousePos, _gridManager.SnapToGridEnabled, _gridManager.SnapToGrid);
     }
 
     private void OnPointerWheel(object? sender, PointerWheelEventArgs e)
