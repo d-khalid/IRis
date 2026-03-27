@@ -1,9 +1,7 @@
 // ImageProcessingWindow.axaml.cs
 
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using IRis.ViewModels;
 
 namespace IRis.Views;
 

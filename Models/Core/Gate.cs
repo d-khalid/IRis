@@ -1,70 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Avalonia;
-using Avalonia.Input;
 using Avalonia.Media;
 using IRis.Models.Components;
-using Avalonia.Threading;
-using System.Linq;
+using System;
 
 namespace IRis.Models.Core;
 
 
 // Contains the position and truth value of a connection point
-public class Terminal
-{
-    public Point Position { get; }
-    
-    // Change from single Wire to List of Wires
-    public List<Wire> Wires { get; set; } = new List<Wire>();
-    
-    // Keep this for backward compatibility if needed
-    public Wire? Wire 
-    { 
-        get => Wires.FirstOrDefault(); 
-        set 
-        { 
-            if (value != null && !Wires.Contains(value))
-            {
-                Wires.Add(value);
-            }
-        } 
-    }
-
-    public Terminal(Point position)
-    {
-        Position = position;
-    }
-    
-    public Terminal(Point position, Wire wire) : this(position)
-    {
-        if (wire != null)
-            Wires.Add(wire);
-    }
-    
-    // Add a wire to this terminal
-    public void AddWire(Wire wire)
-    {
-        if (wire != null && !Wires.Contains(wire))
-        {
-            Wires.Add(wire);
-        }
-    }
-    
-    // Remove a wire from this terminal
-    public void RemoveWire(Wire wire)
-    {
-        Wires.Remove(wire);
-    }
-    
-    
-}
 
 // Has some gate specific things
-public abstract class Gate : Component, IOutputProvider
+public abstract class Gate : CircuitComponent, IOutputProvider
 {
-    
+
 
     // Uses default values if none are given
     public Gate(int numInputs, double width = ComponentDefaults.DefaultWidth,
@@ -85,41 +32,41 @@ public abstract class Gate : Component, IOutputProvider
     }
 
     public abstract void ComputeOutput();
-    
-    
+
+
     // Implement ICloneable for copies
     public override object Clone()
     {
         // Create new instance based on concrete type
         Gate clone = this switch
         {
-            AndGate _ => new AndGate(this.InputLineCount),
-            OrGate _ => new OrGate(this.InputLineCount),
+            AndGate _ => new AndGate(InputLineCount),
+            OrGate _ => new OrGate(InputLineCount),
             NotGate _ => new NotGate(),  // Special constructor
-            NandGate _ => new NandGate(this.InputLineCount),
-            NorGate _ => new NorGate(this.InputLineCount),
-            XorGate _ => new XorGate(this.InputLineCount),
-            XnorGate _ => new XnorGate(this.InputLineCount),
-            _ => throw new NotSupportedException($"Unsupported gate type: {this.GetType().Name}")
+            NandGate _ => new NandGate(InputLineCount),
+            NorGate _ => new NorGate(InputLineCount),
+            XorGate _ => new XorGate(InputLineCount),
+            XnorGate _ => new XnorGate(InputLineCount),
+            _ => throw new NotSupportedException($"Unsupported gate type: {GetType().Name}")
         };
 
         // Copy all base properties
-        clone.Width = this.Width;
-        clone.Height = this.Height;
-        clone.Rotation = this.Rotation;
-        clone.IsSelected = this.IsSelected;
+        clone.Width = Width;
+        clone.Height = Height;
+        clone.Rotation = Rotation;
+        clone.IsSelected = IsSelected;
 
         // Copy terminal values (positions are set in constructor)
-        for (int i = 0; i < this.InputLineCount; i++)
+        for (int i = 0; i < InputLineCount; i++)
         {
             clone.Terminals![i] = new Terminal(
                 clone.Terminals[i].Position,  // Use new position
-                this.Terminals![i].Wire!      // Copy original value
+                Terminals![i].Wire!      // Copy original value
             );
         }
         clone.Terminals![^1] = new Terminal(
             clone.Terminals[^1].Position,
-            this.Terminals![^1].Wire!
+            Terminals![^1].Wire!
         );
 
         // Reset visual state
@@ -132,16 +79,16 @@ public abstract class Gate : Component, IOutputProvider
     // Draws a translucent box around the gate
     public override void DrawSelection(DrawingContext ctx)
     {
-        double expandX = ComponentDefaults.TerminalWireLength + ComponentDefaults.TerminalRadius ;
-        double expandY = ComponentDefaults.TerminalRadius ;
+        double expandX = ComponentDefaults.TerminalWireLength + ComponentDefaults.TerminalRadius;
+        double expandY = ComponentDefaults.TerminalRadius;
         // Subtle fill
         ctx.DrawRectangle(
-            ComponentDefaults.SelectionBrush, 
-            ComponentDefaults.SelectionPen, 
+            ComponentDefaults.SelectionBrush,
+            ComponentDefaults.SelectionPen,
             new Rect(
                 -expandX,
                -expandY,
-                Bounds.Width + 2 * expandX ,
+                Bounds.Width + 2 * expandX,
                 Bounds.Height + 2 * expandY)
             );
     }
@@ -168,7 +115,7 @@ public abstract class Gate : Component, IOutputProvider
         }
 
         // Output terminal
-        double outputX = Width + ComponentDefaults.TerminalWireLength -5;   // WARNING: this is a Patch
+        double outputX = Width + ComponentDefaults.TerminalWireLength - 5;   // WARNING: this is a Patch
         if (notMode) outputX += ComponentDefaults.BubbleRadius * 2;
 
         var outputPos = SnapToGrid(new Point(outputX, Height / 2));
@@ -180,26 +127,26 @@ public abstract class Gate : Component, IOutputProvider
     // notMode: a bubble drawn with the output terminal
     protected void DrawTerminals(DrawingContext ctx)
     {
-       
+
 
         // Input lines extend into the gate and covered up by the fill color
         for (int i = 0; i < InputLineCount; i++)
         {
             if (Terminals![i] == null) continue;
             ctx.DrawLine(ComponentDefaults.WirePen, Terminals[i].Position, new Point(Width / ComponentDefaults.OrArcFactor, Terminals[i].Position.Y));
-            ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
+            ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
                 Terminals[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 
         }
         // For Terminals[^1]
         // SUSPEND: I STOPPED HERE
-     
+
         ctx.DrawLine(ComponentDefaults.WirePen, Terminals![^1].Position,
             new Point(Terminals[^1].Position.X - ComponentDefaults.TerminalWireLength, Terminals[^1].Position.Y));
-        ctx.DrawEllipse(ComponentDefaults.TerminalBrush , null, 
+        ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
             Terminals[^1].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
     }
-    
+
     // Methods for drawing the body of AND and OR
     // xorMode: Adds an extra arc
     protected void DrawOr(DrawingContext ctx, bool xorMode = false)
@@ -216,7 +163,7 @@ public abstract class Gate : Component, IOutputProvider
         figure.Segments!.Add(new ArcSegment
         {
             Point = new Point(0, Height),
-            Size = new Size(Width / ComponentDefaults.OrArcFactor, Height /2),
+            Size = new Size(Width / ComponentDefaults.OrArcFactor, Height / 2),
             SweepDirection = SweepDirection.Clockwise,
             IsLargeArc = false
         });
@@ -225,7 +172,7 @@ public abstract class Gate : Component, IOutputProvider
         figure.Segments.Add(new ArcSegment
         {
             Point = new Point(Width, Height * 0.5),
-            Size = new Size(Width , Height /2),
+            Size = new Size(Width, Height / 2),
             SweepDirection = SweepDirection.CounterClockwise,
             IsLargeArc = false
         });
@@ -234,16 +181,16 @@ public abstract class Gate : Component, IOutputProvider
         figure.Segments.Add(new ArcSegment
         {
             Point = new Point(0, 0),
-            Size = new Size(Width , Height /2),
+            Size = new Size(Width, Height / 2),
             SweepDirection = SweepDirection.CounterClockwise,
             IsLargeArc = false
         });
 
         gatePath.Figures!.Add(figure);
-        
+
         // 2. Draw the complete gate
-        ctx.DrawGeometry(ComponentDefaults.GateFillBrush, ComponentDefaults.GatePen, gatePath);  
-        
+        ctx.DrawGeometry(ComponentDefaults.GateFillBrush, ComponentDefaults.GatePen, gatePath);
+
         // Draw the XOR arc, if in xorMode
         if (xorMode)
         {
@@ -252,19 +199,19 @@ public abstract class Gate : Component, IOutputProvider
             {
                 StartPoint = new Point(-ComponentDefaults.TerminalWireLength / ComponentDefaults.XorArcDistFactor, Height * 0.02),
                 IsClosed = false
-                
+
             };
 
             arcFigure.Segments!.Add(new ArcSegment
             {
                 Point = new Point(-ComponentDefaults.TerminalWireLength / ComponentDefaults.XorArcDistFactor, Height * 0.98),
-                Size = new Size(Width / ComponentDefaults.OrArcFactor, Height /2),
+                Size = new Size(Width / ComponentDefaults.OrArcFactor, Height / 2),
                 SweepDirection = SweepDirection.Clockwise,
                 IsLargeArc = false
             });
-            
+
             xorArc.Figures!.Add(arcFigure);
-            
+
             ctx.DrawGeometry(null, ComponentDefaults.GatePen, xorArc);
         }
     }
@@ -301,7 +248,7 @@ public abstract class Gate : Component, IOutputProvider
         figure.Segments.Add(new LineSegment { Point = new Point(0, 0) });
 
         gatePath.Figures!.Add(figure);
-        
+
         // 2. Draw the complete gate
         ctx.DrawGeometry(ComponentDefaults.GateFillBrush, ComponentDefaults.GatePen, gatePath);
 

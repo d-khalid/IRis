@@ -1,37 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Rendering;
 using IRis.Models.Components;
+using System;
+using System.Collections.Generic;
 
 namespace IRis.Models.Core;
 
-public abstract class Component : Control, ICustomHitTest
+public abstract class CircuitComponent : Component
 {
-    
-    private bool _isSelected = false;
     private double _rotation = 0;
 
-    protected RotateTransform RotateTransform;
-    
-    // Last one is output
-    public Terminal[]? Terminals = null;
-    
     // Most components won't use all 3
     public int InputLineCount { get; protected set; } = 0;
     public int SelectionLineCount { get; protected set; } = 0;
     public int OutputLineCount { get; protected set; } = 0;
-    
+
     // Used by Latches/Flip-Flops
     public Dictionary<string, LogicState> StoredStates { get; set; } = new();
-    
-    
-    
 
     public double Rotation
     {
@@ -39,9 +26,36 @@ public abstract class Component : Control, ICustomHitTest
         set
         {
             _rotation = value;
-            RotateTransform = new RotateTransform(value, Width/2, Height/2);
+            RotateTransform = new RotateTransform(value, Width / 2, Height / 2);
             InvalidateVisual();
         }
+    }
+
+    public CircuitComponent(double width, double height)
+    {
+        Width = width;
+        Height = height;
+
+        RotateTransform = new RotateTransform(_rotation, Width, Height);
+    }
+
+    public virtual void AddTerminalPoints(bool notMode = false)
+    {
+
+    }
+}
+
+
+public abstract class Component : Control, ICustomHitTest
+{
+    // Last one is output
+    public Terminal[]? Terminals = null;
+    protected RotateTransform RotateTransform;
+    private bool _isSelected = false;
+
+    protected Component()
+    {
+        RotateTransform = new RotateTransform(0, 0, 0);
     }
 
     public bool IsSelected
@@ -50,19 +64,8 @@ public abstract class Component : Control, ICustomHitTest
         set
         {
             _isSelected = value;
-            InvalidateVisual(); 
+            InvalidateVisual();
         }
-    }
-    public Component(double width , double height)
-    {
-        Width = width;
-        Height = height;
-        
-        RotateTransform = new RotateTransform(_rotation, Width, Height);
-        
-        //Rotation = 100;
-        
-        
     }
 
     // Implement ICloneable for copies
@@ -74,15 +77,10 @@ public abstract class Component : Control, ICustomHitTest
 
     // Override for wires
     public virtual bool HitTest(Point point)
-    {   
-        point = RotateTransform.Value.Transform(point);
-        
-        return new Rect(0,0,Width,Height).Contains(point);
-    }
-
-    public virtual void AddTerminalPoints(bool notMode = false)
     {
-        
+        point = RotateTransform.Value.Transform(point);
+
+        return new Rect(0, 0, Width, Height).Contains(point);
     }
 
     public override void Render(DrawingContext context)
@@ -108,22 +106,27 @@ public abstract class Component : Control, ICustomHitTest
                 DrawSelection(context);
 
             }
+
             base.Render(context);
         }
     }
+
     // Can be overriden for custom implementations
     public virtual void Draw(DrawingContext ctx)
     {
-      
+
     }
 
     public virtual void DrawSelection(DrawingContext ctx)
     {
-        
+
     }
-    
+}
+public static class ComponentFactory
+{
+
     // A method for making components by type
-    public static Component Create(string componentType, Simulation simulation, int numInputs=2)
+    public static Component Create(string componentType, Simulation simulation, int numInputs = 2)
     {
         switch (componentType)
         {
@@ -167,13 +170,9 @@ public abstract class Component : Control, ICustomHitTest
                     simulation.CustomComponent.OutputCount, simulation.CustomComponent.Formulas);
             case "WIRE":
                 return new Wire();
-            
+
             default:
-                return null!; // TODO: DANGEROUS, THIS IS A FUCKING NULLPO WAITING TO HAPPEN
+                throw new ArgumentException($"Unknown component type: {componentType}");
         }
     }
-
-    
-    
-  
 }

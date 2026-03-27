@@ -1,25 +1,24 @@
 
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
-using IRis.Models;
 using IRis.Services;
 using IRis.ViewModels;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 public class ImageProcessingWindowViewModel : ViewModelBase
 {
-    IAiImageAnalysisService _aiImageAnalysisService = new AiImageAnalysisService(); 
-    
+    IAiImageAnalysisService _aiImageAnalysisService = new AiImageAnalysisService();
+
     public event Action<string>? XmlGenerated;
 
-    
+
     private bool _hasImage;
-    public bool HasImage 
+    public bool HasImage
     {
         get => _hasImage;
         set => SetProperty(ref _hasImage, value);
@@ -29,7 +28,7 @@ public class ImageProcessingWindowViewModel : ViewModelBase
     public Bitmap? SelectedImage
     {
         get => _selectedImage;
-        set 
+        set
         {
             if (SetProperty(ref _selectedImage, value))
             {
@@ -37,24 +36,24 @@ public class ImageProcessingWindowViewModel : ViewModelBase
             }
         }
     }
-    
+
     private string? _filePath;
     public string? FilePath
     {
         get => _filePath;
         set => SetProperty(ref _filePath, value);
     }
-    
+
 
     // Commands
     public ICommand SelectImageCommand { get; }
     public ICommand GenerateCommand { get; }
-    
+
     private readonly Window _hostWindow;
 
     public ImageProcessingWindowViewModel(Window hostWindow)
     {
-       _hostWindow = hostWindow;
+        _hostWindow = hostWindow;
         SelectImageCommand = new RelayCommand(SelectImage);
         GenerateCommand = new AsyncRelayCommand(GenerateCircuit);
     }
@@ -79,27 +78,27 @@ public class ImageProcessingWindowViewModel : ViewModelBase
         });
 
         if (files.Count == 0) return;
-        
+
         var file = files[0];
-        
+
         FilePath = file.Path.AbsolutePath.Replace("%20", " ");
-        
+
         await using var stream = await file.OpenReadAsync();
         SelectedImage = new Bitmap(stream);
-        
+
     }
 
     private async Task GenerateCircuit()
     {
         if (SelectedImage == null || FilePath == null) return;
-        
+
         try
         {
             // Convert image to byte array
             await using var memoryStream = new MemoryStream();
             SelectedImage.Save(memoryStream);
             byte[] imageBytes = memoryStream.ToArray();
-            
+
             // Send to server
             string? xmlResponse = await _aiImageAnalysisService.GetSerializedCircuit(FilePath);
 
@@ -117,9 +116,9 @@ public class ImageProcessingWindowViewModel : ViewModelBase
 
                 return;
             }
-            
+
             XmlGenerated?.Invoke(xmlResponse);
-            
+
             _hostWindow.Close();
         }
         catch (Exception ex)

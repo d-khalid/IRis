@@ -1,11 +1,10 @@
+using Azure.AI.OpenAI;
+using OpenAI.Chat;
 using System;
 using System.ClientModel;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Azure.AI.OpenAI;
-using OpenAI.Chat;
 
 namespace IRis.Services;
 
@@ -14,12 +13,12 @@ public class GptAiAnalysisService : IAiPromptAnalysisService
     public async Task<string> GetSerializedCircuit(string prompt, string systemPromptPath)
     {
         string systemPrompt;
-        
+
         using (StreamReader reader = new StreamReader(systemPromptPath))
         {
             systemPrompt = await reader.ReadToEndAsync();
         }
-        
+
         // Get the API keys from a file
         string json = await File.ReadAllTextAsync("config.json");
         var config = JsonSerializer.Deserialize<OpenAiConfig>(json);
@@ -33,8 +32,8 @@ public class GptAiAnalysisService : IAiPromptAnalysisService
 
 
         ChatClient chatClient = openAIClient.GetChatClient("gpt-4.1");
-        
-  
+
+
         ChatCompletion completion = chatClient.CompleteChat(
         [
             new SystemChatMessage(systemPrompt),
@@ -42,7 +41,7 @@ public class GptAiAnalysisService : IAiPromptAnalysisService
         ]);
 
         //Console.WriteLine($"{completion.Role}: {completion.Content[0].Text}");
-        
+
         return completion.Content[0].Text;
     }
 }

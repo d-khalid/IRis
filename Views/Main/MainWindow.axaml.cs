@@ -8,7 +8,7 @@ public partial class MainWindow : Window
 {
     // This parameter-less constructor is not run from app.axaml.cs
     // Otherwise it could cause errors
-    public MainWindow() : this(new Simulation()) {} // fallback for preview/designer/runtime
+    public MainWindow() : this(new Simulation()) { } // fallback for preview/designer/runtime
 
     public MainWindow(Simulation simulation)
     {

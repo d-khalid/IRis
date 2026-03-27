@@ -1,12 +1,11 @@
-using System;
-using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
+using System;
 
 namespace IRis.Models.Components;
 
-public class Encoder : Component, IOutputProvider
+public class Encoder : CircuitComponent, IOutputProvider
 {
 
     public Encoder(int selectionLineCount,
@@ -17,8 +16,8 @@ public class Encoder : Component, IOutputProvider
         SelectionLineCount = selectionLineCount;
         InputLineCount = (int)Math.Pow(2, SelectionLineCount);
 
-        Width  = (SelectionLineCount + 1) * ComponentDefaults.TerminalSpacing;
-        Height = (InputLineCount + 1)    * ComponentDefaults.TerminalSpacing + ComponentDefaults.GridSpacing;
+        Width = (SelectionLineCount + 1) * ComponentDefaults.TerminalSpacing;
+        Height = (InputLineCount + 1) * ComponentDefaults.TerminalSpacing + ComponentDefaults.GridSpacing;
 
         // Inputs + encoded outputs
         Terminals = new Terminal[InputLineCount + SelectionLineCount];
@@ -122,14 +121,8 @@ public class Encoder : Component, IOutputProvider
             ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
                 Terminals[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 
-            var text = new FormattedText(
-                $"{inputLabel}{i}",
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var text = $"{inputLabel}{i}".CreateFormattedText();
+
             ctx.DrawText(text, new Point(4.5, Terminals[i].Position.Y - 6));
         }
 
@@ -144,14 +137,8 @@ public class Encoder : Component, IOutputProvider
             ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
                 Terminals[outIdx].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 
-            var text = new FormattedText(
-                $"{outputLabel}{SelectionLineCount - j - 1}", // MSB left, LSB right
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var text = $"{outputLabel}{SelectionLineCount - j - 1}".CreateFormattedText();
+
             ctx.DrawText(text, new Point(Width - 18, Terminals[outIdx].Position.Y - 6));
         }
     }

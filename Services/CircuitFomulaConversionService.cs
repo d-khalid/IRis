@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace IRis.Services;
+
 public class CircuitFormulaConversionService
 {
     public class CircuitComponent
@@ -32,14 +33,14 @@ public class CircuitFormulaConversionService
     public static List<CircuitFormula> ConvertXmlContentToFormulas(string xmlContent)
     {
         XDocument doc = XDocument.Parse(xmlContent);
-        
+
         var components = new Dictionary<string, CircuitComponent>();
         var wireToOutputComponent = new Dictionary<string, string>();
         var wireToInputComponents = new Dictionary<string, List<string>>();
         var inputToggleNames = new Dictionary<string, string>();
         var allWireIds = new HashSet<string>();
         var connectedWireIds = new HashSet<string>();
-        
+
         // First pass: collect all wire IDs and identify connected wires
         foreach (var componentEl in doc.Descendants("Component"))
         {
@@ -50,11 +51,11 @@ public class CircuitFormulaConversionService
                 foreach (var wireId in wireIds)
                 {
                     allWireIds.Add(wireId);
-                    
+
                     // Count how many terminals this wire connects to
                     int connectionCount = doc.Descendants("Terminal")
                         .Count(t => t.Descendants("guid").Any(g => g.Value == wireId));
-                    
+
                     // A wire is considered connected if it connects to more than one terminal
                     if (connectionCount > 1)
                     {
@@ -63,23 +64,23 @@ public class CircuitFormulaConversionService
                 }
             }
         }
-        
+
         // Parse components, but only process those connected to valid wires
         foreach (var componentEl in doc.Descendants("Component"))
         {
             string type = componentEl.Attribute("Type")?.Value!;
             string componentId = Guid.NewGuid().ToString(); // Generate unique ID for component
-            
+
             var component = new CircuitComponent
             {
                 Id = componentId,
                 Type = type
             };
-            
+
             // Get terminals and connected wires
             var terminals = componentEl.Descendants("Terminal").ToList();
             bool hasValidConnections = false;
-            
+
             if (type == "LogicToggle")
             {
                 // For input toggles, the wire is an output
@@ -88,7 +89,7 @@ public class CircuitFormulaConversionService
                 {
                     component.OutputWire = wireIds.First();
                     wireToOutputComponent[wireIds.First()] = componentId;
-                    
+
                     // Create a meaningful name for this input
                     string inputName = $"Input_{inputToggleNames.Count + 1}";
                     inputToggleNames[componentId] = inputName;
@@ -126,7 +127,7 @@ public class CircuitFormulaConversionService
                         }
                     }
                 }
-                
+
                 // Last terminal is output
                 if (terminals.Count > 0)
                 {
@@ -139,45 +140,45 @@ public class CircuitFormulaConversionService
                     }
                 }
             }
-            
+
             // Only add component if it has valid connections
             if (hasValidConnections)
             {
                 components[componentId] = component;
             }
         }
-        
+
         // Generate formulas for each output probe
         var formulas = new List<CircuitFormula>();
         var outputProbes = components.Values.Where(c => c.Type == "LogicProbe").ToList();
-        
+
         for (int i = 0; i < outputProbes.Count; i++)
         {
             var probe = outputProbes[i];
             string outputName = $"Output_{i + 1}";
-            
+
             // Add safety check here
             if (!probe.InputWires.Any())
             {
                 Console.WriteLine($"Warning: Output probe {i + 1} has no input wires connected.");
                 continue; // Skip this probe or provide a default formula
             }
-            
+
             string formula = BuildFormula(probe.InputWires.First(), components, wireToOutputComponent, inputToggleNames);
-            
+
             // Simplify the formula to remove redundant operations
             formula = SimplifyFormula(formula);
-            
+
             var circuitFormula = new CircuitFormula
             {
                 OutputName = outputName,
                 Formula = formula,
                 InputVariables = ExtractInputVariables(formula)
             };
-            
+
             formulas.Add(circuitFormula);
         }
-        
+
         return formulas;
     }
 
@@ -244,13 +245,13 @@ public class CircuitFormulaConversionService
         {
             int lastOpen = expression.LastIndexOf('(');
             int firstClose = expression.IndexOf(')', lastOpen);
-            
+
             if (firstClose == -1)
                 throw new ArgumentException("Mismatched parentheses in expression");
 
             string subExpression = expression.Substring(lastOpen + 1, firstClose - lastOpen - 1);
             bool subResult = EvaluateBooleanExpression(subExpression);
-            
+
             expression = expression.Substring(0, lastOpen) + (subResult ? "1" : "0") + expression.Substring(firstClose + 1);
         }
 
@@ -263,7 +264,7 @@ public class CircuitFormulaConversionService
 
             char nextChar = expression[notIndex + 1];
             bool valueToNegate = nextChar == '1';
-            
+
             expression = expression.Substring(0, notIndex) + (valueToNegate ? "0" : "1") + expression.Substring(notIndex + 2);
         }
 
@@ -326,96 +327,96 @@ public class CircuitFormulaConversionService
 
         string simplified = formula;
         string previous;
-        
+
         // Keep simplifying until no more changes occur
         do
         {
             previous = simplified;
-            
+
             // Remove operations with 0 that result in known values
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(([^()]+)&0\)", "0"); // X & 0 = 0
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(0&([^()]+)\)", "0"); // 0 & X = 0
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(([^()]+)\|0\)", "$1"); // X | 0 = X
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(0\|([^()]+)\)", "$1"); // 0 | X = X
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(([^()]+)\^0\)", "$1"); // X ^ 0 = X
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(0\^([^()]+)\)", "$1"); // 0 ^ X = X
-            
+            simplified = Regex.Replace(simplified, @"\(([^()]+)&0\)", "0"); // X & 0 = 0
+            simplified = Regex.Replace(simplified, @"\(0&([^()]+)\)", "0"); // 0 & X = 0
+            simplified = Regex.Replace(simplified, @"\(([^()]+)\|0\)", "$1"); // X | 0 = X
+            simplified = Regex.Replace(simplified, @"\(0\|([^()]+)\)", "$1"); // 0 | X = X
+            simplified = Regex.Replace(simplified, @"\(([^()]+)\^0\)", "$1"); // X ^ 0 = X
+            simplified = Regex.Replace(simplified, @"\(0\^([^()]+)\)", "$1"); // 0 ^ X = X
+
             // Remove operations with 1 that result in known values
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(([^()]+)&1\)", "$1"); // X & 1 = X
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(1&([^()]+)\)", "$1"); // 1 & X = X
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(([^()]+)\|1\)", "1"); // X | 1 = 1
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(1\|([^()]+)\)", "1"); // 1 | X = 1
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(([^()]+)\^1\)", "(!$1)"); // X ^ 1 = !X
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(1\^([^()]+)\)", "(!$1)"); // 1 ^ X = !X
-            
+            simplified = Regex.Replace(simplified, @"\(([^()]+)&1\)", "$1"); // X & 1 = X
+            simplified = Regex.Replace(simplified, @"\(1&([^()]+)\)", "$1"); // 1 & X = X
+            simplified = Regex.Replace(simplified, @"\(([^()]+)\|1\)", "1"); // X | 1 = 1
+            simplified = Regex.Replace(simplified, @"\(1\|([^()]+)\)", "1"); // 1 | X = 1
+            simplified = Regex.Replace(simplified, @"\(([^()]+)\^1\)", "(!$1)"); // X ^ 1 = !X
+            simplified = Regex.Replace(simplified, @"\(1\^([^()]+)\)", "(!$1)"); // 1 ^ X = !X
+
             // Simplify double negation
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"!\(!([^()]+)\)", "$1"); // !!X = X
-            
+            simplified = Regex.Replace(simplified, @"!\(!([^()]+)\)", "$1"); // !!X = X
+
             // Remove unnecessary parentheses around single terms
-            simplified = System.Text.RegularExpressions.Regex.Replace(simplified, @"\(([^()&|^!]+)\)", "$1");
-            
+            simplified = Regex.Replace(simplified, @"\(([^()&|^!]+)\)", "$1");
+
         } while (simplified != previous && !string.IsNullOrEmpty(simplified));
-        
+
         return string.IsNullOrEmpty(simplified) ? "0" : simplified;
     }
-    
-    private static string BuildFormula(string wireId, Dictionary<string, CircuitComponent> components, 
+
+    private static string BuildFormula(string wireId, Dictionary<string, CircuitComponent> components,
         Dictionary<string, string> wireToOutputComponent, Dictionary<string, string> inputToggleNames)
     {
         if (!wireToOutputComponent.ContainsKey(wireId))
             return "0"; // Wire not connected to any output
-            
+
         string componentId = wireToOutputComponent[wireId];
         var component = components[componentId];
-        
+
         switch (component.Type)
         {
             case "LogicToggle":
                 return inputToggleNames[componentId];
-                
+
             case "XorGate":
                 // XOR: A ^ B
                 var xorInputs = component.InputWires
                     .Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames))
                     .Where(f => f != "0") // Filter out unconnected inputs
                     .ToList();
-                
+
                 if (xorInputs.Count == 0) return "0";
                 if (xorInputs.Count == 1) return xorInputs[0];
-                
+
                 var xorResult = xorInputs[0];
                 for (int i = 1; i < xorInputs.Count; i++)
                 {
                     xorResult = $"({xorResult}^{xorInputs[i]})";
                 }
                 return xorResult;
-                
+
             case "AndGate":
                 var andInputs = component.InputWires
                     .Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames))
                     .Where(f => f != "0") // Filter out unconnected inputs
                     .ToList();
-                
+
                 if (andInputs.Count == 0) return "0";
                 if (andInputs.Count == 1) return andInputs[0];
-                
+
                 return $"({string.Join("&", andInputs)})";
-                
+
             case "OrGate":
                 var orInputs = component.InputWires
                     .Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames))
                     .Where(f => f != "0") // Filter out unconnected inputs
                     .ToList();
-                
+
                 if (orInputs.Count == 0) return "0";
                 if (orInputs.Count == 1) return orInputs[0];
-                
+
                 return $"({string.Join("|", orInputs)})";
 
             case "NotGate":
                 if (!component.InputWires.Any())
                     return "1"; // NOT gate with no input defaults to 1 (NOT 0 = 1)
-                    
+
                 var notInput = BuildFormula(component.InputWires.First(), components, wireToOutputComponent, inputToggleNames);
                 if (notInput == "0") return "1";
                 return $"(!{notInput})";
@@ -426,10 +427,10 @@ public class CircuitFormulaConversionService
                     .Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames))
                     .Where(f => f != "0") // Filter out unconnected inputs
                     .ToList();
-                
+
                 if (nandInputs.Count == 0) return "1"; // NAND with no inputs = !0 = 1
                 if (nandInputs.Count == 1) return $"(!{nandInputs[0]})";
-                
+
                 return $"!({string.Join("&", nandInputs)})";
 
             case "NorGate":
@@ -438,10 +439,10 @@ public class CircuitFormulaConversionService
                     .Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames))
                     .Where(f => f != "0") // Filter out unconnected inputs
                     .ToList();
-                
+
                 if (norInputs.Count == 0) return "1"; // NOR with no inputs = !0 = 1
                 if (norInputs.Count == 1) return $"(!{norInputs[0]})";
-                
+
                 return $"!({string.Join("|", norInputs)})";
 
             case "XnorGate":
@@ -450,27 +451,27 @@ public class CircuitFormulaConversionService
                     .Select(w => BuildFormula(w, components, wireToOutputComponent, inputToggleNames))
                     .Where(f => f != "0") // Filter out unconnected inputs
                     .ToList();
-                
+
                 if (xnorInputs.Count == 0) return "1"; // XNOR with no inputs = !0 = 1
                 if (xnorInputs.Count == 1) return $"(!{xnorInputs[0]})"; // XNOR of single input = NOT input
-                
+
                 var xnorResult = xnorInputs[0];
                 for (int i = 1; i < xnorInputs.Count; i++)
                 {
                     xnorResult = $"({xnorResult}^{xnorInputs[i]})";
                 }
                 return $"!({xnorResult})";
-                
+
             default:
                 return "Unknown";
         }
     }
-    
+
     private static List<string> ExtractInputVariables(string formula)
     {
         var inputs = new HashSet<string>();
         var tokens = formula.Split(new[] { ' ', '(', ')', '&', '|', '!', '^' }, StringSplitOptions.RemoveEmptyEntries);
-        
+
         foreach (var token in tokens)
         {
             if (token.StartsWith("Input_"))
@@ -478,7 +479,7 @@ public class CircuitFormulaConversionService
                 inputs.Add(token);
             }
         }
-        
+
         return inputs.OrderBy(x => x).ToList();
     }
 }

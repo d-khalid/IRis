@@ -1,12 +1,12 @@
 // Models/PreviewManager.cs
-using System;
-using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using IRis.Models.Commands;
 using IRis.Models.Components;
 using IRis.Models.Core;
-using IRis.Models.Commands;
+using System;
+using System.Collections.Generic;
 
 namespace IRis.Models;
 
@@ -19,7 +19,7 @@ public class PreviewManager
     {
         get => _previewCompType;
         set => _previewCompType = value;
-    } 
+    }
     public Component? PreviewComponent
     {
         get => _previewComponent;
@@ -40,7 +40,7 @@ public class PreviewManager
         // Create and add new component if value is provided
         if (!string.IsNullOrEmpty(value))
         {
-            _previewComponent = Component.Create(value, simulation);
+            _previewComponent = ComponentFactory.Create(value, simulation);
             if (_previewComponent != null)
             {
                 PositionPreviewComponent(mousePos);
@@ -75,7 +75,7 @@ public class PreviewManager
     public void HandleWireCommit(object? sender, PointerPressedEventArgs? e, Point CurrentMousePos, Simulation simulation)
     {   // Returns true if event is handled
         // Explicit type conversion to avoid exception
-        if (e == null) return; 
+        if (e == null) return;
         Wire wirePreview = (Wire)_previewComponent!;
         if (!wirePreview.IsValid) return;
 
@@ -97,7 +97,7 @@ public class PreviewManager
 
         var addPointCommand2 = new AddWirePointCommand(wirePreview, pointToAdd);
         simulation.CommandManager.ExecuteCommand(addPointCommand2);
-        
+
         // Commits the WIRE ON DOUBLE-CLICK, or RIGHT-CLICK
         if (wirePreview.Points.Count >= 2 && ((target != null && target != startingTerminal) ||
             e.ClickCount == 2))
@@ -121,14 +121,16 @@ public class PreviewManager
     public bool HandleComponentCommit(Canvas canvas, List<Component> components, Point mousePos, CommandManager commandManager, Simulation simulation)
     {
         if (string.IsNullOrEmpty(_previewCompType)) return true;
-        Component? component = Component.Create(_previewCompType, simulation);
-        if (component == null) return true;
+        var component = ComponentFactory.Create(_previewCompType, simulation);
 
         if (_previewComponent != null)
         {
-            component.Rotation = _previewComponent.Rotation;
+            if (component is CircuitComponent circuitComponent && _previewComponent is CircuitComponent previewComponent)
+            {
+                circuitComponent.Rotation = previewComponent.Rotation;
+            }
         }
-        
+
         Point position = new Point(
             Math.Round(mousePos.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing,
             Math.Round(mousePos.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing
@@ -276,7 +278,7 @@ public class PreviewManager
             wirePreview.Points[^1] = targetPoint;
         }
         // foreach (Point point in wirePreview.Points) Console.WriteLine(point);
-        
+
         wirePreview.InvalidateVisual();
         return true;
     }
@@ -288,7 +290,7 @@ public class PreviewManager
         return new Point(snapX, snapY);
     }
 
-    public void StartWireExtension(Canvas canvas, Point clickPoint, Wire existingWire,  Simulation simulation)
+    public void StartWireExtension(Canvas canvas, Point clickPoint, Wire existingWire, Simulation simulation)
     {
         // if (_previewComponent is Wire wire)
         // {
@@ -300,7 +302,7 @@ public class PreviewManager
         canvas.Children.Remove(_previewComponent!);
         _previewComponent = existingWire;
         Wire wirePreview = (Wire)_previewComponent!;
-        
+
         // Add a break point
         wirePreview.Points.Add(new Point(-1, -1));
         // Get the closest point on the line segment instead of using click point

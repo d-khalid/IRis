@@ -1,14 +1,14 @@
 // Models/Simulation.Selection.cs
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
+using IRis.Models.Commands;
 using IRis.Models.Components;
 using IRis.Models.Core;
-using IRis.Models.Commands;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IRis.Models;
 
@@ -376,9 +376,9 @@ public partial class Simulation
 
     private Point Selection_GetTerminalWorldPosition(Terminal terminal)
     {
-        Component? owner = null;
+        CircuitComponent? owner = null;
 
-        foreach (var component in _components)
+        foreach (var component in _components.OfType<CircuitComponent>())
         {
             if (component.Terminals?.Contains(terminal) == true)
             {

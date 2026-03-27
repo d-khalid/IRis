@@ -1,12 +1,11 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
-using System.Linq;
 using Avalonia.Markup.Xaml;
 using IRis.Models;
 using IRis.ViewModels;
 using IRis.Views;
+using System.Linq;
 
 namespace IRis;
 
@@ -22,13 +21,13 @@ public partial class App : Application
         // NOTE: IMPLEMENT A THEME SYSTEM
         // Set the default theme as 'Dark'
         // ThemeManager.ChangeTheme(Application.Current, "Dark");
-        
+
         // Create a CanvasService object and pass its reference 
         // to both MainWindow and MainWindowViewModel
         // This is the main service object for drawings and simulation
         Simulation simulation = new Simulation();
 
-    
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 

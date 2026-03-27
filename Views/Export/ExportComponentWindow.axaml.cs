@@ -9,7 +9,7 @@ namespace IRis.Views
         {
             InitializeComponent();
             DataContext = new ExportComponentWindowViewModel();
-            
+
             // Subscribe to view model events
             if (DataContext is ExportComponentWindowViewModel vm)
             {
@@ -21,7 +21,7 @@ namespace IRis.Views
         {
             InitializeComponent();
             DataContext = viewModel;
-            
+
             // Subscribe to view model events
             if (DataContext is ExportComponentWindowViewModel vm)
             {
@@ -41,7 +41,7 @@ namespace IRis.Views
             {
                 vm.RequestClose -= OnRequestClose;
             }
-            
+
             base.OnClosed(e);
         }
     }

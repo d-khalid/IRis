@@ -1,10 +1,10 @@
-using System.Linq;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
+using System.Linq;
 
 
-namespace  IRis.Models.Components;
+namespace IRis.Models.Components;
 
 
 public class NandGate : Gate
@@ -19,7 +19,7 @@ public class NandGate : Gate
         // 3. Draw terminals (lines + circles)
         DrawTerminals(ctx);
 
-        this.DrawAnd(ctx);
+        DrawAnd(ctx);
 
         // 3. Draw the bubble at the end
         ctx.DrawEllipse(
@@ -30,9 +30,9 @@ public class NandGate : Gate
             ComponentDefaults.BubbleRadius);
 
         base.Draw(ctx);
-        
+
     }
-    
+
     public override void ComputeOutput()
     {
         // For inputs: check if ANY input terminal has at least one wire
@@ -44,11 +44,11 @@ public class NandGate : Gate
         if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
 
         // For each input terminal, OR together all connected wire values
-        var inputValues = inputTerminals.Select(terminal => 
+        var inputValues = inputTerminals.Select(terminal =>
             terminal.Wires.Any(w => w.Value == LogicState.High)).ToList();
 
         // NAND logic: NOT(AND) - output is LOW only when ALL inputs are HIGH
-        LogicState outputValue = inputValues.All(value => value == true) ? LogicState.Low : LogicState.High;
+        LogicState outputValue = inputValues.All(value => value) ? LogicState.Low : LogicState.High;
 
         // Set output on ALL connected wires
         foreach (var wire in outputTerminal.Wires)
@@ -56,6 +56,6 @@ public class NandGate : Gate
             wire.Value = outputValue;
         }
     }
-    
-    
+
+
 }

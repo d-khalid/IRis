@@ -1,10 +1,10 @@
-using System.Linq;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
+using System.Linq;
 
 
-namespace  IRis.Models.Components;
+namespace IRis.Models.Components;
 
 
 public class XnorGate : Gate
@@ -20,7 +20,7 @@ public class XnorGate : Gate
         // 3. Draw terminals (input left, output right)
         DrawTerminals(ctx);
 
-        this.DrawOr(ctx, true);
+        DrawOr(ctx, true);
 
         // 3. Draw the bubble at the end
         ctx.DrawEllipse(
@@ -31,9 +31,9 @@ public class XnorGate : Gate
             ComponentDefaults.BubbleRadius);
 
         base.Draw(ctx);
-        
+
     }
-    
+
     public override void ComputeOutput()
     {
         // For inputs: check if ANY input terminal has at least one wire
@@ -45,11 +45,11 @@ public class XnorGate : Gate
         if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
 
         // For each input terminal, OR together all connected wire values
-        var inputValues = inputTerminals.Select(terminal => 
+        var inputValues = inputTerminals.Select(terminal =>
             terminal.Wires.Any(w => w.Value == LogicState.High)).ToList();
 
         // XNOR logic: output is HIGH when an even number of inputs are HIGH (inverted XOR)
-        int highInputCount = inputValues.Count(value => value == true);
+        int highInputCount = inputValues.Count(value => value);
         LogicState outputValue = (highInputCount % 2 != 0) ? LogicState.Low : LogicState.High;
 
         // Set output on ALL connected wires

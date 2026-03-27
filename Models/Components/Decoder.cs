@@ -1,14 +1,13 @@
-using System;
-using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
+using System;
 
 namespace IRis.Models.Components;
 
-public class Decoder : Component, IOutputProvider
+public class Decoder : CircuitComponent, IOutputProvider
 {
-  
+
     public Decoder(int selectionLineCount,
         double width = ComponentDefaults.DefaultMuxWidth,
         double height = ComponentDefaults.DefaultMuxHeight)
@@ -17,8 +16,8 @@ public class Decoder : Component, IOutputProvider
         SelectionLineCount = selectionLineCount;
         OutputLineCount = (int)Math.Pow(2, SelectionLineCount);
 
-        Width  = (SelectionLineCount + 1) * ComponentDefaults.TerminalSpacing;
-        Height = (OutputLineCount + 1)    * ComponentDefaults.TerminalSpacing + ComponentDefaults.GridSpacing;
+        Width = (SelectionLineCount + 1) * ComponentDefaults.TerminalSpacing;
+        Height = (OutputLineCount + 1) * ComponentDefaults.TerminalSpacing + ComponentDefaults.GridSpacing;
 
         // Selection inputs + data outputs
         Terminals = new Terminal[SelectionLineCount + OutputLineCount];
@@ -114,14 +113,8 @@ public class Decoder : Component, IOutputProvider
             ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
                 Terminals[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 
-            var text = new FormattedText(
-                $"{selectionLabel}{SelectionLineCount - i - 1}", // MSB first
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var text = $"{selectionLabel}{SelectionLineCount - i - 1}".CreateFormattedText();
+
             ctx.DrawText(text, new Point(4.5, Terminals[i].Position.Y - 6));
         }
 
@@ -135,14 +128,8 @@ public class Decoder : Component, IOutputProvider
             ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
                 Terminals[outIdx].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 
-            var text = new FormattedText(
-                $"{outputLabel}{k}",
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var text = $"{outputLabel}{k}".CreateFormattedText();
+
             ctx.DrawText(text, new Point(Width - 18, Terminals[outIdx].Position.Y - 6));
         }
     }

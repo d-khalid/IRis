@@ -5,12 +5,12 @@ namespace IRis.ViewModels;
 public class ComponentPropertiesViewModel : ViewModelBase
 {
     private readonly Simulation _simulation;
-    
+
     public ComponentPropertiesViewModel(Simulation simulation)
     {
         _simulation = simulation;
     }
-    
+
 
     // public string ComponentType
     // {

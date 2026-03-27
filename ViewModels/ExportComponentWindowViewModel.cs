@@ -1,8 +1,7 @@
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
 
 namespace IRis.ViewModels
 {

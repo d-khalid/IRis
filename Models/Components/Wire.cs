@@ -1,12 +1,9 @@
+using Avalonia;
+using Avalonia.Media;
+using IRis.Models.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Media;
 using Vector = Avalonia.Vector;
-using IRis.Models.Core;
 
 
 namespace IRis.Models.Components;
@@ -14,13 +11,13 @@ namespace IRis.Models.Components;
 // THIS WORKS, THEY GET DRAWN
 public class Wire : Component, ICloneable
 {
-    
-    
+
+
     // To identify wires in serialization
     public Guid Id { get; set; }
 
-    
-   // private Component? _lastSetter = null;
+
+    // private Component? _lastSetter = null;
 
     // This value is propagated to everything connected to this wire
     public bool IsCommitted { get; set; } = false;
@@ -32,28 +29,28 @@ public class Wire : Component, ICloneable
     public List<Point> Points { get; set; } = new List<Point>();
 
 
-    public Wire() : base(0, 0)
+    public Wire()
     {
         Id = Guid.NewGuid();
         IsCommitted = false;
     }
-    
-    
+
+
     public void AddPoint(Point point)
     {
         Points.Add(point);
         // Reset the visuals
-        this.InvalidateVisual();
+        InvalidateVisual();
     }
 
     public void PopPoint()
     {
-         Points.RemoveAt(Points.Count - 1);  // Removes last element
-         
-         // Reset the visuals
-         this.InvalidateVisual();
+        Points.RemoveAt(Points.Count - 1);  // Removes last element
+
+        // Reset the visuals
+        InvalidateVisual();
     }
-    
+
     public bool IsPointOnWire(Point point, double tolerance)
     {
         // Check if point is close to any line segment of the wire
@@ -69,23 +66,23 @@ public class Wire : Component, ICloneable
     {
         double dx = lineEnd.X - lineStart.X;
         double dy = lineEnd.Y - lineStart.Y;
-        
+
         // If line segment is actually a point
         if (dx == 0 && dy == 0)
             return Point.Distance(point, lineStart);
-        
+
         // Calculate the parameter t for the closest point on the line
         double t = ((point.X - lineStart.X) * dx + (point.Y - lineStart.Y) * dy) / (dx * dx + dy * dy);
-        
+
         // Clamp t to [0, 1] to stay within the line segment
         t = Math.Max(0, Math.Min(1, t));
-        
+
         // Find the closest point on the line segment
         Point closestPoint = new Point(
             lineStart.X + t * dx,
             lineStart.Y + t * dy
         );
-        
+
         return Point.Distance(point, closestPoint);
     }
 
@@ -110,19 +107,19 @@ public class Wire : Component, ICloneable
     private bool IsPointNearLineSegment(Point point, Point lineStart, Point lineEnd, double maxDistance)
     {
         // Vector from line start to end
-        
+
         Vector lineVector = lineEnd - lineStart;
         double lineLengthSquared = lineVector.SquaredLength;
-        
+
 
         // Project point onto the line segment
         Vector pointVector = point - lineStart;
         double t = Vector.Dot(pointVector, lineVector) / lineLengthSquared;
         t = Math.Max(0, Math.Min(1, t)); // Clamp to segment
-    
+
         // Find nearest point on segment
         Point nearestPoint = lineStart + t * lineVector;
-    
+
         // Check distance
         return (new Vector(point.X, point.Y) - nearestPoint).Length <= maxDistance;
     }
@@ -135,7 +132,7 @@ public class Wire : Component, ICloneable
         bool useGhostStyling = IsBeingEdited && !IsCommitted;
         var penToUse = useGhostStyling ? ComponentDefaults.GhostWirePen : ComponentDefaults.WirePen;
         if (!IsValid) penToUse = ComponentDefaults.InvalidWirePen;
-        
+
         if (Points.Count == 1)
         {
             var brushToUse = useGhostStyling ? ComponentDefaults.GhostTerminalBrush : ComponentDefaults.TerminalBrush;
@@ -164,7 +161,7 @@ public class Wire : Component, ICloneable
                     }
                     continue;
                 }
-                
+
                 // Start new figure or continue current one
                 if (!figureStarted)
                 {
@@ -184,12 +181,12 @@ public class Wire : Component, ICloneable
             }
         }
         ctx.DrawGeometry(null, penToUse, polyline);
-        
+
         for (int i = 0; i < Points.Count; i++)
         {
             // Draw first point, last point, extension point
             if (i == 0 || Points[i - 1] == new Point(-1, -1) ||
-                (i < Points.Count-1 && Points[i + 1] == new Point(-1, -1)) ||
+                (i < Points.Count - 1 && Points[i + 1] == new Point(-1, -1)) ||
                 i == Points.Count - 1)
             {
                 var brushToUse = useGhostStyling ? ComponentDefaults.GhostTerminalBrush : ComponentDefaults.TerminalBrush;
@@ -199,7 +196,7 @@ public class Wire : Component, ICloneable
             }
         }
     }
-    
+
     public override void DrawSelection(DrawingContext ctx)
     {
         if (Points.Count < 2) return;
@@ -217,11 +214,11 @@ public class Wire : Component, ICloneable
         {
             Point start = Points[i];
             Point end = Points[i + 1];
-            
+
             // Skip if either point is a break point
             if (start == new Point(-1, -1) || end == new Point(-1, -1))
                 continue;
-            
+
             // Calculate segment vector and perpendicular
             Vector segment = end - start;
             Vector normal = new Vector(-segment.Y, segment.X);
@@ -246,7 +243,7 @@ public class Wire : Component, ICloneable
         {
             if (point == new Point(-1, -1))
                 continue;
-                
+
             ctx.DrawEllipse(
                 ComponentDefaults.SelectionBrush,
                 ComponentDefaults.SelectionPen,
@@ -260,13 +257,13 @@ public class Wire : Component, ICloneable
     public override object Clone()
     {
         var clone = new Wire();
-        clone.Value = this.Value;
-        clone.Id = this.Id;
+        clone.Value = Value;
+        clone.Id = Id;
         for (int i = 0; i < Points.Count; i++)
         {
             clone.AddPoint(Points[i]);
         }
-        
+
         // // Copy source and sinks by value (Terminal is a struct)
         // clone.source = source;
         // clone.sinks = new List<Terminal>(sinks);

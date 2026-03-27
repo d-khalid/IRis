@@ -1,11 +1,10 @@
-using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
 using System;
 using System.Linq;
 
 
-namespace  IRis.Models.Components;
+namespace IRis.Models.Components;
 
 
 public class AndGate : Gate
@@ -20,7 +19,7 @@ public class AndGate : Gate
         // 3. Draw terminals (lines + circles)
         DrawTerminals(ctx);
 
-        this.DrawAnd(ctx);
+        DrawAnd(ctx);
 
         base.Draw(ctx);
     }
@@ -36,10 +35,10 @@ public class AndGate : Gate
         if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
 
         // For each input terminal, OR together all connected wire values
-        var inputValues = inputTerminals.Select(terminal => 
+        var inputValues = inputTerminals.Select(terminal =>
                         terminal.Wires.Any(w => w.Value == LogicState.High)).ToList();
 
-        if (inputValues.All(value => value == true)) // All inputs must be high
+        if (inputValues.All(value => value)) // All inputs must be high
         {
             foreach (Wire wire in outputTerminal.Wires)
             {

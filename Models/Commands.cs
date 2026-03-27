@@ -1,10 +1,10 @@
+using Avalonia;
+using Avalonia.Controls;
+using IRis.Models.Components;
+using IRis.Models.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia;
-using Avalonia.Controls;
-using IRis.Models.Core;
-using IRis.Models.Components;
 
 namespace IRis.Models.Commands
 {
@@ -56,7 +56,7 @@ namespace IRis.Models.Commands
             _canvas = canvas;
             _components = components;
             _deletedComponents = new List<Component>(selectedComponents);
-            _originalPositions = selectedComponents.Select(c => 
+            _originalPositions = selectedComponents.Select(c =>
                 new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
         }
 
@@ -75,7 +75,7 @@ namespace IRis.Models.Commands
             {
                 var component = _deletedComponents[i];
                 var position = _originalPositions[i];
-                
+
                 Canvas.SetLeft(component, position.X);
                 Canvas.SetTop(component, position.Y);
                 _canvas.Children.Add(component);
@@ -147,11 +147,11 @@ namespace IRis.Models.Commands
         {
             _components = new List<Component>(components);
             _canvas = null!;
-            
+
             // Calculate original and new positions based on offset
-            _originalPositions = _components.Select(c => 
+            _originalPositions = _components.Select(c =>
                 new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
-            _newPositions = _originalPositions.Select(pos => 
+            _newPositions = _originalPositions.Select(pos =>
                 new Point(pos.X + offset.X, pos.Y + offset.Y)).ToList();
         }
 
@@ -161,9 +161,9 @@ namespace IRis.Models.Commands
             _canvas = canvas;
             _components = new List<Component>(components);
             _newPositions = new List<Point>(newPositions);
-            
+
             // Store original positions for undo
-            _originalPositions = _components.Select(c => 
+            _originalPositions = _components.Select(c =>
                 new Point(Canvas.GetLeft(c), Canvas.GetTop(c))).ToList();
         }
 

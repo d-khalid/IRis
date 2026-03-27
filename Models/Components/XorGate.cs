@@ -1,10 +1,9 @@
-using System.Linq;
-using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
+using System.Linq;
 
 
-namespace  IRis.Models.Components;
+namespace IRis.Models.Components;
 
 
 public class XorGate : Gate
@@ -20,12 +19,12 @@ public class XorGate : Gate
         // 3. Draw terminals (input left, output right)
         DrawTerminals(ctx);
 
-        this.DrawOr(ctx, true);
+        DrawOr(ctx, true);
 
         base.Draw(ctx);
 
     }
-    
+
     public override void ComputeOutput()
     {
         // For inputs: check if ANY input terminal has at least one wire
@@ -37,11 +36,11 @@ public class XorGate : Gate
         if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
 
         // For each input terminal, OR together all connected wire values
-        var inputValues = inputTerminals.Select(terminal => 
+        var inputValues = inputTerminals.Select(terminal =>
             terminal.Wires.Any(w => w.Value == LogicState.High)).ToList();
 
         // XOR logic: output is HIGH when an odd number of inputs are HIGH
-        int highInputCount = inputValues.Count(value => value == true);
+        int highInputCount = inputValues.Count(value => value);
         LogicState outputValue = (highInputCount % 2 != 0) ? LogicState.High : LogicState.Low;
 
         // Set output on ALL connected wires
@@ -50,7 +49,7 @@ public class XorGate : Gate
             wire.Value = outputValue;
         }
     }
-    
 
-   
+
+
 }

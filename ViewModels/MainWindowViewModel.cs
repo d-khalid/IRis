@@ -1,25 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Xml.Linq;
-using System.Xml.Serialization;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Input;
 using Avalonia.Platform.Storage;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using IRis.Models;
-using IRis.Models.Commands;
 using IRis.Models.Components;
 using IRis.Models.Core;
 using IRis.Services;
 using IRis.Views;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ICommand = System.Windows.Input.ICommand;
 
 
@@ -34,7 +26,7 @@ namespace IRis.ViewModels
         private string? _openedFileName = null;
 
         private string _lastAction = " - ";
-        
+
         public KeyGestureConfig KeyConfig { get; set; }
 
         public string? OpenedFileName
@@ -83,7 +75,7 @@ namespace IRis.ViewModels
                     OnPropertyChanged(nameof(CursorPosition));
                 }
             };
-            
+
             // TODO: A mismatch between a property name and constructor name is preventing deserialization
             // Fix it
             // Load Key Config
@@ -140,7 +132,7 @@ namespace IRis.ViewModels
 
             SimulationToggleText = _simulation.Simulating ? "Simulation: ON" : "Simulation: OFF";
             OnPropertyChanged(nameof(SimulationButtonColor));   // Changes the color of the button
-            
+
             // Reset the probes to null
             foreach (var component in _simulation.Components)
             {
@@ -481,7 +473,7 @@ namespace IRis.ViewModels
                     }
                     // Console.WriteLine($"Inputs: {result.InputCount}, Outputs: {result.OutputCount}");
                     _simulation.CustomComponent = result;
-                    
+
                     Console.WriteLine($"Adding component: {result.Name}");
                     _simulation.PreviewCompType = "CUSTOM";
                     LastAction = $"Selected Component [{result.Name}]";
@@ -498,7 +490,7 @@ namespace IRis.ViewModels
         {
 
         }
-        
+
         public ICommand ExportComponentCommand { get; }
         private async Task ExportComponent()
         {

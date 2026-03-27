@@ -1,12 +1,14 @@
-using System;
-using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
+using System;
 
 namespace IRis.Models.Components;
 
-public class SRLatch : Component, IOutputProvider
+public class SRLatch(
+    double width = ComponentDefaults.DefaultMuxWidth,
+    double height = ComponentDefaults.DefaultMuxHeight)
+    : LatchBase(width, height), IOutputProvider
 {
     // Terminals layout (indexes):
     // 0: S (left, top)
@@ -14,21 +16,6 @@ public class SRLatch : Component, IOutputProvider
     // 2: Q (right, top)
     // 3: Q' (right, bottom)
 
-
-    public SRLatch(double width = ComponentDefaults.DefaultMuxWidth,
-                   double height = ComponentDefaults.DefaultMuxHeight)
-        : base(width, height)
-    {
-        Width  = 5 * ComponentDefaults.TerminalSpacing;
-        Height = 3 * ComponentDefaults.TerminalSpacing + ComponentDefaults.GridSpacing;
-
-        Terminals = new Terminal[4];
-        AddTerminalPoints();
-        IsHitTestVisible = true;
-        
-        // Dictionary entry for state
-        StoredStates["Q"] = LogicState.Low;
-    }
 
     public void ComputeOutput()
     {
@@ -57,32 +44,6 @@ public class SRLatch : Component, IOutputProvider
         Terminals[3].Wire!.Value = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
     }
 
-    public override void Draw(DrawingContext ctx)
-    {
-        ctx.DrawRectangle(ComponentDefaults.GateFillBrush,
-            ComponentDefaults.GatePen,
-            new Rect(0, 0, Width, Height));
-
-        DrawTerminalsAndLabels(ctx);
-        base.Draw(ctx);
-    }
-
-    public override void DrawSelection(DrawingContext ctx)
-    {
-        double expandX = ComponentDefaults.TerminalWireLength + ComponentDefaults.TerminalRadius;
-        double expandY = ComponentDefaults.TerminalRadius;
-
-        ctx.DrawRectangle(
-            ComponentDefaults.SelectionBrush,
-            ComponentDefaults.SelectionPen,
-            new Rect(
-                -expandX,
-                -expandY,
-                Bounds.Width + 2 * expandX,
-                Bounds.Height + 2 * expandY)
-        );
-    }
-
     public override void AddTerminalPoints(bool notMode = false)
     {
         Point SnapToGrid(Point pt)
@@ -99,17 +60,17 @@ public class SRLatch : Component, IOutputProvider
         Terminals![1] = new Terminal(SnapToGrid(rPos), null!);
 
         // Outputs: Q (top-right), Q' (bottom-right)
-        var qPos  = new Point(Width + ComponentDefaults.TerminalWireLength - 5, ComponentDefaults.TerminalSpacing * 1);
+        var qPos = new Point(Width + ComponentDefaults.TerminalWireLength - 5, ComponentDefaults.TerminalSpacing * 1);
         var nqPos = new Point(Width + ComponentDefaults.TerminalWireLength - 5, ComponentDefaults.TerminalSpacing * 2);
 
-        var qSnap  = SnapToGrid(qPos);
+        var qSnap = SnapToGrid(qPos);
         var nqSnap = SnapToGrid(nqPos);
 
-        Terminals![2] = new Terminal(new Point(qPos.X,  qSnap.Y),  null!);
+        Terminals![2] = new Terminal(new Point(qPos.X, qSnap.Y), null!);
         Terminals![3] = new Terminal(new Point(nqPos.X, nqSnap.Y), null!);
     }
 
-    private void DrawTerminalsAndLabels(DrawingContext ctx)
+    internal override void DrawTerminalsAndLabels(DrawingContext ctx)
     {
         // Inputs
         for (int i = 0; i < 2; i++)
@@ -120,14 +81,8 @@ public class SRLatch : Component, IOutputProvider
                 Terminals[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 
             string label = i == 0 ? "S" : "R";
-            var text = new FormattedText(
-                label,
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var text = label.CreateFormattedText();
+
             ctx.DrawText(text, new Point(4.5, Terminals[i].Position.Y - 6));
         }
 
@@ -140,14 +95,8 @@ public class SRLatch : Component, IOutputProvider
                 Terminals[j].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 
             string label = j == 2 ? "Q" : "Q'";
-            var text = new FormattedText(
-                label,
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var text = label.CreateFormattedText();
+
             ctx.DrawText(text, new Point(Width - 18, Terminals[j].Position.Y - 6));
         }
     }

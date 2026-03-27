@@ -1,12 +1,12 @@
 // Models/Simulation.Wires.cs
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Components;
 using IRis.Models.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IRis.Models;
 
@@ -65,11 +65,11 @@ public partial class Simulation : ObservableObject
     public bool IsInputTerminal(Terminal terminal)
     {
         if (terminal == null) return false;
-        
+
         foreach (Component component in _components)
         {
             if (component.Terminals == null) continue;
-            
+
             // For Gate components, check if terminal is not the last one (output)
             if (component is Gate gate)
             {
@@ -102,7 +102,7 @@ public partial class Simulation : ObservableObject
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -114,10 +114,10 @@ public partial class Simulation : ObservableObject
 
     private bool IsPointInsideAnyComponent(Point point)
     {
-        return Components.Any(component =>
+        return Components
+        .OfType<CircuitComponent>()
+        .Any(component =>
         {
-            if (component is Wire) return false;
-
             Rect bounds = component.Bounds;
 
             if (component.Rotation == 0)    // PATCH: this is a safe check for when rotations are added
@@ -188,7 +188,7 @@ public partial class Simulation : ObservableObject
 
         return validPoints.Any(existingWirePoints.Contains);
     }
-    
+
     public bool IsWireSupersetOfAnotherWire(List<Point> wirePoints)
     {
         var wirePointsSet = wirePoints.Where(p => p.X != -1 && p.Y != -1).ToHashSet();
@@ -231,7 +231,7 @@ public partial class Simulation : ObservableObject
         return false;
     }
 
-    public bool DoesWireCrossTerminal(List<Point> points, Terminal? exceptionCase=null)
+    public bool DoesWireCrossTerminal(List<Point> points, Terminal? exceptionCase = null)
     {
         var terminalPositions = Components.ToList().Where(c => c is not Wire && c.Terminals != null)
             .SelectMany(c => c.Terminals!.Where(t => t != exceptionCase).Select(t => GetAbsoluteTerminalPosition(t)))
@@ -300,7 +300,7 @@ public partial class Simulation : ObservableObject
         }
         return false;
     }
-    
+
     // private bool IsWireInMovedWires(Wire wire, List<Component> MovedWires)
     // {
     //     foreach (var movedWire in MovedWires)

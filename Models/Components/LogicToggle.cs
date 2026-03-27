@@ -1,15 +1,13 @@
-using System.Collections.Generic;
-using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
-using Avalonia.Media.Immutable;
 using IRis.Models.Core;
 using System;
+using System.Globalization;
 
 
 namespace IRis.Models.Components;
 
-public class LogicToggle : Component, IOutputProvider
+public class LogicToggle : CircuitComponent, IOutputProvider
 {
     public LogicState Value
     {
@@ -46,9 +44,9 @@ public class LogicToggle : Component, IOutputProvider
 
         // Create a dictionary entry for its value
         StoredStates["Value"] = LogicState.Low;
-        
+
         // Register an event handler for DoubleClicks
-        this.DoubleTapped += (s, e) =>
+        DoubleTapped += (_, _) =>
         {
             Toggle();
         };
@@ -68,25 +66,25 @@ public class LogicToggle : Component, IOutputProvider
     }
 
 
-  
+
 
     public override object Clone()
     {
         LogicToggle clone = new LogicToggle();
-        
+
         // Copy all base properties
-        clone.Width = this.Width;
-        clone.Height = this.Height;
-        clone.Rotation = this.Rotation;
-        clone.IsSelected = this.IsSelected;
-        
+        clone.Width = Width;
+        clone.Height = Height;
+        clone.Rotation = Rotation;
+        clone.IsSelected = IsSelected;
+
         // Component-specific things
-        if (clone.Terminals is not null && this.Terminals is not null)
+        if (clone.Terminals is not null && Terminals is not null)
         {
-            clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire!);
+            clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, Terminals[0].Wire!);
         }
-        clone.Value = this.Value;
-        
+        clone.Value = Value;
+
         // Reset visual state
         clone.VisualChildren.Clear();
         clone.InvalidateVisual();
@@ -99,31 +97,23 @@ public class LogicToggle : Component, IOutputProvider
         // Propagate the toggle value to ALL connected wires
         foreach (var wire in Terminals![0].Wires)
         {
-            if (wire != null)
-            {
-                wire.Value = this.Value;
-            }
+            wire.Value = Value;
         }
     }
 
     public override void Draw(DrawingContext ctx)
     {
-        IImmutableSolidColorBrush fill = ComponentDefaults.DontCareBrush;
-        string content = "X";
-
-        fill = Value switch
+        var fill = Value switch
         {
             LogicState.High => ComponentDefaults.TrueBrush,
             LogicState.Low => ComponentDefaults.FalseBrush,
-            LogicState.DontCare => ComponentDefaults.DontCareBrush,
             _ => ComponentDefaults.DontCareBrush
         };
 
-        content = Value switch
+        var content = Value switch
         {
             LogicState.High => "1",
             LogicState.Low => "0",
-            LogicState.DontCare => "X",
             _ => "X"
         };
 

@@ -1,23 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
-using IRis.Models;
 using IRis.Services;
+using System;
+using System.Collections.Generic;
 
 namespace IRis.Models.Components;
 
-public class CustomComponent : Component, IOutputProvider
+public class CustomComponent : CircuitComponent, IOutputProvider
 {
     protected string ComponentName;
     public int InputCount;
     protected int OutputCount;
     protected List<CircuitFormulaConversionService.CircuitFormula> OutputFormulas;
-    
-    public CustomComponent(string name, int inputCount = 2, int outputCount = 1, 
+
+    public CustomComponent(string name, int inputCount = 2, int outputCount = 1,
         List<CircuitFormulaConversionService.CircuitFormula>? outputFormulas = null,
         double width = ComponentDefaults.DefaultMuxWidth,
         double height = ComponentDefaults.DefaultMuxHeight)
@@ -28,7 +25,7 @@ public class CustomComponent : Component, IOutputProvider
         InputCount = inputCount;
         OutputCount = outputCount;
         OutputFormulas = outputFormulas ?? [];
-        
+
         // Calculate dimensions based on input/output count
         int maxTerminals = Math.Max(InputCount, OutputCount);
         // maxTerminals = (maxTerminals % 2 == 1) ? maxTerminals + 1 : maxTerminals;
@@ -55,13 +52,13 @@ public class CustomComponent : Component, IOutputProvider
             {
                 // Get the formula for this output
                 var formula = OutputFormulas[outputIndex];
-                
+
                 // Build input dictionary with actual values from terminals
                 var inputs = GetInputValues();
-                
+
                 // Evaluate the formula using the service method
                 bool result = CircuitFormulaConversionService.EvaluateFormula(formula.Formula, inputs);
-                
+
                 // Set the output terminal value
                 int outputTerminalIndex = InputCount + outputIndex;
                 if (Terminals![outputTerminalIndex].Wire != null)
@@ -84,26 +81,26 @@ public class CustomComponent : Component, IOutputProvider
     private Dictionary<string, bool> GetInputValues()
     {
         var inputs = new Dictionary<string, bool>();
-        
+
         // Get values from input terminals and map them to formula variables
         for (int i = 0; i < InputCount; i++)
         {
             bool inputValue = false;
-            
+
             // Check if terminal has a wire and get its value
             if (i < Terminals!.Length && Terminals[i].Wire != null)
             {
                 inputValue = Terminals[i].Wire!.Value == LogicState.High;
             }
-            
+
             // Add both Input_X format (used by formula service) and A,B,C format
             inputs[$"Input_{i + 1}"] = inputValue;
-            
+
             // Also support A, B, C... format for compatibility
             char inputVar = (char)('A' + i);
             inputs[inputVar.ToString()] = inputValue;
         }
-        
+
         return inputs;
     }
 
@@ -111,11 +108,11 @@ public class CustomComponent : Component, IOutputProvider
     {
         // Component Body
         ctx.DrawRectangle(ComponentDefaults.GateFillBrush,
-            ComponentDefaults.GatePen, 
+            ComponentDefaults.GatePen,
             new Rect(0, 0, Width, Height));
-        
+
         DrawTerminalsAndLabels(ctx);
-        
+
         base.Draw(ctx);
     }
 
@@ -123,10 +120,10 @@ public class CustomComponent : Component, IOutputProvider
     {
         double expandX = ComponentDefaults.TerminalWireLength + ComponentDefaults.TerminalRadius;
         double expandY = ComponentDefaults.TerminalRadius;
-        
+
         ctx.DrawRectangle(
-            ComponentDefaults.SelectionBrush, 
-            ComponentDefaults.SelectionPen, 
+            ComponentDefaults.SelectionBrush,
+            ComponentDefaults.SelectionPen,
             new Rect(
                 -expandX,
                 -expandY,
@@ -189,14 +186,8 @@ public class CustomComponent : Component, IOutputProvider
 
             // Draw input label
             char inputLabel = (char)('A' + i);
-            var text = new FormattedText(
-                inputLabel.ToString(),
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var text = inputLabel.ToString().CreateFormattedText();
+
             ctx.DrawText(text, new Point(4.5, Terminals[i].Position.Y - 6));
         }
 
@@ -216,14 +207,8 @@ public class CustomComponent : Component, IOutputProvider
 
             // Draw output label (Y for single output, Y0, Y1, etc. for multiple)
             string outputLabel = OutputCount == 1 ? "Y" : $"Y{i}";
-            var text = new FormattedText(
-                outputLabel,
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var text = outputLabel.CreateFormattedText();
+
             ctx.DrawText(text, new Point(Width - 20, Terminals[terminalIndex].Position.Y - 6));
         }
 
@@ -232,14 +217,7 @@ public class CustomComponent : Component, IOutputProvider
         {
             string displayText = ComponentName;
 
-            var formulaText = new FormattedText(
-                displayText,
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var formulaText = displayText.CreateFormattedText();
 
             double textX = (Width - formulaText.Width) / 2;
             double textY = (Height - formulaText.Height) / 2;

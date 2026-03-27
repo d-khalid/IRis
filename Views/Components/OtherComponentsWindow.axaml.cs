@@ -1,18 +1,14 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using System;
-using System.IO;
-using System.Linq;
-using Avalonia;
-using IRis.Services;
-using System.Collections.Generic;
-using Tmds.DBus.Protocol;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
-using System.Threading.Tasks;
 using Avalonia.Layout;
 using Avalonia.Media;
-using IRis.Models.Core;
+using IRis.Services;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace IRis.Views
 {
@@ -53,57 +49,81 @@ namespace IRis.Views
 
             // Add Multiplexer
             var stackPanel2 = new StackPanel { Orientation = Orientation.Horizontal };
-            stackPanel2.Children.Add(new TextBlock{ Text = "Multiplexer",
-                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel2.Children.Add(new TextBlock
+            {
+                Text = "Multiplexer",
+                VerticalAlignment = VerticalAlignment.Center
+            });
             stackPanel2.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel2 });
 
             // Add Demultiplexer
             var stackPanel3 = new StackPanel { Orientation = Orientation.Horizontal };
-            stackPanel3.Children.Add(new TextBlock{ Text = "Demultiplexer",
-                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel3.Children.Add(new TextBlock
+            {
+                Text = "Demultiplexer",
+                VerticalAlignment = VerticalAlignment.Center
+            });
             stackPanel3.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel3 });
 
             // Add Encoder
             var stackPanel4 = new StackPanel { Orientation = Orientation.Horizontal };
-            stackPanel4.Children.Add(new TextBlock{ Text = "Encoder",
-                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel4.Children.Add(new TextBlock
+            {
+                Text = "Encoder",
+                VerticalAlignment = VerticalAlignment.Center
+            });
             stackPanel4.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel4 });
 
             // Add Decoder
             var stackPanel5 = new StackPanel { Orientation = Orientation.Horizontal };
-            stackPanel5.Children.Add(new TextBlock{ Text = "Decoder",
-                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel5.Children.Add(new TextBlock
+            {
+                Text = "Decoder",
+                VerticalAlignment = VerticalAlignment.Center
+            });
             stackPanel5.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel5 });
 
             // Add SRLatch
             var stackPanel6 = new StackPanel { Orientation = Orientation.Horizontal };
-            stackPanel6.Children.Add(new TextBlock{ Text = "SR Latch",
-                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel6.Children.Add(new TextBlock
+            {
+                Text = "SR Latch",
+                VerticalAlignment = VerticalAlignment.Center
+            });
             stackPanel6.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel6 });
 
             // Add DLatch
             var stackPanel7 = new StackPanel { Orientation = Orientation.Horizontal };
-            stackPanel7.Children.Add(new TextBlock{ Text = "D Latch",
-                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel7.Children.Add(new TextBlock
+            {
+                Text = "D Latch",
+                VerticalAlignment = VerticalAlignment.Center
+            });
             stackPanel7.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel7 });
 
             // Add JKLatch
             var stackPanel8 = new StackPanel { Orientation = Orientation.Horizontal };
-            stackPanel8.Children.Add(new TextBlock{ Text = "JK Latch",
-                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel8.Children.Add(new TextBlock
+            {
+                Text = "JK Latch",
+                VerticalAlignment = VerticalAlignment.Center
+            });
             stackPanel8.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel8 });
 
             // Add TLatch
             var stackPanel9 = new StackPanel { Orientation = Orientation.Horizontal };
-            stackPanel9.Children.Add(new TextBlock{ Text = "T Latch",
-                VerticalAlignment = VerticalAlignment.Center });
+            stackPanel9.Children.Add(new TextBlock
+            {
+                Text = "T Latch",
+                VerticalAlignment = VerticalAlignment.Center
+            });
             stackPanel9.Children.Add(createDefaultLabel());
             ComponentListBox.Items.Add(new ListBoxItem { Content = stackPanel9 });
 
@@ -150,6 +170,18 @@ namespace IRis.Views
             }
         }
 
+        private Dictionary<string, string> DefaultComponentMapping = new Dictionary<string, string>()
+        {
+            { "Multiplexer", "MUX" },
+            { "Demultiplexer", "DEMUX" },
+            { "Encoder", "ENCODER" },
+            { "Decoder", "DECODER" },
+            { "SR Latch", "SRL" },
+            { "D Latch", "DL" },
+            { "JK Latch", "JKL" },
+            { "T Latch", "TL" }
+        };
+
         private void OnAddClick(object? sender, RoutedEventArgs e)
         {
             if (ComponentListBox.SelectedItem is ListBoxItem item)
@@ -157,30 +189,20 @@ namespace IRis.Views
                 if (item.Content is StackPanel stackPanel && stackPanel.Children[0] is TextBlock textBlock)
                 {
                     string componentName = textBlock.Text!;
-                    
+
                     // Check the label type from the second child (Border -> TextBlock)
                     if (stackPanel.Children[1] is Border border && border.Child is TextBlock labelText)
                     {
                         string labelType = labelText.Text!;
-                        
+
                         if (labelType == "default")
                         {
                             Console.WriteLine("Default component implementation placeholder");
                             // defaultComponentName will be set as previewComponent on closing
-                            string defaultComponentName = null!;
-                            if (componentName == "Multiplexer") defaultComponentName = "MUX";
-                            else if (componentName == "Demultiplexer") defaultComponentName = "DEMUX";
-                            else if (componentName == "Encoder") defaultComponentName = "ENCODER";
-                            else if (componentName == "Decoder") defaultComponentName = "DECODER";
-                            else if (componentName == "SR Latch") defaultComponentName = "SRL";
-                            else if (componentName == "D Latch") defaultComponentName = "DL";
-                            else if (componentName == "JK Latch") defaultComponentName = "JKL";
-                            else if (componentName == "T Latch") defaultComponentName = "TL";
-                            else
-                            {
-                                throw new InvalidOperationException($"the operation for {componentName} is invalid.");
-                            }
-                            var result = new CustomComponentData { Name=defaultComponentName };
+
+                            var defaultComponentName = DefaultComponentMapping[componentName];
+
+                            var result = new CustomComponentData { Name = defaultComponentName };
                             Close(result);
                         }
                         else
@@ -190,9 +212,9 @@ namespace IRis.Views
                             var result = new CustomComponentData
                             {
                                 Name = componentName,
-                                InputCount = this.InputCount,
-                                OutputCount = this.OutputCount,
-                                Formulas = this.Formulas
+                                InputCount = InputCount,
+                                OutputCount = OutputCount,
+                                Formulas = Formulas
                             };
                             Close(result);
                         }
@@ -264,7 +286,7 @@ namespace IRis.Views
         }
 
     }
-    
+
     public class CustomComponentData
     {
         public required string Name { get; set; }

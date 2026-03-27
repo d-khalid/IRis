@@ -1,10 +1,9 @@
-using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
 using System.Linq;
 
 
-namespace  IRis.Models.Components;
+namespace IRis.Models.Components;
 
 
 public class OrGate : Gate
@@ -20,13 +19,13 @@ public class OrGate : Gate
         // 3. Draw terminals (input left, output right)
         DrawTerminals(ctx);
 
-        this.DrawOr(ctx);
+        DrawOr(ctx);
 
         base.Draw(ctx);
 
 
     }
-    
+
     public override void ComputeOutput()
     {
         // For inputs: check if ANY input terminal has at least one wire
@@ -38,7 +37,7 @@ public class OrGate : Gate
         if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
 
         // For each input terminal, OR together all connected wire values, then OR all inputs
-        bool anyInputHigh = inputTerminals.Any(terminal => 
+        bool anyInputHigh = inputTerminals.Any(terminal =>
             terminal.Wires.Any(w => w.Value == LogicState.High));
 
         // Set output on ALL connected wires
@@ -48,15 +47,4 @@ public class OrGate : Gate
             wire.Value = outputValue;
         }
     }
-    
-    
-
-    // public override void UpdateOutputValue()
-    // {
-    //     var values = Inputs.Select(input => input.Wire.Value).ToArray();
-    //
-    //     // Logic applies for any no. of Inputs
-    //     if (values.Any(v => v == null)) Output.Wire.Value = null;
-    //     else Output.Wire.Value = values.Any(v => v == true);
-    // }
 }

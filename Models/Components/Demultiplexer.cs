@@ -1,12 +1,11 @@
-using System;
-using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
+using System;
 
 namespace IRis.Models.Components;
 
-public class Demultiplexer : Component, IOutputProvider
+public class Demultiplexer : CircuitComponent, IOutputProvider
 {
 
     public Demultiplexer(int selectionLineCount, double width = ComponentDefaults.DefaultMuxWidth,
@@ -17,8 +16,8 @@ public class Demultiplexer : Component, IOutputProvider
         OutputLineCount = (int)Math.Pow(2, SelectionLineCount);
 
         // Geometry consistent with Multiplexer, but mirrored (1 input, many outputs)
-        Width  = (SelectionLineCount + 1) * ComponentDefaults.TerminalSpacing;
-        Height = (OutputLineCount + 1)    * ComponentDefaults.TerminalSpacing + ComponentDefaults.GridSpacing;
+        Width = (SelectionLineCount + 1) * ComponentDefaults.TerminalSpacing;
+        Height = (OutputLineCount + 1) * ComponentDefaults.TerminalSpacing + ComponentDefaults.GridSpacing;
 
         // n selection lines + 1 data input + 2^n data outputs
         Terminals = new Terminal[SelectionLineCount + 1 + OutputLineCount];
@@ -126,14 +125,8 @@ public class Demultiplexer : Component, IOutputProvider
             ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
                 Terminals[i].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 
-            var text = new FormattedText(
-                $"{selectionLabel}{SelectionLineCount - i - 1}",
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var text = $"{selectionLabel}{SelectionLineCount - i - 1}".CreateFormattedText();
+
             ctx.DrawText(text, new Point(Terminals[i].Position.X - 7, Height - 18.5));
         }
 
@@ -144,14 +137,8 @@ public class Demultiplexer : Component, IOutputProvider
             ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
                 Terminals[inputIndex].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 
-            var text = new FormattedText(
-                $"{inputLabel}",
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var text = $"{inputLabel}".CreateFormattedText();
+
             // Slight nudge right of the left edge, vertically centered on the input terminal
             ctx.DrawText(text, new Point(4.5, Terminals[inputIndex].Position.Y - 6));
         }
@@ -169,14 +156,7 @@ public class Demultiplexer : Component, IOutputProvider
             ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
                 Terminals[outIdx].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
 
-            var text = new FormattedText(
-                $"{outputLabel}{k}",
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                ComponentDefaults.LabelTypeface,
-                ComponentDefaults.LabelSize,
-                ComponentDefaults.LabelBrush
-            );
+            var text = $"{outputLabel}{k}".CreateFormattedText();
 
             // Place label just left inside the body near the right edge
             ctx.DrawText(

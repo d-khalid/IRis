@@ -1,9 +1,9 @@
-using System.Linq;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
+using System.Linq;
 
-namespace  IRis.Models.Components;
+namespace IRis.Models.Components;
 
 
 public class NotGate : Gate

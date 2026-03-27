@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using Avalonia.Input;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace IRis.Models;
 
@@ -29,11 +28,11 @@ public class KeyGestureConfig
 
         Entries["Undo"] = new KeyGesture(Key.Z, KeyModifiers.Control);
         Entries["Redo"] = new KeyGesture(Key.Y, KeyModifiers.Control);
-        
+
 
         Entries["Delete"] = new KeyGesture(Key.Delete);
         Entries["Unselect"] = new KeyGesture(Key.Escape);
-        
+
         Entries["RotateClockwise"] = new KeyGesture(Key.A);
         Entries["RotateCounterClockwise"] = new KeyGesture(Key.D);
 
@@ -51,10 +50,10 @@ public class KeyGestureConfig
                 Directory.CreateDirectory(directory);
             }
             // SERIALIZATION
-            string json = JsonConvert.SerializeObject (config, Formatting.Indented);
+            string json = JsonConvert.SerializeObject(config, Formatting.Indented);
             json = json.Replace("KeyModifiers", "Modifiers"); // I hate this but it has to be this way
             File.WriteAllText(ConfigPath, json);
-            
+
             Console.WriteLine("Saved KeyConfig to: " + ConfigPath);
         }
         catch (Exception ex)

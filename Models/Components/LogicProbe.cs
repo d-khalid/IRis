@@ -1,53 +1,51 @@
-using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
-using Avalonia.Media.Immutable;
-using Avalonia.Styling;
 using IRis.Models.Core;
 using System;
+using System.Globalization;
 
 
 namespace IRis.Models.Components;
 
-public class LogicProbe : Component
+public class LogicProbe : CircuitComponent
 {
     public LogicProbe(double width = ComponentDefaults.DefaultWidth, double height = ComponentDefaults.DefaultHeight)
         : base(width, height)
     {
         Width = width * 1 / 2;
         Height = height * 1 / 2;
-        
+
         Terminals = new Terminal[1];
         // Helper Method for snapping to grid
         static double Snap(double val) => Math.Round(val / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
         double x = Snap(-ComponentDefaults.TerminalWireLength);
         double y = Snap(Height / 2);
-        
+
         // Left-oriented
         Terminals[0] = new Terminal(new Point(x, y), null!);
-        
+
     }
-    
+
     public override object Clone()
     {
         LogicProbe clone = new LogicProbe();
-        
+
         // Copy all base properties
-        clone.Width = this.Width;
-        clone.Height = this.Height;
-        clone.Rotation = this.Rotation;
-        clone.IsSelected = this.IsSelected;
-        
+        clone.Width = Width;
+        clone.Height = Height;
+        clone.Rotation = Rotation;
+        clone.IsSelected = IsSelected;
+
         // Component-specific things
-        clone.Terminals![0] = new Terminal(clone.Terminals[0].Position, this.Terminals![0].Wire!);
-        
+        clone.Terminals![0] = new Terminal(clone.Terminals[0].Position, Terminals![0].Wire!);
+
         // Reset visual state
         clone.VisualChildren.Clear();
         clone.InvalidateVisual();
 
         return clone;
     }
-    
+
     public override void Draw(DrawingContext ctx)
     {
         IImmutableSolidColorBrush fill;
@@ -58,8 +56,6 @@ public class LogicProbe : Component
             {
                 LogicState.High => ComponentDefaults.TrueBrush,
                 LogicState.Low => ComponentDefaults.FalseBrush,
-                LogicState.DontCare => ComponentDefaults.DontCareBrush,
-                null => ComponentDefaults.DontCareBrush,
                 _ => ComponentDefaults.DontCareBrush
             };
 
@@ -68,7 +64,6 @@ public class LogicProbe : Component
                 LogicState.High => "1",
                 LogicState.Low => "0",
                 LogicState.DontCare => "X",
-                null => "?",
                 _ => "?"
             };
             Console.WriteLine(Terminals[0].Wire!.Value == null);
@@ -119,9 +114,9 @@ public class LogicProbe : Component
     public override void DrawSelection(DrawingContext ctx)
     {
         ctx.DrawRectangle(
-            ComponentDefaults.SelectionBrush, 
-            ComponentDefaults.SelectionPen, 
-            new Rect(-10,-10, Width + 20, Height + 20)
+            ComponentDefaults.SelectionBrush,
+            ComponentDefaults.SelectionPen,
+            new Rect(-10, -10, Width + 20, Height + 20)
         );
     }
 }
