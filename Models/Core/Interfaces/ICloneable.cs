@@ -5,6 +5,6 @@ namespace IRis.Models.Core;
 
 public interface ICloneable
 {
-    public void Clone();
+    public object Clone();
 }
 

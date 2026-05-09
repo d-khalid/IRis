@@ -1,179 +1,95 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
+// default libs
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Rendering;
-using IRis.Models.Components;
+using System.Collections.Generic;
+
 
 namespace IRis.Models.Core;
 
-public abstract class Component : Control, ICustomHitTest
+
+public abstract class Component : Control, ICustomHitTest, ISerializable, ICloneable
 {
-    
+    public BoxSize Size { get; }
+
+    // selection and orientation
     private bool _isSelected = false;
-    private double _rotation = 0;
+    private ComponentOrientation _orientation;
+    private readonly RotateTransform _rotateTransform = new();
 
-    protected RotateTransform RotateTransform;
-    
-    // Last one is output
-    public Terminal[]? Terminals = null;
-    
-    // Most components won't use all 3
-    public int InputLineCount { get; protected set; } = 0;
-    public int SelectionLineCount { get; protected set; } = 0;
-    public int OutputLineCount { get; protected set; } = 0;
-    
-    // Used by Latches/Flip-Flops
-    public Dictionary<string, LogicState> StoredStates { get; set; } = new();
-    
-    
-    
+    // input + output terminals
+    protected readonly List<Terminal> _inputs = [];
+    protected readonly List<Terminal> _outputs = [];
 
-    public double Rotation
+
+    public Component(int numInputs, int numOutputs, int width, int height)
     {
-        get => _rotation;
-        set
-        {
-            _rotation = value;
-            RotateTransform = new RotateTransform(value, Width/2, Height/2);
-            InvalidateVisual();
-        }
+        Size = new BoxSize(width, height);
+
+        AddTerminals(_inputs, -Constants.TerminalWireLength, numInputs, Size);
+        AddTerminals(_outputs, width+Constants.TerminalWireLength, numOutputs, Size);
     }
+
 
     public bool IsSelected
     {
         get => _isSelected;
-        set
-        {
+        set {
             _isSelected = value;
-            InvalidateVisual(); 
+            InvalidateVisual();
         }
     }
-    public Component(double width , double height)
+
+
+    public ComponentOrientation Orientation
     {
-        Width = width;
-        Height = height;
-        
-        RotateTransform = new RotateTransform(_rotation, Width, Height);
-        
-        //Rotation = 100;
-        
-        
+        get => _orientation;
+        set {
+            _orientation = value;
+            _rotateTransform.Angle = (double)value;
+            InvalidateVisual();
+        }
     }
 
-    // Implement ICloneable for copies
-    // Override for child classes
-    public virtual object Clone()
+
+    public bool HitTest(Point point)
     {
-        return null!;
+        point = _rotateTransform.Value.Transform(point);
+        return new Rect(0, 0, Width, Height).Contains(point);
     }
 
-    // Override for wires
-    public virtual bool HitTest(Point point)
-    {   
-        point = RotateTransform.Value.Transform(point);
-        
-        return new Rect(0,0,Width,Height).Contains(point);
-    }
-
-    public virtual void AddTerminalPoints(bool notMode = false)
-    {
-        
-    }
 
     public override void Render(DrawingContext context)
     {
-        // Applies rotation to the drawing
-        using (context.PushTransform(RotateTransform.Value))
+        using (context.PushTransform(_rotateTransform.Value))
         {
-            // Regular Drawing
             Draw(context);
-
-            // 1. Draw hit-testable area (equivalent to Fill)
             context.DrawRectangle(
-                Brushes.Transparent, // Invisible but clickable
-                null,
-                new Rect(0, 0, Width, Height));
+                brush: IsSelected ? Brushes.Transparent : new SolidColorBrush(Colors.DodgerBlue, 0.2),
+                pen: null,
+                rect: new Rect(0, 0, Width, Height)
+            );
 
-            // TESTING
-            if (IsSelected)
-            {
-                // context.DrawRectangle(ComponentDefaults.SelectionBrush, null, 
-                //     new Rect(0,0,Width,Height)
-                //     );
-                DrawSelection(context);
-
-            }
             base.Render(context);
         }
     }
-    // Can be overriden for custom implementations
-    public virtual void Draw(DrawingContext ctx)
-    {
-      
-    }
 
-    public virtual void DrawSelection(DrawingContext ctx)
+
+    private static void AddTerminals(List<Terminal> target, int Xdistance, int numTerminals, BoxSize size)
     {
-        
-    }
-    
-    // A method for making components by type
-    public static Component Create(string componentType, Simulation simulation, int numInputs=2)
-    {
-        switch (componentType)
+        int spacing = size.Height / (numTerminals + 1);
+
+        for (int i = 0; i < numTerminals; i++)
         {
-            case "AND":
-                return new AndGate(numInputs);
-            case "OR":
-                return new OrGate(numInputs);
-            case "NOT":
-                return new NotGate();
-            case "NAND":
-                return new NandGate(numInputs);
-            case "NOR":
-                return new NorGate(numInputs);
-            case "XOR":
-                return new XorGate(numInputs);
-            case "XNOR":
-                return new XnorGate(numInputs);
-            case "MUX":
-                return new Multiplexer(selectionLineCount: numInputs);
-            case "DEMUX":
-                return new Demultiplexer(selectionLineCount: numInputs);
-            case "ENCODER":
-                return new Encoder(selectionLineCount: numInputs);
-            case "DECODER":
-                return new Decoder(selectionLineCount: numInputs);
-            case "SRL":
-                return new SRLatch();
-            case "DL":
-                return new DLatch();
-            case "JKL":
-                return new JKLatch();
-            case "TL":
-                return new TLatch();
-
-            case "PROBE":
-                return new LogicProbe();
-            case "TOGGLE":
-                return new LogicToggle();
-            case "CUSTOM":
-                return new CustomComponent(simulation.CustomComponent.Name, simulation.CustomComponent.InputCount,
-                    simulation.CustomComponent.OutputCount, simulation.CustomComponent.Formulas);
-            case "WIRE":
-                return new Wire();
-            
-            default:
-                return null!; // TODO: DANGEROUS, THIS IS A FUCKING NULLPO WAITING TO HAPPEN
+            var pos = new Point(Xdistance, spacing * (i + 1));
+            target.Add(new Terminal(Utils.SnapPointToGrid(pos)));
         }
     }
 
-    
-    
-  
+
+    public abstract void Serialize();
+    public abstract object Clone();
+    public abstract void Draw(DrawingContext ctx);
 }
+
