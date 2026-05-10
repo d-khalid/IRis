@@ -1,23 +1,17 @@
-// Models/Simulation.Selection.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
-using Avalonia.Input;
+
 using IRis.Models.Core;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using IRis.Models.Commands;
+
 
 namespace IRis.Models;
 
-// Simplified selection/dragging logic that is component-only (no wires/terminals).
+
 public partial class Simulation
 {
     private Point _selectionStart;
@@ -97,7 +91,7 @@ public partial class Simulation
 
             if (moved && commandManager != null)
             {
-                var moveCommand = new MoveComponentsCommand(Canvas, _draggedComponents, newPositions);
+                var moveCommand = new MoveComponentsCommand(_canvas, _draggedComponents, newPositions);
                 commandManager.ExecuteCommand(moveCommand);
             }
         }
@@ -109,7 +103,7 @@ public partial class Simulation
 
         if (_selectionRect != null)
         {
-            Canvas.Children.Remove(_selectionRect);
+            _canvas.Children.Remove(_selectionRect);
             _selectionRect = null;
         }
     }
@@ -159,7 +153,7 @@ public partial class Simulation
 
         Canvas.SetLeft(_selectionRect, _selectionStart.X);
         Canvas.SetTop(_selectionRect, _selectionStart.Y);
-        Canvas.Children.Add(_selectionRect);
+        _canvas.Children.Add(_selectionRect);
     }
 
     private void Selection_UpdateDraggedComponents(Point currentMousePos, bool snapToGridEnabled, Func<Point, Point> snapToGrid)

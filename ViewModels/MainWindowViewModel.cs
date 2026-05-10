@@ -21,13 +21,13 @@ namespace IRis.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    public readonly Simulation Simulation;
+    private readonly Simulation _simulation;
 
 
     public MainWindowViewModel(Simulation simulation)
     {
-        Simulation = simulation;
-        Simulation.PropertyChanged += (s, e) => 
+        _simulation = simulation;
+        _simulation.PropertyChanged += (s, e) => 
         {
             if (e.PropertyName == nameof(Simulation.CurrentMousePos))
                 OnPropertyChanged(nameof(CursorPosition));
@@ -59,33 +59,33 @@ public partial class MainWindowViewModel : ViewModelBase
         AiPromptCommand = new RelayCommand(AiGenerationFromPrompt);
         AiImageCommand = new RelayCommand(AiGenerationFromImage);
 
-        AddComponentCommand = new RelayCommand<string>(AddComponent!);
         OtherComponentsCommand = new AsyncRelayCommand(OtherComponents);
 
+        AddComponentCommand = new RelayCommand<string>(AddComponent!);
         SimulationToggleCommand = new RelayCommand(OnSimulationToggleClick);
     }
 
 
     public string SimulationToggleText
     {
-        get => Simulation.IsSimulating ? "Simulation: ON" : "Simulation: OFF";
+        get => _simulation.IsSimulating ? "Simulation: ON" : "Simulation: OFF";
     }
 
 
     public string SimulationToggleColor
     {
-        get => Simulation.IsSimulating ? "Green" : "DarkRed";
+        get => _simulation.IsSimulating ? "Green" : "DarkRed";
     }
 
 
     public void OnSimulationToggleClick()
     {
-        Simulation.IsSimulating = !Simulation.IsSimulating;
+        _simulation.IsSimulating = !_simulation.IsSimulating;
 
         OnPropertyChanged(nameof(SimulationToggleText));
         OnPropertyChanged(nameof(SimulationToggleColor));
         
-        foreach (var component in Simulation.Components)
+        foreach (var component in _simulation.Components)
         {
             if (component is LogicProbe lp)
             {
@@ -114,7 +114,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public string CursorPosition
     {
-        get => $"({(int)Simulation.CurrentMousePos.X}, {(int)Simulation.CurrentMousePos.Y})";
+        get => $"({(int)_simulation.CurrentMousePos.X}, {(int)_simulation.CurrentMousePos.Y})";
     }
 
 
@@ -136,7 +136,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void AiGenerationFromPrompt()
     {
-        if (Simulation.IsSimulating || !Simulation.GridEnabled)
+        if (_simulation.IsSimulating || !_simulation.GridEnabled)
         {
             Console.WriteLine("Cannot generate from prompt while simulating");
             return;
@@ -151,8 +151,8 @@ public partial class MainWindowViewModel : ViewModelBase
             Console.WriteLine("Event received");
             var components = JsonSerializationService.DeserializeComponentsAsync(xml);
 
-            Simulation.DeleteAllComponents();
-            Simulation.LoadComponents(components);
+            _simulation.DeleteAllComponents();
+            _simulation.LoadComponents(components);
         };
 
 
@@ -170,7 +170,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void AiGenerationFromImage()
     {
-        if (Simulation.IsSimulating || !Simulation.GridEnabled)
+        if (_simulation.IsSimulating || !_simulation.GridEnabled)
         {
             Console.WriteLine("Cannot generate from prompt while simulating");
             return;
@@ -185,8 +185,8 @@ public partial class MainWindowViewModel : ViewModelBase
             Console.WriteLine("Event received");
             var components = JsonSerializationService.DeserializeComponentsAsync(xml);
 
-            Simulation.DeleteAllComponents();
-            Simulation.LoadComponents(components);
+            _simulation.DeleteAllComponents();
+            _simulation.LoadComponents(components);
         };
 
 
@@ -235,7 +235,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand SaveCommand { get; }
     private async Task Save()
     {
-        if (Simulation.IsSimulating || !Simulation.GridEnabled)
+        if (_simulation.IsSimulating || !_simulation.GridEnabled)
         {
             Console.WriteLine("Cannot save while simulating");
             return;
@@ -273,7 +273,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand SaveAsCommand { get; }
     private async Task SaveAs()
     {
-        if (Simulation.IsSimulating || !Simulation.GridEnabled)
+        if (_simulation.IsSimulating || !_simulation.GridEnabled)
         {
             Console.WriteLine("Cannot save As while simulating");
             return;
@@ -325,31 +325,31 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void Undo()
     {
-        if (Simulation.IsSimulating || !Simulation.GridEnabled)
+        if (_simulation.IsSimulating || !_simulation.GridEnabled)
         {
             Console.WriteLine("Cannot undo while simulating");
             return;
         }
-        Simulation.CommandManager.Undo();
+        _simulation.CommandManager.Undo();
         LastAction = "Undo";
     }
 
     public ICommand RedoCommand { get; }
     private void Redo()
     {
-        if (Simulation.IsSimulating || !Simulation.GridEnabled)
+        if (_simulation.IsSimulating || !_simulation.GridEnabled)
         {
             Console.WriteLine("Cannot redo while simulating");
             return;
         }
-        Simulation.CommandManager.Redo();
+        _simulation.CommandManager.Redo();
         LastAction = "Redo";
     }
 
     public ICommand CutCommand { get; }
     private void Cut()
     {
-        Simulation.CutSelected();
+        _simulation.CutSelected();
         LastAction = "Cut to clipboard.";
     }
 
@@ -357,21 +357,21 @@ public partial class MainWindowViewModel : ViewModelBase
     private void Copy()
     {
         // TODO: BE CAREFUL ABOUT THIS
-        Simulation.CopySelected();
+        _simulation.CopySelected();
         LastAction = "Copied to clipboard.";
     }
 
     public ICommand PasteCommand { get; }
     private void Paste()
     {
-        Simulation.PasteSelected();
+        _simulation.PasteSelected();
         LastAction = "Pasted clipboard contents.";
     }
 
     public ICommand DeleteCommand { get; }
     private void Delete()
     {
-        Simulation.DeleteSelectedComponents();
+        _simulation.DeleteSelectedComponents();
         LastAction = "Deleted selected components.";
     }
 
@@ -379,7 +379,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand AboutCommand { get; }
     private void About()
     {
-        if (Simulation.IsSimulating || !Simulation.GridEnabled)
+        if (_simulation.IsSimulating || !_simulation.GridEnabled)
         {
             Console.WriteLine("Cannot show about while simulating");
             return;
@@ -413,14 +413,14 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand AddComponentCommand { get; }
     private void AddComponent(string componentType)
     {
-        if (Simulation.IsSimulating || !Simulation.GridEnabled)
+        if (_simulation.IsSimulating || !_simulation.GridEnabled)
         {
             Console.WriteLine("Cannot add component while simulating");
             return;
         }
         Console.WriteLine($"Adding component: {componentType}");
 
-        Simulation.PreviewCompType = componentType;
+        _simulation.PreviewCompType = componentType;
         LastAction = $"Selected Component [{componentType}]";
     }
 
@@ -428,7 +428,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand OtherComponentsCommand { get; }
     private async Task OtherComponents()
     {
-        if (Simulation.IsSimulating || !Simulation.GridEnabled)
+        if (_simulation.IsSimulating || !_simulation.GridEnabled)
         {
             Console.WriteLine("Cannot add other components while simulating");
             return;
@@ -449,15 +449,15 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (validNames.Contains(result.Name))
                 {
                     Console.WriteLine($"Adding component: {result.Name}");
-                    Simulation.PreviewCompType = result.Name;
+                    _simulation.PreviewCompType = result.Name;
                     LastAction = $"Selected Component [{result.Name}]";
                     return;
                 }
                 // Console.WriteLine($"Inputs: {result.InputCount}, Outputs: {result.OutputCount}");
-                Simulation.CustomComponent = result;
+                _simulation.CustomComponent = result;
                 
                 Console.WriteLine($"Adding component: {result.Name}");
-                Simulation.PreviewCompType = "CUSTOM";
+                _simulation.PreviewCompType = "CUSTOM";
                 LastAction = $"Selected Component [{result.Name}]";
             }
             else
@@ -476,7 +476,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand ExportComponentCommand { get; }
     private async Task ExportComponent()
     {
-        if (Simulation.IsSimulating || !Simulation.GridEnabled)
+        if (_simulation.IsSimulating || !_simulation.GridEnabled)
         {
             Console.WriteLine("Cannot export while simulating");
             return;

@@ -17,11 +17,15 @@ namespace IRis.Models;
 
 public partial class Simulation : ObservableObject
 {
+    private readonly Canvas _canvas;
     private bool _isSimulating;
 
 
-    public Simulation()
+    public Simulation(Canvas canvas)
     {
+        _canvas = canvas;
+
+
         // Initialize empty lists
         _components = new List<Component>();
         _selectedComponents = new List<Component>();
@@ -31,6 +35,26 @@ public partial class Simulation : ObservableObject
         _previewManager = new PreviewManager();
         _clipboardManager = new ClipboardManager();
         _gridManager = new GridManager();
+
+
+        _canvas.Focusable = true;
+        _canvas.Cursor = new Cursor(StandardCursorType.Arrow);
+
+        // For updating the simulation everytime after some time span
+        // Adjust time span from here to reduce CPU load
+        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) }; 
+        _updateTimer.Tick += (s, e) => SimulationStep();
+        IsSimulating = false;
+
+        // Register event handlers
+        _canvas.PointerPressed += OnPointerPressed;
+        _canvas.PointerMoved += OnPointerMoved;
+        _canvas.PointerReleased += OnPointerReleased;
+        _canvas.PointerEntered += (s, e) => _previewManager.OnEnter();
+        _canvas.PointerExited += (s, e) => _previewManager.OnExit();
+        _canvas.KeyDown += OnKeyDown;
+        _canvas.PointerWheelChanged += OnPointerWheel;
+        _gridManager.DrawGrid(_canvas); // Draws the main grid
     }
     
 
@@ -56,26 +80,7 @@ public partial class Simulation : ObservableObject
     }
 
 
-    private void SetupSimulation()
-    {
-        // For updating the simulation everytime after some time span
-        // Adjust time span from here to reduce CPU load
-        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) }; 
-        _updateTimer.Tick += (s, e) => SimulationStep();
-        IsSimulating = false;
-    }
 
-
-
-    // --------------------
-    // Private attributes
-    // --------------------
-    // NOTE: _canvas is set to nullable to suppress warnings since it is not 
-    // initialized in the constructor but by app.axaml.cs instead.
-    // --------------------
-    private Canvas? _canvas;       // nullable attribute to store the canvas
-    private Canvas Canvas =>       // Use this private getter to access canvas
-        _canvas ?? throw new InvalidOperationException("Register(canvas) first.");
     private List<Component> _components;
     private List<Component> _selectedComponents;
     private List<Component> _movedWires;
@@ -119,7 +124,7 @@ public partial class Simulation : ObservableObject
     public string? PreviewCompType
     {
         get => _previewManager.PreviewCompType;
-        set => _previewManager.SetPreviewComponent(value, Canvas, CurrentMousePos, this);
+        set => _previewManager.SetPreviewComponent(value, _canvas, CurrentMousePos, this);
     }
 
     // Grid management
@@ -136,11 +141,11 @@ public partial class Simulation : ObservableObject
         {
             _gridManager.GridEnabled = value;
             if (value)
-                _gridManager.DrawGrid(Canvas);
+                _gridManager.DrawGrid(_canvas);
             else
             {
-                Canvas.Children.Clear();
-                Canvas.Children.AddRange(_components);
+                _canvas.Children.Clear();
+                _canvas.Children.AddRange(_components);
             }
         }
     }
@@ -148,16 +153,6 @@ public partial class Simulation : ObservableObject
     // -------------------------------------------------
     // Public methods for simulation construction
     // -------------------------------------------------
-
-
-    public void Register(Canvas canvas)
-    {
-        _canvas = canvas;
-        SetupCanvas();
-        SetupSimulation();
-        RegisterEventHandlers();
-        _gridManager.DrawGrid(_canvas); // Draws the main grid
-    }
 
     // ----------------------------------------------------
     // Private helper Methods for the above constructors
@@ -176,24 +171,6 @@ public partial class Simulation : ObservableObject
         }
     }
 
-    private void SetupCanvas()
-    {
-        // Important: Enable keyboard focus
-        Canvas.Focusable = true;
-        Canvas.Cursor = new Cursor(StandardCursorType.Arrow);
-    }
-
-    private void RegisterEventHandlers()
-    {
-        Canvas.PointerPressed += OnPointerPressed;
-        Canvas.PointerMoved += OnPointerMoved;
-        Canvas.PointerReleased += OnPointerReleased;
-        Canvas.PointerEntered += (s, e) => _previewManager.OnEnter();
-        Canvas.PointerExited += (s, e) => _previewManager.OnExit();
-        Canvas.KeyDown += OnKeyDown;
-        Canvas.PointerWheelChanged += OnPointerWheel;
-    }
-
     // --------------------------------
     // Component Management Methods
     // --------------------------------
@@ -202,7 +179,7 @@ public partial class Simulation : ObservableObject
         if (_selectedComponents.Count > 0)
         {
             var deleteCommand = new DeleteComponentsCommand(
-                Canvas, _components, _selectedComponents);
+                _canvas, _components, _selectedComponents);
             _commandManager.ExecuteCommand(deleteCommand);
             _selectedComponents.Clear();
         }
@@ -212,13 +189,13 @@ public partial class Simulation : ObservableObject
     public void LoadComponents(List<Component> components)
     {
         _components = components;
-        Canvas.Children.AddRange(_components);
+        _canvas.Children.AddRange(_components);
     }
 
     // sus? amogus?
     public void DeleteAllComponents()
     {
-        Canvas.Children.RemoveAll(_components);
+        _canvas.Children.RemoveAll(_components);
         _components.Clear();
     }
 
@@ -227,7 +204,7 @@ public partial class Simulation : ObservableObject
     // ----------------------------------------------
     public void CopySelected(bool cutMode = false) => _clipboardManager.Copy(_selectedComponents, cutMode, DeleteSelectedComponents);
     public void CutSelected() => CopySelected(true);
-    public void PasteSelected() => _clipboardManager.Paste(Canvas, _components, _commandManager, CurrentMousePos);
+    public void PasteSelected() => _clipboardManager.Paste(_canvas, _components, _commandManager, CurrentMousePos);
 
     // -------------------------
     // Handling Mouse Actions
@@ -243,7 +220,7 @@ public partial class Simulation : ObservableObject
         if (!string.IsNullOrWhiteSpace(_previewManager.PreviewCompType) && !_previewManager.PreviewCompType.Equals("NULL", StringComparison.OrdinalIgnoreCase))
         {
             // Try to commit a component or wire preview
-            if (_previewManager.HandleComponentCommit(Canvas, _components, CurrentMousePos, _commandManager, this))
+            if (_previewManager.HandleComponentCommit(_canvas, _components, CurrentMousePos, _commandManager, this))
                 return;
         }
 
@@ -259,9 +236,9 @@ public partial class Simulation : ObservableObject
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
         // Update the mouse pos
-        CurrentMousePos = e.GetPosition(Canvas);
+        CurrentMousePos = e.GetPosition(_canvas);
 
-        if (_previewManager.HandleUpdate(Canvas, CurrentMousePos, _gridManager.SnapToGridEnabled,
+        if (_previewManager.HandleUpdate(_canvas, CurrentMousePos, _gridManager.SnapToGridEnabled,
             _gridManager.SnapToGrid, this))
             return;
 
@@ -272,7 +249,7 @@ public partial class Simulation : ObservableObject
     private void OnPointerWheel(object? sender, PointerWheelEventArgs e)
     {
         // TODO: THIS IS ACCEPTABLE FOR NOW BUT 100% NEEDS POLISH LATER ON
-        CurrentMousePos = _gridManager.SnapToGrid(e.GetPosition(Canvas));
+        CurrentMousePos = _gridManager.SnapToGrid(e.GetPosition(_canvas));
         
         // Update the preview component
         if (_previewManager.PreviewComponent != null)
