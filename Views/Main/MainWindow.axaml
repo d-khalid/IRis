@@ -11,84 +11,86 @@
         Title="IRis">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
     <Window.KeyBindings>
-         
-        <KeyBinding Gesture="{Binding KeyConfig.Entries[SaveFile]}" 
-                    Command="{Binding SaveCommand}"/>
-        
-        <KeyBinding Gesture="{Binding KeyConfig.Entries[OpenFile]}" 
-                    Command="{Binding OpenCommand}"/>
-
-        <KeyBinding Gesture="{Binding KeyConfig.Entries[NewFile]}" 
-                    Command="{Binding NewCommand}"/>
-       
-       
-        <KeyBinding Gesture="{Binding KeyConfig.Entries[Delete]}" 
-                    Command="{Binding DeleteCommand}" />
-        
-        <KeyBinding Gesture="{Binding KeyConfig.Entries[Unselect]}" 
-                    Command="{Binding AddComponentCommand}" 
-                    CommandParameter="NULL"/>
-        
-        <KeyBinding Gesture="{Binding KeyConfig.Entries[OtherComponents]}" 
-                    Command="{Binding OtherComponentsCommand}"/>
-
-        <KeyBinding Gesture="{Binding KeyConfig.Entries[Copy]}" 
-                    Command="{Binding CopyCommand}"/>
-        
-        <KeyBinding Gesture="{Binding KeyConfig.Entries[Cut]}" 
-                    Command="{Binding CutCommand}"/>
-
-        <KeyBinding Gesture="{Binding KeyConfig.Entries[Paste]}" 
-                    Command="{Binding PasteCommand}"/>
-
-        <KeyBinding Gesture="{Binding KeyConfig.Entries[Undo]}" 
-                    Command="{Binding UndoCommand}"/>
-
-        <KeyBinding Gesture="{Binding KeyConfig.Entries[Redo]}" 
-                    Command="{Binding RedoCommand}"/>
-        
-        
-        <!-- <KeyBinding Gesture="{Binding KeyConfig.Entries[RotateClockwise]}"  -->
-        <!--             Command="{Binding RotatePreviewCompCommand}" -->
-        <!--             CommandParameter="C"/> -->
-        <!-- <KeyBinding Gesture="{Binding KeyConfig.Entries[RotateCounterClockwise]}"  -->
-        <!--             Command="{Binding RotatePreviewCompCommand}" -->
-        <!--             CommandParameter="AC"/> -->
+        <KeyBinding 
+            Gesture="{Binding KeyConfig.Entries[SaveFile]}" 
+            Command="{Binding SaveCommand}"
+        />
+        <KeyBinding 
+            Gesture="{Binding KeyConfig.Entries[OpenFile]}" 
+            Command="{Binding OpenCommand}"
+        />
+        <KeyBinding 
+            Gesture="{Binding KeyConfig.Entries[NewFile]}" 
+            Command="{Binding NewCommand}"
+        />
+        <KeyBinding 
+            Gesture="{Binding KeyConfig.Entries[Delete]}" 
+            Command="{Binding DeleteCommand}" 
+        />
+        <KeyBinding 
+            Gesture="{Binding KeyConfig.Entries[Unselect]}" 
+            Command="{Binding AddComponentCommand}" 
+            CommandParameter="NULL"
+        />
+        <KeyBinding 
+            Gesture="{Binding KeyConfig.Entries[OtherComponents]}" 
+            Command="{Binding OtherComponentsCommand}"
+        />
+        <KeyBinding 
+            Gesture="{Binding KeyConfig.Entries[Copy]}" 
+            Command="{Binding CopyCommand}"
+        />
+        <KeyBinding 
+            Gesture="{Binding KeyConfig.Entries[Cut]}" 
+            Command="{Binding CutCommand}"
+        />
+        <KeyBinding 
+            Gesture="{Binding KeyConfig.Entries[Paste]}" 
+            Command="{Binding PasteCommand}"
+        />
+        <KeyBinding 
+            Gesture="{Binding KeyConfig.Entries[Undo]}" 
+            Command="{Binding UndoCommand}"
+        />
+        <KeyBinding 
+            Gesture="{Binding KeyConfig.Entries[Redo]}" 
+            Command="{Binding RedoCommand}"
+        />
     </Window.KeyBindings>
-
-
 
     <DockPanel>
         <!-- Top Menu Bar -->
-        <!-- Top Menu Bar -->
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" >
-
-                <MenuItem Header="New"
-                          Command="{Binding NewCommand}"
-                          InputGesture="{Binding KeyConfig.Entries[NewFile]}">
+                <MenuItem 
+                    Header="New"
+                    Command="{Binding NewCommand}"
+                    InputGesture="{Binding KeyConfig.Entries[NewFile]}"
+                >
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource new_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem Header="Open..."
-                          Command="{Binding OpenCommand}"
-                          InputGesture="{Binding KeyConfig.Entries[OpenFile]}">
+                <MenuItem 
+                    Header="Open..."
+                    Command="{Binding OpenCommand}"
+                    InputGesture="{Binding KeyConfig.Entries[OpenFile]}"
+                >
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource open_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem Header="Save"
-                          Command="{Binding SaveCommand}"
-                          InputGesture="{Binding KeyConfig.Entries[SaveFile]}">
+                <MenuItem 
+                    Header="Save"
+                    Command="{Binding SaveCommand}"
+                    InputGesture="{Binding KeyConfig.Entries[SaveFile]}"
+                >
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource save_regular}" />
                     </MenuItem.Icon>
@@ -97,16 +99,17 @@
                 <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}" />
 
                 <Separator />
+
                 <MenuItem Header="Export" >
-                    
-                    <MenuFlyout></MenuFlyout>
+                    <MenuFlyout>
                         <MenuItem Header="Component" Command="{Binding ExportComponentCommand}" />
                         <MenuItem Header="Circuit" Command="{Binding ExportCircuitCommand}" />
-                    
+                    </MenuFlyout>
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource arrow_export_rtl_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
+
                 <Separator />
 
                 <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
@@ -122,8 +125,9 @@
                 </MenuItem>
 
                 <MenuItem Header="Redo"
-                          Command="{Binding RedoCommand}"
-                          InputGesture="{Binding KeyConfig.Entries[Redo]}">
+                    Command="{Binding RedoCommand}"
+                    InputGesture="{Binding KeyConfig.Entries[Redo]}"
+                >
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource arrow_redo_regular}"/>
                     </MenuItem.Icon>
@@ -163,7 +167,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <!-- AI option -->
+
             <MenuItem Header="AI">
                 <MenuItem
                     Header="Generate From Prompt"
@@ -180,7 +184,6 @@
                         <PathIcon Data="{StaticResource image_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
-
             </MenuItem>
 
             <MenuItem Header="Help">
@@ -191,7 +194,6 @@
                 </MenuItem>
             </MenuItem>
         </Menu>
-
 
         <!-- Left Sidebar with Components -->
         <ScrollViewer DockPanel.Dock="Left" Width="150" BorderThickness="2">
@@ -215,11 +217,10 @@
                 <TextBlock Text="Connectors" FontWeight="Bold" Margin="0,10,0,5" />
 
                 <Button Content="Wire" Command="{Binding AddComponentCommand}" CommandParameter="WIRE" />
-
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Top Bar: Toolbar below menu -->
+        <!-- Top Toolbar (the one bellow menu) -->
         <Border DockPanel.Dock="Top" Padding="5">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="{Binding SimulationToggleText}"
@@ -230,9 +231,8 @@
         </Border>
 
         <!-- Bottom Status Bar -->
-        <Border Background="DarkSlateGray" Height="25" DockPanel.Dock="Bottom" Padding="5">
+        <Border Background="DarkSlateGray" Height="30" DockPanel.Dock="Bottom" Padding="5">
             <Grid>
-                <!-- Left-aligned items -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <TextBlock Text="File Name: " />
                     <TextBlock Text="{Binding OpenedFileName}" Margin="5,0" />
@@ -241,14 +241,12 @@
                     <TextBlock Text="{Binding CursorPosition}" Margin="2,0" />
                 </StackPanel>
 
-                <!-- Right-aligned item -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <TextBlock Text="Last Action: " />
                     <TextBlock Text="{Binding LastAction}" Margin="2,0" />
                 </StackPanel>
             </Grid>
         </Border>
-
 
         <!-- Main Canvas Area -->
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
@@ -289,12 +287,10 @@
                                 <PathIcon Data="{StaticResource delete_regular}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        
                     </MenuFlyout>
                 </Canvas.ContextFlyout>
             </Canvas>
         </ScrollViewer>
     </DockPanel>
-
-
 </Window>
+
