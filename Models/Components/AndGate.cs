@@ -2,58 +2,74 @@ using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 
 namespace  IRis.Models.Components;
 
 
-public class AndGate : Gate
+public class AndGate(int numInputs = Constants.AndGateDefaultNumInputs) : 
+    Gate(numInputs, size: Constants.AndGateSize)
 {
-    public AndGate(int numInputs) : base(numInputs)
+    public List<Terminal> Inputs
     {
-
+        get => _inputs;
     }
+
+
+    public override void Serialize()
+    {
+        throw new NotImplementedException();
+    }
+
+
+    public override AndGate Clone()
+    {
+        AndGate clone = new(
+            numInputs: Inputs.Count
+        );
+
+        return clone;
+    }
+
 
     public override void Draw(DrawingContext ctx)
     {
-        // 3. Draw terminals (lines + circles)
         DrawTerminals(ctx);
 
-        this.DrawAnd(ctx);
+        PathGeometry AndGateGeometry = new();
+        PathFigure figure = new()
+        {
+            StartPoint = new Point(0, 0),
+            IsClosed = true
+        };
 
-        base.Draw(ctx);
+        if (AndGateGeometry.Figures == null)
+            throw new Exception("Cannot draw: PathGeometry.Figures is null.");
+
+        Utils.AddAndSymbolToFigure(figure, Size);
+
+        AndGateGeometry.Figures.Add(figure);
+        ctx.DrawGeometry(
+            brush: Constants.GateBrush, 
+            pen: Constants.GatePen, 
+            geometry: AndGateGeometry
+        );
     }
+    
 
     public override void ComputeOutput()
     {
-        // For inputs: check if ANY input terminal has at least one wire
-        // For output: check if output terminal has at least one wire
-        if (Terminals == null) return;
-        var inputTerminals = Terminals.SkipLast(1);
-        var outputTerminal = Terminals[^1];
-
-        if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
-
-        // For each input terminal, OR together all connected wire values
-        var inputValues = inputTerminals.Select(terminal => 
-                        terminal.Wires.Any(w => w.Value == LogicState.High)).ToList();
-
-        if (inputValues.All(value => value == true)) // All inputs must be high
+        if (Inputs.Any(i => i.State == LogicState.Unknown))
         {
-            foreach (Wire wire in outputTerminal.Wires)
-            {
-                Console.WriteLine("AND result: high");
-                wire.Value = LogicState.High;
-            }
+            Output.State = LogicState.Unknown;
+            return;
         }
-        else
-        {
-            foreach (Wire wire in outputTerminal.Wires)
-            {
-                Console.WriteLine("AND result: low");
-                wire.Value = LogicState.Low;
-            }
-        }
+
+        Output.State = (LogicState)Inputs
+            .Select(t => (int)t.State)
+            .Aggregate((a, b) => a & b);
     }
 }
+

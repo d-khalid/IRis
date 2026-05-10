@@ -1,127 +1,83 @@
-using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
-using Avalonia.Media.Immutable;
-using Avalonia.Styling;
-using IRis.Models.Core;
 using System;
+
+using IRis.Models.Core;
+using Avalonia.Media.Immutable;
 
 
 namespace IRis.Models.Components;
 
-public class LogicProbe : Component
-{
-    public LogicProbe(double width = ComponentDefaults.DefaultWidth, double height = ComponentDefaults.DefaultHeight)
-        : base(width, height)
-    {
-        Width = width * 1 / 2;
-        Height = height * 1 / 2;
-        
-        Terminals = new Terminal[1];
-        // Helper Method for snapping to grid
-        static double Snap(double val) => Math.Round(val / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
-        double x = Snap(-ComponentDefaults.TerminalWireLength);
-        double y = Snap(Height / 2);
-        
-        // Left-oriented
-        Terminals[0] = new Terminal(new Point(x, y), null!);
-        
-    }
-    
-    public override object Clone()
-    {
-        LogicProbe clone = new LogicProbe();
-        
-        // Copy all base properties
-        clone.Width = this.Width;
-        clone.Height = this.Height;
-        clone.Rotation = this.Rotation;
-        clone.IsSelected = this.IsSelected;
-        
-        // Component-specific things
-        clone.Terminals![0] = new Terminal(clone.Terminals[0].Position, this.Terminals![0].Wire!);
-        
-        // Reset visual state
-        clone.VisualChildren.Clear();
-        clone.InvalidateVisual();
 
+public class LogicProbe() : 
+    Component(numInputs: 1, numOutputs: 0, size: Constants.LogicProbeSize)
+{
+    public LogicState State = LogicState.Unknown;
+
+
+    public Terminal Input
+    {
+        get => _inputs[0];
+    }
+
+
+    public override void Serialize()
+    {
+        throw new NotImplementedException();
+    }
+
+
+    public override LogicProbe Clone()
+    {
+        LogicProbe clone = new();
         return clone;
     }
     
+
     public override void Draw(DrawingContext ctx)
     {
-        IImmutableSolidColorBrush fill;
-        string content;
-        if (Terminals![0].Wire != null)
-        {
-            fill = Terminals[0].Wire!.Value switch
-            {
-                LogicState.High => ComponentDefaults.TrueBrush,
-                LogicState.Low => ComponentDefaults.FalseBrush,
-                LogicState.DontCare => ComponentDefaults.DontCareBrush,
-                null => ComponentDefaults.DontCareBrush,
-                _ => ComponentDefaults.DontCareBrush
-            };
+        DrawInputTerminal(ctx);
 
-            content = Terminals[0].Wire!.Value switch
-            {
-                LogicState.High => "1",
-                LogicState.Low => "0",
-                LogicState.DontCare => "X",
-                null => "?",
-                _ => "?"
-            };
-            Console.WriteLine(Terminals[0].Wire!.Value == null);
-
-        }
-        else
-        {
-            content = "?";
-            fill = ComponentDefaults.DontCareBrush;
-        }
-
-
-
+        ImmutableSolidColorBrush brush = State switch {
+            LogicState.High => Constants.TrueStateBrush,
+            LogicState.Low => Constants.FalseStateBrush,
+            _ => Constants.UnknownStateBrush
+        };
 
         ctx.DrawEllipse(
-            fill,
-            ComponentDefaults.GatePen,
-            new Point(Width / 2, Height / 2),
-            Width / 2, Height / 2
-            );
-
-        ctx.DrawLine(ComponentDefaults.WirePen, Terminals[0].Position, new Point(0, Terminals[0].Position.Y));
-        ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
-            Terminals[0].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
-
-        // Draw the text label
-        var text = new FormattedText(
-            content,
-            CultureInfo.CurrentCulture,
-            FlowDirection.LeftToRight,
-            new Typeface(fontFamily: "Arial", weight: FontWeight.Bold),
-            24,
-            Brushes.White
+            brush: brush,
+            pen: Constants.LogicProbePen,
+            center: new Point(Size.Width / 2, Size.Height / 2),
+            radiusX: Size.Width / 2, 
+            radiusY: Size.Height / 2
         );
 
-
-
-        // Center the text in the ellipse
-        ctx.DrawText(
-            text,
-            new Point(
-                Width / 2 - text.Width / 2,
-                Height / 2 - text.Height / 2
-            )
+        Utils.AddBigTextToDrawing(
+            ctx: ctx, 
+            position: new Point(
+                (Size.Width - Constants.DrawingBigTextSize * 0.75) / 2, 
+                (Size.Height - Constants.DrawingBigTextSize) / 2
+            ), 
+            text: State == LogicState.Unknown ? "X" : ((int)State).ToString()
         );
     }
 
-    public override void DrawSelection(DrawingContext ctx)
+
+    private void DrawInputTerminal(DrawingContext ctx)
     {
-        ctx.DrawRectangle(
-            ComponentDefaults.SelectionBrush, 
-            ComponentDefaults.SelectionPen, 
-            new Rect(-10,-10, Width + 20, Height + 20)
+        ctx.DrawLine(
+            pen: Constants.TerminalWirePen, 
+            p1: Input.Position, 
+            p2: new Point(Constants.TerminalWireLength, Input.Position.Y)
+        );
+
+        ctx.DrawEllipse(
+            brush: Constants.TerminalBubbleBrush, 
+            pen: null, 
+            center: Input.Position, 
+            radiusX: Constants.TerminalBubbleRadius, 
+            radiusY: Constants.TerminalBubbleRadius
         );
     }
 }
+

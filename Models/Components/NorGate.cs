@@ -1,63 +1,78 @@
 using System.Linq;
 using Avalonia;
 using Avalonia.Media;
+using System.Collections.Generic;
+using System;
+
 using IRis.Models.Core;
 
 
 namespace  IRis.Models.Components;
 
 
-public class NorGate : Gate
+public class NorGate(int numInputs = Constants.NorGateDefaultNumInputs) : 
+    Gate(numInputs, size: Constants.NorGateSize)
 {
-    public NorGate(int numInputs) : base(numInputs, notMode: true)
+    public List<Terminal> Inputs
     {
-
+        get => _inputs;
     }
+
+
+    public override void Serialize()
+    {
+        throw new NotImplementedException();
+    }
+
+
+    public override NorGate Clone()
+    {
+        NorGate clone = new(
+            numInputs: Inputs.Count
+        );
+
+        return clone;
+    }
+
 
     public override void Draw(DrawingContext ctx)
     {
-        // 3. Draw terminals (input left, output right)
         DrawTerminals(ctx);
 
-        this.DrawOr(ctx);
+        PathGeometry NorGateGeometry = new();
+        PathFigure figure = new()
+        {
+            StartPoint = new Point(0, 0),
+            IsClosed = true
+        };
 
-        // 3. Draw the bubble at the end
-        ctx.DrawEllipse(
-            Brushes.White, // Fill (none)
-            ComponentDefaults.GatePen, // Use same pen as gate
-            new Point(Width + ComponentDefaults.BubbleRadius, Height / 2),
-            ComponentDefaults.BubbleRadius,
-            ComponentDefaults.BubbleRadius);
+        if (NorGateGeometry.Figures == null)
+            throw new Exception("Cannot draw: PathGeometry.Figures is null.");
 
-        base.Draw(ctx);
+        Utils.AddOrSymbolToFigure(figure, Size);
 
+        NorGateGeometry.Figures.Add(figure);
+        ctx.DrawGeometry(
+            brush: Constants.GateBrush, 
+            pen: Constants.GatePen, 
+            geometry: NorGateGeometry
+        );
+
+        Utils.AddNotBubbleToDrawing(ctx, Size);
     }
     
+
     public override void ComputeOutput()
     {
-        // For inputs: check if ANY input terminal has at least one wire
-        // For output: check if output terminal has at least one wire
-        if (Terminals == null) return;
-        var inputTerminals = Terminals.SkipLast(1);
-        var outputTerminal = Terminals[^1];
-
-        if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
-
-        // For each input terminal, OR together all connected wire values, then OR all inputs
-        bool anyInputHigh = inputTerminals.Any(terminal => 
-            terminal.Wires.Any(w => w.Value == LogicState.High));
-
-        // NOR logic: NOT(OR) - output is HIGH only when ALL inputs are LOW
-        LogicState outputValue = anyInputHigh ? LogicState.Low : LogicState.High;
-
-        // Set output on ALL connected wires
-        foreach (var wire in outputTerminal.Wires)
+        if (Inputs.Any(i => i.State == LogicState.Unknown))
         {
-            wire.Value = outputValue;
+            Output.State = LogicState.Unknown;
+            return;
         }
+
+        Output.State = (LogicState)(Inputs
+            .Select(t => (int)t.State)
+            .Aggregate((a, b) => a | b) ^ 1);
     }
 }
     
-    
-
-  

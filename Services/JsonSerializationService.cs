@@ -1,64 +1,59 @@
+// default libs
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
+using Newtonsoft.Json;
+
+// our modules
 using IRis.Models;
 using IRis.Models.Components;
 using IRis.Models.Core;
 using IRis.Models.DTOs;
-using Newtonsoft.Json;
+
 
 namespace IRis.Services;
 
-public class JsonSerializationService : ISerializationService
-{
-    public void SerializeComponents(Simulation simulation, string? filePath)
-    {
-        if (filePath == null)
-        {
-            Console.WriteLine("No file selected!");
-            return;
-        }
 
+public static class JsonSerializationService
+{
+    public static void SaveToFile(Simulation simulation, string saveFilePath)
+    {
         // Convert the circuit to DTOs
-        CircuitDto circuit = new CircuitDto()
+        CircuitDto circuit = new()
         {
             Components = simulation.Components
-                .Where(p => p is not Wire)
                 .Select(p => ComponentDto.ToDto(p))
                 .ToList(),
             
-            Wires = simulation.Components
-                .Where(p => p is Wire)
-                .Select(p => WireDto.ToDto(p as Wire))
-                .ToList()
+            // Wires = simulation.Components
+            //     .Select(p => WireDto.ToDto(p))
+            //     .ToList()
             
         };
       
         // TODO: This file write might need to be async later on
         string json = JsonConvert.SerializeObject(circuit, Formatting.Indented);
-        File.WriteAllText(filePath, json);
+        File.WriteAllText(saveFilePath, json);
     }
 
-    public List<Component> DeserializeComponentsAsync(string jsonContent)
+    public static List<Component> DeserializeComponentsAsync(string jsonContent)
     {
         try
         {
             CircuitDto? circuit = JsonConvert.DeserializeObject<CircuitDto>(jsonContent);
             
-            if (circuit == null) throw new SerializationException();
+            if (circuit == null) throw new Exception();
 
             return CircuitDto.ToCircuit(circuit);
 
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Console.WriteLine("COULD NOT DESERIALIZE THE GIVEN JSON\n Also make this a popup window later");
         }
 
-        return new List<Component>();
+        return [];
     }
 
    

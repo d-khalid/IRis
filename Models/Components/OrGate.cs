@@ -1,62 +1,76 @@
 using Avalonia;
 using Avalonia.Media;
-using IRis.Models.Core;
 using System.Linq;
+using System.Collections.Generic;
+using System;
+
+using IRis.Models.Core;
 
 
 namespace  IRis.Models.Components;
 
 
-public class OrGate : Gate
+public class OrGate(int numInputs = Constants.OrGateDefaultNumInputs) : 
+    Gate(numInputs, size: Constants.OrGateSize)
 {
-    public OrGate(int numInputs) : base(numInputs)
+    public List<Terminal> Inputs
     {
-
+        get => _inputs;
     }
+
+
+    public override void Serialize()
+    {
+        throw new NotImplementedException();
+    }
+
+
+    public override OrGate Clone()
+    {
+        OrGate clone = new(
+            numInputs: Inputs.Count
+        );
+
+        return clone;
+    }
+
 
     public override void Draw(DrawingContext ctx)
     {
-
-        // 3. Draw terminals (input left, output right)
         DrawTerminals(ctx);
 
-        this.DrawOr(ctx);
+        PathGeometry OrGateGeometry = new();
+        PathFigure figure = new()
+        {
+            StartPoint = new Point(0, 0),
+            IsClosed = true
+        };
 
-        base.Draw(ctx);
+        if (OrGateGeometry.Figures == null)
+            throw new Exception("Cannot draw: PathGeometry.Figures is null.");
 
+        Utils.AddOrSymbolToFigure(figure, Size);
 
+        OrGateGeometry.Figures.Add(figure);
+        ctx.DrawGeometry(
+            brush: Constants.GateBrush, 
+            pen: Constants.GatePen, 
+            geometry: OrGateGeometry
+        );
     }
     
+
     public override void ComputeOutput()
     {
-        // For inputs: check if ANY input terminal has at least one wire
-        // For output: check if output terminal has at least one wire
-        if (Terminals == null) return;
-        var inputTerminals = Terminals.SkipLast(1);
-        var outputTerminal = Terminals[^1];
-
-        if (!inputTerminals.All(t => t.Wires.Any()) || !outputTerminal.Wires.Any()) return;
-
-        // For each input terminal, OR together all connected wire values, then OR all inputs
-        bool anyInputHigh = inputTerminals.Any(terminal => 
-            terminal.Wires.Any(w => w.Value == LogicState.High));
-
-        // Set output on ALL connected wires
-        LogicState outputValue = anyInputHigh ? LogicState.High : LogicState.Low;
-        foreach (var wire in outputTerminal.Wires)
+        if (Inputs.Any(i => i.State == LogicState.Unknown))
         {
-            wire.Value = outputValue;
+            Output.State = LogicState.Unknown;
+            return;
         }
-    }
-    
-    
 
-    // public override void UpdateOutputValue()
-    // {
-    //     var values = Inputs.Select(input => input.Wire.Value).ToArray();
-    //
-    //     // Logic applies for any no. of Inputs
-    //     if (values.Any(v => v == null)) Output.Wire.Value = null;
-    //     else Output.Wire.Value = values.Any(v => v == true);
-    // }
+        Output.State = (LogicState)Inputs
+            .Select(t => (int)t.State)
+            .Aggregate((a, b) => a | b);
+    }
 }
+

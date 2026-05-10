@@ -12,22 +12,22 @@ namespace IRis.Models;
 internal class ClipboardManager
 {
     private List<Component> _clipboard = new();
-    private Point _lastPastePosition;
-    private bool _isPastePreviewActive;
-    private List<Component> _pastePreviewComponents = new();
 
     public void Copy(List<Component> selectedComponents, bool cutMode, Action deleteAction)
     {
         _clipboard.Clear();
 
-        // First pass
         foreach (var component in selectedComponents)
         {
-            Component c = (Component)component.Clone();
-            _clipboard.Add(c);
+            var clone = CircuitComponentFactory.CloneComponent(component);
+            if (clone == null)
+                continue;
 
-            Canvas.SetLeft(c, Canvas.GetLeft(component));
-            Canvas.SetTop(c, Canvas.GetTop(component));
+            Canvas.SetLeft(clone, Canvas.GetLeft(component));
+            Canvas.SetTop(clone, Canvas.GetTop(component));
+            clone.IsSelected = false;
+
+            _clipboard.Add(clone);
             component.IsSelected = false;
         }
 
@@ -35,115 +35,26 @@ internal class ClipboardManager
         selectedComponents.Clear();
     }
 
-    public void Paste(Canvas canvas, Point currentMousePos)
+    public void Paste(Canvas canvas, List<Component> components, Commands.CommandManager commandManager, Point currentMousePos)
     {
         if (_clipboard.Count == 0) return;
 
-        CreatePastePreview(canvas);
-        UpdatePastePreviewPosition(currentMousePos);
-    }
+        Point reference = new(Canvas.GetLeft(_clipboard[0]), Canvas.GetTop(_clipboard[0]));
+        Point offset = new(Constants.GridSpacing * 2, Constants.GridSpacing * 2);
 
-    private void CreatePastePreview(Canvas canvas)
-    {
-        _pastePreviewComponents.Clear();
-        _isPastePreviewActive = true;
-
-        List<Component> clonedComponents = CloneNonWireComponents();
-        Dictionary<Wire, Wire> clonedWires = CloneAndReconnectWires(clonedComponents);
-
-        // Add things to preview list
-        _pastePreviewComponents.AddRange(clonedComponents);
-        _pastePreviewComponents.AddRange(clonedWires.Values.ToList());
-        canvas.Children.AddRange(_pastePreviewComponents);
-    }
-
-    private List<Component> CloneNonWireComponents()
-    {
-        List<Component> clonedComponents = new();
-
-        // First pass
-        foreach (var component in _clipboard)
+        foreach (var source in _clipboard)
         {
-            // new Wire objects will be made later
-            if (component is Wire) continue;
+            var clone = CircuitComponentFactory.CloneComponent(source);
+            if (clone == null)
+                continue;
 
-            Component c = (Component)component.Clone();
-            clonedComponents.Add(c);
+            Point sourcePosition = new(Canvas.GetLeft(source), Canvas.GetTop(source));
+            Point newPosition = new(
+                currentMousePos.X + (sourcePosition.X - reference.X) + offset.X,
+                currentMousePos.Y + (sourcePosition.Y - reference.Y) + offset.Y);
 
-            Canvas.SetLeft(c, Canvas.GetLeft(component));
-            Canvas.SetTop(c, Canvas.GetTop(component));
-            component.IsSelected = false;   // This line is a syntax error
-            c.IsSelected = false;
-        }
-
-        return clonedComponents;
-    }
-
-    private Dictionary<Wire, Wire> CloneAndReconnectWires(List<Component> clonedComponents)
-    {
-        // Second pass
-        Dictionary<Wire, Wire> clonedWires = new();
-        foreach (var component in clonedComponents)
-        {
-            if (component.Terminals == null) continue;
-
-            foreach (var terminal in component.Terminals)
-            {
-                if (terminal.Wire == null) continue;
-
-                // If there's a matching wire for an original wire already, make it
-                if (!clonedWires.TryGetValue(terminal.Wire, out var clonedWire))
-                {
-                    clonedWire = CreateClonedWire(terminal.Wire);
-                    clonedWires.Add(terminal.Wire, clonedWire);
-                }
-
-                terminal.Wire = clonedWires[terminal.Wire];
-            }
-        }
-
-        return clonedWires;
-    }
-
-    private Wire CreateClonedWire(Wire originalWire)
-    {
-        Wire newWire = new Wire
-        {
-            Points = originalWire.Points,
-            Id = Guid.NewGuid(),
-            Value = originalWire.Value, // enums are value types!
-            IsSelected = false
-        };
-
-        Canvas.SetLeft(newWire, Canvas.GetLeft(originalWire));
-        Canvas.SetTop(newWire, Canvas.GetTop(originalWire));
-        // FIX: prevent wires from being drawn as ghosts
-        newWire.IsBeingEdited = false;
-        newWire.IsCommitted = true;
-
-        return newWire;
-    }
-
-    // TODO: MAKE THIS ALWAYS USE THE TOP-LEFT-MOST ELEMENT IN THE CLIPBOARD
-    private void UpdatePastePreviewPosition(Point currentMousePos)
-    {
-        if (!_isPastePreviewActive) return;
-
-        _lastPastePosition = currentMousePos;
-
-        // Use the wire's first point as reference
-        Point reference = _clipboard[0] is Wire wire
-            ? wire.Points[0]
-            : new Point(Canvas.GetLeft(_clipboard[0]), Canvas.GetTop(_clipboard[0]));
-
-        for (int i = 0; i < _pastePreviewComponents.Count; i++)
-        {
-            var original = _clipboard[i];
-            var preview = _pastePreviewComponents[i];
-
-            Console.WriteLine($"{Canvas.GetLeft(original)}, {Canvas.GetTop(original)}");
-            Canvas.SetLeft(preview, Canvas.GetLeft(original) + currentMousePos.X - reference.X);
-            Canvas.SetTop(preview, Canvas.GetTop(original) + currentMousePos.Y - reference.Y);
+            var addCommand = new Commands.AddComponentCommand(canvas, components, clone, newPosition);
+            commandManager.ExecuteCommand(addCommand);
         }
     }
 }
@@ -157,8 +68,8 @@ internal class GridManager
     {
         if (!SnapToGridEnabled) return point;
 
-        double snappedX = Math.Round(point.X / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
-        double snappedY = Math.Round(point.Y / ComponentDefaults.GridSpacing) * ComponentDefaults.GridSpacing;
+        double snappedX = Math.Round(point.X / Constants.GridSpacing) * Constants.GridSpacing;
+        double snappedY = Math.Round(point.Y / Constants.GridSpacing) * Constants.GridSpacing;
         return new Point(snappedX, snappedY);
     }
 
@@ -181,11 +92,11 @@ internal class GridManager
     private void DrawGridLines(Canvas canvas, double width, double height)
     {
         // Draw vertical lines
-        for (double x = 0; x < width; x += ComponentDefaults.GridSpacing)
+        for (double x = 0; x < width; x += Constants.GridSpacing)
             canvas.Children.Insert(0, CreateGridLine(new Point(x, 0), new Point(x, height)));
 
         // Draw horizontal lines
-        for (double y = 0; y < height; y += ComponentDefaults.GridSpacing)
+        for (double y = 0; y < height; y += Constants.GridSpacing)
             canvas.Children.Insert(0, CreateGridLine(new Point(0, y), new Point(width, y)));
     }
 
@@ -195,8 +106,8 @@ internal class GridManager
         {
             StartPoint = start,
             EndPoint = end,
-            Stroke = ComponentDefaults.GridBrush,
-            StrokeThickness = ComponentDefaults.GridThickness,
+            Stroke = Constants.GridBrush,
+            StrokeThickness = Constants.GridThickness,
             Tag = "grid" // For easy identification
         };
     }

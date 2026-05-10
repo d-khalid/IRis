@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using IRis.Models.Components;
 using IRis.Models.Core;
@@ -9,33 +10,31 @@ namespace IRis.Models.DTOs;
 public class WireDto
 {
     public Guid Id { get; set; }
-    
-    public LogicState? Value { get; set; }
 
-    public List<Point> Points { get; set; }
+    public LogicState State { get; set; }
+
+    public List<Point> Points { get; set; } = new List<Point>();
     
     public static WireDto ToDto(Wire w)
     {
         return new WireDto()
         {
             Id = w.Id,
-          
-            Value = w.Value,
-            Points = w.Points
+            State = w.State,
+            Points = w.Points.ToList()
         };
     }
 
     public static Wire ToWire(WireDto dto)
     {
-        return new Wire()
-        {
-            Id = dto.Id,
-            Value = dto.Value,
-            Points = dto.Points,
-            
-            IsCommitted = true,
-            IsBeingEdited = false,
-            IsValid = true,
-        };
+        Wire wire = new();
+
+        foreach (var point in dto.Points)
+            wire.AddPoint(point);
+
+        wire.State = dto.State;
+        wire.IsBeingEdited = false;
+        wire.IsValid = true;
+        return wire;
     }
 }
