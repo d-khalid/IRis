@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
-using IRis.Models.Core;
 using IRis.Models.Components;
+using IRis.Models.Core;
 
 namespace IRis.Models.Commands
 {
@@ -81,57 +81,6 @@ namespace IRis.Models.Commands
                 _canvas.Children.Add(component);
                 _components.Add(component);
             }
-        }
-    }
-
-    public class AddWirePointCommand : ICommand
-    {
-        private readonly Wire _wire;
-        private readonly Point _point;
-
-        public AddWirePointCommand(Wire wire, Point point)
-        {
-            _wire = wire;
-            _point = point;
-        }
-
-        public void Execute()
-        {
-            _wire.AddPoint(_point);
-        }
-
-        public void Undo()
-        {
-            if (_wire.Points.Count > 0)
-            {
-                _wire.Points.RemoveAt(_wire.Points.Count - 1);
-                _wire.InvalidateVisual();
-            }
-        }
-    }
-
-    public class CommitWireCommand : ICommand
-    {
-        private readonly List<Component> _components;
-        private readonly Wire _wire;
-
-        public CommitWireCommand(List<Component> components, Wire wire)
-        {
-            _components = components;
-            _wire = wire;
-        }
-
-        public void Execute()
-        {
-            _wire.IsBeingEdited = false;
-            _wire.IsCommitted = true;
-            _wire.InvalidateVisual();
-            _components.Add(_wire);
-        }
-
-        public void Undo()
-        {
-            _components.Remove(_wire);
         }
     }
 

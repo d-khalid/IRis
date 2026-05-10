@@ -102,9 +102,9 @@ public partial class Simulation : ObservableObject
     public Simulation()
     {
         // Initialize empty lists
-        _components = [];
-        _selectedComponents = [];
-        _movedWires = [];
+        _components = new List<Component>();
+        _selectedComponents = new List<Component>();
+        _movedWires = new List<Component>();
 
         // Initialize managers
         _previewManager = new PreviewManager();
@@ -215,7 +215,7 @@ public partial class Simulation : ObservableObject
     // ----------------------------------------------
     public void CopySelected(bool cutMode = false) => _clipboardManager.Copy(_selectedComponents, cutMode, DeleteSelectedComponents);
     public void CutSelected() => CopySelected(true);
-    public void PasteSelected() => _clipboardManager.Paste(Canvas, CurrentMousePos);
+    public void PasteSelected() => _clipboardManager.Paste(Canvas, _components, _commandManager, CurrentMousePos);
 
     // -------------------------
     // Handling Mouse Actions
@@ -227,74 +227,15 @@ public partial class Simulation : ObservableObject
             Console.WriteLine("Cannot edit while simulating");
             return;
         }
-        if (_previewManager.PreviewCompType != "NULL")  // If a component is being previewed
-            {
-                if (_previewManager.PreviewCompType == "WIRE")  // If component is wire
-                {
-                    if (FindWireAtPosition(CurrentMousePos) != null)  // if Created on an already present wire
-                    {
-                        Terminal? terminal = FindClosestSnapTerminal(CurrentMousePos);
-                        if (terminal != null && !IsInputTerminal(terminal))   // if no terminal is present
-                        {
-                            Console.WriteLine("Registering new wire ()...");
-                            _previewManager.HandleWireCommit(sender, e, CurrentMousePos, this);
-                            return;
-                        }
-                        else if (terminal != null && IsInputTerminal(terminal))   // If wire & terminal are present bellow
-                        {
-                            Console.WriteLine("Terminal is Already connected to a wire!");
-                            return;
-                        }
-                        else    // Only wire is present bellow
-                        {
-                            if (_previewManager.PreviewComponent is Wire temp &&
-                                temp.Points.Count > 1)  // if trying to put a checkpoint on an existing wire
-                            {   // Trying to put a checkpoint on a wire
-                                Console.WriteLine("Cannot Put a Checkpoint on a Wire!");
-                                return;
-                            }
-                            else
-                            {
-                                // WIRE EXTENSION LOGIC
-                                Wire existingWire = FindWireAtPosition(CurrentMousePos)!;
-                                if (FindClosestSnapTerminal(CurrentMousePos) != null)
-                                {
-                                    Console.WriteLine("Invalid Extension! Please choose a distance away from the terminals.");
-                                    return;
-                                }
-                                Console.WriteLine("Registering Wire Extension...");
-                                _previewManager.StartWireExtension(Canvas, CurrentMousePos, existingWire, this);
-                                return;
-                            }
-                        }
-                    }
-                    else    // if Created on some empty space
-                    {
-                        if (_previewManager.PreviewComponent is not null)
-                        {
-                            Console.WriteLine("Registering a Checkpoint...");
-                            _previewManager.HandleWireCommit(sender, e, CurrentMousePos, this);
-                            return;
-                        }
-                        else
-                        {
-                            // NEW WIRE LOGIC
-                            Console.WriteLine("Registering New Wire...");
-                            _previewManager.HandleWireCommit(sender, e, CurrentMousePos, this);
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    // NEW COMPONENT LOGIC
-                    Console.WriteLine("Registering New Component...");
-                    _previewManager.HandleComponentCommit(Canvas, _components, CurrentMousePos, _commandManager, this);
-                    return;
-                }
-            }
+        // If a component is being previewed, try to commit it.
+        if (!string.IsNullOrWhiteSpace(_previewManager.PreviewCompType) && !_previewManager.PreviewCompType.Equals("NULL", StringComparison.OrdinalIgnoreCase))
+        {
+            // Try to commit a component or wire preview
+            if (_previewManager.HandleComponentCommit(Canvas, _components, CurrentMousePos, _commandManager, this))
+                return;
+        }
+
         // Selection handling through selection manager
-        Selection_OnPointerPressed(e);
         Selection_HandleStart(CurrentMousePos);
     }
 
