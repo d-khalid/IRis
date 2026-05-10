@@ -224,7 +224,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="{Binding SimulationToggleText}"
                         Command="{Binding SimulationToggleCommand}"
-                        Background="{Binding SimulationButtonColor}"
+                        Background="{Binding SimulationToggleColor}"
                         Margin="5,0" />
             </StackPanel>
         </Border>

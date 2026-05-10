@@ -17,6 +17,56 @@ namespace IRis.Models;
 
 public partial class Simulation : ObservableObject
 {
+    private bool _isSimulating;
+
+
+    public Simulation()
+    {
+        // Initialize empty lists
+        _components = new List<Component>();
+        _selectedComponents = new List<Component>();
+        _movedWires = new List<Component>();
+
+        // Initialize managers
+        _previewManager = new PreviewManager();
+        _clipboardManager = new ClipboardManager();
+        _gridManager = new GridManager();
+    }
+    
+
+    public bool IsSimulating
+    {
+        get => _isSimulating;
+        set 
+        {
+            _isSimulating = value;
+
+            if (_isSimulating)
+            {
+                Selection_UnselectAll();
+                _previewManager.PreviewComponent = null;
+                _previewManager.PreviewCompType = "NULL";
+                _updateTimer!.Start();
+            }
+            else 
+            {
+                _updateTimer!.Stop();
+            }
+        }
+    }
+
+
+    private void SetupSimulation()
+    {
+        // For updating the simulation everytime after some time span
+        // Adjust time span from here to reduce CPU load
+        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) }; 
+        _updateTimer.Tick += (s, e) => SimulationStep();
+        IsSimulating = false;
+    }
+
+
+
     // --------------------
     // Private attributes
     // --------------------
@@ -38,7 +88,6 @@ public partial class Simulation : ObservableObject
     private readonly CommandManager _commandManager = new();
 
     // For simulation
-    private bool _simulating;
     private DispatcherTimer? _updateTimer;
 
     // --------------------
@@ -99,35 +148,7 @@ public partial class Simulation : ObservableObject
     // -------------------------------------------------
     // Public methods for simulation construction
     // -------------------------------------------------
-    public Simulation()
-    {
-        // Initialize empty lists
-        _components = new List<Component>();
-        _selectedComponents = new List<Component>();
-        _movedWires = new List<Component>();
 
-        // Initialize managers
-        _previewManager = new PreviewManager();
-        _clipboardManager = new ClipboardManager();
-        _gridManager = new GridManager();
-    }
-    
-    public bool Simulating
-    {
-        get => _simulating;
-        set
-        {
-            _simulating = value;
-            if (_simulating)
-            {
-                Selection_UnselectAll();
-                _previewManager.PreviewComponent = null;
-                _previewManager.PreviewCompType = "NULL";
-                _updateTimer!.Start();
-            }
-            else _updateTimer!.Stop();
-        }
-    }
 
     public void Register(Canvas canvas)
     {
@@ -160,15 +181,6 @@ public partial class Simulation : ObservableObject
         // Important: Enable keyboard focus
         Canvas.Focusable = true;
         Canvas.Cursor = new Cursor(StandardCursorType.Arrow);
-    }
-
-    private void SetupSimulation()
-    {
-        // For updating the simulation everytime after some time span
-        // Adjust time span from here to reduce CPU load
-        _updateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) }; 
-        _updateTimer.Tick += (s, e) => SimulationStep();
-        Simulating = false;
     }
 
     private void RegisterEventHandlers()
@@ -222,7 +234,7 @@ public partial class Simulation : ObservableObject
     // -------------------------
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (Simulating || !GridEnabled)
+        if (IsSimulating || !GridEnabled)
         {
             Console.WriteLine("Cannot edit while simulating");
             return;
