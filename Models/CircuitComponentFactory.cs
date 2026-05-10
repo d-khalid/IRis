@@ -10,24 +10,24 @@ internal static class CircuitComponentFactory
     private static readonly IReadOnlyDictionary<string, Func<Component?>> Factories =
         new Dictionary<string, Func<Component?>>(StringComparer.OrdinalIgnoreCase)
         {
-            ["AND"] = () => new AndGate(),
-            ["ANDGATE"] = () => new AndGate(),
             ["OR"] = () => new OrGate(),
-            ["ORGATE"] = () => new OrGate(),
-            ["NOT"] = () => new NotGate(),
-            ["NOTGATE"] = () => new NotGate(),
-            ["NAND"] = () => new NandGate(),
-            ["NANDGATE"] = () => new NandGate(),
-            ["NOR"] = () => new NorGate(),
-            ["NORGATE"] = () => new NorGate(),
-            ["XOR"] = () => new XorGate(),
-            ["XORGATE"] = () => new XorGate(),
-            ["XNOR"] = () => new XnorGate(),
-            ["XNORGATE"] = () => new XnorGate(),
-            ["TOGGLE"] = () => new LogicToggle(),
-            ["LOGICTOGGLE"] = () => new LogicToggle(),
-            ["PROBE"] = () => new LogicProbe(),
-            ["LOGICPROBE"] = () => new LogicProbe(),
+            // ["AND"] = () => new AndGate(),
+            // ["ANDGATE"] = () => new AndGate(),
+            // ["ORGATE"] = () => new OrGate(),
+            // ["NOT"] = () => new NotGate(),
+            // ["NOTGATE"] = () => new NotGate(),
+            // ["NAND"] = () => new NandGate(),
+            // ["NANDGATE"] = () => new NandGate(),
+            // ["NOR"] = () => new NorGate(),
+            // ["NORGATE"] = () => new NorGate(),
+            // ["XOR"] = () => new XorGate(),
+            // ["XORGATE"] = () => new XorGate(),
+            // ["XNOR"] = () => new XnorGate(),
+            // ["XNORGATE"] = () => new XnorGate(),
+            // ["TOGGLE"] = () => new LogicToggle(),
+            // ["LOGICTOGGLE"] = () => new LogicToggle(),
+            // ["PROBE"] = () => new LogicProbe(),
+            // ["LOGICPROBE"] = () => new LogicProbe(),
         };
 
     private static readonly HashSet<string> SupportedTypes = new(StringComparer.OrdinalIgnoreCase)
@@ -62,15 +62,15 @@ internal static class CircuitComponentFactory
     {
         Component? clone = component switch
         {
-            AndGate gate => new AndGate(gate.Inputs.Count),
             OrGate gate => new OrGate(gate.Inputs.Count),
-            NotGate => new NotGate(),
-            NandGate gate => new NandGate(gate.Inputs.Count),
-            NorGate gate => new NorGate(gate.Inputs.Count),
-            XorGate gate => new XorGate(gate.Inputs.Count),
-            XnorGate gate => new XnorGate(gate.Inputs.Count),
-            LogicToggle toggle => new LogicToggle { State = toggle.State },
-            LogicProbe probe => new LogicProbe { State = probe.State },
+            // AndGate gate => new AndGate(gate.Inputs.Count),
+            // NotGate => new NotGate(),
+            // NandGate gate => new NandGate(gate.Inputs.Count),
+            // NorGate gate => new NorGate(gate.Inputs.Count),
+            // XorGate gate => new XorGate(gate.Inputs.Count),
+            // XnorGate gate => new XnorGate(gate.Inputs.Count),
+            // LogicToggle toggle => new LogicToggle { State = toggle.State },
+            // LogicProbe probe => new LogicProbe { State = probe.State },
             _ => null,
         };
 
@@ -84,13 +84,13 @@ internal static class CircuitComponentFactory
     {
         return component switch
         {
-            AndGate gate => gate.Inputs.Count,
             OrGate gate => gate.Inputs.Count,
-            NotGate => 1,
-            NandGate gate => gate.Inputs.Count,
-            NorGate gate => gate.Inputs.Count,
-            XorGate gate => gate.Inputs.Count,
-            XnorGate gate => gate.Inputs.Count,
+            // AndGate gate => gate.Inputs.Count,
+            // NotGate => 1,
+            // NandGate gate => gate.Inputs.Count,
+            // NorGate gate => gate.Inputs.Count,
+            // XorGate gate => gate.Inputs.Count,
+            // XnorGate gate => gate.Inputs.Count,
             _ => 0,
         };
     }

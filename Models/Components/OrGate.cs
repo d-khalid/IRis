@@ -19,10 +19,10 @@ public class OrGate(int numInputs = Constants.OrGateDefaultNumInputs) :
     }
 
 
-    public override void Serialize()
-    {
-        throw new NotImplementedException();
-    }
+    // public override void Serialize()
+    // {
+    //     throw new NotImplementedException();
+    // }
 
 
     public override OrGate Clone()

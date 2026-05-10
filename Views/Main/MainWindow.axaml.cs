@@ -22,7 +22,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        Simulation = new(MainCanvas);
+        Simulation = new();
     }
 }
 

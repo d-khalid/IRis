@@ -7,6 +7,9 @@ namespace IRis.Models.Core;
 
 public static class Constants
 {
+    // TODO: MOST OR ALL OF THESE WILL GET THEIR JOB TAKEN BY XAML 
+    
+    
     // DO NOT TOUCH THIS ONE!
     public const int GridSpacing = 10;
 

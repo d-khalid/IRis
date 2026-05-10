@@ -14,6 +14,7 @@ using IRis.Models.Components;
 using IRis.Models.Core;
 using IRis.Services;
 using IRis.Views;
+using OpenAI.Assistants;
 
 
 namespace IRis.ViewModels;
@@ -92,11 +93,12 @@ public partial class MainWindowViewModel : ViewModelBase
         
         foreach (var component in _simulation.Components)
         {
-            if (component is LogicProbe lp)
-            {
-                lp.Input.State = LogicState.Unknown;
-                lp.InvalidateVisual();
-            }
+            // TODO: Uncomment after testing XAML
+            // if (component is LogicProbe lp)
+            // {
+            //     lp.Input.State = LogicState.Unknown;
+            //     lp.InvalidateVisual();
+            // }
         }
     }
 
@@ -141,68 +143,68 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void AiGenerationFromPrompt()
     {
-        if (_simulation.IsSimulating || !_simulation.GridEnabled)
-        {
-            Console.WriteLine("Cannot generate from prompt while simulating");
-            return;
-        }
-        var window = new AIGenerationWindow();
-        // _currentPromptVm = new AIGenerationWindowViewModel(window);
-
-        var vm = window.DataContext as AIGenerationWindowViewModel;
-
-        vm!.XmlGenerated += (xml) =>
-        {
-            Console.WriteLine("Event received");
-            var components = JsonSerializationService.DeserializeComponentsAsync(xml);
-
-            _simulation.DeleteAllComponents();
-            _simulation.LoadComponents(components);
-        };
-
-
-        // Center it relative to main window
-        window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-        // Get reference to main window
-        var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
-            ?.MainWindow;
-
-        window.ShowDialog(mainWindow!);
+        // if (_simulation.IsSimulating)
+        // {
+        //     Console.WriteLine("Cannot generate from prompt while simulating");
+        //     return;
+        // }
+        // var window = new AIGenerationWindow();
+        // // _currentPromptVm = new AIGenerationWindowViewModel(window);
+        //
+        // var vm = window.DataContext as AIGenerationWindowViewModel;
+        //
+        // vm!.XmlGenerated += (xml) =>
+        // {
+        //     Console.WriteLine("Event received");
+        //     var components = JsonSerializationService.DeserializeComponentsAsync(xml);
+        //
+        //     _simulation.DeleteAllComponents();
+        //     _simulation.LoadComponents(components);
+        // };
+        //
+        //
+        // // Center it relative to main window
+        // window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        //
+        // // Get reference to main window
+        // var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+        //     ?.MainWindow;
+        //
+        // window.ShowDialog(mainWindow!);
     }
 
     public ICommand AiImageCommand { get; }
 
     private void AiGenerationFromImage()
     {
-        if (_simulation.IsSimulating || !_simulation.GridEnabled)
-        {
-            Console.WriteLine("Cannot generate from prompt while simulating");
-            return;
-        }
-        var window = new ImageProcessingWindow();
-        // _currentPromptVm = new AIGenerationWindowViewModel(window);
-
-        var vm = window.DataContext as ImageProcessingWindowViewModel;
-
-        vm!.XmlGenerated += (xml) =>
-        {
-            Console.WriteLine("Event received");
-            var components = JsonSerializationService.DeserializeComponentsAsync(xml);
-
-            _simulation.DeleteAllComponents();
-            _simulation.LoadComponents(components);
-        };
-
-
-        // Center it relative to main window
-        window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-        // Get reference to main window
-        var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
-            ?.MainWindow;
-
-        window.ShowDialog(mainWindow!);
+        // if (_simulation.IsSimulating || !_simulation.GridEnabled)
+        // {
+        //     Console.WriteLine("Cannot generate from prompt while simulating");
+        //     return;
+        // }
+        // var window = new ImageProcessingWindow();
+        // // _currentPromptVm = new AIGenerationWindowViewModel(window);
+        //
+        // var vm = window.DataContext as ImageProcessingWindowViewModel;
+        //
+        // vm!.XmlGenerated += (xml) =>
+        // {
+        //     Console.WriteLine("Event received");
+        //     var components = JsonSerializationService.DeserializeComponentsAsync(xml);
+        //
+        //     _simulation.DeleteAllComponents();
+        //     _simulation.LoadComponents(components);
+        // };
+        //
+        //
+        // // Center it relative to main window
+        // window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        //
+        // // Get reference to main window
+        // var mainWindow = (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+        //     ?.MainWindow;
+        //
+        // window.ShowDialog(mainWindow!);
 
     }
 
@@ -240,7 +242,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand SaveCommand { get; }
     private async Task Save()
     {
-        if (_simulation.IsSimulating || !_simulation.GridEnabled)
+        if (_simulation.IsSimulating )
         {
             Console.WriteLine("Cannot save while simulating");
             return;
@@ -278,7 +280,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand SaveAsCommand { get; }
     private async Task SaveAs()
     {
-        if (_simulation.IsSimulating || !_simulation.GridEnabled)
+        if (_simulation.IsSimulating )
         {
             Console.WriteLine("Cannot save As while simulating");
             return;
@@ -330,31 +332,31 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void Undo()
     {
-        if (_simulation.IsSimulating || !_simulation.GridEnabled)
+        if (_simulation.IsSimulating )
         {
             Console.WriteLine("Cannot undo while simulating");
             return;
         }
-        _simulation.CommandManager.Undo();
+        // _simulation.CommandManager.Undo();
         LastAction = "Undo";
     }
 
     public ICommand RedoCommand { get; }
     private void Redo()
     {
-        if (_simulation.IsSimulating || !_simulation.GridEnabled)
+        if (_simulation.IsSimulating)
         {
             Console.WriteLine("Cannot redo while simulating");
             return;
         }
-        _simulation.CommandManager.Redo();
+        // _simulation.CommandManager.Redo();
         LastAction = "Redo";
     }
 
     public ICommand CutCommand { get; }
     private void Cut()
     {
-        _simulation.CutSelected();
+        // _simulation.CutSelected();
         LastAction = "Cut to clipboard.";
     }
 
@@ -362,21 +364,21 @@ public partial class MainWindowViewModel : ViewModelBase
     private void Copy()
     {
         // TODO: BE CAREFUL ABOUT THIS
-        _simulation.CopySelected();
+        // _simulation.CopySelected();
         LastAction = "Copied to clipboard.";
     }
 
     public ICommand PasteCommand { get; }
     private void Paste()
     {
-        _simulation.PasteSelected();
+        // _simulation.PasteSelected();
         LastAction = "Pasted clipboard contents.";
     }
 
     public ICommand DeleteCommand { get; }
     private void Delete()
     {
-        _simulation.DeleteSelectedComponents();
+        // _simulation.DeleteSelectedComponents();
         LastAction = "Deleted selected components.";
     }
 
@@ -384,7 +386,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand AboutCommand { get; }
     private void About()
     {
-        if (_simulation.IsSimulating || !_simulation.GridEnabled)
+        if (_simulation.IsSimulating)
         {
             Console.WriteLine("Cannot show about while simulating");
             return;
@@ -418,14 +420,14 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand AddComponentCommand { get; }
     private void AddComponent(string componentType)
     {
-        if (_simulation.IsSimulating || !_simulation.GridEnabled)
+        if (_simulation.IsSimulating)
         {
             Console.WriteLine("Cannot add component while simulating");
             return;
         }
         Console.WriteLine($"Adding component: {componentType}");
 
-        _simulation.PreviewCompType = componentType;
+        // _simulation.PreviewCompType = componentType;
         LastAction = $"Selected Component [{componentType}]";
     }
 
@@ -433,43 +435,43 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand OtherComponentsCommand { get; }
     private async Task OtherComponents()
     {
-        if (_simulation.IsSimulating || !_simulation.GridEnabled)
-        {
-            Console.WriteLine("Cannot add other components while simulating");
-            return;
-        }
-        var otherComponentsWindow = new OtherComponentsWindow
-        {
-            WindowStartupLocation = WindowStartupLocation.CenterOwner
-        };
-
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
-        {
-            CustomComponentData? result = await otherComponentsWindow.ShowDialog<CustomComponentData?>(mainWindow);
-
-            if (result is not null)
-            {
-                string[] validNames = ["MUX", "DEMUX", "ENCODER", "DECODER", "SRL", "DL", "JKL", "TL"];
-                // Add conditions for other complex components as well
-                if (validNames.Contains(result.Name))
-                {
-                    Console.WriteLine($"Adding component: {result.Name}");
-                    _simulation.PreviewCompType = result.Name;
-                    LastAction = $"Selected Component [{result.Name}]";
-                    return;
-                }
-                // Console.WriteLine($"Inputs: {result.InputCount}, Outputs: {result.OutputCount}");
-                _simulation.CustomComponent = result;
-                
-                Console.WriteLine($"Adding component: {result.Name}");
-                _simulation.PreviewCompType = "CUSTOM";
-                LastAction = $"Selected Component [{result.Name}]";
-            }
-            else
-            {
-                Console.WriteLine("Dialog was canceled or no selection made.");
-            }
-        }
+        // if (_simulation.IsSimulating )
+        // {
+        //     Console.WriteLine("Cannot add other components while simulating");
+        //     return;
+        // }
+        // var otherComponentsWindow = new OtherComponentsWindow
+        // {
+        //     WindowStartupLocation = WindowStartupLocation.CenterOwner
+        // };
+        //
+        // if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
+        // {
+        //     CustomComponentData? result = await otherComponentsWindow.ShowDialog<CustomComponentData?>(mainWindow);
+        //
+        //     if (result is not null)
+        //     {
+        //         string[] validNames = ["MUX", "DEMUX", "ENCODER", "DECODER", "SRL", "DL", "JKL", "TL"];
+        //         // Add conditions for other complex components as well
+        //         if (validNames.Contains(result.Name))
+        //         {
+        //             Console.WriteLine($"Adding component: {result.Name}");
+        //             _simulation.PreviewCompType = result.Name;
+        //             LastAction = $"Selected Component [{result.Name}]";
+        //             return;
+        //         }
+        //         // Console.WriteLine($"Inputs: {result.InputCount}, Outputs: {result.OutputCount}");
+        //         _simulation.CustomComponent = result;
+        //         
+        //         Console.WriteLine($"Adding component: {result.Name}");
+        //         _simulation.PreviewCompType = "CUSTOM";
+        //         LastAction = $"Selected Component [{result.Name}]";
+        //     }
+        //     else
+        //     {
+        //         Console.WriteLine("Dialog was canceled or no selection made.");
+        //     }
+        // }
     }
 
     public ICommand ExportCircuitCommand { get; }
@@ -481,33 +483,33 @@ public partial class MainWindowViewModel : ViewModelBase
     public ICommand ExportComponentCommand { get; }
     private async Task ExportComponent()
     {
-        if (_simulation.IsSimulating || !_simulation.GridEnabled)
-        {
-            Console.WriteLine("Cannot export while simulating");
-            return;
-        }
-        var window = new ExportComponentWindow();
-        // Center it relative to main window
-        window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-        // Get reference to main window (same pattern as OtherComponents method)
-        if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
-        {
-            var result = await window.ShowDialog<string?>(mainWindow);
-
-            if (!string.IsNullOrEmpty(result)) // User clicked Export and entered a name
-            {
-                string componentName = result;
-                Console.WriteLine($"Component name: {componentName}");
-                // _serializer.SerializeComponents(Simulation, "RuntimeComponents/" + componentName + ".xml");
-                Console.WriteLine("Saved to: " + _openedFileName);
-            }
-            else
-            {
-                Console.WriteLine("User clicked Cancel or closed the window.");
-            }
-            // If result is null, user clicked Cancel or closed the window
-        }
+    //     if (_simulation.IsSimulating || !_simulation.GridEnabled)
+    //     {
+    //         Console.WriteLine("Cannot export while simulating");
+    //         return;
+    //     }
+    //     var window = new ExportComponentWindow();
+    //     // Center it relative to main window
+    //     window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+    //
+    //     // Get reference to main window (same pattern as OtherComponents method)
+    //     if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
+    //     {
+    //         var result = await window.ShowDialog<string?>(mainWindow);
+    //
+    //         if (!string.IsNullOrEmpty(result)) // User clicked Export and entered a name
+    //         {
+    //             string componentName = result;
+    //             Console.WriteLine($"Component name: {componentName}");
+    //             // _serializer.SerializeComponents(Simulation, "RuntimeComponents/" + componentName + ".xml");
+    //             Console.WriteLine("Saved to: " + _openedFileName);
+    //         }
+    //         else
+    //         {
+    //             Console.WriteLine("User clicked Cancel or closed the window.");
+    //         }
+    //         // If result is null, user clicked Cancel or closed the window
+    //     }
     }
 }
 

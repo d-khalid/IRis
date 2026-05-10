@@ -9,14 +9,19 @@ namespace IRis.Models.Core;
 
 public abstract partial class Component : CircuitObject
 {
-    public BoxSize Size { get; }
+    [ObservableProperty] private BoxSize _size;
 
     [ObservableProperty]
     private ComponentOrientation _orientation;
-    private readonly RotateTransform _rotateTransform = new();
+    
+    [ObservableProperty]
+    private double _rotation = new();
 
-    protected readonly List<Terminal> _inputs = [];
-    protected readonly List<Terminal> _outputs = [];
+    [ObservableProperty]
+    protected List<Terminal> _inputs = [];
+    
+    [ObservableProperty]
+    protected List<Terminal> _outputs = [];
 
 
     public Component(int numInputs, int numOutputs, BoxSize size)
@@ -26,40 +31,44 @@ public abstract partial class Component : CircuitObject
         AddTerminals(_inputs, -Constants.TerminalWireLength, numInputs, Size, false);
         AddTerminals(_outputs, size.Width+Constants.TerminalWireLength, numOutputs, Size, true);
     }
+    
+
+    
+    // Not needed anymore, you can directly set component.Rotation.Angle = ComponentOrientation.Left or whatever
+    
+    // public ComponentOrientation Orientation
+    // {
+    //     get => _orientation;
+    //     set {
+    //         _orientation = value;
+    //         _rotateTransform.Angle = (double)value;
+    //     }
+    // }
+
+    
+    //  NOTE: HitTest() work should be done by the XAML now
+
+    // public override bool HitTest(Point point)
+    // {
+    //     point = Rotation.Value.Transform(point);
+    //     return new Rect(0, 0, Size.Width, Size.Height).Contains(point);
+    // }
 
 
-    public ComponentOrientation Orientation
-    {
-        get => _orientation;
-        set {
-            _orientation = value;
-            _rotateTransform.Angle = (double)value;
-            InvalidateVisual();
-        }
-    }
-
-
-    public override bool HitTest(Point point)
-    {
-        point = _rotateTransform.Value.Transform(point);
-        return new Rect(0, 0, Width, Height).Contains(point);
-    }
-
-
-    public override void Render(DrawingContext context)
-    {
-        using (context.PushTransform(_rotateTransform.Value))
-        {
-            Draw(context);
-            context.DrawRectangle(
-                brush: IsSelected ? Brushes.Transparent : new SolidColorBrush(Colors.DodgerBlue, 0.2),
-                pen: null,
-                rect: new Rect(0, 0, Width, Height)
-            );
-
-            base.Render(context);
-        }
-    }
+    // public override void Render(DrawingContext context)
+    // {
+    //     using (context.PushTransform(_rotateTransform.Value))
+    //     {
+    //         Draw(context);
+    //         context.DrawRectangle(
+    //             brush: IsSelected ? Brushes.Transparent : new SolidColorBrush(Colors.DodgerBlue, 0.2),
+    //             pen: null,
+    //             rect: new Rect(0, 0, Width, Height)
+    //         );
+    //
+    //         base.Render(context);
+    //     }
+    // }
 
 
     private static void AddTerminals(List<Terminal> target, int Xdistance, int numTerminals, BoxSize size, bool areOutputProviders)

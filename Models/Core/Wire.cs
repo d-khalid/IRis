@@ -62,17 +62,17 @@ public class Wire : CircuitObject, IOutputProvider
 
     // TODO: THIS LOOKS WRONG, IT SHOULD CHECK FOR COLLISIONS ALONG THE POLYLINE
     // I WONDER IF THE DEFAULT HitTest IMPLEMENTATION WILL DO THAT FOR ME
-    public override bool HitTest(Point point)
-    {
-        foreach (Point pt in Points)
-        {
-            if (point == pt)
-                return true;
-        }
-
-        return false;
-    }
-    
+    // public override bool HitTest(Point point)
+    // {
+    //     foreach (Point pt in Points)
+    //     {
+    //         if (point == pt)
+    //             return true;
+    //     }
+    //
+    //     return false;
+    // }
+    //
 
     public override void Draw(DrawingContext ctx)
     {

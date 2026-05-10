@@ -9,7 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace IRis.Models.Core;
 
 
-public abstract partial class CircuitObject : ObservableObject, ICustomHitTest, ICloneable
+public abstract partial class CircuitObject : ObservableObject, ICloneable
 {
     public readonly Guid Id = Guid.NewGuid();
     
@@ -59,8 +59,10 @@ public abstract partial class CircuitObject : ObservableObject, ICustomHitTest, 
     //     }
     // }
 
+    
+    // NOTE: I think the XAML does this automatically too
 
-    public abstract bool HitTest(Point point);
+    // public abstract bool HitTest(Point point);
     public abstract object Clone();
     public abstract void Draw(DrawingContext ctx);
 }

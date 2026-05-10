@@ -2,10 +2,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:IRis.ViewModels"
         xmlns:core="using:IRis.Models.Core"
+        xmlns:comp="using:IRis.Models.Components"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
-        
+
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="IRis.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -15,6 +16,16 @@
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
+    
+    
+    <!-- XAML Constants, they are used automatically if you do "Classes=gate" in a Control -->
+    <Window.Styles>
+        <Style Selector="Path.gate">
+            <Setter Property="Fill" Value="White" />
+            <Setter Property="Stroke" Value="Black" />
+            <Setter Property="StrokeThickness" Value="4" />
+        </Style>
+    </Window.Styles>
 
     <Window.KeyBindings>
         <KeyBinding
@@ -284,7 +295,7 @@
                     </MenuFlyout>
                 </ItemsControl.ContextFlyout>
 
-                
+
                 <!-- DataTemplates do the drawing, while Style handles things like position which are relative to the Canvas -->
                 <ItemsControl.Styles>
                     <Style Selector="ItemsControl > ContentPresenter" x:DataType="core:CircuitObject">
@@ -293,13 +304,98 @@
                     </Style>
                 </ItemsControl.Styles>
 
-                <ItemsControl.DataTemplates>
+                
+                <!-- Wire Drawing, Drawing the Terminals adds inner data templating  -->
+                <DataTemplate DataType="{x:Type core:Wire}">
+                    <Canvas>
 
-                    <DataTemplate DataType="{x:Type core:Wire}">
-                        <Polyline Points="{Binding Points}" Stroke="Black" StrokeThickness="2" />
-                    </DataTemplate>
-                   
-                </ItemsControl.DataTemplates>
+                        <Polyline Points="{Binding Points}"
+                                  StrokeThickness="2"
+                                  Classes.preview="{Binding IsPreview}"
+                                  Classes.invalid="{Binding !IsValid}">
+
+                            <Polyline.Styles>
+                                <Style Selector="Polyline">
+                                    <Setter Property="Stroke" Value="Blue" />
+                                </Style>
+
+                                <Style Selector="Polyline.preview">
+                                    <Setter Property="Stroke" Value="LightBlue" />
+                                </Style>
+
+                                <Style Selector="Polyline.invalid">
+                                    <Setter Property="Stroke" Value="Red" />
+                                </Style>
+                            </Polyline.Styles>
+                        </Polyline>
+
+                        <ItemsControl ItemsSource="{Binding Nodes}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <!-- TODO: THIS IS UGLY BECAUSE OF XAML SCOPING; COULD BE IMPROVED BY KEEPING WIRE REFERENCEIN TERMINAL -->
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="8" Height="8"
+                                             Margin="-4,-4,0,0"
+                                             Canvas.Left="{Binding Terminal.Position.X}"
+                                             Canvas.Top="{Binding Terminal.Position.Y}"
+                                             
+                                             Classes.preview="{Binding $parent[ItemsControl].((core:Wire)DataContext).IsPreview}"
+                                             Classes.invalid="{Binding !$parent[ItemsControl].((core:Wire)DataContext).IsValid}">
+
+                                        <Ellipse.Styles>
+                                            <Style Selector="Ellipse">
+                                                <Setter Property="Fill" Value="DarkBlue" />
+                                            </Style>
+                                            <Style Selector="Ellipse.preview">
+                                                <Setter Property="Fill" Value="LightGray" />
+                                            </Style>
+                                            <Style Selector="Ellipse.invalid">
+                                                <Setter Property="Fill" Value="Red" />
+                                            </Style>
+                                        </Ellipse.Styles>
+                                    </Ellipse>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </Canvas>
+                </DataTemplate>
+                
+                
+                <DataTemplate DataType="{x:Type comp:OrGate}">
+                    <Grid Width="{Binding Size.Width}" Height="{Binding Size.Height}">
+        
+                        <Grid.RenderTransform>
+                            <RotateTransform Angle="{Binding Rotation}" />
+                        </Grid.RenderTransform>
+        
+                        
+                        <Path Classes="gate" 
+                              Data="M 0,0 A 10,30 0 0 1 0,60 A 60,30 0 0 0 60,30 A 60,30 0 0 0 0,0 Z" />
+
+                        <Rectangle Classes.unselected="{Binding !IsSelected}">
+                            <Rectangle.Styles>
+                                <Style Selector="Rectangle">
+                                    <Setter Property="Fill" Value="Transparent" />
+                                </Style>
+                
+                                <Style Selector="Rectangle.unselected">
+                                    <Setter Property="Fill" Value="DodgerBlue" /> 
+                                    <Setter Property="Opacity" Value="0.2" />
+                                </Style>
+                            </Rectangle.Styles>
+                        </Rectangle>
+        
+                    </Grid>
+                </DataTemplate>
+                
+                
+                
 
             </ItemsControl>
         </ScrollViewer>
