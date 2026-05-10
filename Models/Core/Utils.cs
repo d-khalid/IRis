@@ -3,6 +3,8 @@ using Avalonia;
 using Avalonia.Media;
 using System;
 using System.Globalization;
+using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 
 
 namespace IRis.Models.Core;
@@ -144,6 +146,21 @@ public static class Utils {
         );
 
         ctx.DrawText(formattedText, position);
+    }
+
+
+    public static void DrawLineOnCanvas(Canvas canvas, Point p1, Point p2) 
+    {
+        canvas.Children.Insert(
+            index: 0,
+            item: new Line
+            {
+                StartPoint = p1,
+                EndPoint = p2,
+                Stroke = Constants.CanvasGridBrush,
+                StrokeThickness = Constants.CanvasGridThickness
+            }
+        );
     }
 }
 

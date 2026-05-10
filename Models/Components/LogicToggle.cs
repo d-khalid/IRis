@@ -73,13 +73,7 @@ public class LogicToggle() :
             p1: Output.Position
         );
 
-        ctx.DrawEllipse(
-            brush: Constants.TerminalBubbleBrush,
-            pen: null,
-            center: Output.Position, 
-            radiusX: Constants.TerminalBubbleRadius,
-            radiusY: Constants.TerminalBubbleRadius
-        );
+        Output.Terminal.Draw(ctx);
     }
 
 

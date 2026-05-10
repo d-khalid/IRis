@@ -71,13 +71,7 @@ public class LogicProbe() :
             p2: new Point(Constants.TerminalWireLength, Input.Position.Y)
         );
 
-        ctx.DrawEllipse(
-            brush: Constants.TerminalBubbleBrush, 
-            pen: null, 
-            center: Input.Position, 
-            radiusX: Constants.TerminalBubbleRadius, 
-            radiusY: Constants.TerminalBubbleRadius
-        );
+        Input.Terminal.Draw(ctx);
     }
 }
 

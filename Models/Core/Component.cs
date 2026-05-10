@@ -67,8 +67,8 @@ public abstract class Component : CircuitObject
 
         for (int i = 0; i < numTerminals; i++)
         {
-            var pos = new Point(Xdistance, spacing * (i + 1));
-            target.Add((new Terminal(), Utils.SnapPointToGrid(pos)));
+            var pos = Utils.SnapPointToGrid(new Point(Xdistance, spacing * (i + 1)));
+            target.Add((new Terminal(pos), pos));
         }
     }
 }

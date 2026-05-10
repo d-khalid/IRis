@@ -16,6 +16,7 @@ public static class Constants
     public const int OrArcDepth = 6;
     public const int AndArcDepth = 15;
     public const int WireWidth = 4;
+    public const double CanvasGridThickness = 0.5;
 
     public static readonly Pen GatePen = new(Brushes.Black, 4);
     public static readonly IBrush GateBrush = Brushes.White;
@@ -40,6 +41,8 @@ public static class Constants
     public static readonly ImmutableSolidColorBrush TrueStateBrush = new(Colors.ForestGreen);
     public static readonly ImmutableSolidColorBrush FalseStateBrush = new(Colors.DarkRed);
     public static readonly ImmutableSolidColorBrush UnknownStateBrush = new(Colors.Gray);
+
+    public static readonly IBrush CanvasGridBrush = new SolidColorBrush(Colors.Black, 0.3);
 
     public const int AndGateDefaultNumInputs = 2;
     public const int OrGateDefaultNumInputs = 2;
@@ -82,8 +85,6 @@ public static class Constants
     // For probes/toggles
     
     // For the grid
-    public static IBrush GridBrush = new SolidColorBrush(Colors.Black, 0.3);
-    public static double GridThickness = 0.5;
 
     // For terminals
     public static double TerminalSnappingRange = 15;

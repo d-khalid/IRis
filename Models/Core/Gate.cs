@@ -31,13 +31,7 @@ public abstract class Gate(int numInputs, BoxSize size) :
                 p2: new Point(Constants.TerminalWireLength, _inputs[i].Position.Y)
             );
 
-            ctx.DrawEllipse(
-                brush: Constants.TerminalBubbleBrush, 
-                pen: null, 
-                center: _inputs[i].Position, 
-                radiusX: Constants.TerminalBubbleRadius, 
-                radiusY: Constants.TerminalBubbleRadius
-            );
+            _inputs[i].Terminal.Draw(ctx);
         }
     }
 
@@ -50,13 +44,7 @@ public abstract class Gate(int numInputs, BoxSize size) :
             p1: Output.Position
         );
 
-        ctx.DrawEllipse(
-            brush: Constants.TerminalBubbleBrush,
-            pen: null,
-            center: Output.Position, 
-            radiusX: Constants.TerminalBubbleRadius,
-            radiusY: Constants.TerminalBubbleRadius
-        );
+        Output.Terminal.Draw(ctx);
     }
 
 

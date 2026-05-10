@@ -1,5 +1,7 @@
-// default libs
 using Avalonia;
+using Avalonia.Media;
+using Avalonia.Controls;
+using Avalonia.Media.Immutable;
 
 
 namespace IRis.Models.Core;
@@ -21,9 +23,37 @@ public struct BoxSize(int width, int height)
 }
 
 
-public class Terminal()
+public class Terminal(Point position) : Control
 {
-    public LogicState State = LogicState.Unknown;
+    public readonly Point Position = position;
+    private LogicState _state = LogicState.Unknown;
+    public LogicState State
+    {
+        get => _state;
+        set
+        {
+            _state = value;
+            InvalidateVisual();
+        }
+    }
+
+
+    public void Draw(DrawingContext ctx)
+    {
+        ImmutableSolidColorBrush brush = State switch {
+            LogicState.High => Constants.TrueStateBrush,
+            LogicState.Low => Constants.FalseStateBrush,
+            _ => Constants.UnknownStateBrush
+        };
+
+        ctx.DrawEllipse(
+            brush: brush,
+            pen: null,
+            center: Position,
+            radiusX: Constants.TerminalBubbleRadius,
+            radiusY: Constants.TerminalBubbleRadius
+        );
+    }
 }
 
 
