@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Media;
 using System;
+using System.Globalization;
 
 
 namespace IRis.Models.Core;
@@ -80,10 +81,34 @@ public static class Utils {
     }
 
 
+    public static void AddNotSymbolToFigure(PathFigure figure, BoxSize size)
+    {
+        if (figure.Segments == null)
+            throw new Exception("Cannot draw NOT symbol: figure.Segments is null.");
+
+
+        // left line (top-left to bottom-left)
+        figure.Segments.Add(new LineSegment { 
+            Point = new Point(0, size.Height) 
+        });
+
+        // lower diagonal (bottom-left to center-right)
+        figure.Segments.Add(new LineSegment { 
+            Point = new Point(size.Width, size.Height / 2) 
+        });
+
+        // upper diagonal (center-right to top-left)
+        figure.Segments.Add(new LineSegment { 
+            Point = new Point(0, 0) 
+        });
+    }
+
+
     public static void AddXorCurveToFigure(PathFigure figure, BoxSize size)
     {
         if (figure.Segments == null)
             throw new Exception("Cannot draw XOR curve: figure.Segments is null.");
+
 
         // XOR extra curve
         figure.Segments.Add(new ArcSegment {
@@ -104,6 +129,21 @@ public static class Utils {
             Constants.NotBubbleRadius,
             Constants.NotBubbleRadius
         );
+    }
+
+
+    public static void AddBigTextToDrawing(DrawingContext ctx, Point position, string text)
+    {
+        FormattedText formattedText = new(
+            textToFormat: text,
+            culture: CultureInfo.CurrentCulture,
+            flowDirection: FlowDirection.LeftToRight,
+            typeface: Constants.DrawingBigTextTypeFace,
+            emSize: Constants.DrawingBigTextSize,
+            foreground: Constants.LogicProbeBrush
+        );
+
+        ctx.DrawText(formattedText, position);
     }
 }
 

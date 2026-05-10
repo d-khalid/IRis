@@ -1,4 +1,3 @@
-// Models/Simulation.cs
 using System;
 using System.Collections.Generic;
 using Avalonia;
@@ -6,14 +5,16 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+
 using IRis.Models.Components;
 using IRis.Models.Core;
 using IRis.Models.Commands;
 using IRis.Views;
 
+
 namespace IRis.Models;
 
-// Main section of the Simulation class
+
 public partial class Simulation : ObservableObject
 {
     // --------------------

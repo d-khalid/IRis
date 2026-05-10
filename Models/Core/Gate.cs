@@ -1,14 +1,12 @@
-// default libs
 using Avalonia;
 using Avalonia.Media;
-using System;
 
 
 namespace IRis.Models.Core;
 
 
-public abstract class Gate(int numInputs, int width, int height) : 
-    Component(numInputs, numOutputs: 1, width, height), IOutputProvider
+public abstract class Gate(int numInputs, BoxSize size) : 
+    Component(numInputs, numOutputs: 1, size), IOutputProvider
 {
     public Terminal Output
     {

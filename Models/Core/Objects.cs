@@ -21,10 +21,11 @@ public struct BoxSize(int width, int height)
 }
 
 
-public class Terminal(Point position)
+public class Terminal(Point position, bool isOutputProvider)
 {
-    public Point Position { get; } = position;
-    public LogicState state = LogicState.Unknown;
+    public Point Position = position;
+    public readonly bool isOutputProvider = isOutputProvider;
+    public LogicState State = LogicState.Unknown;
 }
 
 

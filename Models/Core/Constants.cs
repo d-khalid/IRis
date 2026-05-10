@@ -7,28 +7,63 @@ namespace IRis.Models.Core;
 
 public static class Constants
 {
-    // DO NOT TOUCH
+    // DO NOT TOUCH THIS ONE!
     public const int GridSpacing = 10;
 
-
-    // terminals
     public const int TerminalWireLength = 25;
     public const int TerminalBubbleRadius = 7;
-
-    public static readonly Pen TerminalWirePen = new(Brushes.Black, 4);
-    public static readonly IBrush TerminalBubbleBrush = Brushes.DarkSlateGray;
-
-
-    // gates
     public const int NotBubbleRadius = 10;
     public const int OrArcDepth = 6;
     public const int AndArcDepth = 15;
+    public const int LogicProbeRadius = 20;
+    public const int WireWidth = 4;
 
     public static readonly Pen GatePen = new(Brushes.Black, 4);
     public static readonly IBrush GateBrush = Brushes.White;
     public static readonly IBrush NotBubbleBrush = Brushes.White;
 
+    public static readonly Pen WirePen = new(Brushes.Black, WireWidth);
+    public static readonly Pen GhostWirePen = new(Brushes.Gray, WireWidth);
+    public static readonly Pen InvalidWirePen = new(Brushes.DarkRed, WireWidth);
 
+    public static readonly Pen TerminalWirePen = new(Brushes.Black, 4);
+    public static readonly Pen GhostTerminalWirePen = new(Brushes.Gray, 4);
+    public static readonly Pen InvalidTerminalWirePen = new(Brushes.DarkRed, 4);
+    public static readonly IBrush TerminalBubbleBrush = Brushes.DarkSlateGray;
+    public static readonly IBrush GhostTerminalBubbleBrush = Brushes.LightSlateGray;
+    public static readonly IBrush InvalidTerminalBubbleBrush = Brushes.DarkRed;
+
+    public static readonly Pen LogicProbePen = new(Brushes.Black, 4);
+    public static readonly IBrush LogicProbeBrush = Brushes.White;
+    public static readonly Pen LogicTogglePen = new(Brushes.Black, 4);
+    public static readonly IBrush LogicToggleBrush = Brushes.White;
+
+    public static readonly ImmutableSolidColorBrush TrueStateBrush = new(Colors.ForestGreen);
+    public static readonly ImmutableSolidColorBrush FalseStateBrush = new(Colors.DarkRed);
+    public static readonly ImmutableSolidColorBrush UnknownStateBrush = new(Colors.Gray);
+
+    public const int AndGateDefaultNumInputs = 2;
+    public const int OrGateDefaultNumInputs = 2;
+    public const int NandGateDefaultNumInputs = 2;
+    public const int NorGateDefaultNumInputs = 2;
+    public const int XorGateDefaultNumInputs = 2;
+    public const int XnorGateDefaultNumInputs = 2;
+
+    public static readonly BoxSize AndGateSize = new(width: 80, height: 60);
+    public static readonly BoxSize OrGateSize = new(width: 80, height: 60);
+    public static readonly BoxSize NandGateSize = new(width: 80, height: 60);
+    public static readonly BoxSize NorGateSize = new(width: 80, height: 60);
+    public static readonly BoxSize XorGateSize = new(width: 80, height: 60);
+    public static readonly BoxSize XnorGateSize = new(width: 80, height: 60);
+    public static readonly BoxSize NotGateSize = new(width: 60, height: 40);
+
+    public static readonly BoxSize LogicProbeSize = new(width: 35, height: 35);
+    public static readonly BoxSize LogicToggleSize = new(width: 40, height: 30);
+
+    public const int DrawingBigTextSize = 24;
+    public static readonly Typeface DrawingBigTextTypeFace = new(
+        fontFamily: "Arial", weight: FontWeight.Bold
+    );
 
 
 
@@ -38,25 +73,14 @@ public static class Constants
     public const double DefaultMuxWidth = 80;
     public const double DefaultMuxHeight = 180;
 
-    // For controlling the thickness/colors of lines
-    public static Pen WirePen = new Pen(Brushes.Black, 4);
-    public static Pen GhostWirePen = new Pen(Brushes.Gray, 4);
-    public static Pen InvalidWirePen = new Pen(Brushes.DarkRed, 4);
-
     // Terminals
     public static double TerminalRadius = 7;
-    public static IImmutableSolidColorBrush TerminalBrush = Brushes.DarkSlateGray;
-    public static IImmutableSolidColorBrush GhostTerminalBrush = Brushes.LightSlateGray;
-    public static IImmutableSolidColorBrush InvalidTerminalBrush = Brushes.DarkRed;
 
     // Selection
     public static Pen SelectionPen = new Pen(Brushes.DodgerBlue, 2);
     public static SolidColorBrush SelectionBrush = new SolidColorBrush(Colors.DodgerBlue, 0.2);
     
     // For probes/toggles
-    public static IImmutableSolidColorBrush TrueBrush = Brushes.ForestGreen;
-    public static IImmutableSolidColorBrush FalseBrush = Brushes.DarkRed;
-    public static IImmutableSolidColorBrush DontCareBrush = Brushes.Gray;
     
     // For the grid
     public static IBrush GridBrush = new SolidColorBrush(Colors.Black, 0.3);

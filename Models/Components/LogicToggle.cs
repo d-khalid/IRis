@@ -9,162 +9,80 @@ using System;
 
 namespace IRis.Models.Components;
 
-public class LogicToggle : Component, IOutputProvider
+public class LogicToggle() : 
+    Component(numInputs: 0, numOutputs: 1, size: Constants.LogicToggleSize), IOutputProvider
 {
-    public LogicState Value
+    public LogicState State = LogicState.Low;
+
+
+    public Terminal Output
     {
-        get => StoredStates["Value"];
-        set
-        {
-            StoredStates["Value"] = value;
-
-            // Redraw
-            InvalidateVisual();
-
-            // Propagate it into the wire if we have any
-            if (Terminals![0].Wire != null)
-            {
-                Terminals[0].Wire!.Value = value;
-            }
-        }
+        get => _outputs[0];
     }
 
-    public LogicToggle(double width = ComponentDefaults.DefaultWidth, double height = ComponentDefaults.DefaultHeight)
-        : base(width, height)
+
+    public override void Serialize()
     {
-        Width = width * 1 / 2;
-        Height = height * 1 / 2;
+        throw new NotImplementedException();
+    }
 
-        Terminals = new Terminal[1];
 
-        // Snap to nearest grid line
-        static double Snap(double val) => Math.Round(val / 10.0) * 10;
-        double x = Snap(Width + ComponentDefaults.TerminalWireLength);
-        double y = Snap(Height / 2);
-        // Left-oriented
-        Terminals[0] = new Terminal(new Point(x, y), null!);
-
-        // Create a dictionary entry for its value
-        StoredStates["Value"] = LogicState.Low;
-        
-        // Register an event handler for DoubleClicks
-        this.DoubleTapped += (s, e) =>
+    public override LogicToggle Clone()
+    {
+        LogicToggle clone = new()
         {
-            Toggle();
+            State = State
         };
-    }
-
-    private void Toggle()
-    {
-        switch (Value)
-        {
-            case LogicState.Low:
-                Value = LogicState.High;
-                break;
-            case LogicState.High:
-                Value = LogicState.Low;
-                break;
-        }
-    }
-
-
-  
-
-    public override object Clone()
-    {
-        LogicToggle clone = new LogicToggle();
-        
-        // Copy all base properties
-        clone.Width = this.Width;
-        clone.Height = this.Height;
-        clone.Rotation = this.Rotation;
-        clone.IsSelected = this.IsSelected;
-        
-        // Component-specific things
-        if (clone.Terminals is not null && this.Terminals is not null)
-        {
-            clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire!);
-        }
-        clone.Value = this.Value;
-        
-        // Reset visual state
-        clone.VisualChildren.Clear();
-        clone.InvalidateVisual();
 
         return clone;
     }
 
-    public void ComputeOutput()
-    {
-        // Propagate the toggle value to ALL connected wires
-        foreach (var wire in Terminals![0].Wires)
-        {
-            if (wire != null)
-            {
-                wire.Value = this.Value;
-            }
-        }
-    }
 
     public override void Draw(DrawingContext ctx)
     {
-        IImmutableSolidColorBrush fill = ComponentDefaults.DontCareBrush;
-        string content = "X";
+        DrawOutputTerminal(ctx);
 
-        fill = Value switch
-        {
-            LogicState.High => ComponentDefaults.TrueBrush,
-            LogicState.Low => ComponentDefaults.FalseBrush,
-            LogicState.DontCare => ComponentDefaults.DontCareBrush,
-            _ => ComponentDefaults.DontCareBrush
+        ImmutableSolidColorBrush brush = State switch {
+            LogicState.High => Constants.TrueStateBrush,
+            LogicState.Low => Constants.FalseStateBrush,
+            _ => Constants.UnknownStateBrush
         };
-
-        content = Value switch
-        {
-            LogicState.High => "1",
-            LogicState.Low => "0",
-            LogicState.DontCare => "X",
-            _ => "X"
-        };
-
 
         ctx.DrawRectangle(
-            fill,
-            ComponentDefaults.GatePen,
-            new Rect(0, 0, Width, Height)
+            brush: brush,
+            pen: Constants.LogicTogglePen,
+            rect: new Rect(0, 0, Size.Width, Size.Height)
         );
 
-        ctx.DrawLine(ComponentDefaults.WirePen, Terminals![0].Position, new Point(Width, Terminals[0].Position.Y));
-        ctx.DrawEllipse(ComponentDefaults.TerminalBrush, null,
-            Terminals[0].Position, ComponentDefaults.TerminalRadius, ComponentDefaults.TerminalRadius);
-
-        // Draw the text label
-        var text = new FormattedText(
-            content,
-            CultureInfo.CurrentCulture,
-            FlowDirection.LeftToRight,
-            new Typeface(fontFamily: "Arial", weight: FontWeight.Bold),
-            24,
-            Brushes.White
-        );
-
-
-        // Center the text in the ellipse
-        ctx.DrawText(
-            text,
-            new Point(
-                Width / 2 - text.Width / 2,
-                Height / 2 - text.Height / 2
-            )
+        Utils.AddBigTextToDrawing(
+            ctx: ctx,
+            position: new Point(Size.Width / 2, Size.Height / 2),
+            text: State == LogicState.Unknown ? "X" : ((int)State).ToString()
         );
     }
 
-    public override void DrawSelection(DrawingContext ctx)
+
+    private void DrawOutputTerminal(DrawingContext ctx)
     {
-        ctx.DrawRectangle(
-            ComponentDefaults.SelectionBrush,
-            ComponentDefaults.SelectionPen,
-            new Rect(-10, -10, Width + 20, Height + 20)
+        ctx.DrawLine(
+            pen: Constants.TerminalWirePen,
+            p2: new Point(Output.Position.X - Constants.TerminalWireLength, Output.Position.Y),
+            p1: Output.Position
         );
+
+        ctx.DrawEllipse(
+            brush: Constants.TerminalBubbleBrush,
+            pen: null,
+            center: Output.Position, 
+            radiusX: Constants.TerminalBubbleRadius,
+            radiusY: Constants.TerminalBubbleRadius
+        );
+    }
+
+
+    public void ComputeOutput()
+    {
+        Output.State = State;
     }
 }
+
