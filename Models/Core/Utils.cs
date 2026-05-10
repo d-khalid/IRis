@@ -114,7 +114,7 @@ public static class Utils {
 
         // XOR extra curve
         figure.Segments.Add(new ArcSegment {
-            Point = new Point(25 / 3, size.Height * 0.98),
+            Point = new Point(-Constants.XorArcDistance, size.Height*0.98),
             Size = new Size(size.Width / 6, size.Height / 2),
             SweepDirection = SweepDirection.Clockwise,
             IsLargeArc = false

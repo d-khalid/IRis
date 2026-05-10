@@ -33,6 +33,7 @@ public class Wire : CircuitObject, IOutputProvider
     public void AddNode(Terminal terminal, Point position, bool isOutputProvider)
     {
         Nodes.Add((terminal, position, isOutputProvider));
+        AddPoint(position);
         InvalidateVisual();
     }
 
@@ -108,13 +109,7 @@ public class Wire : CircuitObject, IOutputProvider
         
         foreach (var node in Nodes)
         {
-            ctx.DrawEllipse(
-                brush: terminalBrush,
-                pen: null,
-                center: node.Position,
-                radiusX: Constants.TerminalBubbleRadius,
-                radiusY: Constants.TerminalBubbleRadius
-            );
+            node.Terminal.Draw(ctx);
         }
     }
 

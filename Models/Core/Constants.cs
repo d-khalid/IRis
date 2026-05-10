@@ -14,6 +14,7 @@ public static class Constants
     public const int TerminalBubbleRadius = 7;
     public const int NotBubbleRadius = 10;
     public const int OrArcDepth = 6;
+    public const int XorArcDistance = 7;
     public const int AndArcDepth = 15;
     public const int WireWidth = 4;
     public const double CanvasGridThickness = 0.5;
@@ -102,6 +103,5 @@ public static class Constants
     public static double OrArcFactor = 6;
     
     // High brings the 2nd arc closer to the main arc on the gate
-    public static double XorArcDistFactor = 3;
 }
 

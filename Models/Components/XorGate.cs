@@ -40,23 +40,39 @@ public class XorGate(int numInputs = Constants.XorGateDefaultNumInputs) :
         DrawTerminals(ctx);
 
         PathGeometry XorGateGeometry = new();
+        PathGeometry XorGateGeometry2 = new();
+
         PathFigure figure = new()
         {
             StartPoint = new Point(0, 0),
             IsClosed = true
         };
 
-        if (XorGateGeometry.Figures == null)
+        PathFigure figure2 = new()
+        {
+            StartPoint = new Point(-Constants.XorArcDistance, Size.Height*0.02),
+            IsClosed = false
+        };
+
+        if (XorGateGeometry.Figures == null || XorGateGeometry2.Figures == null)
             throw new Exception("Cannot draw: PathGeometry.Figures is null.");
 
         Utils.AddOrSymbolToFigure(figure, Size);
-        Utils.AddXorCurveToFigure(figure, Size);
+        Utils.AddXorCurveToFigure(figure2, Size);
 
         XorGateGeometry.Figures.Add(figure);
+        XorGateGeometry2.Figures.Add(figure2);
+
         ctx.DrawGeometry(
             brush: Constants.GateBrush, 
             pen: Constants.GatePen, 
             geometry: XorGateGeometry
+        );
+
+        ctx.DrawGeometry(
+            brush: null, 
+            pen: Constants.GatePen, 
+            geometry: XorGateGeometry2
         );
     }
     
