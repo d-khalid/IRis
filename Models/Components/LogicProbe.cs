@@ -10,7 +10,7 @@ namespace IRis.Models.Components;
 
 
 public class LogicProbe() : 
-    Component(numInputs: 0, numOutputs: 1, size: Constants.LogicProbeSize)
+    Component(numInputs: 1, numOutputs: 0, size: Constants.LogicProbeSize)
 {
     public LogicState State = LogicState.Unknown;
 
@@ -48,13 +48,16 @@ public class LogicProbe() :
             brush: brush,
             pen: Constants.LogicProbePen,
             center: new Point(Size.Width / 2, Size.Height / 2),
-            radiusX: Constants.LogicProbeRadius, 
-            radiusY: Constants.LogicProbeRadius
+            radiusX: Size.Width / 2, 
+            radiusY: Size.Height / 2
         );
 
         Utils.AddBigTextToDrawing(
             ctx: ctx, 
-            position: new Point(Size.Width / 2, Size.Height / 2), 
+            position: new Point(
+                (Size.Width - Constants.DrawingBigTextSize * 0.75) / 2, 
+                (Size.Height - Constants.DrawingBigTextSize) / 2
+            ), 
             text: State == LogicState.Unknown ? "X" : ((int)State).ToString()
         );
     }
@@ -77,3 +80,4 @@ public class LogicProbe() :
         );
     }
 }
+

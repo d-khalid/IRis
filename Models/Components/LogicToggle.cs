@@ -1,13 +1,13 @@
-using System.Collections.Generic;
-using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
-using IRis.Models.Core;
 using System;
+
+using IRis.Models.Core;
 
 
 namespace IRis.Models.Components;
+
 
 public class LogicToggle() : 
     Component(numInputs: 0, numOutputs: 1, size: Constants.LogicToggleSize), IOutputProvider
@@ -56,7 +56,10 @@ public class LogicToggle() :
 
         Utils.AddBigTextToDrawing(
             ctx: ctx,
-            position: new Point(Size.Width / 2, Size.Height / 2),
+            position: new Point(
+                (Size.Width - Constants.DrawingBigTextSize * 0.5) / 2, 
+                (Size.Height - Constants.DrawingBigTextSize) / 2
+            ),
             text: State == LogicState.Unknown ? "X" : ((int)State).ToString()
         );
     }
