@@ -15,7 +15,6 @@ public static class Constants
     public const int NotBubbleRadius = 10;
     public const int OrArcDepth = 6;
     public const int AndArcDepth = 15;
-    public const int LogicProbeRadius = 20;
     public const int WireWidth = 4;
 
     public static readonly Pen GatePen = new(Brushes.Black, 4);
@@ -49,18 +48,18 @@ public static class Constants
     public const int XorGateDefaultNumInputs = 2;
     public const int XnorGateDefaultNumInputs = 2;
 
-    public static readonly BoxSize AndGateSize = new(width: 80, height: 60);
-    public static readonly BoxSize OrGateSize = new(width: 80, height: 60);
-    public static readonly BoxSize NandGateSize = new(width: 80, height: 60);
-    public static readonly BoxSize NorGateSize = new(width: 80, height: 60);
-    public static readonly BoxSize XorGateSize = new(width: 80, height: 60);
-    public static readonly BoxSize XnorGateSize = new(width: 80, height: 60);
-    public static readonly BoxSize NotGateSize = new(width: 60, height: 40);
+    public static readonly BoxSize AndGateSize = new(width: 60, height: 60);
+    public static readonly BoxSize OrGateSize = new(width: 60, height: 60);
+    public static readonly BoxSize NandGateSize = new(width: 60, height: 60);
+    public static readonly BoxSize NorGateSize = new(width: 60, height: 60);
+    public static readonly BoxSize XorGateSize = new(width: 60, height: 60);
+    public static readonly BoxSize XnorGateSize = new(width: 60, height: 60);
+    public static readonly BoxSize NotGateSize = new(width: 45, height: 45);
 
     public static readonly BoxSize LogicProbeSize = new(width: 35, height: 35);
-    public static readonly BoxSize LogicToggleSize = new(width: 40, height: 30);
+    public static readonly BoxSize LogicToggleSize = new(width: 35, height: 35);
 
-    public const int DrawingBigTextSize = 24;
+    public const int DrawingBigTextSize = 20;
     public static readonly Typeface DrawingBigTextTypeFace = new(
         fontFamily: "Arial", weight: FontWeight.Bold
     );
