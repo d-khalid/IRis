@@ -8,7 +8,7 @@ namespace IRis.Models.Core;
 public abstract class Gate(int numInputs, BoxSize size) : 
     Component(numInputs, numOutputs: 1, size), IOutputProvider
 {
-    public Terminal Output
+    public (Terminal Terminal, Point Position) Output
     {
         get => _outputs[0];
     }

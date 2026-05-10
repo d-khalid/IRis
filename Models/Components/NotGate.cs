@@ -10,7 +10,7 @@ namespace  IRis.Models.Components;
 
 public class NotGate() : Gate(numInputs: 1, size: Constants.OrGateSize)
 {
-    public Terminal Input
+    public (Terminal Terminal, Point Position) Input
     {
         get => _inputs[0];
     }
@@ -58,13 +58,13 @@ public class NotGate() : Gate(numInputs: 1, size: Constants.OrGateSize)
 
     public override void ComputeOutput()
     {
-        if (Input.State == LogicState.Unknown)
+        if (Input.Terminal.State == LogicState.Unknown)
         {
-            Output.State = LogicState.Unknown;
+            Output.Terminal.State = LogicState.Unknown;
             return;
         }
 
-        Output.State = (LogicState)((int)Input.State ^ 1);
+        Output.Terminal.State = (LogicState)((int)Input.Terminal.State ^ 1);
     }
 }
 

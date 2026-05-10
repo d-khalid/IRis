@@ -13,7 +13,7 @@ namespace IRis.Models.Components;
 public class XorGate(int numInputs = Constants.XorGateDefaultNumInputs) : 
     Gate(numInputs, size: Constants.XorGateSize)
 {
-    public List<Terminal> Inputs
+    public List<(Terminal Terminal, Point Position)> Inputs
     {
         get => _inputs;
     }
@@ -63,14 +63,14 @@ public class XorGate(int numInputs = Constants.XorGateDefaultNumInputs) :
 
     public override void ComputeOutput()
     {
-        if (Inputs.Any(i => i.State == LogicState.Unknown))
+        if (Inputs.Any(i => i.Terminal.State == LogicState.Unknown))
         {
-            Output.State = LogicState.Unknown;
+            Output.Terminal.State = LogicState.Unknown;
             return;
         }
 
-        Output.State = (LogicState)Inputs
-            .Select(t => (int)t.State)
+        Output.Terminal.State = (LogicState)Inputs
+            .Select(i => (int)i.Terminal.State)
             .Aggregate((a, b) => a ^ b);
     }
 }

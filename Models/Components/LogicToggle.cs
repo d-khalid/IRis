@@ -15,7 +15,7 @@ public class LogicToggle() :
     public LogicState State = LogicState.Low;
 
 
-    public Terminal Output
+    public (Terminal Terminal, Point Position) Output
     {
         get => _outputs[0];
     }
@@ -85,7 +85,7 @@ public class LogicToggle() :
 
     public void ComputeOutput()
     {
-        Output.State = State;
+        Output.Terminal.State = State;
     }
 }
 

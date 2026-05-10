@@ -15,7 +15,7 @@ public class LogicProbe() :
     public LogicState State = LogicState.Unknown;
 
 
-    public Terminal Input
+    public (Terminal Terminal, Point Position) Input
     {
         get => _inputs[0];
     }
