@@ -11,7 +11,7 @@ namespace IRis.Models.Components;
 
 public class Wire : CircuitObject, IOutputProvider
 {
-    public readonly List<(Terminal Terminal, bool IsOutputProvider)> Nodes = [];
+    public readonly List<(Terminal Terminal, Point Position, bool IsOutputProvider)> Nodes = [];
     public readonly List<Point> Points = [];
 
     public LogicState State = LogicState.Unknown;
@@ -30,10 +30,16 @@ public class Wire : CircuitObject, IOutputProvider
     }
 
 
-    public void AddNode(Terminal terminal, bool isOutputProvider)
+    public void AddNode(Terminal terminal, Point position, bool isOutputProvider)
     {
-        Nodes.Add((terminal, isOutputProvider));
+        Nodes.Add((terminal, position, isOutputProvider));
         InvalidateVisual();
+    }
+
+
+    public void RemoveLastNode()
+    {
+        Nodes.RemoveAt(Nodes.Count-1);
     }
     
     
@@ -105,7 +111,7 @@ public class Wire : CircuitObject, IOutputProvider
             ctx.DrawEllipse(
                 brush: terminalBrush,
                 pen: null,
-                center: node.Terminal.Position,
+                center: node.Position,
                 radiusX: Constants.TerminalBubbleRadius,
                 radiusY: Constants.TerminalBubbleRadius
             );

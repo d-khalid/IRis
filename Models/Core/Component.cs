@@ -13,16 +13,16 @@ public abstract class Component : CircuitObject
     private ComponentOrientation _orientation;
     private readonly RotateTransform _rotateTransform = new();
 
-    protected readonly List<Terminal> _inputs = [];
-    protected readonly List<Terminal> _outputs = [];
+    protected readonly List<(Terminal Terminal, Point Position)> _inputs = [];
+    protected readonly List<(Terminal Terminal, Point Position)> _outputs = [];
 
 
     public Component(int numInputs, int numOutputs, BoxSize size)
     {
         Size = size;
 
-        AddTerminals(_inputs, -Constants.TerminalWireLength, numInputs, Size, false);
-        AddTerminals(_outputs, size.Width+Constants.TerminalWireLength, numOutputs, Size, true);
+        AddTerminals(_inputs, -Constants.TerminalWireLength, numInputs, Size);
+        AddTerminals(_outputs, size.Width+Constants.TerminalWireLength, numOutputs, Size);
     }
 
 
@@ -60,14 +60,15 @@ public abstract class Component : CircuitObject
     }
 
 
-    private static void AddTerminals(List<Terminal> target, int Xdistance, int numTerminals, BoxSize size, bool areOutputProviders)
+    private static void AddTerminals(List<(Terminal, Point)> target, 
+        int Xdistance, int numTerminals, BoxSize size)
     {
         int spacing = size.Height / (numTerminals + 1);
 
         for (int i = 0; i < numTerminals; i++)
         {
             var pos = new Point(Xdistance, spacing * (i + 1));
-            target.Add(new Terminal(Utils.SnapPointToGrid(pos), areOutputProviders));
+            target.Add((new Terminal(), Utils.SnapPointToGrid(pos)));
         }
     }
 }
