@@ -28,14 +28,10 @@ namespace IRis.ViewModels
     public partial class MainWindowViewModel : ViewModelBase
     {
         private readonly Simulation _simulation;
-
-        private ISerializationService _serializer = new JsonSerializationService();
-
         private string? _openedFileName = null;
-
         private string _lastAction = " - ";
-        
         public KeyGestureConfig KeyConfig { get; set; }
+
 
         public string? OpenedFileName
         {
@@ -43,16 +39,19 @@ namespace IRis.ViewModels
             set => SetProperty(ref _openedFileName, value);
         }
 
+
         public string CursorPosition
         {
             get => $"({(int)_simulation.CurrentMousePos.X}, {(int)_simulation.CurrentMousePos.Y})";
         }
+
 
         public string LastAction
         {
             get => _lastAction;
             set => SetProperty(ref _lastAction, value);
         }
+
 
         private string _gridToggleText = "Grid: ON";
         public string GridToggleText
@@ -61,27 +60,24 @@ namespace IRis.ViewModels
             set => SetProperty(ref _gridToggleText, value);
         }
 
+
         public string SimulationButtonColor => _simulation.Simulating ? "Green" : "DarkRed";
         private string _simulationToggleText = "Simulation: OFF";
+
+
         public string SimulationToggleText
         {
             get => _simulationToggleText;
             set => SetProperty(ref _simulationToggleText, value);
         }
 
+
         public MainWindowViewModel(Simulation simulation)
         {
-            // Use the CanvasService for adding/removing components
             _simulation = simulation;
-
-            // Notify cursor pos about changes in LastMousePos
-            _simulation.PropertyChanged += (s, e) =>
-            {
+            _simulation.PropertyChanged += (s, e) => {
                 if (e.PropertyName == nameof(Simulation.CurrentMousePos))
-                {
-                    // Notify that CursorPosition changed
                     OnPropertyChanged(nameof(CursorPosition));
-                }
             };
             
             // TODO: A mismatch between a property name and constructor name is preventing deserialization
@@ -95,7 +91,6 @@ namespace IRis.ViewModels
             // Initialize all commands
             NewCommand = new RelayCommand(New);
             OpenCommand = new AsyncRelayCommand(Open);
-
             SaveCommand = new AsyncRelayCommand(Save);
             SaveAsCommand = new AsyncRelayCommand(SaveAs);
 
@@ -116,21 +111,9 @@ namespace IRis.ViewModels
 
             AddComponentCommand = new RelayCommand<string>(AddComponent!);
             OtherComponentsCommand = new AsyncRelayCommand(OtherComponents);
-
-            GridToggleCommand = new RelayCommand(GridToggle);
             SimulationToggleCommand = new RelayCommand(SimulationToggle);
         }
 
-        // OPTIONS
-        public ICommand GridToggleCommand { get; }
-
-        public void GridToggle()
-        {
-            _simulation.SnapToGridEnabled = !_simulation.SnapToGridEnabled;
-            _simulation.GridEnabled = !_simulation.GridEnabled;
-
-            GridToggleText = _simulation.GridEnabled ? "Grid: ON" : "Grid: OFF";
-        }
 
         public ICommand SimulationToggleCommand { get; }
 
@@ -147,7 +130,7 @@ namespace IRis.ViewModels
                 if (component is LogicProbe lp)
                 {
                     Console.WriteLine("LP value set to null");
-                    lp.Terminals![0].Wire!.Value = null;
+                    lp.Input.State = LogicState.Unknown;
                     lp.InvalidateVisual();
                 }
             }
@@ -175,7 +158,7 @@ namespace IRis.ViewModels
             vm!.XmlGenerated += (xml) =>
             {
                 Console.WriteLine("Event received");
-                var components = _serializer.DeserializeComponentsAsync(xml);
+                var components = JsonSerializationService.DeserializeComponentsAsync(xml);
 
                 _simulation.DeleteAllComponents();
                 _simulation.LoadComponents(components);
@@ -209,7 +192,7 @@ namespace IRis.ViewModels
             vm!.XmlGenerated += (xml) =>
             {
                 Console.WriteLine("Event received");
-                var components = _serializer.DeserializeComponentsAsync(xml);
+                var components = JsonSerializationService.DeserializeComponentsAsync(xml);
 
                 _simulation.DeleteAllComponents();
                 _simulation.LoadComponents(components);
@@ -252,8 +235,8 @@ namespace IRis.ViewModels
             if (file != null)
             {
                 OpenedFileName = file.Path.LocalPath;
-                List<Component> loadedComponents = await _serializer.DeserializeFromFileAsync(OpenedFileName);
-                _simulation.LoadComponents(loadedComponents);
+                // List<Component> loadedComponents = await JsonSerializationService.DeserializeFromFileAsync(OpenedFileName);
+                // _simulation.LoadComponents(loadedComponents);
                 Console.WriteLine("Path:" + OpenedFileName);
             }
         }
@@ -291,7 +274,7 @@ namespace IRis.ViewModels
 
             if (!string.IsNullOrEmpty(_openedFileName))
             {
-                _serializer.SerializeComponents(_simulation, _openedFileName);
+                // _serializer.SerializeComponents(_simulation, _openedFileName);
                 Console.WriteLine("Saved to: " + _openedFileName);
             }
         }
@@ -326,7 +309,7 @@ namespace IRis.ViewModels
 
             if (!string.IsNullOrEmpty(_openedFileName))
             {
-                _serializer.SerializeComponents(_simulation, _openedFileName);
+                // _serializer.SerializeComponents(_simulation, _openedFileName);
                 Console.WriteLine("Saved to: " + _openedFileName);
             }
         }
@@ -520,7 +503,7 @@ namespace IRis.ViewModels
                 {
                     string componentName = result;
                     Console.WriteLine($"Component name: {componentName}");
-                    _serializer.SerializeComponents(_simulation, "RuntimeComponents/" + componentName + ".xml");
+                    // _serializer.SerializeComponents(_simulation, "RuntimeComponents/" + componentName + ".xml");
                     Console.WriteLine("Saved to: " + _openedFileName);
                 }
                 else
