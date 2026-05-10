@@ -15,51 +15,6 @@
     </Design.DataContext>
 
     <Window.KeyBindings>
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[SaveFile]}" 
-            Command="{Binding SaveCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[OpenFile]}" 
-            Command="{Binding OpenCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[NewFile]}" 
-            Command="{Binding NewCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Delete]}" 
-            Command="{Binding DeleteCommand}" 
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Unselect]}" 
-            Command="{Binding AddComponentCommand}" 
-            CommandParameter="NULL"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[OtherComponents]}" 
-            Command="{Binding OtherComponentsCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Copy]}" 
-            Command="{Binding CopyCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Cut]}" 
-            Command="{Binding CutCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Paste]}" 
-            Command="{Binding PasteCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Undo]}" 
-            Command="{Binding UndoCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Redo]}" 
-            Command="{Binding RedoCommand}"
-        />
     </Window.KeyBindings>
 
     <DockPanel>
@@ -68,8 +23,7 @@
             <MenuItem Header="File" >
                 <MenuItem 
                     Header="New"
-                    Command="{Binding NewCommand}"
-                    InputGesture="{Binding KeyConfig.Entries[NewFile]}"
+                    Click="OnFileMenuNewClick"
                 >
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource new_regular}" />
@@ -78,8 +32,7 @@
 
                 <MenuItem 
                     Header="Open..."
-                    Command="{Binding OpenCommand}"
-                    InputGesture="{Binding KeyConfig.Entries[OpenFile]}"
+                    Click="OnFileMenuOpenClick"
                 >
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource open_regular}" />
@@ -88,22 +41,21 @@
 
                 <MenuItem 
                     Header="Save"
-                    Command="{Binding SaveCommand}"
-                    InputGesture="{Binding KeyConfig.Entries[SaveFile]}"
+                    Click="OnFileMenuSaveClick"
                 >
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource save_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}" />
+                <MenuItem Header="Save As..." Click="OnFileMenuSaveAsClick" />
 
                 <Separator />
 
                 <MenuItem Header="Export" >
                     <MenuFlyout>
-                        <MenuItem Header="Component" Command="{Binding ExportComponentCommand}" />
-                        <MenuItem Header="Circuit" Command="{Binding ExportCircuitCommand}" />
+                        <MenuItem Header="Component" Click="OnExportMenuComponentClick" />
+                        <MenuItem Header="Circuit" Click="OnExportMenuCircuitClick" />
                     </MenuFlyout>
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource arrow_export_rtl_regular}" />
@@ -112,21 +64,21 @@
 
                 <Separator />
 
-                <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
+                <MenuItem Header="Exit" Click="OnFileMenuExitClick" />
             </MenuItem>
 
             <MenuItem Header="Edit">
-                <MenuItem Header="Undo"
-                          Command="{Binding UndoCommand}"
-                          InputGesture="{Binding KeyConfig.Entries[Undo]}">
+                <MenuItem 
+                    Header="Undo"
+                    Click="OnEditMenuUndoClick"
+                >
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource arrow_undo_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
                 <MenuItem Header="Redo"
-                    Command="{Binding RedoCommand}"
-                    InputGesture="{Binding KeyConfig.Entries[Redo]}"
+                    Click="OnEditMenuRedoClick"
                 >
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource arrow_redo_regular}"/>
@@ -136,32 +88,28 @@
                 <Separator />
 
                 <MenuItem Header="Cut"
-                          Command="{Binding CutCommand}"
-                          InputGesture="{Binding KeyConfig.Entries[Cut]}">
+                          Click="OnEditMenuCutClick">
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource cut_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
                 <MenuItem Header="Copy"
-                          Command="{Binding CopyCommand}"
-                          InputGesture="{Binding KeyConfig.Entries[Copy]}">
+                          Click="OnEditMenuCopyClick">
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource copy_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
                 <MenuItem Header="Paste"
-                          Command="{Binding PasteCommand}"
-                          InputGesture="{Binding KeyConfig.Entries[Paste]}">
+                          Click="OnEditMenuPasteClick">
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource clipboard_paste_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
                 <MenuItem Header="Delete"
-                          Command="{Binding DeleteCommand}"
-                          InputGesture="{Binding KeyConfig.Entries[Delete]}">
+                          Click="OnEditMenuDeleteClick">
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource delete_regular}" />
                     </MenuItem.Icon>
@@ -171,7 +119,7 @@
             <MenuItem Header="AI">
                 <MenuItem
                     Header="Generate From Prompt"
-                    Command="{Binding AiPromptCommand}">
+                    Click="OnAiMenuGenerateFromPromptClick">
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource star_emphasis_regular}" />
                     </MenuItem.Icon>
@@ -179,7 +127,7 @@
 
                 <MenuItem
                     Header="Generate From Image"
-                    Command="{Binding AiImageCommand}">
+                    Click="OnAiMenuGenerateFromImageClick">
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource image_regular}" />
                     </MenuItem.Icon>
@@ -187,7 +135,7 @@
             </MenuItem>
 
             <MenuItem Header="Help">
-                <MenuItem Header="About" Command="{Binding AboutCommand}">
+                <MenuItem Header="About" Click="OnHelpMenuAboutClick">
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource question_regular}" />
                     </MenuItem.Icon>
@@ -195,55 +143,49 @@
             </MenuItem>
         </Menu>
 
-        <!-- Left Sidebar with Components -->
+        <!-- left sidebar (component adding buttons) -->
         <ScrollViewer DockPanel.Dock="Left" Width="150" BorderThickness="2">
-            <StackPanel Margin="5" Spacing="5">
-                <TextBlock Text="Components" FontWeight="Bold" Margin="0,5" />
+            <StackPanel Margin="15,0" Spacing="5">
+                <TextBlock Text="Components" FontSize="18" FontWeight="Bold" Margin="0,6" />
 
-                <Button Content="AND Gate" Command="{Binding AddComponentCommand}" CommandParameter="AND" />
-                <Button Content="OR Gate" Command="{Binding AddComponentCommand}" CommandParameter="OR" />
-                <Button Content="NOT Gate" Command="{Binding AddComponentCommand}" CommandParameter="NOT" />
-                <Button Content="NAND Gate" Command="{Binding AddComponentCommand}" CommandParameter="NAND" />
-                <Button Content="NOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="NOR" />
-                <Button Content="XOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="XOR" />
-                <Button Content="XNOR Gate" Command="{Binding AddComponentCommand}" CommandParameter="XNOR" />
-                <Button Content="Other" Command="{Binding OtherComponentsCommand}" />
-
-                <TextBlock Text="Input/Output" FontWeight="Bold" Margin="0,10,0,5" />
-
-                <Button Content="Toggle Switch" Command="{Binding AddComponentCommand}" CommandParameter="TOGGLE" />
-                <Button Content="Logic Probe" Command="{Binding AddComponentCommand}" CommandParameter="PROBE" />
-
-                <TextBlock Text="Connectors" FontWeight="Bold" Margin="0,10,0,5" />
-
-                <Button Content="Wire" Command="{Binding AddComponentCommand}" CommandParameter="WIRE" />
+                <Button Content="AND Gate" Click="OnAddAndClick" />
+                <Button Content="OR Gate" Click="OnAddOrClick" />
+                <Button Content="NOT Gate" Click="OnAddNotClick" />
+                <Button Content="NAND Gate" Click="OnAddNandClick" />
+                <Button Content="NOR Gate" Click="OnAddNorClick" />
+                <Button Content="XOR Gate" Click="OnAddXorClick" />
+                <Button Content="XNOR Gate" Click="OnAddXnorClick" />
+                <Button Content="Other" Click="OnAddOtherComponentClick" />
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Top Toolbar (the one bellow menu) -->
+        <!-- top toolbar (the one bellow menu) -->
         <Border DockPanel.Dock="Top" Padding="5">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="{Binding SimulationToggleText}"
-                        Command="{Binding SimulationToggleCommand}"
-                        Background="{Binding SimulationToggleColor}"
-                        Margin="5,0" />
-            </StackPanel>
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
+                    <Button Content="Toggle Switch" Click="OnAddToggleClick" />
+                    <Button Content="Logic Probe" Click="OnAddProbeClick" />
+                    <Button Content="Wire" Click="OnAddWireClick" />
+                </StackPanel>
+                <Button HorizontalAlignment="Right"
+                        Content="Simulation: OFF"
+                        Click="OnSimulationToggleClick"
+                        Background="DarkRed" />
+            </Grid>
         </Border>
 
         <!-- Bottom Status Bar -->
         <Border Background="DarkSlateGray" Height="30" DockPanel.Dock="Bottom" Padding="5">
             <Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <TextBlock Text="File Name: " />
-                    <TextBlock Text="{Binding OpenedFileName}" Margin="5,0" />
-                    <TextBlock Text="|" Margin="5,0" />
-                    <TextBlock Text="Cursor: " />
-                    <TextBlock Text="{Binding CursorPosition}" Margin="2,0" />
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <TextBlock Text="Last Action: " />
-                    <TextBlock Text="{Binding LastAction}" Margin="2,0" />
+                    <TextBlock Margin="10,0">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="Cursor: ({0}, {1})">
+                                <Binding Path="Simulation.CurrentMousePos.X" />
+                                <Binding Path="Simulation.CurrentMousePos.Y" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </StackPanel>
             </Grid>
         </Border>
@@ -257,32 +199,28 @@
                 <Canvas.ContextFlyout>
                     <MenuFlyout>
                         <MenuItem Header="Copy"
-                                  Command="{Binding CopyCommand}"
-                                  InputGesture="{Binding KeyConfig.Entries[Copy]}">
+                                  Click="OnContextMenuCopyClick">
                             <MenuItem.Icon>
                                 <PathIcon Data="{StaticResource copy_regular}" />
                             </MenuItem.Icon>
                         </MenuItem>
 
                         <MenuItem Header="Cut"
-                                  Command="{Binding CutCommand}"
-                                  InputGesture="{Binding KeyConfig.Entries[Cut]}">
+                                  Click="OnContextMenuCutClick">
                             <MenuItem.Icon>
                                 <PathIcon Data="{StaticResource cut_regular}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         
                         <MenuItem Header="Paste"
-                                  Command="{Binding PasteCommand}"
-                                  InputGesture="{Binding KeyConfig.Entries[Paste]}">
+                                  Click="OnContextMenuPasteClick">
                             <MenuItem.Icon>
                                 <PathIcon Data="{StaticResource clipboard_paste_regular}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         
                         <MenuItem Header="Delete"
-                                  Command="{Binding DeleteCommand}"
-                                  InputGesture="{Binding KeyConfig.Entries[Delete]}">
+                                  Click="OnContextMenuDeleteClick">
                             <MenuItem.Icon>
                                 <PathIcon Data="{StaticResource delete_regular}" />
                             </MenuItem.Icon>
