@@ -22,9 +22,9 @@ public static class JsonSerializationService
         // Convert the circuit to DTOs
         CircuitDto circuit = new()
         {
-            Components = simulation.Components
-                .Select(p => ComponentDto.ToDto(p))
-                .ToList(),
+            // Components = simulation.Components
+            //     .Select(p => ComponentDto.ToDto(p))
+            //     .ToList(),
             
             // Wires = simulation.Components
             //     .Select(p => WireDto.ToDto(p))

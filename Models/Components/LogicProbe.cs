@@ -10,7 +10,7 @@ namespace IRis.Models.Components;
 
 
 public class LogicProbe() : 
-    Component(numInputs: 1, numOutputs: 0, size: Constants.LogicProbeSize)
+    Component(numInputs: 1, numOutputs: 0, size: Constants.LogicProbeSize), IOutputProvider
 {
     public LogicState State = LogicState.Unknown;
 
@@ -72,6 +72,16 @@ public class LogicProbe() :
         );
 
         Input.Terminal.Draw(ctx);
+    }
+
+
+    public void ComputeOutput()
+    {
+        if (Input.Terminal.State != State)
+        {
+            State = Input.Terminal.State;
+            InvalidateVisual();
+        }
     }
 }
 

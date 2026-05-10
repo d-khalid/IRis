@@ -21,6 +21,13 @@ public class LogicToggle() :
     }
 
 
+    public void Toggle()
+    {
+        State = (LogicState)((int)State ^ 1);
+        InvalidateVisual();
+    }
+
+
     public override void Serialize()
     {
         throw new NotImplementedException();
@@ -29,11 +36,7 @@ public class LogicToggle() :
 
     public override LogicToggle Clone()
     {
-        LogicToggle clone = new()
-        {
-            State = State
-        };
-
+        LogicToggle clone = new();
         return clone;
     }
 
@@ -79,7 +82,11 @@ public class LogicToggle() :
 
     public void ComputeOutput()
     {
-        Output.Terminal.State = State;
+        if (Output.Terminal.State != State)
+        {
+            Output.Terminal.State = State;
+            InvalidateVisual();
+        }
     }
 }
 

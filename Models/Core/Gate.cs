@@ -50,3 +50,4 @@ public abstract class Gate(int numInputs, BoxSize size) :
 
     public abstract void ComputeOutput();
 }
+

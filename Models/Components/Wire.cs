@@ -38,9 +38,12 @@ public class Wire : CircuitObject, IOutputProvider
     }
 
 
-    public void RemoveLastNode()
+    public void RemoveLastNode(bool removeAssociatedPoint = true)
     {
-        Nodes.RemoveAt(Nodes.Count-1);
+        var nodeToRemove = Nodes[^1];
+        Nodes.Remove(nodeToRemove);
+        if (removeAssociatedPoint) Points.Remove(nodeToRemove.Position);
+        InvalidateVisual();
     }
     
     
@@ -54,6 +57,15 @@ public class Wire : CircuitObject, IOutputProvider
     public void PopPoints(int numOfPointsToPop)
     {
         Points.RemoveAt(Points.Count - numOfPointsToPop);
+        InvalidateVisual();
+    }
+
+
+    public void NullifyTerminalStates()
+    {
+        foreach (var node in Nodes)
+            node.Terminal.State = LogicState.Unknown;
+
         InvalidateVisual();
     }
 
@@ -105,12 +117,6 @@ public class Wire : CircuitObject, IOutputProvider
             pen: wirePen,
             geometry: polyline
         );
-
-        
-        foreach (var node in Nodes)
-        {
-            node.Terminal.Draw(ctx);
-        }
     }
 
 
@@ -123,6 +129,7 @@ public class Wire : CircuitObject, IOutputProvider
             rect: new Rect(0, 0, Width, Height)
         );
 
+        foreach (var node in Nodes) node.Terminal.Draw(context);
         base.Render(context);
     }
 

@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Media;
 using System.Collections.Generic;
+using System;
 
 
 namespace IRis.Models.Core;
@@ -9,6 +10,7 @@ namespace IRis.Models.Core;
 public abstract class Component : CircuitObject
 {
     public BoxSize Size { get; }
+    public Point Position { get; set; }
 
     private ComponentOrientation _orientation;
     private readonly RotateTransform _rotateTransform = new();
@@ -22,7 +24,7 @@ public abstract class Component : CircuitObject
         Size = size;
 
         AddTerminals(_inputs, -Constants.TerminalWireLength, numInputs, Size);
-        AddTerminals(_outputs, size.Width+Constants.TerminalWireLength, numOutputs, Size);
+        AddTerminals(_outputs, size.Width+Constants.TerminalWireLength, numOutputs, Size, true);
     }
 
 
@@ -37,10 +39,39 @@ public abstract class Component : CircuitObject
     }
 
 
+    public void NullifyTerminalStates()
+    {
+        foreach (var i in _inputs)
+            i.Terminal.State = LogicState.Unknown;
+
+        foreach (var o in _outputs)
+            o.Terminal.State = LogicState.Unknown;
+
+        InvalidateVisual();
+    }
+
+
+    public Terminal? GetTerminalHitTest(Point point)
+    {
+        foreach (var i in _inputs)
+        {
+            if (Utils.AddPoints(i.Terminal.Position, Position) == point)
+                return i.Terminal;
+        }
+
+        foreach (var o in _outputs)
+        {
+            if (Utils.AddPoints(o.Terminal.Position, Position) == point)
+                return o.Terminal;
+        }
+
+        return null;
+    }
+
+
     public override bool HitTest(Point point)
     {
-        point = _rotateTransform.Value.Transform(point);
-        return new Rect(0, 0, Width, Height).Contains(point);
+        return new Rect(Position.X, Position.Y, Size.Width, Size.Height).Contains(point);
     }
 
 
@@ -50,10 +81,18 @@ public abstract class Component : CircuitObject
         {
             Draw(context);
             context.DrawRectangle(
-                brush: IsSelected ? Brushes.Transparent : new SolidColorBrush(Colors.DodgerBlue, 0.2),
-                pen: null,
-                rect: new Rect(0, 0, Width, Height)
+                brush: IsSelected ? new SolidColorBrush(Colors.DodgerBlue, 0.2) : Brushes.Transparent,
+                pen: IsSelected ? new Pen(brush: new SolidColorBrush(Colors.DodgerBlue, 0.6), thickness: 2): null,
+                rect: new Rect(
+                    x: -Constants.GridSpacing, 
+                    y: -Constants.GridSpacing,
+                    width: Size.Width+Constants.GridSpacing*2, 
+                    height: Size.Height+Constants.GridSpacing*2
+                )
             );
+
+            foreach (var i in _inputs) i.Terminal.Draw(context);
+            foreach (var o in _outputs) o.Terminal.Draw(context);
 
             base.Render(context);
         }
@@ -61,14 +100,14 @@ public abstract class Component : CircuitObject
 
 
     private static void AddTerminals(List<(Terminal, Point)> target, 
-        int Xdistance, int numTerminals, BoxSize size)
+        int Xdistance, int numTerminals, BoxSize size, bool isOutputProvider = false)
     {
         int spacing = size.Height / (numTerminals + 1);
 
         for (int i = 0; i < numTerminals; i++)
         {
             var pos = Utils.SnapPointToGrid(new Point(Xdistance, spacing * (i + 1)));
-            target.Add((new Terminal(pos), pos));
+            target.Add((new Terminal(pos, isOutputProvider), pos));
         }
     }
 }

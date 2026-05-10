@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Controls;
 using Avalonia.Media.Immutable;
+using System;
 
 
 namespace IRis.Models.Core;
@@ -23,19 +24,11 @@ public struct BoxSize(int width, int height)
 }
 
 
-public class Terminal(Point position) : Control
+public class Terminal(Point position, bool isOutputProvider = false) : Control
 {
     public readonly Point Position = position;
-    private LogicState _state = LogicState.Unknown;
-    public LogicState State
-    {
-        get => _state;
-        set
-        {
-            _state = value;
-            InvalidateVisual();
-        }
-    }
+    public LogicState State = LogicState.Unknown;
+    public readonly bool IsOutputProvider = isOutputProvider;
 
 
     public void Draw(DrawingContext ctx)

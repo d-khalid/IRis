@@ -19,6 +19,12 @@ public static class Utils {
     }
 
 
+    public static Point AddPoints(Point p1, Point p2)
+    {
+        return new Point(p1.X + p2.X, p1.Y + p2.Y);
+    }
+
+
     public static void AddOrSymbolToFigure(PathFigure figure, BoxSize size)
     {
         if (figure.Segments == null)
