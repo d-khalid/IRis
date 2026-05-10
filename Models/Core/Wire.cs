@@ -1,56 +1,67 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Avalonia;
 using Avalonia.Media;
-
+using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Core;
 
 
-namespace IRis.Models.Components;
+namespace IRis.Models.Core;
 
+
+// A simple data object for your nodes
+public partial class WireNode : ObservableObject
+{
+    [ObservableProperty] private Terminal _terminal;
+    [ObservableProperty] private bool _isOutputProvider;
+}
 
 public class Wire : CircuitObject, IOutputProvider
 {
-    public readonly List<(Terminal Terminal, bool IsOutputProvider)> Nodes = [];
-    public readonly List<Point> Points = [];
+    public ObservableCollection<WireNode> Nodes { get; } = new();
+    public ObservableCollection<Point> Points { get; } = new();
 
     public LogicState State = LogicState.Unknown;
 
 
-    public override void Serialize()
-    {
-        throw new NotImplementedException();
-    }
-
-
+    // public override void Serialize()
+    // {
+    //     throw new NotImplementedException();
+    // }
+    
     public override object Clone()
     {
         Wire clone = new();
         return clone;
+        
     }
 
 
-    public void AddNode(Terminal terminal, bool isOutputProvider)
-    {
-        Nodes.Add((terminal, isOutputProvider));
-        InvalidateVisual();
-    }
     
-    
-    public void AddPoint(Point point)
-    {
-        Points.Add(point);
-        InvalidateVisual();
-    }
+    // NOTE: Don't see the point of these when you can directly do wire.Node.Add() or 
 
-
+    // public void AddNode(WireNode node)
+    // {
+    //     Nodes.Add(node);
+    // }
+    //
+    //
+    // public void AddPoint(Point point)
+    // {
+    //     Points.Add(point);
+    //     InvalidateVisual();
+    // }
+    //
+    //
     public void PopPoints(int numOfPointsToPop)
     {
         Points.RemoveAt(Points.Count - numOfPointsToPop);
-        InvalidateVisual();
     }
 
 
+    // TODO: THIS LOOKS WRONG, IT SHOULD CHECK FOR COLLISIONS ALONG THE POLYLINE
+    // I WONDER IF THE DEFAULT HitTest IMPLEMENTATION WILL DO THAT FOR ME
     public override bool HitTest(Point point)
     {
         foreach (Point pt in Points)
@@ -113,17 +124,17 @@ public class Wire : CircuitObject, IOutputProvider
     }
 
 
-    public override void Render(DrawingContext context)
-    {
-        Draw(context);
-        context.DrawRectangle(
-            brush: IsSelected ? Brushes.Transparent : new SolidColorBrush(Colors.DodgerBlue, 0.2),
-            pen: null,
-            rect: new Rect(0, 0, Width, Height)
-        );
-
-        base.Render(context);
-    }
+    // public override void Render(DrawingContext context)
+    // {
+    //     Draw(context);
+    //     context.DrawRectangle(
+    //         brush: IsSelected ? Brushes.Transparent : new SolidColorBrush(Colors.DodgerBlue, 0.2),
+    //         pen: null,
+    //         rect: new Rect(0, 0, Width, Height)
+    //     );
+    //
+    //     base.Render(context);
+    // }
 
 
     public void ComputeOutput()
@@ -155,6 +166,6 @@ public class Wire : CircuitObject, IOutputProvider
             }
         }
 
-        InvalidateVisual();
+        //InvalidateVisual();
     }
 }

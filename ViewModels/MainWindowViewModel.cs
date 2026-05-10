@@ -22,6 +22,11 @@ namespace IRis.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly Simulation _simulation;
+    
+    public List<Component> CircuitComponents
+    {
+        get => _simulation.Components;
+    }
 
 
     public MainWindowViewModel(Simulation simulation)

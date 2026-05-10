@@ -3,54 +3,64 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Rendering;
 using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 
 namespace IRis.Models.Core;
 
 
-public abstract class CircuitObject : Control, ICustomHitTest, ISerializable, ICloneable
+public abstract partial class CircuitObject : ObservableObject, ICustomHitTest, ICloneable
 {
     public readonly Guid Id = Guid.NewGuid();
-    private bool _isSelected = false;
-    private bool _isPreview = true;
+    
+    
+    [ObservableProperty]
     private bool _isValid = true;
+    
+    [ObservableProperty]
+    private bool _isSelected = false;
+    
+    [ObservableProperty]
+    private bool _isPreview = true;
+
+    [ObservableProperty] private double _x;
+    [ObservableProperty] private double _y;
 
 
-    public bool IsSelected
-    {
-        get => _isSelected;
-        set 
-        {
-            _isSelected = value;
-            InvalidateVisual();
-        }
-    }
+    // public bool IsSelected
+    // {
+    //     get => _isSelected;
+    //     set 
+    //     {
+    //         _isSelected = value;
+    //         InvalidateVisual();
+    //     }
+    // }
+    //
+    //
+    // public bool IsPreview
+    // {
+    //     get => _isPreview;
+    //     set
+    //     {
+    //         _isPreview = value;
+    //         InvalidateVisual();
+    //     }
+    // }
 
 
-    public bool IsPreview
-    {
-        get => _isPreview;
-        set
-        {
-            _isPreview = value;
-            InvalidateVisual();
-        }
-    }
-
-
-    public bool IsValid
-    {
-        get => _isValid;
-        set
-        {
-            _isValid = value;
-            InvalidateVisual();
-        }
-    }
+    // public bool IsVabstract alid
+    // {
+    //     get => _isValid;
+    //     set
+    //     {
+    //         _isValid = value;
+    //         InvalidateVisual();
+    //     }
+    // }
 
 
     public abstract bool HitTest(Point point);
-    public abstract void Serialize();
     public abstract object Clone();
     public abstract void Draw(DrawingContext ctx);
 }

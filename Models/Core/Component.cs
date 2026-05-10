@@ -1,15 +1,17 @@
 using Avalonia;
 using Avalonia.Media;
 using System.Collections.Generic;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 
 namespace IRis.Models.Core;
 
 
-public abstract class Component : CircuitObject
+public abstract partial class Component : CircuitObject
 {
     public BoxSize Size { get; }
 
+    [ObservableProperty]
     private ComponentOrientation _orientation;
     private readonly RotateTransform _rotateTransform = new();
 

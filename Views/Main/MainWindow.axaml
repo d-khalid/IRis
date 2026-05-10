@@ -1,9 +1,11 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:IRis.ViewModels"
+        xmlns:core="using:IRis.Models.Core"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
+        
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="IRis.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -15,82 +17,68 @@
     </Design.DataContext>
 
     <Window.KeyBindings>
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[SaveFile]}" 
-            Command="{Binding SaveCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[OpenFile]}" 
-            Command="{Binding OpenCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[NewFile]}" 
-            Command="{Binding NewCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Delete]}" 
-            Command="{Binding DeleteCommand}" 
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Unselect]}" 
-            Command="{Binding AddComponentCommand}" 
-            CommandParameter="NULL"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[OtherComponents]}" 
-            Command="{Binding OtherComponentsCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Copy]}" 
-            Command="{Binding CopyCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Cut]}" 
-            Command="{Binding CutCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Paste]}" 
-            Command="{Binding PasteCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Undo]}" 
-            Command="{Binding UndoCommand}"
-        />
-        <KeyBinding 
-            Gesture="{Binding KeyConfig.Entries[Redo]}" 
-            Command="{Binding RedoCommand}"
-        />
+        <KeyBinding
+            Gesture="{Binding KeyConfig.Entries[SaveFile]}"
+            Command="{Binding SaveCommand}" />
+        <KeyBinding
+            Gesture="{Binding KeyConfig.Entries[OpenFile]}"
+            Command="{Binding OpenCommand}" />
+        <KeyBinding
+            Gesture="{Binding KeyConfig.Entries[NewFile]}"
+            Command="{Binding NewCommand}" />
+        <KeyBinding
+            Gesture="{Binding KeyConfig.Entries[Delete]}"
+            Command="{Binding DeleteCommand}" />
+        <KeyBinding
+            Gesture="{Binding KeyConfig.Entries[Unselect]}"
+            Command="{Binding AddComponentCommand}"
+            CommandParameter="NULL" />
+        <KeyBinding
+            Gesture="{Binding KeyConfig.Entries[OtherComponents]}"
+            Command="{Binding OtherComponentsCommand}" />
+        <KeyBinding
+            Gesture="{Binding KeyConfig.Entries[Copy]}"
+            Command="{Binding CopyCommand}" />
+        <KeyBinding
+            Gesture="{Binding KeyConfig.Entries[Cut]}"
+            Command="{Binding CutCommand}" />
+        <KeyBinding
+            Gesture="{Binding KeyConfig.Entries[Paste]}"
+            Command="{Binding PasteCommand}" />
+        <KeyBinding
+            Gesture="{Binding KeyConfig.Entries[Undo]}"
+            Command="{Binding UndoCommand}" />
+        <KeyBinding
+            Gesture="{Binding KeyConfig.Entries[Redo]}"
+            Command="{Binding RedoCommand}" />
     </Window.KeyBindings>
 
     <DockPanel>
         <!-- Top Menu Bar -->
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File" >
-                <MenuItem 
+            <MenuItem Header="File">
+                <MenuItem
                     Header="New"
                     Command="{Binding NewCommand}"
-                    InputGesture="{Binding KeyConfig.Entries[NewFile]}"
-                >
+                    InputGesture="{Binding KeyConfig.Entries[NewFile]}">
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource new_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem 
+                <MenuItem
                     Header="Open..."
                     Command="{Binding OpenCommand}"
-                    InputGesture="{Binding KeyConfig.Entries[OpenFile]}"
-                >
+                    InputGesture="{Binding KeyConfig.Entries[OpenFile]}">
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource open_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem 
+                <MenuItem
                     Header="Save"
                     Command="{Binding SaveCommand}"
-                    InputGesture="{Binding KeyConfig.Entries[SaveFile]}"
-                >
+                    InputGesture="{Binding KeyConfig.Entries[SaveFile]}">
                     <MenuItem.Icon>
                         <PathIcon Data="{StaticResource save_regular}" />
                     </MenuItem.Icon>
@@ -100,7 +88,7 @@
 
                 <Separator />
 
-                <MenuItem Header="Export" >
+                <MenuItem Header="Export">
                     <MenuFlyout>
                         <MenuItem Header="Component" Command="{Binding ExportComponentCommand}" />
                         <MenuItem Header="Circuit" Command="{Binding ExportCircuitCommand}" />
@@ -125,11 +113,10 @@
                 </MenuItem>
 
                 <MenuItem Header="Redo"
-                    Command="{Binding RedoCommand}"
-                    InputGesture="{Binding KeyConfig.Entries[Redo]}"
-                >
+                          Command="{Binding RedoCommand}"
+                          InputGesture="{Binding KeyConfig.Entries[Redo]}">
                     <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource arrow_redo_regular}"/>
+                        <PathIcon Data="{StaticResource arrow_redo_regular}" />
                     </MenuItem.Icon>
                 </MenuItem>
 
@@ -248,13 +235,20 @@
             </Grid>
         </Border>
 
-        <!-- Main Canvas Area -->
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <Canvas x:Name="MainCanvas" Background="LightGray" MinWidth="2000" MinHeight="2000">
-                <!-- Circuit elements will be added here programmatically -->
 
-                <!-- Context Menu Setup -->
-                <Canvas.ContextFlyout>
+            <ItemsControl ItemsSource="{Binding CircuitComponents}"
+                          Background="LightGray"
+                          MinWidth="2000"
+                          MinHeight="2000">
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ContextFlyout>
                     <MenuFlyout>
                         <MenuItem Header="Copy"
                                   Command="{Binding CopyCommand}"
@@ -271,7 +265,7 @@
                                 <PathIcon Data="{StaticResource cut_regular}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        
+
                         <MenuItem Header="Paste"
                                   Command="{Binding PasteCommand}"
                                   InputGesture="{Binding KeyConfig.Entries[Paste]}">
@@ -279,7 +273,7 @@
                                 <PathIcon Data="{StaticResource clipboard_paste_regular}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        
+
                         <MenuItem Header="Delete"
                                   Command="{Binding DeleteCommand}"
                                   InputGesture="{Binding KeyConfig.Entries[Delete]}">
@@ -288,9 +282,71 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuFlyout>
-                </Canvas.ContextFlyout>
-            </Canvas>
+                </ItemsControl.ContextFlyout>
+
+                
+                <!-- DataTemplates do the drawing, while Style handles things like position which are relative to the Canvas -->
+                <ItemsControl.Styles>
+                    <Style Selector="ItemsControl > ContentPresenter" x:DataType="core:CircuitObject">
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                    </Style>
+                </ItemsControl.Styles>
+
+                <ItemsControl.DataTemplates>
+
+                    <DataTemplate DataType="{x:Type core:Wire}">
+                        <Polyline Points="{Binding Points}" Stroke="Black" StrokeThickness="2" />
+                    </DataTemplate>
+                   
+                </ItemsControl.DataTemplates>
+
+            </ItemsControl>
         </ScrollViewer>
+
+        <!-- ~1~ Main Canvas Area @1@ -->
+        <!-- <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"> -->
+        <!--     <Canvas x:Name="MainCanvas" Background="LightGray" MinWidth="2000" MinHeight="2000"> -->
+        <!--         ~1~ Circuit elements will be added here programmatically @1@ -->
+        <!--          -->
+        <!-- -->
+        <!--         ~1~ Context Menu Setup @1@ -->
+        <!--         <Canvas.ContextFlyout> -->
+        <!--             <MenuFlyout> -->
+        <!--                 <MenuItem Header="Copy" -->
+        <!--                           Command="{Binding CopyCommand}" -->
+        <!--                           InputGesture="{Binding KeyConfig.Entries[Copy]}"> -->
+        <!--                     <MenuItem.Icon> -->
+        <!--                         <PathIcon Data="{StaticResource copy_regular}" /> -->
+        <!--                     </MenuItem.Icon> -->
+        <!--                 </MenuItem> -->
+        <!-- -->
+        <!--                 <MenuItem Header="Cut" -->
+        <!--                           Command="{Binding CutCommand}" -->
+        <!--                           InputGesture="{Binding KeyConfig.Entries[Cut]}"> -->
+        <!--                     <MenuItem.Icon> -->
+        <!--                         <PathIcon Data="{StaticResource cut_regular}" /> -->
+        <!--                     </MenuItem.Icon> -->
+        <!--                 </MenuItem> -->
+        <!--                  -->
+        <!--                 <MenuItem Header="Paste" -->
+        <!--                           Command="{Binding PasteCommand}" -->
+        <!--                           InputGesture="{Binding KeyConfig.Entries[Paste]}"> -->
+        <!--                     <MenuItem.Icon> -->
+        <!--                         <PathIcon Data="{StaticResource clipboard_paste_regular}" /> -->
+        <!--                     </MenuItem.Icon> -->
+        <!--                 </MenuItem> -->
+        <!--                  -->
+        <!--                 <MenuItem Header="Delete" -->
+        <!--                           Command="{Binding DeleteCommand}" -->
+        <!--                           InputGesture="{Binding KeyConfig.Entries[Delete]}"> -->
+        <!--                     <MenuItem.Icon> -->
+        <!--                         <PathIcon Data="{StaticResource delete_regular}" /> -->
+        <!--                     </MenuItem.Icon> -->
+        <!--                 </MenuItem> -->
+        <!--             </MenuFlyout> -->
+        <!--         </Canvas.ContextFlyout> -->
+        <!--     </Canvas> -->
+        <!-- </ScrollViewer> -->
     </DockPanel>
 </Window>
-
