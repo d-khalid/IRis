@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Media;
-using Avalonia.Rendering;
-using Avalonia.Controls;
 
 using IRis.Models.Core;
 
@@ -11,37 +9,21 @@ using IRis.Models.Core;
 namespace IRis.Models.Components;
 
 
-public class Wire : Control, Core.ICloneable, ISerializable, IOutputProvider, ICustomHitTest
+public class Wire : CircuitObject, IOutputProvider
 {
-    public readonly Guid Id = Guid.NewGuid();
     public readonly List<(Terminal Terminal, bool IsOutputProvider)> Nodes = [];
     public readonly List<Point> Points = [];
+
     public LogicState State = LogicState.Unknown;
 
-    // drawing controls
-    public bool IsValid { get; set; } = true;
-    public bool IsBeingEdited { get; set; } = true;
 
-    private bool _isSelected = false;
-
-
-    public bool IsSelected
-    {
-        get => _isSelected;
-        set {
-            _isSelected = value;
-            InvalidateVisual();
-        }
-    }
-
-
-    public void Serialize()
+    public override void Serialize()
     {
         throw new NotImplementedException();
     }
 
 
-    public object Clone()
+    public override object Clone()
     {
         Wire clone = new();
         return clone;
@@ -69,7 +51,7 @@ public class Wire : Control, Core.ICloneable, ISerializable, IOutputProvider, IC
     }
 
 
-    public bool HitTest(Point point)
+    public override bool HitTest(Point point)
     {
         foreach (Point pt in Points)
         {
@@ -81,17 +63,17 @@ public class Wire : Control, Core.ICloneable, ISerializable, IOutputProvider, IC
     }
     
 
-    public void Draw(DrawingContext ctx)
+    public override void Draw(DrawingContext ctx)
     {
         if (Points.Count == 0) 
             return;
 
         Pen wirePen = IsValid ? 
-            (IsBeingEdited ? Constants.GhostWirePen : Constants.WirePen) : 
+            (IsPreview ? Constants.GhostWirePen : Constants.WirePen) : 
             Constants.InvalidWirePen;
 
         IBrush terminalBrush = IsValid ? 
-            (IsBeingEdited ? Constants.GhostTerminalBubbleBrush : Constants.TerminalBubbleBrush) :
+            (IsPreview ? Constants.GhostTerminalBubbleBrush : Constants.TerminalBubbleBrush) :
             Constants.InvalidTerminalBubbleBrush;
 
 
