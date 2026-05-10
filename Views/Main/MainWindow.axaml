@@ -248,7 +248,7 @@
 
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
 
-            <ItemsControl ItemsSource="{Binding CircuitComponents}"
+            <ItemsControl ItemsSource="{Binding Simulation.Components}"
                           Background="LightGray"
                           MinWidth="2000"
                           MinHeight="2000">
@@ -303,10 +303,13 @@
                         <Setter Property="Canvas.Top" Value="{Binding Y}" />
                     </Style>
                 </ItemsControl.Styles>
+                
 
                 
                 <!-- Wire Drawing, Drawing the Terminals adds inner data templating  -->
-                <DataTemplate DataType="{x:Type core:Wire}">
+                <ItemsControl.DataTemplates>
+                    
+                    <DataTemplate DataType="{x:Type core:Wire}">
                     <Canvas>
 
                         <Polyline Points="{Binding Points}"
@@ -365,35 +368,84 @@
 
                     </Canvas>
                 </DataTemplate>
-                
-                
-                <DataTemplate DataType="{x:Type comp:OrGate}">
-                    <Grid Width="{Binding Size.Width}" Height="{Binding Size.Height}">
+                    
+                    <DataTemplate DataType="{x:Type comp:OrGate}">
+                        <Grid Width="{Binding Size.Width}" Height="{Binding Size.Height}">
         
-                        <Grid.RenderTransform>
-                            <RotateTransform Angle="{Binding Rotation}" />
-                        </Grid.RenderTransform>
+                            <Grid.RenderTransform>
+                                <RotateTransform Angle="{Binding Rotation}" />
+                            </Grid.RenderTransform>
+                            
+                            <ItemsControl ItemsSource="{Binding Inputs}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="core:Terminal">
+                                        <Canvas Canvas.Left="{Binding Position.X}" Canvas.Top="{Binding Position.Y}">
+                                            <Line StartPoint="0,0" 
+                                                   EndPoint="{x:Static core:Constants.InputWireEndPoint}" 
+                                                   Stroke="Black" 
+                                                   StrokeThickness="2" />
+                        <ContentControl Content="{Binding Output}">
+                                <ContentControl.ContentTemplate>
+                                    <DataTemplate>
+                                        <Canvas Canvas.Left="{Binding Position.X}" Canvas.Top="{Binding Position.Y}">
+                                            <Line StartPoint="0,0" 
+                                                  EndPoint="{x:Static core:Constants.OutputWireEndPoint}" 
+                                                  Stroke="Black" 
+                                                  StrokeThickness="2" />
+                        
+                                            <Ellipse Width="8" Height="8" Margin="-4,-4,0,0" Fill="DarkBlue" />
+                                        </Canvas>
+                                    </DataTemplate>
+                                </ContentControl.ContentTemplate>
+                            </ContentControl>
+                                            <Ellipse Width="8" Height="8" Margin="-4,-4,0,0" Fill="DarkBlue" />
+                                        </Canvas>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <ContentControl Content="{Binding Output}">
+                                <ContentControl.ContentTemplate>
+                                    <DataTemplate x:DataType="core:Terminal">
+                                        <Canvas Canvas.Left="{Binding Position.X}" Canvas.Top="{Binding Position.Y}">
+                                            <Line StartPoint="0,0" 
+                                                  EndPoint="{x:Static core:Constants.OutputWireEndPoint}" 
+                                                  Stroke="Black" 
+                                                  StrokeThickness="2" />
+                        
+                                            <Ellipse Width="8" Height="8" Margin="-4,-4,0,0" Fill="DarkBlue" />
+                                        </Canvas>
+                                    </DataTemplate>
+                                </ContentControl.ContentTemplate>
+                            </ContentControl>
         
                         
-                        <Path Classes="gate" 
-                              Data="M 0,0 A 10,30 0 0 1 0,60 A 60,30 0 0 0 60,30 A 60,30 0 0 0 0,0 Z" />
+                            <Path Classes="gate"
+                                  Data="M 0,0 A 10,30 0 0 1 0,60 A 60,30 0 0 0 60,30 A 60,30 0 0 0 0,0 Z" />
 
-                        <Rectangle Classes.unselected="{Binding !IsSelected}">
-                            <Rectangle.Styles>
-                                <Style Selector="Rectangle">
-                                    <Setter Property="Fill" Value="Transparent" />
-                                </Style>
+                            <Rectangle Classes.unselected="{Binding !IsSelected}">
+                                <Rectangle.Styles>
+                                    <Style Selector="Rectangle">
+                                        <Setter Property="Fill" Value="Transparent" />
+                                    </Style>
                 
-                                <Style Selector="Rectangle.unselected">
-                                    <Setter Property="Fill" Value="DodgerBlue" /> 
-                                    <Setter Property="Opacity" Value="0.2" />
-                                </Style>
-                            </Rectangle.Styles>
-                        </Rectangle>
+                                    <Style Selector="Rectangle.unselected">
+                                        <Setter Property="Fill" Value="DodgerBlue" /> 
+                                        <Setter Property="Opacity" Value="0.2" />
+                                    </Style>
+                                </Rectangle.Styles>
+                            </Rectangle>
         
-                    </Grid>
-                </DataTemplate>
-                
+                        </Grid>
+                    </DataTemplate>
+                    
+                    
+                </ItemsControl.DataTemplates>
                 
                 
 

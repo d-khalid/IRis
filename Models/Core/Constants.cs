@@ -9,6 +9,9 @@ public static class Constants
 {
     // TODO: MOST OR ALL OF THESE WILL GET THEIR JOB TAKEN BY XAML 
     
+    public static readonly Point InputWireEndPoint = new(TerminalWireLength, 0);
+    public static readonly Point OutputWireEndPoint = new(-TerminalWireLength, 0);
+    
     
     // DO NOT TOUCH THIS ONE!
     public const int GridSpacing = 10;

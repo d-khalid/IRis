@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ICommand = System.Windows.Input.ICommand;
 
@@ -22,12 +23,10 @@ namespace IRis.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly Simulation _simulation;
+    [ObservableProperty]
+    private Simulation _simulation;
     
-    public List<Component> CircuitComponents
-    {
-        get => _simulation.Components;
-    }
+  
 
 
     public MainWindowViewModel(Simulation simulation)

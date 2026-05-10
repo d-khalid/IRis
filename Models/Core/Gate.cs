@@ -10,7 +10,7 @@ public abstract class Gate(int numInputs, BoxSize size) :
 {
     public Terminal Output
     {
-        get => _outputs[0];
+        get => Outputs[0];
     }
 
 

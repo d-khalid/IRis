@@ -34,30 +34,31 @@ public class OrGate(int numInputs = Constants.OrGateDefaultNumInputs) :
         return clone;
     }
 
+    // NOTE: UNEMPLOYED DUE TO XAML
 
-    public override void Draw(DrawingContext ctx)
-    {
-        DrawTerminals(ctx);
-
-        PathGeometry OrGateGeometry = new();
-        PathFigure figure = new()
-        {
-            StartPoint = new Point(0, 0),
-            IsClosed = true
-        };
-
-        if (OrGateGeometry.Figures == null)
-            throw new Exception("Cannot draw: PathGeometry.Figures is null.");
-
-        Utils.AddOrSymbolToFigure(figure, Size);
-
-        OrGateGeometry.Figures.Add(figure);
-        ctx.DrawGeometry(
-            brush: Constants.GateBrush, 
-            pen: Constants.GatePen, 
-            geometry: OrGateGeometry
-        );
-    }
+    // public override void Draw(DrawingContext ctx)
+    // {
+    //     DrawTerminals(ctx);
+    //
+    //     PathGeometry OrGateGeometry = new();
+    //     PathFigure figure = new()
+    //     {
+    //         StartPoint = new Point(0, 0),
+    //         IsClosed = true
+    //     };
+    //
+    //     if (OrGateGeometry.Figures == null)
+    //         throw new Exception("Cannot draw: PathGeometry.Figures is null.");
+    //
+    //     Utils.AddOrSymbolToFigure(figure, Size);
+    //
+    //     OrGateGeometry.Figures.Add(figure);
+    //     ctx.DrawGeometry(
+    //         brush: Constants.GateBrush, 
+    //         pen: Constants.GatePen, 
+    //         geometry: OrGateGeometry
+    //     );
+    // }
     
 
     public override void ComputeOutput()

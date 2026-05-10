@@ -15,9 +15,9 @@ namespace IRis.Models;
 
 public partial class Simulation : ObservableObject
 {
-     [ObservableProperty] private List<Component> _components;
-     [ObservableProperty] private List<Component> _selectedComponents;
-     [ObservableProperty] private List<Component> _movedWires;
+     [ObservableProperty] private List<Component> _components = new();
+     [ObservableProperty] private List<Component> _selectedComponents = new();
+     [ObservableProperty] private List<Component> _movedWires = new();
      [ObservableProperty] private Point _currentMousePos;
      
      
@@ -25,6 +25,16 @@ public partial class Simulation : ObservableObject
      private bool _isSimulating;
      
      private DispatcherTimer? _updateTimer;
+
+     public Simulation()
+     {
+          var or = new OrGate();
+          _components.Add(or);
+
+          or.X = 100;
+          or.Y = 100;
+
+     }
      
      
      

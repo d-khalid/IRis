@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Rendering;
@@ -60,9 +61,10 @@ public abstract partial class CircuitObject : ObservableObject, ICloneable
     // }
 
     
+    
     // NOTE: I think the XAML does this automatically too
 
     // public abstract bool HitTest(Point point);
     public abstract object Clone();
-    public abstract void Draw(DrawingContext ctx);
+    // public abstract void Draw(DrawingContext ctx);
 }

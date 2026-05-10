@@ -73,55 +73,57 @@ public class Wire : CircuitObject, IOutputProvider
     //     return false;
     // }
     //
+    
+    // NOTE: Also unemployed due to XAML
 
-    public override void Draw(DrawingContext ctx)
-    {
-        if (Points.Count == 0) 
-            return;
-
-        Pen wirePen = IsValid ? 
-            (IsPreview ? Constants.GhostWirePen : Constants.WirePen) : 
-            Constants.InvalidWirePen;
-
-        IBrush terminalBrush = IsValid ? 
-            (IsPreview ? Constants.GhostTerminalBubbleBrush : Constants.TerminalBubbleBrush) :
-            Constants.InvalidTerminalBubbleBrush;
-
-
-        var polyline = new StreamGeometry();
-        using (var ctxGeo = polyline.Open())
-        {
-            ctxGeo.BeginFigure(Points[0], false);
-
-            foreach (Point pt in Points)
-            {
-                if (pt == Points[0]) 
-                    continue;
-
-                ctxGeo.LineTo(pt);
-            }
-
-            ctxGeo.EndFigure(false);
-        }
-
-        ctx.DrawGeometry(
-            brush: null,
-            pen: wirePen,
-            geometry: polyline
-        );
-
-        
-        foreach (var node in Nodes)
-        {
-            ctx.DrawEllipse(
-                brush: terminalBrush,
-                pen: null,
-                center: node.Terminal.Position,
-                radiusX: Constants.TerminalBubbleRadius,
-                radiusY: Constants.TerminalBubbleRadius
-            );
-        }
-    }
+    // public override void Draw(DrawingContext ctx)
+    // {
+    //     if (Points.Count == 0) 
+    //         return;
+    //
+    //     Pen wirePen = IsValid ? 
+    //         (IsPreview ? Constants.GhostWirePen : Constants.WirePen) : 
+    //         Constants.InvalidWirePen;
+    //
+    //     IBrush terminalBrush = IsValid ? 
+    //         (IsPreview ? Constants.GhostTerminalBubbleBrush : Constants.TerminalBubbleBrush) :
+    //         Constants.InvalidTerminalBubbleBrush;
+    //
+    //
+    //     var polyline = new StreamGeometry();
+    //     using (var ctxGeo = polyline.Open())
+    //     {
+    //         ctxGeo.BeginFigure(Points[0], false);
+    //
+    //         foreach (Point pt in Points)
+    //         {
+    //             if (pt == Points[0]) 
+    //                 continue;
+    //
+    //             ctxGeo.LineTo(pt);
+    //         }
+    //
+    //         ctxGeo.EndFigure(false);
+    //     }
+    //
+    //     ctx.DrawGeometry(
+    //         brush: null,
+    //         pen: wirePen,
+    //         geometry: polyline
+    //     );
+    //
+    //     
+    //     foreach (var node in Nodes)
+    //     {
+    //         ctx.DrawEllipse(
+    //             brush: terminalBrush,
+    //             pen: null,
+    //             center: node.Terminal.Position,
+    //             radiusX: Constants.TerminalBubbleRadius,
+    //             radiusY: Constants.TerminalBubbleRadius
+    //         );
+    //     }
+    // }
 
 
     // public override void Render(DrawingContext context)
