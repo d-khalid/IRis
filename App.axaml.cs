@@ -26,7 +26,7 @@ public partial class App : Application
         // Create a CanvasService object and pass its reference 
         // to both MainWindow and MainWindowViewModel
         // This is the main service object for drawings and simulation
-        Simulation simulation = new Simulation();
+        Simulation simulation = new();
 
     
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

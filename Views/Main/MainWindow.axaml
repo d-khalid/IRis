@@ -226,9 +226,6 @@
                         Command="{Binding SimulationToggleCommand}"
                         Background="{Binding SimulationButtonColor}"
                         Margin="5,0" />
-                <Button Content="{Binding GridToggleText}"
-                        Command="{Binding GridToggleCommand}"
-                        Margin="5,0" />
             </StackPanel>
         </Border>
 
