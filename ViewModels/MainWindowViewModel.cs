@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.Input;
 
 using IRis.Models;
 using IRis.Services;
@@ -15,10 +16,22 @@ using IRis.Views;
 namespace IRis.ViewModels;
 
 
-public partial class MainWindowViewModel(Simulation simulation) : ViewModelBase
+public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly Simulation _simulation = simulation;
+    private readonly Simulation _simulation;
     public Simulation Simulation => _simulation;
+
+    public IRelayCommand CancelPreviewCommand { get; }
+    public IRelayCommand DeleteSelectedCommand { get; }
+
+
+    public MainWindowViewModel(Simulation simulation)
+    {
+        _simulation = simulation;
+
+        CancelPreviewCommand = new RelayCommand(_simulation.DropPreview);
+        DeleteSelectedCommand = new RelayCommand(_simulation.DeleteSelected);
+    }
 
 
 

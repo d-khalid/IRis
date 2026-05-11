@@ -12,7 +12,7 @@ public static class Constants
 
     public const int TerminalWireLength = 25;
     public const int TerminalBubbleRadius = 7;
-    public const int NotBubbleRadius = 10;
+    public const int NotBubbleRadius = 7;
     public const int OrArcDepth = 6;
     public const int XorArcDistance = 7;
     public const int AndArcDepth = 15;
@@ -62,7 +62,7 @@ public static class Constants
     public static readonly BoxSize NorGateSize = new(width: 60, height: 60);
     public static readonly BoxSize XorGateSize = new(width: 60, height: 60);
     public static readonly BoxSize XnorGateSize = new(width: 60, height: 60);
-    public static readonly BoxSize NotGateSize = new(width: 45, height: 45);
+    public static readonly BoxSize NotGateSize = new(width: 35, height: 35);
 
     public static readonly BoxSize LogicProbeSize = new(width: 35, height: 35);
     public static readonly BoxSize LogicToggleSize = new(width: 35, height: 35);

@@ -14,7 +14,9 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <Window.KeyBindings>
+    <Window.KeyBindings>    
+        <KeyBinding Gesture="Z" Command="{Binding CancelPreviewCommand}" />
+        <KeyBinding Gesture="Delete" Command="{Binding DeleteSelectedCommand}" />
     </Window.KeyBindings>
 
     <DockPanel>

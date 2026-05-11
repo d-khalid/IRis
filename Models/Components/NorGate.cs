@@ -37,7 +37,7 @@ public class NorGate(int numInputs = Constants.NorGateDefaultNumInputs) :
 
     public override void Draw(DrawingContext ctx)
     {
-        DrawTerminals(ctx);
+        DrawTerminals(ctx, notBubbleMode: true);
 
         PathGeometry NorGateGeometry = new();
         PathFigure figure = new()

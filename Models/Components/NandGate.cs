@@ -37,7 +37,7 @@ public class NandGate(int numInputs = Constants.NandGateDefaultNumInputs) :
 
     public override void Draw(DrawingContext ctx)
     {
-        DrawTerminals(ctx);
+        DrawTerminals(ctx, notBubbleMode: true);
 
         PathGeometry NandGateGeometry = new();
         PathFigure figure = new()

@@ -14,10 +14,10 @@ public abstract class Gate(int numInputs, BoxSize size) :
     }
 
 
-    protected void DrawTerminals(DrawingContext ctx)
+    protected void DrawTerminals(DrawingContext ctx, bool notBubbleMode = false)
     {
         DrawInputTerminals(ctx);
-        DrawOutputTerminal(ctx);
+        DrawOutputTerminal(ctx, notBubbleMode);
     }
 
 
@@ -36,15 +36,30 @@ public abstract class Gate(int numInputs, BoxSize size) :
     }
 
 
-    private void DrawOutputTerminal(DrawingContext ctx)
+    private void DrawOutputTerminal(DrawingContext ctx, bool notBubbleMode = false)
     {
+        Point pt;
+        if (notBubbleMode)
+        {
+            pt = new Point(
+                Output.Position.X + Constants.NotBubbleRadius,
+                Output.Position.Y
+            );
+        }
+        else
+        {
+            pt = Output.Position;
+        }
+
         ctx.DrawLine(
             pen: Constants.TerminalWirePen,
-            p2: new Point(Output.Position.X - Constants.TerminalWireLength, Output.Position.Y),
-            p1: Output.Position
+            p2: new Point(
+                x: pt.X - Constants.TerminalWireLength, 
+                y: pt.Y),
+            p1: pt
         );
 
-        Output.Terminal.Draw(ctx, Output.Position);
+        Output.Terminal.Draw(ctx, pt);
     }
 
 

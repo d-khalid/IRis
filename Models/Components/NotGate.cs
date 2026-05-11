@@ -31,7 +31,7 @@ public class NotGate() : Gate(numInputs: 1, size: Constants.OrGateSize)
 
     public override void Draw(DrawingContext ctx)
     {
-        DrawTerminals(ctx);
+        DrawTerminals(ctx, notBubbleMode: true);
 
         PathGeometry NotGateGeometry = new();
         PathFigure figure = new()

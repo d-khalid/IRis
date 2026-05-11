@@ -37,7 +37,7 @@ public class XnorGate(int numInputs = Constants.XnorGateDefaultNumInputs) :
 
     public override void Draw(DrawingContext ctx)
     {
-        DrawTerminals(ctx);
+        DrawTerminals(ctx, notBubbleMode: true);
 
         PathGeometry XnorGateGeometry = new();
         PathGeometry XnorGateGeometry2 = new();

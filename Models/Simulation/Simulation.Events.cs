@@ -40,7 +40,18 @@ public partial class Simulation
             {
                 c.IsPreview = false;
                 Components.Add(c);
-                PreviewObject = null;
+
+                // create a new one instantly
+                PreviewObject = (CircuitObject)PreviewObject.Clone();
+                _canvas.Children.Add(PreviewObject);
+
+                Canvas.SetLeft(PreviewObject, CurrentMousePos.X);
+                Canvas.SetTop(PreviewObject, CurrentMousePos.Y);
+
+                if (PreviewObject is Component comp)
+                {
+                    comp.Position = CurrentMousePos;
+                }
             }
 
             else if (PreviewObject is Wire wire)
@@ -66,15 +77,29 @@ public partial class Simulation
                     {
                         wire.IsPreview = false;
                         Wires.Add(wire);
-                        PreviewObject = null;
-                        return;
+
+                        // create a new one instantly
+                        PreviewObject = (CircuitObject)PreviewObject.Clone();
+                        _canvas.Children.Add(PreviewObject);
+
+                        if (PreviewObject is Wire w)
+                        { 
+                            w.AddNode(
+                                terminal: new Terminal(CurrentMousePos),
+                                position: CurrentMousePos,
+                                isOutputProvider: false
+                            );
+                        }
                     }
 
-                    wire.AddNode(
-                        terminal: new Terminal(CurrentMousePos),
-                        position: CurrentMousePos,
-                        isOutputProvider: false
-                    );
+                    else
+                    {
+                        wire.AddNode(
+                            terminal: new Terminal(CurrentMousePos),
+                            position: CurrentMousePos,
+                            isOutputProvider: false
+                        );
+                    }
                 }
             }
         }
@@ -288,38 +313,37 @@ public partial class Simulation
     }
 
 
-    private void OnKeyDown(object? sender, KeyEventArgs e)
+    public void DropPreview() 
     {
-        if (e.Key == Key.Z)
+        if (PreviewObject != null)
         {
-            if (PreviewObject != null)
-            {
-                if (_canvas.Children.Contains(PreviewObject))
-                    _canvas.Children.Remove(PreviewObject);
+            if (_canvas.Children.Contains(PreviewObject))
+                _canvas.Children.Remove(PreviewObject);
 
-                PreviewObject = null;
+            PreviewObject = null;
+        }
+    }
+
+
+    public void DeleteSelected() 
+    {
+        foreach (Component c in Components.ToList())
+        {
+            if (c.IsSelected)
+            {
+                _canvas.Children.Remove(c);
+                Components.Remove(c);
             }
         }
 
-        else if (e.Key == Key.Delete)
+        foreach (Wire w in Wires.ToList())
         {
-            foreach (Component c in Components.ToList())
+            if (w.IsSelected)
             {
-                if (c.IsSelected)
-                {
-                    _canvas.Children.Remove(c);
-                    Components.Remove(c);
-                }
-            }
-
-            foreach (Wire w in Wires.ToList())
-            {
-                if (w.IsSelected)
-                {
-                    _canvas.Children.Remove(w);
-                    Wires.Remove(w);
-                }
+                _canvas.Children.Remove(w);
+                Wires.Remove(w);
             }
         }
     }
 }
+

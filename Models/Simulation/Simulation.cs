@@ -34,7 +34,6 @@ public partial class Simulation : ObservableObject
         _dispatcherTimer = GetDispatcherTimer();
         DrawGridOnCanvas(canvas);
 
-        _canvas.Focusable = true;
         _canvas.Cursor = new Cursor(StandardCursorType.Arrow);
 
         _canvas.PointerPressed += OnPointerPressed;
@@ -43,7 +42,6 @@ public partial class Simulation : ObservableObject
         _canvas.PointerWheelChanged += OnPointerWheel;
         _canvas.PointerEntered += OnPointerEnter;
         _canvas.PointerExited += OnPointerExit;
-        _canvas.KeyDown += OnKeyDown;
     }
     
 
