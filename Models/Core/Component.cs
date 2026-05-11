@@ -72,6 +72,26 @@ public abstract class Component : Control, ICustomHitTest
         return null!;
     }
 
+    protected static LogicState GetWireValue(Terminal? terminal, LogicState fallback = LogicState.Low)
+    {
+        return terminal?.Wire?.Value ?? fallback;
+    }
+
+    protected static Terminal CloneTerminalWithWires(Terminal source, Point position)
+    {
+        var terminal = new Terminal(position);
+
+        if (source?.Wires != null)
+        {
+            foreach (var wire in source.Wires)
+            {
+                terminal.AddWire(wire);
+            }
+        }
+
+        return terminal;
+    }
+
     // Override for wires
     public virtual bool HitTest(Point point)
     {   

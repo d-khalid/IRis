@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
@@ -32,8 +33,8 @@ public class SRLatch : Component, IOutputProvider
 
     public void ComputeOutput()
     {
-        var s = Terminals![0].Wire!.Value;
-        var r = Terminals![1].Wire!.Value;
+        var s = GetWireValue(Terminals?[0]);
+        var r = GetWireValue(Terminals?[1]);
 
         if (s == LogicState.High && r == LogicState.Low)
         {
@@ -47,14 +48,39 @@ public class SRLatch : Component, IOutputProvider
         {
             // Invalid condition for SR latch
             // PATCH: use dont care for now, but this needs to be fixed later
-            Terminals[2].Wire!.Value = LogicState.DontCare;
-            Terminals[3].Wire!.Value = LogicState.DontCare;
+            if (Terminals![2].Wire != null)
+                Terminals[2].Wire!.Value = LogicState.DontCare;
+            if (Terminals[3].Wire != null)
+                Terminals[3].Wire!.Value = LogicState.DontCare;
             return;
         }
         // else s=0, r=0 → hold previous state
 
-        Terminals[2].Wire!.Value = StoredStates["Q"];
-        Terminals[3].Wire!.Value = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
+        if (Terminals![2].Wire != null)
+            Terminals[2].Wire!.Value = StoredStates["Q"];
+        if (Terminals[3].Wire != null)
+            Terminals[3].Wire!.Value = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
+    }
+
+    public override object Clone()
+    {
+        var clone = new SRLatch();
+
+        clone.Width = this.Width;
+        clone.Height = this.Height;
+        clone.Rotation = this.Rotation;
+        clone.IsSelected = this.IsSelected;
+        clone.StoredStates = new Dictionary<string, LogicState>(this.StoredStates);
+
+        for (int i = 0; i < this.Terminals!.Length; i++)
+        {
+            clone.Terminals![i] = CloneTerminalWithWires(this.Terminals[i], clone.Terminals[i].Position);
+        }
+
+        clone.VisualChildren.Clear();
+        clone.InvalidateVisual();
+
+        return clone;
     }
 
     public override void Draw(DrawingContext ctx)

@@ -37,7 +37,7 @@ public class ComponentDto
             X = Canvas.GetLeft(c),
             Y = Canvas.GetTop(c),
             
-            StoredStates = c.StoredStates,
+            StoredStates = c.StoredStates ?? new Dictionary<string, LogicState>(),
             Terminals = c.Terminals.Select(p => TerminalDto.ToDto(p)).ToList(),
             
         };
@@ -77,14 +77,32 @@ public class ComponentDto
         
         result.Rotation = dto.Rotation;
         result.IsSelected = dto.IsSelected;
-        result.StoredStates = dto.StoredStates;
-        result.Terminals = dto.Terminals.Select(p => TerminalDto.ToTerminal(p)).ToArray();
+        result.StoredStates = dto.StoredStates ?? new Dictionary<string, LogicState>();
+        result.Terminals = dto.Terminals?.Select(p => TerminalDto.ToTerminal(p)).ToArray() ?? result.Terminals;
+
+        EnsureStoredStates(result);
 
         Canvas.SetLeft(result, dto.X);
         Canvas.SetTop(result, dto.Y);
         
         return result;
 
+    }
+
+    private static void EnsureStoredStates(Component component)
+    {
+        if (component.StoredStates == null)
+        {
+            component.StoredStates = new Dictionary<string, LogicState>();
+        }
+
+        if (component is DLatch or JKLatch or SRLatch or TLatch)
+        {
+            if (!component.StoredStates.ContainsKey("Q"))
+            {
+                component.StoredStates["Q"] = LogicState.Low;
+            }
+        }
     }
 
 }

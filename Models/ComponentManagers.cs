@@ -15,6 +15,7 @@ internal class ClipboardManager
     private Point _lastPastePosition;
     private bool _isPastePreviewActive;
     private List<Component> _pastePreviewComponents = new();
+    private List<Component> _pastePreviewSources = new();
 
     public void Copy(List<Component> selectedComponents, bool cutMode, Action deleteAction)
     {
@@ -23,11 +24,18 @@ internal class ClipboardManager
         // First pass
         foreach (var component in selectedComponents)
         {
-            Component c = (Component)component.Clone();
-            _clipboard.Add(c);
+            if (component is Wire wire)
+            {
+                _clipboard.Add(wire);
+            }
+            else
+            {
+                Component c = (Component)component.Clone();
+                _clipboard.Add(c);
 
-            Canvas.SetLeft(c, Canvas.GetLeft(component));
-            Canvas.SetTop(c, Canvas.GetTop(component));
+                Canvas.SetLeft(c, Canvas.GetLeft(component));
+                Canvas.SetTop(c, Canvas.GetTop(component));
+            }
             component.IsSelected = false;
         }
 
@@ -46,20 +54,37 @@ internal class ClipboardManager
     private void CreatePastePreview(Canvas canvas)
     {
         _pastePreviewComponents.Clear();
+        _pastePreviewSources.Clear();
         _isPastePreviewActive = true;
 
-        List<Component> clonedComponents = CloneNonWireComponents();
-        Dictionary<Wire, Wire> clonedWires = CloneAndReconnectWires(clonedComponents);
+        var componentMap = CloneNonWireComponents();
+        var wireMap = CloneAndReconnectWires(componentMap);
 
-        // Add things to preview list
-        _pastePreviewComponents.AddRange(clonedComponents);
-        _pastePreviewComponents.AddRange(clonedWires.Values.ToList());
+        foreach (var source in _clipboard)
+        {
+            if (source is Wire) continue;
+            if (componentMap.TryGetValue(source, out var clone))
+            {
+                _pastePreviewComponents.Add(clone);
+                _pastePreviewSources.Add(source);
+            }
+        }
+
+        foreach (var sourceWire in GetClipboardWires())
+        {
+            if (wireMap.TryGetValue(sourceWire, out var clonedWire))
+            {
+                _pastePreviewComponents.Add(clonedWire);
+                _pastePreviewSources.Add(sourceWire);
+            }
+        }
+
         canvas.Children.AddRange(_pastePreviewComponents);
     }
 
-    private List<Component> CloneNonWireComponents()
+    private Dictionary<Component, Component> CloneNonWireComponents()
     {
-        List<Component> clonedComponents = new();
+        Dictionary<Component, Component> clonedComponents = new();
 
         // First pass
         foreach (var component in _clipboard)
@@ -68,7 +93,7 @@ internal class ClipboardManager
             if (component is Wire) continue;
 
             Component c = (Component)component.Clone();
-            clonedComponents.Add(c);
+            clonedComponents[component] = c;
 
             Canvas.SetLeft(c, Canvas.GetLeft(component));
             Canvas.SetTop(c, Canvas.GetTop(component));
@@ -79,37 +104,78 @@ internal class ClipboardManager
         return clonedComponents;
     }
 
-    private Dictionary<Wire, Wire> CloneAndReconnectWires(List<Component> clonedComponents)
+    private Dictionary<Wire, Wire> CloneAndReconnectWires(Dictionary<Component, Component> clonedComponents)
     {
-        // Second pass
         Dictionary<Wire, Wire> clonedWires = new();
-        foreach (var component in clonedComponents)
+        foreach (var sourceWire in GetClipboardWires())
         {
-            if (component.Terminals == null) continue;
-
-            foreach (var terminal in component.Terminals)
+            if (!clonedWires.ContainsKey(sourceWire))
             {
-                if (terminal.Wire == null) continue;
+                clonedWires[sourceWire] = CreateClonedWire(sourceWire);
+            }
+        }
 
-                // If there's a matching wire for an original wire already, make it
-                if (!clonedWires.TryGetValue(terminal.Wire, out var clonedWire))
+        foreach (var kvp in clonedComponents)
+        {
+            var source = kvp.Key;
+            var clone = kvp.Value;
+            if (source.Terminals == null || clone.Terminals == null) continue;
+
+            for (int i = 0; i < source.Terminals.Length; i++)
+            {
+                var sourceTerminal = source.Terminals[i];
+                var cloneTerminal = clone.Terminals[i];
+
+                if (sourceTerminal == null || cloneTerminal == null) continue;
+
+                var mappedWires = sourceTerminal.Wires
+                    .Where(w => clonedWires.ContainsKey(w))
+                    .Select(w => clonedWires[w])
+                    .ToList();
+
+                clone.Terminals[i] = new Terminal(cloneTerminal.Position)
                 {
-                    clonedWire = CreateClonedWire(terminal.Wire);
-                    clonedWires.Add(terminal.Wire, clonedWire);
-                }
-
-                terminal.Wire = clonedWires[terminal.Wire];
+                    Wires = mappedWires
+                };
             }
         }
 
         return clonedWires;
     }
 
+    private List<Wire> GetClipboardWires()
+    {
+        List<Wire> wires = new();
+
+        foreach (var component in _clipboard)
+        {
+            if (component is Wire wire)
+            {
+                if (!wires.Contains(wire))
+                    wires.Add(wire);
+                continue;
+            }
+
+            if (component.Terminals == null) continue;
+
+            foreach (var terminal in component.Terminals)
+            {
+                foreach (var connectedWire in terminal.Wires)
+                {
+                    if (!wires.Contains(connectedWire))
+                        wires.Add(connectedWire);
+                }
+            }
+        }
+
+        return wires;
+    }
+
     private Wire CreateClonedWire(Wire originalWire)
     {
         Wire newWire = new Wire
         {
-            Points = originalWire.Points,
+            Points = new List<Point>(originalWire.Points),
             Id = Guid.NewGuid(),
             Value = originalWire.Value, // enums are value types!
             IsSelected = false
@@ -131,19 +197,33 @@ internal class ClipboardManager
 
         _lastPastePosition = currentMousePos;
 
-        // Use the wire's first point as reference
-        Point reference = _clipboard[0] is Wire wire
-            ? wire.Points[0]
-            : new Point(Canvas.GetLeft(_clipboard[0]), Canvas.GetTop(_clipboard[0]));
+        if (_pastePreviewComponents.Count == 0 || _pastePreviewSources.Count == 0) return;
+
+        Component referenceSource = _pastePreviewSources[0];
+        Point reference = referenceSource is Wire referenceWire && referenceWire.Points.Count > 0
+            ? referenceWire.Points[0]
+            : new Point(Canvas.GetLeft(referenceSource), Canvas.GetTop(referenceSource));
+
+        double offsetX = currentMousePos.X - reference.X;
+        double offsetY = currentMousePos.Y - reference.Y;
 
         for (int i = 0; i < _pastePreviewComponents.Count; i++)
         {
-            var original = _clipboard[i];
+            var original = _pastePreviewSources[i];
             var preview = _pastePreviewComponents[i];
 
-            Console.WriteLine($"{Canvas.GetLeft(original)}, {Canvas.GetTop(original)}");
-            Canvas.SetLeft(preview, Canvas.GetLeft(original) + currentMousePos.X - reference.X);
-            Canvas.SetTop(preview, Canvas.GetTop(original) + currentMousePos.Y - reference.Y);
+            if (original is Wire originalWire && preview is Wire previewWire)
+            {
+                previewWire.Points = originalWire.Points
+                    .Select(p => p == new Point(-1, -1) ? p : new Point(p.X + offsetX, p.Y + offsetY))
+                    .ToList();
+                previewWire.InvalidateVisual();
+            }
+            else
+            {
+                Canvas.SetLeft(preview, Canvas.GetLeft(original) + offsetX);
+                Canvas.SetTop(preview, Canvas.GetTop(original) + offsetY);
+            }
         }
     }
 }

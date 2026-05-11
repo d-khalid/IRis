@@ -28,15 +28,29 @@ public class CircuitDto
         Dictionary<Guid, Wire> wireDict = new Dictionary<Guid, Wire>();
         foreach (var wire in wires)
         {
-            wireDict.Add(wire.Id, wire);
+            if (!wireDict.ContainsKey(wire.Id))
+            {
+                wireDict.Add(wire.Id, wire);
+            }
         }
         
         // Assign wire references to terminals based on ID
         foreach (var c in components)
         {
+            if (c.Terminals == null) continue;
+
             foreach (var terminal in c.Terminals)
             {
-                terminal.Wires = terminal.Wires.Select(w => wireDict[w.Id]).ToList();
+                if (terminal.Wires == null)
+                {
+                    terminal.Wires = new List<Wire>();
+                    continue;
+                }
+
+                terminal.Wires = terminal.Wires
+                    .Select(w => wireDict.TryGetValue(w.Id, out var mapped) ? mapped : null)
+                    .Where(w => w != null)
+                    .ToList()!;
             }
         }
         

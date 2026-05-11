@@ -83,7 +83,7 @@ public class LogicToggle : Component, IOutputProvider
         // Component-specific things
         if (clone.Terminals is not null && this.Terminals is not null)
         {
-            clone.Terminals[0] = new Terminal(clone.Terminals[0].Position, this.Terminals[0].Wire!);
+            clone.Terminals[0] = CloneTerminalWithWires(this.Terminals[0], clone.Terminals[0].Position);
         }
         clone.Value = this.Value;
         

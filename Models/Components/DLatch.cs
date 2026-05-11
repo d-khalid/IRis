@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Media;
 using IRis.Models.Core;
@@ -32,18 +33,41 @@ public class DLatch : Component, IOutputProvider
 
     public void ComputeOutput()
     {
-        var d  = Terminals![0].Wire!.Value;
-        var en = Terminals![1].Wire!.Value;
+        var d = GetWireValue(Terminals?[0]);
+        var en = GetWireValue(Terminals?[1]);
 
         if (en == LogicState.High)
         {
             // Transparent: output follows input
-            StoredStates["Q"] = (LogicState)d!;
+            StoredStates["Q"] = d;
         }
         // else en==Low → hold StoredStates["Q"]
 
-        Terminals[2].Wire!.Value = StoredStates["Q"];
-        Terminals[3].Wire!.Value = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
+        if (Terminals![2].Wire != null)
+            Terminals[2].Wire!.Value = StoredStates["Q"];
+        if (Terminals[3].Wire != null)
+            Terminals[3].Wire!.Value = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
+    }
+
+    public override object Clone()
+    {
+        var clone = new DLatch();
+
+        clone.Width = this.Width;
+        clone.Height = this.Height;
+        clone.Rotation = this.Rotation;
+        clone.IsSelected = this.IsSelected;
+        clone.StoredStates = new Dictionary<string, LogicState>(this.StoredStates);
+
+        for (int i = 0; i < this.Terminals!.Length; i++)
+        {
+            clone.Terminals![i] = CloneTerminalWithWires(this.Terminals[i], clone.Terminals[i].Position);
+        }
+
+        clone.VisualChildren.Clear();
+        clone.InvalidateVisual();
+
+        return clone;
     }
 
     public override void Draw(DrawingContext ctx)

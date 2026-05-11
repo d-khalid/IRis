@@ -81,6 +81,27 @@ public class CustomComponent : Component, IOutputProvider
         }
     }
 
+    public override object Clone()
+    {
+        var clone = new CustomComponent(ComponentName, InputCount, OutputCount, new List<CircuitFormulaConversionService.CircuitFormula>(OutputFormulas));
+
+        clone.Width = this.Width;
+        clone.Height = this.Height;
+        clone.Rotation = this.Rotation;
+        clone.IsSelected = this.IsSelected;
+        clone.StoredStates = new Dictionary<string, LogicState>(this.StoredStates);
+
+        for (int i = 0; i < this.Terminals!.Length; i++)
+        {
+            clone.Terminals![i] = CloneTerminalWithWires(this.Terminals[i], clone.Terminals[i].Position);
+        }
+
+        clone.VisualChildren.Clear();
+        clone.InvalidateVisual();
+
+        return clone;
+    }
+
     private Dictionary<string, bool> GetInputValues()
     {
         var inputs = new Dictionary<string, bool>();

@@ -28,7 +28,9 @@ public class TerminalDto
     {
         return new Terminal(dto.Position)
         {
-            Wires = dto.ConnectedWireIds.Select(p => new Wire(){Id = p}).ToList()
+            Wires = (dto.ConnectedWireIds ?? new List<Guid>())
+                .Select(p => new Wire(){Id = p})
+                .ToList()
         };
     }
 }

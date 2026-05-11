@@ -259,12 +259,12 @@ public class Wire : Component, ICloneable
         }
     }
 
-    // Clones the GUID too
+    // Creates a new GUID for cloned wires
     public override object Clone()
     {
         var clone = new Wire();
         clone.Value = this.Value;
-        clone.Id = this.Id;
+        clone.Id = Guid.NewGuid();
         for (int i = 0; i < Points.Count; i++)
         {
             clone.AddPoint(Points[i]);

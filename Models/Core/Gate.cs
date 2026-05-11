@@ -112,14 +112,14 @@ public abstract class Gate : Component, IOutputProvider
         // Copy terminal values (positions are set in constructor)
         for (int i = 0; i < this.InputLineCount; i++)
         {
-            clone.Terminals![i] = new Terminal(
-                clone.Terminals[i].Position,  // Use new position
-                this.Terminals![i].Wire!      // Copy original value
+            clone.Terminals![i] = CloneTerminalWithWires(
+                this.Terminals![i],
+                clone.Terminals[i].Position
             );
         }
-        clone.Terminals![^1] = new Terminal(
-            clone.Terminals[^1].Position,
-            this.Terminals![^1].Wire!
+        clone.Terminals![^1] = CloneTerminalWithWires(
+            this.Terminals![^1],
+            clone.Terminals[^1].Position
         );
 
         // Reset visual state

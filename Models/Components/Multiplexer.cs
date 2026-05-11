@@ -44,6 +44,26 @@ public class Multiplexer : Component, IOutputProvider
         Terminals![^1].Wire!.Value = Terminals[SelectionLineCount + selectedIndex].Wire!.Value;
     }
 
+    public override object Clone()
+    {
+        var clone = new Multiplexer(this.SelectionLineCount);
+
+        clone.Width = this.Width;
+        clone.Height = this.Height;
+        clone.Rotation = this.Rotation;
+        clone.IsSelected = this.IsSelected;
+
+        for (int i = 0; i < this.Terminals!.Length; i++)
+        {
+            clone.Terminals![i] = CloneTerminalWithWires(this.Terminals[i], clone.Terminals[i].Position);
+        }
+
+        clone.VisualChildren.Clear();
+        clone.InvalidateVisual();
+
+        return clone;
+    }
+
     public override void Draw(DrawingContext ctx)
     {
         

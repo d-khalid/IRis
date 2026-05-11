@@ -51,6 +51,26 @@ public class Decoder : Component, IOutputProvider
         Terminals![SelectionLineCount + selectedIndex].Wire!.Value = LogicState.High;
     }
 
+    public override object Clone()
+    {
+        var clone = new Decoder(this.SelectionLineCount);
+
+        clone.Width = this.Width;
+        clone.Height = this.Height;
+        clone.Rotation = this.Rotation;
+        clone.IsSelected = this.IsSelected;
+
+        for (int i = 0; i < this.Terminals!.Length; i++)
+        {
+            clone.Terminals![i] = CloneTerminalWithWires(this.Terminals[i], clone.Terminals[i].Position);
+        }
+
+        clone.VisualChildren.Clear();
+        clone.InvalidateVisual();
+
+        return clone;
+    }
+
     public override void Draw(DrawingContext ctx)
     {
         ctx.DrawRectangle(ComponentDefaults.GateFillBrush,

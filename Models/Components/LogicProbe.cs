@@ -39,7 +39,7 @@ public class LogicProbe : Component
         clone.IsSelected = this.IsSelected;
         
         // Component-specific things
-        clone.Terminals![0] = new Terminal(clone.Terminals[0].Position, this.Terminals![0].Wire!);
+        clone.Terminals![0] = CloneTerminalWithWires(this.Terminals![0], clone.Terminals[0].Position);
         
         // Reset visual state
         clone.VisualChildren.Clear();
