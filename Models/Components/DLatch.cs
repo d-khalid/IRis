@@ -1,3 +1,96 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using Avalonia;
+using Avalonia.Media;
+using IRis.Models.Core;
+
+namespace IRis.Models.Components;
+public class DLatch(int width = Constants.DefaultMuxWidth * 5, int height = Constants.DefaultMuxHeight) :
+    Component(2, 2, new BoxSize(width, height))
+{
+    public Dictionary<string, LogicState> StoredStates = new();
+    
+    public override void Serialize()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override DLatch Clone()
+    {
+        return new DLatch();
+    }
+
+    public override void Draw(DrawingContext ctx)
+    {
+        DrawTerminalsAndLabels(ctx);
+        
+        ctx.DrawRectangle(Constants.GateBrush,
+             Constants.GatePen,
+             new Rect(0, 0, Width, Height));
+
+    }
+    
+    private void DrawTerminalsAndLabels(DrawingContext ctx)
+     {
+         // Inputs
+         string[] labels = { "D", "EN" };
+         for (int i = 0; i < 2; i++)
+         {
+             ctx.DrawLine(Constants.WirePen, Inputs![i].Position,
+                 new Point(0, Inputs[i].Position.Y));
+             ctx.DrawEllipse(Constants.TerminalBubbleBrush, null,
+                 Inputs[i].Position, Constants.TerminalRadius, Constants.TerminalRadius);
+
+             var text = new FormattedText(
+                 labels[i],
+                 CultureInfo.CurrentCulture,
+                 FlowDirection.LeftToRight,
+                 Constants.LabelTypeface,
+                 Constants.LabelSize,
+                 Constants.LabelBrush
+             );
+             ctx.DrawText(text, new Point(4.5, Inputs[i].Position.Y - 6));
+         }
+
+         // Outputs
+         string[] outLabels = { "Q", "Q'" };
+         for (int j = 0; j < 2; j++)
+         {
+             ctx.DrawLine(Constants.WirePen, Outputs![j].Position,
+                 new Point(Outputs[j].Position.X - Constants.TerminalWireLength + 5, Outputs[j].Position.Y));
+             ctx.DrawEllipse(Constants.TerminalBubbleBrush, null,
+                 Outputs[j].Position, Constants.TerminalRadius, Constants.TerminalRadius);
+
+             var text = new FormattedText(
+                 outLabels[j],
+                 CultureInfo.CurrentCulture,
+                 FlowDirection.LeftToRight,
+                 Constants.LabelTypeface,
+                 Constants.LabelSize,
+                 Constants.LabelBrush
+             );
+             ctx.DrawText(text, new Point(Width - 18, Outputs[j].Position.Y - 6));
+         }
+     }
+    
+    public void ComputeOutput()
+     {
+         var d  = Inputs![0].Terminal.State;
+         var en = Inputs![1].Terminal.State;
+
+         if (en == LogicState.High)
+         {
+             // Transparent: output follows input
+             StoredStates["Q"] = (LogicState)d!;
+         }
+         // else en==Low → hold StoredStates["Q"]
+
+         Outputs[0].Terminal.State = StoredStates["Q"];
+         Outputs[1].Terminal.State = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
+     }
+}
+
 // using System;
 // using System.Globalization;
 // using Avalonia;
@@ -141,3 +234,5 @@
 //         }
 //     }
 // }
+
+

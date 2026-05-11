@@ -17,7 +17,7 @@ public class LogicToggle() :
 
     public (Terminal Terminal, Point Position) Output
     {
-        get => _outputs[0];
+        get => Outputs[0];
     }
 
 

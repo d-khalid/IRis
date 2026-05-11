@@ -13,10 +13,7 @@ namespace  IRis.Models.Components;
 public class NorGate(int numInputs = Constants.NorGateDefaultNumInputs) : 
     Gate(numInputs, size: Constants.NorGateSize)
 {
-    public List<(Terminal Terminal, Point Position)> Inputs
-    {
-        get => _inputs;
-    }
+
 
 
     public override void Serialize()

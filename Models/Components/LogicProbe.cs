@@ -17,7 +17,7 @@ public class LogicProbe() :
 
     public (Terminal Terminal, Point Position) Input
     {
-        get => _inputs[0];
+        get => Inputs[0];
     }
 
 

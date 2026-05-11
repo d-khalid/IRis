@@ -13,11 +13,6 @@ namespace  IRis.Models.Components;
 public class OrGate(int numInputs = Constants.OrGateDefaultNumInputs) : 
     Gate(numInputs, size: Constants.OrGateSize)
 {
-    public List<(Terminal Terminal, Point Position)> Inputs
-    {
-        get => _inputs;
-    }
-
 
     public override void Serialize()
     {

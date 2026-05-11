@@ -167,6 +167,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
                     <Button Content="Toggle Switch" Click="OnAddToggleClick" />
                     <Button Content="Logic Probe" Click="OnAddProbeClick" />
+                    <Button Content="D Latch" Click="OnAddDLatchClick" />
                     <Button Content="Wire" Click="OnAddWireClick" />
                 </StackPanel>
                 <Button HorizontalAlignment="Right"

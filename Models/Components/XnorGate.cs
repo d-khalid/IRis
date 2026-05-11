@@ -13,10 +13,6 @@ namespace  IRis.Models.Components;
 public class XnorGate(int numInputs = Constants.XnorGateDefaultNumInputs) : 
     Gate(numInputs, size: Constants.XnorGateSize)
 {
-    public List<(Terminal Terminal, Point Position)> Inputs
-    {
-        get => _inputs;
-    }
 
 
     public override void Serialize()

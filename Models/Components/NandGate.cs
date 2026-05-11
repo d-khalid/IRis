@@ -13,10 +13,6 @@ namespace  IRis.Models.Components;
 public class NandGate(int numInputs = Constants.NandGateDefaultNumInputs) : 
     Gate(numInputs, size: Constants.NandGateSize)
 {
-    public List<(Terminal Terminal, Point Position)> Inputs
-    {
-        get => _inputs;
-    }
 
 
     public override void Serialize()

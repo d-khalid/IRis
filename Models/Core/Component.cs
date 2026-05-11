@@ -15,16 +15,18 @@ public abstract class Component : CircuitObject
     private ComponentOrientation _orientation;
     private readonly RotateTransform _rotateTransform = new();
 
-    protected readonly List<(Terminal Terminal, Point Position)> _inputs = [];
-    protected readonly List<(Terminal Terminal, Point Position)> _outputs = [];
+    public List<(Terminal Terminal, Point Position)> Inputs { get; set; } = [];
+    public List<(Terminal Terminal, Point Position)> Outputs { get; set; }= [];
+    
+    
 
 
     public Component(int numInputs, int numOutputs, BoxSize size)
     {
         Size = size;
 
-        AddTerminals(_inputs, -Constants.TerminalWireLength, numInputs, Size);
-        AddTerminals(_outputs, size.Width+Constants.TerminalWireLength, numOutputs, Size, true);
+        AddTerminals(Inputs, -Constants.TerminalWireLength, numInputs, Size);
+        AddTerminals(Outputs, size.Width+Constants.TerminalWireLength, numOutputs, Size, true);
     }
 
 
@@ -41,10 +43,10 @@ public abstract class Component : CircuitObject
 
     public void NullifyTerminalStates()
     {
-        foreach (var i in _inputs)
+        foreach (var i in Inputs)
             i.Terminal.State = LogicState.Unknown;
 
-        foreach (var o in _outputs)
+        foreach (var o in Outputs)
             o.Terminal.State = LogicState.Unknown;
 
         InvalidateVisual();
@@ -53,13 +55,13 @@ public abstract class Component : CircuitObject
 
     public Terminal? GetTerminalHitTest(Point point)
     {
-        foreach (var i in _inputs)
+        foreach (var i in Inputs)
         {
             if (Utils.AddPoints(i.Terminal.Position, Position) == point)
                 return i.Terminal;
         }
 
-        foreach (var o in _outputs)
+        foreach (var o in Outputs)
         {
             if (Utils.AddPoints(o.Terminal.Position, Position) == point)
                 return o.Terminal;
@@ -93,8 +95,8 @@ public abstract class Component : CircuitObject
 
             base.Render(context);
 
-            foreach (var i in _inputs) i.Terminal.Draw(context, i.Position);
-            foreach (var o in _outputs) o.Terminal.Draw(context, o.Position);
+            foreach (var i in Inputs) i.Terminal.Draw(context, i.Position);
+            foreach (var o in Outputs) o.Terminal.Draw(context, o.Position);
         }
     }
 

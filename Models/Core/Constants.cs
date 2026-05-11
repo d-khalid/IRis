@@ -76,9 +76,9 @@ public static class Constants
 
 
     // Common fields for all components
-    public const double DefaultHeight = 60;
-    public const double DefaultMuxWidth = 80;
-    public const double DefaultMuxHeight = 180;
+    public const int DefaultHeight = 60;
+    public const int DefaultMuxWidth = 80;
+    public const int DefaultMuxHeight = 180;
 
     // Terminals
     public static double TerminalRadius = 7;

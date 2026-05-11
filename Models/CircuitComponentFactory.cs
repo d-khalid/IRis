@@ -28,6 +28,7 @@ internal static class CircuitComponentFactory
             ["LOGICTOGGLE"] = () => new LogicToggle(),
             ["PROBE"] = () => new LogicProbe(),
             ["LOGICPROBE"] = () => new LogicProbe(),
+            ["DLATCH"] = () => new DLatch(),
         };
 
     private static readonly HashSet<string> SupportedTypes = new(StringComparer.OrdinalIgnoreCase)
@@ -40,7 +41,8 @@ internal static class CircuitComponentFactory
         "XOR", "XORGATE",
         "XNOR", "XNORGATE",
         "TOGGLE", "LOGICTOGGLE",
-        "PROBE", "LOGICPROBE"
+        "PROBE", "LOGICPROBE",
+        "DLATCH", 
     };
 
     public static bool IsSupportedComponentType(string? componentType)
@@ -71,7 +73,9 @@ internal static class CircuitComponentFactory
             XnorGate gate => new XnorGate(gate.Inputs.Count),
             LogicToggle toggle => new LogicToggle { State = toggle.State },
             LogicProbe probe => new LogicProbe { State = probe.State },
+            DLatch latch => new DLatch(),
             _ => null,
+            
         };
 
         if (clone != null)
@@ -82,17 +86,22 @@ internal static class CircuitComponentFactory
 
     public static int GetInputCount(Component component)
     {
-        return component switch
-        {
-            AndGate gate => gate.Inputs.Count,
-            OrGate gate => gate.Inputs.Count,
-            NotGate => 1,
-            NandGate gate => gate.Inputs.Count,
-            NorGate gate => gate.Inputs.Count,
-            XorGate gate => gate.Inputs.Count,
-            XnorGate gate => gate.Inputs.Count,
-            _ => 0,
-        };
+        
+        return component.Inputs.Count;
+        
+        // why even?
+        // return component switch
+        // {
+        //     AndGate gate => gate.Inputs.Count,
+        //     OrGate gate => gate.Inputs.Count,
+        //     NotGate => 1,
+        //     NandGate gate => gate.Inputs.Count,
+        //     NorGate gate => gate.Inputs.Count,
+        //     XorGate gate => gate.Inputs.Count,
+        //     XnorGate gate => gate.Inputs.Count,
+        //     DLatch latch => latch.Inputs.Count,
+        //     _ => 0,
+        // };
     }
 
     public static string GetComponentTypeName(Component component)

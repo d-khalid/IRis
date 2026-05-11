@@ -10,7 +10,7 @@ public abstract class Gate(int numInputs, BoxSize size) :
 {
     public (Terminal Terminal, Point Position) Output
     {
-        get => _outputs[0];
+        get => Outputs[0];
     }
 
 
@@ -23,15 +23,15 @@ public abstract class Gate(int numInputs, BoxSize size) :
 
     private void DrawInputTerminals(DrawingContext ctx)
     {
-        for (int i = 0; i < _inputs.Count; i++)
+        for (int i = 0; i < Inputs.Count; i++)
         {
             ctx.DrawLine(
                 pen: Constants.TerminalWirePen, 
-                p1: _inputs[i].Position, 
-                p2: new Point(Constants.TerminalWireLength, _inputs[i].Position.Y)
+                p1: Inputs[i].Position, 
+                p2: new Point(Constants.TerminalWireLength, Inputs[i].Position.Y)
             );
 
-            _inputs[i].Terminal.Draw(ctx, _inputs[i].Position);
+            Inputs[i].Terminal.Draw(ctx, Inputs[i].Position);
         }
     }
 

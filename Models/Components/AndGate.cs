@@ -12,10 +12,7 @@ namespace  IRis.Models.Components;
 public class AndGate(int numInputs = Constants.AndGateDefaultNumInputs) : 
     Gate(numInputs, size: Constants.AndGateSize)
 {
-    public List<(Terminal Terminal, Point Position)> Inputs
-    {
-        get => _inputs;
-    }
+
 
 
     public override void Serialize()

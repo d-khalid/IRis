@@ -81,6 +81,11 @@ public partial class MainWindow : Window
     {
         Simulation.PreviewObject = new LogicProbe();
     }
+    
+    private void OnAddDLatchClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        Simulation.PreviewObject = new DLatch();
+    }
 
 
     private void OnAddWireClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

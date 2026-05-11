@@ -12,7 +12,7 @@ public class NotGate() : Gate(numInputs: 1, size: Constants.OrGateSize)
 {
     public (Terminal Terminal, Point Position) Input
     {
-        get => _inputs[0];
+        get => Inputs[0];
     }
 
 
