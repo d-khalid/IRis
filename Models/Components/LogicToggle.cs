@@ -76,7 +76,7 @@ public class LogicToggle() :
             p1: Output.Position
         );
 
-        Output.Terminal.Draw(ctx);
+        Output.Terminal.Draw(ctx, Output.Position);
     }
 
 

@@ -31,7 +31,7 @@ public abstract class Gate(int numInputs, BoxSize size) :
                 p2: new Point(Constants.TerminalWireLength, _inputs[i].Position.Y)
             );
 
-            _inputs[i].Terminal.Draw(ctx);
+            _inputs[i].Terminal.Draw(ctx, _inputs[i].Position);
         }
     }
 
@@ -44,7 +44,7 @@ public abstract class Gate(int numInputs, BoxSize size) :
             p1: Output.Position
         );
 
-        Output.Terminal.Draw(ctx);
+        Output.Terminal.Draw(ctx, Output.Position);
     }
 
 

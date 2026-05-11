@@ -44,6 +44,10 @@ public static class Constants
     public static readonly ImmutableSolidColorBrush UnknownStateBrush = new(Colors.Gray);
 
     public static readonly IBrush CanvasGridBrush = new SolidColorBrush(Colors.Black, 0.3);
+    public static readonly Pen ComponentSelectionPen = new(Brushes.DodgerBlue, 2);
+    public static readonly SolidColorBrush ComponentSelectionBrush = new(Colors.DodgerBlue, 0.3);
+    public static readonly Pen WireSelectionPen = 
+        new(new SolidColorBrush(Colors.DodgerBlue, 0.3), 20);
 
     public const int AndGateDefaultNumInputs = 2;
     public const int OrGateDefaultNumInputs = 2;
@@ -80,8 +84,6 @@ public static class Constants
     public static double TerminalRadius = 7;
 
     // Selection
-    public static Pen SelectionPen = new Pen(Brushes.DodgerBlue, 2);
-    public static SolidColorBrush SelectionBrush = new SolidColorBrush(Colors.DodgerBlue, 0.2);
     
     // For probes/toggles
     

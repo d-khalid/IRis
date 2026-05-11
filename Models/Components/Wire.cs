@@ -91,10 +91,6 @@ public class Wire : CircuitObject, IOutputProvider
             (IsPreview ? Constants.GhostWirePen : Constants.WirePen) : 
             Constants.InvalidWirePen;
 
-        IBrush terminalBrush = IsValid ? 
-            (IsPreview ? Constants.GhostTerminalBubbleBrush : Constants.TerminalBubbleBrush) :
-            Constants.InvalidTerminalBubbleBrush;
-
 
         var polyline = new StreamGeometry();
         using (var ctxGeo = polyline.Open())
@@ -117,20 +113,23 @@ public class Wire : CircuitObject, IOutputProvider
             pen: wirePen,
             geometry: polyline
         );
+
+        if (IsSelected)
+        {
+            ctx.DrawGeometry(
+                brush: null,
+                pen: Constants.WireSelectionPen,
+                geometry: polyline
+            );
+        }
     }
 
 
     public override void Render(DrawingContext context)
     {
         Draw(context);
-        context.DrawRectangle(
-            brush: IsSelected ? Brushes.Transparent : new SolidColorBrush(Colors.DodgerBlue, 0.2),
-            pen: null,
-            rect: new Rect(0, 0, Width, Height)
-        );
-
-        foreach (var node in Nodes) node.Terminal.Draw(context);
         base.Render(context);
+        foreach (var node in Nodes) node.Terminal.Draw(context, node.Position);
     }
 
 
@@ -150,6 +149,7 @@ public class Wire : CircuitObject, IOutputProvider
                 else
                 {
                     Console.WriteLine("Error: wire has OutputProviders with different outputs");
+                    return;
                 }
             }
         }

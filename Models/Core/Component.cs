@@ -91,10 +91,10 @@ public abstract class Component : CircuitObject
                 )
             );
 
-            foreach (var i in _inputs) i.Terminal.Draw(context);
-            foreach (var o in _outputs) o.Terminal.Draw(context);
-
             base.Render(context);
+
+            foreach (var i in _inputs) i.Terminal.Draw(context, i.Position);
+            foreach (var o in _outputs) o.Terminal.Draw(context, o.Position);
         }
     }
 

@@ -26,12 +26,12 @@ public struct BoxSize(int width, int height)
 
 public class Terminal(Point position, bool isOutputProvider = false) : Control
 {
-    public readonly Point Position = position;
+    public Point Position = position;
     public LogicState State = LogicState.Unknown;
     public readonly bool IsOutputProvider = isOutputProvider;
 
 
-    public void Draw(DrawingContext ctx)
+    public void Draw(DrawingContext ctx, Point position)
     {
         ImmutableSolidColorBrush brush = State switch {
             LogicState.High => Constants.TrueStateBrush,
@@ -42,7 +42,7 @@ public class Terminal(Point position, bool isOutputProvider = false) : Control
         ctx.DrawEllipse(
             brush: brush,
             pen: null,
-            center: Position,
+            center: position,
             radiusX: Constants.TerminalBubbleRadius,
             radiusY: Constants.TerminalBubbleRadius
         );

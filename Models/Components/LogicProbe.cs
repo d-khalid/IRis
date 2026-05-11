@@ -71,7 +71,7 @@ public class LogicProbe() :
             p2: new Point(Constants.TerminalWireLength, Input.Position.Y)
         );
 
-        Input.Terminal.Draw(ctx);
+        Input.Terminal.Draw(ctx, Input.Position);
     }
 
 

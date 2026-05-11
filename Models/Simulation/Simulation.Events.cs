@@ -1,9 +1,13 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Media;
 using System;
+using Avalonia;
+using System.Collections.Generic;
 
 using IRis.Models.Core;
 using IRis.Models.Components;
+using System.Linq;
 
 
 namespace IRis.Models;
@@ -11,6 +15,11 @@ namespace IRis.Models;
 
 public partial class Simulation
 {   
+    private bool _isSelecting = false;
+    private Point _selectStartPosition;
+    private Avalonia.Controls.Shapes.Rectangle? _selectionRectangle = null;
+
+
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (e.ClickCount == 2)
@@ -36,7 +45,6 @@ public partial class Simulation
 
             else if (PreviewObject is Wire wire)
             {
-                wire.RemoveLastNode();
                 Terminal? t = null;
                 
                 foreach (Component comp in Components)
@@ -47,6 +55,7 @@ public partial class Simulation
 
                 if (t != null)
                 {
+                    wire.RemoveLastNode();
                     wire.AddNode(
                         terminal: t,
                         position: CurrentMousePos,
@@ -58,24 +67,27 @@ public partial class Simulation
                         wire.IsPreview = false;
                         Wires.Add(wire);
                         PreviewObject = null;
+                        return;
                     }
-                }
 
-                wire.AddNode(
-                    terminal: new Terminal(CurrentMousePos),
-                    position: CurrentMousePos,
-                    isOutputProvider: false
-                );
+                    wire.AddNode(
+                        terminal: new Terminal(CurrentMousePos),
+                        position: CurrentMousePos,
+                        isOutputProvider: false
+                    );
+                }
             }
         }
 
         else if (!IsSimulating)     // selection logic
         {
+            bool hasHitComponent = false;
             foreach (Component c in Components)
             {
                 if (c.HitTest(CurrentMousePos) && !c.IsSelected)
                 {
                     c.IsSelected = true;
+                    hasHitComponent = true;
                 }
 
                 else if (c.IsSelected)
@@ -83,21 +95,114 @@ public partial class Simulation
                     c.IsSelected = false;
                 }
             }
+
+            foreach (Wire wire in Wires)
+            {
+                if (wire.HitTest(CurrentMousePos) && !wire.IsSelected)
+                {
+                    wire.IsSelected = true;
+                }
+
+                else if (wire.IsSelected)
+                {
+                    wire.IsSelected = false;
+                }
+            }
+
+            if (!hasHitComponent)
+            {
+                _isSelecting = true;
+                _selectStartPosition = CurrentMousePos;
+
+                _selectionRectangle = new Avalonia.Controls.Shapes.Rectangle
+                {
+                    Fill = new SolidColorBrush(Colors.DodgerBlue, 0.2),
+                    Stroke = new SolidColorBrush(Colors.DodgerBlue, 0.6),
+                    StrokeThickness = 2
+                };
+
+                _canvas.Children.Add(_selectionRectangle);
+            }
         }
     }
 
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-
+        if (_isSelecting && _selectionRectangle != null)
+        {
+            _isSelecting = false;
+            _canvas.Children.Remove(_selectionRectangle);
+        }
     }
     
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
         CurrentMousePos = Utils.SnapPointToGrid(e.GetPosition(_canvas));
+        Point currPos = e.GetPosition(_canvas);
 
-        if (PreviewObject != null)
+
+        if (_isSelecting && _selectionRectangle != null)
+        {
+            Canvas.SetLeft(
+                _selectionRectangle, 
+                Math.Min(currPos.X, _selectStartPosition.X)
+            );
+
+            Canvas.SetTop(
+                _selectionRectangle, 
+                Math.Min(currPos.Y, _selectStartPosition.Y)
+            );
+
+            _selectionRectangle.Width = Math.Abs(currPos.X - _selectStartPosition.X);
+            _selectionRectangle.Height = Math.Abs(currPos.Y - _selectStartPosition.Y);
+
+
+            // select all within range
+            Rect range = new(
+                x: Canvas.GetLeft(_selectionRectangle),
+                y: Canvas.GetTop(_selectionRectangle),
+                width: _selectionRectangle.Width,
+                height: _selectionRectangle.Height
+            );
+
+            foreach (Component c in Components)
+            {
+                Rect target = new(
+                    x: Canvas.GetLeft(c),
+                    y: Canvas.GetTop(c),
+                    width: c.Size.Width,
+                    height: c.Size.Height
+                );
+
+                if (range.Intersects(target))
+                {
+                    c.IsSelected = true;
+                }
+                else
+                {
+                    c.IsSelected = false;
+                }
+            }
+
+            foreach (Wire wire in Wires)
+            {
+                foreach (Point pt in wire.Points)
+                {
+                    if (range.Contains(pt))
+                    {
+                        wire.IsSelected = true;
+                    }
+                    else
+                    {
+                        wire.IsSelected = false;
+                    }
+                }
+            }
+        }
+
+        else if (PreviewObject != null)
         {
             if (PreviewObject is Component c)
             {
@@ -105,6 +210,7 @@ public partial class Simulation
                 Canvas.SetTop(PreviewObject, CurrentMousePos.Y);
                 c.Position = CurrentMousePos;
             }
+
             else if (PreviewObject is Wire wire && wire.Points.Count > 0)
             {
                 if (wire.Nodes.Count >= 1)
@@ -184,6 +290,36 @@ public partial class Simulation
 
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
-        
+        if (e.Key == Key.Z)
+        {
+            if (PreviewObject != null)
+            {
+                if (_canvas.Children.Contains(PreviewObject))
+                    _canvas.Children.Remove(PreviewObject);
+
+                PreviewObject = null;
+            }
+        }
+
+        else if (e.Key == Key.Delete)
+        {
+            foreach (Component c in Components.ToList())
+            {
+                if (c.IsSelected)
+                {
+                    _canvas.Children.Remove(c);
+                    Components.Remove(c);
+                }
+            }
+
+            foreach (Wire w in Wires.ToList())
+            {
+                if (w.IsSelected)
+                {
+                    _canvas.Children.Remove(w);
+                    Wires.Remove(w);
+                }
+            }
+        }
     }
 }
