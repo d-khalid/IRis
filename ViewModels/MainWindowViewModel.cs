@@ -9,6 +9,7 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 
 using IRis.Models;
+using IRis.Models.Core;
 using IRis.Services;
 using IRis.Views;
 

@@ -3,38 +3,49 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
+using System;
 using IRis.Models.Core;
 
 namespace IRis.Models.Components;
-public class DLatch(int width = Constants.DefaultMuxWidth * 5, int height = Constants.DefaultMuxHeight) :
-    Component(2, 2, new BoxSize(width, height))
+public class DLatch(int width = 60, int height = 60) :
+    Component(2, 2, new BoxSize(width, height)), IOutputProvider
 {
-    public Dictionary<string, LogicState> StoredStates = new();
+    public Dictionary<string, LogicState> StoredStates = new()
+    {
+        ["Q"] = LogicState.Low
+    };
+    private LogicState _previousClkState = LogicState.Low;
     
     public override void Serialize()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public override DLatch Clone()
     {
-        return new DLatch();
+        return new DLatch()
+        {
+            StoredStates = new Dictionary<string, LogicState>(StoredStates),
+            _previousClkState = _previousClkState
+        };
     }
 
     public override void Draw(DrawingContext ctx)
     {
-        DrawTerminalsAndLabels(ctx);
         
         ctx.DrawRectangle(Constants.GateBrush,
              Constants.GatePen,
-             new Rect(0, 0, Width, Height));
+             new Rect(0, 0, Size.Width, Size.Height));
+
+        DrawTerminalsAndLabels(ctx);
+
 
     }
     
     private void DrawTerminalsAndLabels(DrawingContext ctx)
      {
          // Inputs
-         string[] labels = { "D", "EN" };
+         string[] labels = { "D", "CLK" };
          for (int i = 0; i < 2; i++)
          {
              ctx.DrawLine(Constants.WirePen, Inputs![i].Position,
@@ -70,24 +81,25 @@ public class DLatch(int width = Constants.DefaultMuxWidth * 5, int height = Cons
                  Constants.LabelSize,
                  Constants.LabelBrush
              );
-             ctx.DrawText(text, new Point(Width - 18, Outputs[j].Position.Y - 6));
+             ctx.DrawText(text, new Point(Size.Width - 18, Outputs[j].Position.Y - 6));
          }
      }
     
     public void ComputeOutput()
      {
          var d  = Inputs![0].Terminal.State;
-         var en = Inputs![1].Terminal.State;
+         var clk = Inputs![1].Terminal.State;
 
-         if (en == LogicState.High)
+         if (_previousClkState == LogicState.Low && clk == LogicState.High)
          {
-             // Transparent: output follows input
              StoredStates["Q"] = (LogicState)d!;
          }
-         // else en==Low → hold StoredStates["Q"]
 
-         Outputs[0].Terminal.State = StoredStates["Q"];
-         Outputs[1].Terminal.State = StoredStates["Q"] == LogicState.High ? LogicState.Low : LogicState.High;
+         var q = StoredStates["Q"];
+         Outputs[0].Terminal.State = q;
+         Outputs[1].Terminal.State = q == LogicState.High ? LogicState.Low : LogicState.High;
+
+         _previousClkState = clk;
      }
 }
 

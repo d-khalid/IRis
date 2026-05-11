@@ -25,6 +25,7 @@ public abstract class Component : CircuitObject
     {
         Size = size;
 
+
         AddTerminals(Inputs, -Constants.TerminalWireLength, numInputs, Size);
         AddTerminals(Outputs, size.Width+Constants.TerminalWireLength, numOutputs, Size, true);
     }

@@ -161,6 +161,7 @@
             </StackPanel>
         </ScrollViewer>
 
+
         <!-- top toolbar (the one bellow menu) -->
         <Border DockPanel.Dock="Top" Padding="5">
             <Grid>
