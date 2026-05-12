@@ -9,7 +9,6 @@ using Avalonia.Platform.Storage;
 using Avalonia.Media;
 
 using IRis.Models;
-using IRis.Models.Components;
 using IRis.Services;
 using IRis.ViewModels;
 using IRis.Views;
@@ -31,66 +30,55 @@ public partial class MainWindow : Window
 
     private void OnAddAndClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.PreviewObject = new AndGate();
     }
 
 
     private void OnAddOrClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.PreviewObject = new OrGate();
     }
 
 
     private void OnAddNotClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.PreviewObject = new NotGate();
     }
 
 
     private void OnAddNandClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.PreviewObject = new NandGate();
     }
 
 
     private void OnAddNorClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.PreviewObject = new NorGate();
     }
 
 
     private void OnAddXorClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.PreviewObject = new XorGate();
     }
 
 
     private void OnAddXnorClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.PreviewObject = new XnorGate();
     }
 
 
     private void OnAddToggleClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.PreviewObject = new LogicToggle();
     }
 
 
     private void OnAddProbeClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.PreviewObject = new LogicProbe();
     }
     
     private void OnAddDLatchClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.PreviewObject = new DLatch();
     }
 
 
     private void OnAddWireClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.PreviewObject = new Wire();
     }
 
 
