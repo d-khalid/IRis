@@ -1,70 +1,70 @@
-using Avalonia;
-using Avalonia.Media;
-using System;
+// using Avalonia;
+// using Avalonia.Media;
+// using System;
 
-using IRis.Models.Core;
-
-
-namespace  IRis.Models.Components;
+// using IRis.Models.Core;
 
 
-public class NotGate() : Gate(numInputs: 1, size: Constants.OrGateSize)
-{
-    public (Terminal Terminal, Point Position) Input
-    {
-        get => Inputs[0];
-    }
+// namespace  IRis.Models.Components;
 
 
-    public override void Serialize()
-    {
-        throw new NotImplementedException();
-    }
+// public class NotGate() : Gate(numInputs: 1, size: Constants.OrGateSize)
+// {
+//     public (Terminal Terminal, Point Position) Input
+//     {
+//         get => Inputs[0];
+//     }
 
 
-    public override OrGate Clone()
-    {
-        OrGate clone = new();
-        return clone;
-    }
+//     public override void Serialize()
+//     {
+//         throw new NotImplementedException();
+//     }
 
 
-    public override void Draw(DrawingContext ctx)
-    {
-        DrawTerminals(ctx, notBubbleMode: true);
+//     public override OrGate Clone()
+//     {
+//         OrGate clone = new();
+//         return clone;
+//     }
 
-        PathGeometry NotGateGeometry = new();
-        PathFigure figure = new()
-        {
-            StartPoint = new Point(0, 0),
-            IsClosed = true
-        };
 
-        if (NotGateGeometry.Figures == null)
-            throw new Exception("Cannot draw: PathGeometry.Figures is null.");
+//     public override void Draw(DrawingContext ctx)
+//     {
+//         DrawTerminals(ctx, notBubbleMode: true);
 
-        Utils.AddNotSymbolToFigure(figure, Size);
+//         PathGeometry NotGateGeometry = new();
+//         PathFigure figure = new()
+//         {
+//             StartPoint = new Point(0, 0),
+//             IsClosed = true
+//         };
 
-        NotGateGeometry.Figures.Add(figure);
-        ctx.DrawGeometry(
-            brush: Constants.GateBrush, 
-            pen: Constants.GatePen, 
-            geometry: NotGateGeometry
-        );
+//         if (NotGateGeometry.Figures == null)
+//             throw new Exception("Cannot draw: PathGeometry.Figures is null.");
 
-        Utils.AddNotBubbleToDrawing(ctx, Size);
-    }
+//         Utils.AddNotSymbolToFigure(figure, Size);
+
+//         NotGateGeometry.Figures.Add(figure);
+//         ctx.DrawGeometry(
+//             brush: Constants.GateBrush, 
+//             pen: Constants.GatePen, 
+//             geometry: NotGateGeometry
+//         );
+
+//         Utils.AddNotBubbleToDrawing(ctx, Size);
+//     }
     
 
-    public override void ComputeOutput()
-    {
-        if (Input.Terminal.State == LogicState.Unknown)
-        {
-            Output.Terminal.State = LogicState.Unknown;
-            return;
-        }
+//     public override void ComputeOutput()
+//     {
+//         if (Input.Terminal.State == LogicState.Unknown)
+//         {
+//             Output.Terminal.State = LogicState.Unknown;
+//             return;
+//         }
 
-        Output.Terminal.State = (LogicState)((int)Input.Terminal.State ^ 1);
-    }
-}
+//         Output.Terminal.State = (LogicState)((int)Input.Terminal.State ^ 1);
+//     }
+// }
 

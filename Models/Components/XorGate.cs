@@ -1,89 +1,89 @@
-using System.Linq;
-using Avalonia;
-using Avalonia.Media;
-using System.Collections.Generic;
-using System;
+// using System.Linq;
+// using Avalonia;
+// using Avalonia.Media;
+// using System.Collections.Generic;
+// using System;
 
-using IRis.Models.Core;
-
-
-namespace IRis.Models.Components;
+// using IRis.Models.Core;
 
 
-public class XorGate(int numInputs = Constants.XorGateDefaultNumInputs) : 
-    Gate(numInputs, size: Constants.XorGateSize)
-{
+// namespace IRis.Models.Components;
 
 
-    public override void Serialize()
-    {
-        throw new NotImplementedException();
-    }
+// public class XorGate(int numInputs = Constants.XorGateDefaultNumInputs) : 
+//     Gate(numInputs, size: Constants.XorGateSize)
+// {
 
 
-    public override XorGate Clone()
-    {
-        XorGate clone = new(
-            numInputs: Inputs.Count
-        );
-
-        return clone;
-    }
+//     public override void Serialize()
+//     {
+//         throw new NotImplementedException();
+//     }
 
 
-    public override void Draw(DrawingContext ctx)
-    {
-        DrawTerminals(ctx);
+//     public override XorGate Clone()
+//     {
+//         XorGate clone = new(
+//             numInputs: Inputs.Count
+//         );
 
-        PathGeometry XorGateGeometry = new();
-        PathGeometry XorGateGeometry2 = new();
+//         return clone;
+//     }
 
-        PathFigure figure = new()
-        {
-            StartPoint = new Point(0, 0),
-            IsClosed = true
-        };
 
-        PathFigure figure2 = new()
-        {
-            StartPoint = new Point(-Constants.XorArcDistance, Size.Height*0.02),
-            IsClosed = false
-        };
+//     public override void Draw(DrawingContext ctx)
+//     {
+//         DrawTerminals(ctx);
 
-        if (XorGateGeometry.Figures == null || XorGateGeometry2.Figures == null)
-            throw new Exception("Cannot draw: PathGeometry.Figures is null.");
+//         PathGeometry XorGateGeometry = new();
+//         PathGeometry XorGateGeometry2 = new();
 
-        Utils.AddOrSymbolToFigure(figure, Size);
-        Utils.AddXorCurveToFigure(figure2, Size);
+//         PathFigure figure = new()
+//         {
+//             StartPoint = new Point(0, 0),
+//             IsClosed = true
+//         };
 
-        XorGateGeometry.Figures.Add(figure);
-        XorGateGeometry2.Figures.Add(figure2);
+//         PathFigure figure2 = new()
+//         {
+//             StartPoint = new Point(-Constants.XorArcDistance, Size.Height*0.02),
+//             IsClosed = false
+//         };
 
-        ctx.DrawGeometry(
-            brush: Constants.GateBrush, 
-            pen: Constants.GatePen, 
-            geometry: XorGateGeometry
-        );
+//         if (XorGateGeometry.Figures == null || XorGateGeometry2.Figures == null)
+//             throw new Exception("Cannot draw: PathGeometry.Figures is null.");
 
-        ctx.DrawGeometry(
-            brush: null, 
-            pen: Constants.GatePen, 
-            geometry: XorGateGeometry2
-        );
-    }
+//         Utils.AddOrSymbolToFigure(figure, Size);
+//         Utils.AddXorCurveToFigure(figure2, Size);
+
+//         XorGateGeometry.Figures.Add(figure);
+//         XorGateGeometry2.Figures.Add(figure2);
+
+//         ctx.DrawGeometry(
+//             brush: Constants.GateBrush, 
+//             pen: Constants.GatePen, 
+//             geometry: XorGateGeometry
+//         );
+
+//         ctx.DrawGeometry(
+//             brush: null, 
+//             pen: Constants.GatePen, 
+//             geometry: XorGateGeometry2
+//         );
+//     }
     
 
-    public override void ComputeOutput()
-    {
-        if (Inputs.Any(i => i.Terminal.State == LogicState.Unknown))
-        {
-            Output.Terminal.State = LogicState.Unknown;
-            return;
-        }
+//     public override void ComputeOutput()
+//     {
+//         if (Inputs.Any(i => i.Terminal.State == LogicState.Unknown))
+//         {
+//             Output.Terminal.State = LogicState.Unknown;
+//             return;
+//         }
 
-        Output.Terminal.State = (LogicState)Inputs
-            .Select(i => (int)i.Terminal.State)
-            .Aggregate((a, b) => a ^ b);
-    }
-}
+//         Output.Terminal.State = (LogicState)Inputs
+//             .Select(i => (int)i.Terminal.State)
+//             .Aggregate((a, b) => a ^ b);
+//     }
+// }
 
