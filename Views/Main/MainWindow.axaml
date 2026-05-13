@@ -19,39 +19,8 @@
 >
     <DockPanel>
         <v:TopMenuView DockPanel.Dock="Top" />
-
-        <!-- left sidebar (component adding buttons) -->
-        <ScrollViewer DockPanel.Dock="Left" Width="150" BorderThickness="2">
-            <StackPanel Margin="15,0" Spacing="5">
-                <TextBlock Text="Components" FontSize="18" FontWeight="Bold" Margin="0,6" />
-
-                <Button Content="AND Gate" Click="OnAddAndClick" />
-                <Button Content="OR Gate" Click="OnAddOrClick" />
-                <Button Content="NOT Gate" Click="OnAddNotClick" />
-                <Button Content="NAND Gate" Click="OnAddNandClick" />
-                <Button Content="NOR Gate" Click="OnAddNorClick" />
-                <Button Content="XOR Gate" Click="OnAddXorClick" />
-                <Button Content="XNOR Gate" Click="OnAddXnorClick" />
-                <Button Content="Other" Click="OnAddOtherComponentClick" />
-            </StackPanel>
-        </ScrollViewer>
-
-
-        <!-- top toolbar (the one bellow menu) -->
-        <Border DockPanel.Dock="Top" Padding="5">
-            <Grid>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
-                    <Button Content="Toggle Switch" Click="OnAddToggleClick" />
-                    <Button Content="Logic Probe" Click="OnAddProbeClick" />
-                    <Button Content="D Latch" Click="OnAddDLatchClick" />
-                    <Button Content="Wire" Click="OnAddWireClick" />
-                </StackPanel>
-                <Button HorizontalAlignment="Right"
-                        Content="Simulation: OFF"
-                        Click="OnSimulationToggleClick"
-                        Background="DarkRed" />
-            </Grid>
-        </Border>
+        <v:LeftSidebarView DockPanel.Dock="Left" />
+        <v:TopToolbarView DockPanel.Dock="Top" />
 
         <!-- Bottom Status Bar -->
         <Border Background="DarkSlateGray" Height="30" DockPanel.Dock="Bottom" Padding="5">

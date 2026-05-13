@@ -1,0 +1,24 @@
+<UserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:IRis.ViewModels.Main"
+    x:DataType="vm:TopToolbarViewModel"
+    x:Class="IRis.Views.Main.TopToolbarView"
+>
+    <Border Padding="5">
+        <Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
+                <Button Content="Toggle Switch" Click="OnToggleClick" />
+                <Button Content="Logic Probe" Click="OnProbeClick" />
+                <Button Content="D Latch" Click="OnDLatchClick" />
+                <Button Content="Wire" Click="OnWireClick" />
+            </StackPanel>
+            <Button 
+                HorizontalAlignment="Right"
+                Content="Simulation: OFF"
+                Click="OnSimulationToggleClick"
+                Background="DarkRed" 
+            />
+        </Grid>
+    </Border>
+</UserControl>
