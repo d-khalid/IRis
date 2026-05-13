@@ -16,6 +16,7 @@ temp.txt
 *.userosscache
 *.sln.docstates
 *.env
+*.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
