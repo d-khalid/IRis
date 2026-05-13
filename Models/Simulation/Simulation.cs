@@ -1,90 +1,90 @@
-using System.Collections.Generic;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System;
+// using System.Collections.Generic;
+// using Avalonia;
+// using Avalonia.Controls;
+// using Avalonia.Input;
+// using Avalonia.Threading;
+// using CommunityToolkit.Mvvm.ComponentModel;
+// using System;
 
-using IRis.Models.Components;
-using IRis.Models.Core;
-
-
-namespace IRis.Models;
+// using IRis.Models.Components;
+// using IRis.Models.Core;
 
 
-public partial class Simulation : ObservableObject
-{
-    private readonly Canvas _canvas;
-
-    public readonly List<Component> Components = [];
-    public readonly List<Wire> Wires = [];
-    private CircuitObject? _previewObject = null;
-
-    private bool _isSimulating;
-    private readonly DispatcherTimer _dispatcherTimer;
+// namespace IRis.Models;
 
 
-    [ObservableProperty]
-    private Point _currentMousePos = new(0, 0);
+// public partial class Simulation : ObservableObject
+// {
+//     private readonly Canvas _canvas;
+
+//     public readonly List<Component> Components = [];
+//     public readonly List<Wire> Wires = [];
+//     private CircuitObject? _previewObject = null;
+
+//     private bool _isSimulating;
+//     private readonly DispatcherTimer _dispatcherTimer;
 
 
-    public Simulation(Canvas canvas)
-    {
-        _canvas = canvas;
-        _dispatcherTimer = GetDispatcherTimer();
-        DrawGridOnCanvas(canvas);
+//     [ObservableProperty]
+//     private Point _currentMousePos = new(0, 0);
 
-        _canvas.Cursor = new Cursor(StandardCursorType.Arrow);
 
-        _canvas.PointerPressed += OnPointerPressed;
-        _canvas.PointerMoved += OnPointerMoved;
-        _canvas.PointerReleased += OnPointerReleased;
-        _canvas.PointerWheelChanged += OnPointerWheel;
-        _canvas.PointerEntered += OnPointerEnter;
-        _canvas.PointerExited += OnPointerExit;
-    }
+//     public Simulation(Canvas canvas)
+//     {
+//         _canvas = canvas;
+//         _dispatcherTimer = GetDispatcherTimer();
+//         DrawGridOnCanvas(canvas);
+
+//         _canvas.Cursor = new Cursor(StandardCursorType.Arrow);
+
+//         _canvas.PointerPressed += OnPointerPressed;
+//         _canvas.PointerMoved += OnPointerMoved;
+//         _canvas.PointerReleased += OnPointerReleased;
+//         _canvas.PointerWheelChanged += OnPointerWheel;
+//         _canvas.PointerEntered += OnPointerEnter;
+//         _canvas.PointerExited += OnPointerExit;
+//     }
     
 
-    public bool IsSimulating
-    {
-        get => _isSimulating;
-        set 
-        {
-            _isSimulating = value;
+//     public bool IsSimulating
+//     {
+//         get => _isSimulating;
+//         set 
+//         {
+//             _isSimulating = value;
 
-            if (_isSimulating)
-            {
-                PreviewObject = null;
-                _dispatcherTimer.Start();
-            }
-            else 
-            {
-                _dispatcherTimer.Stop();
+//             if (_isSimulating)
+//             {
+//                 PreviewObject = null;
+//                 _dispatcherTimer.Start();
+//             }
+//             else 
+//             {
+//                 _dispatcherTimer.Stop();
 
-                foreach (Component c in Components)
-                {
-                    c.NullifyTerminalStates();
-                    if (c is LogicProbe lp)
-                        lp.State = LogicState.Unknown;
-                }
+//                 foreach (Component c in Components)
+//                 {
+//                     c.NullifyTerminalStates();
+//                     if (c is LogicProbe lp)
+//                         lp.State = LogicState.Unknown;
+//                 }
 
-                foreach (Wire wire in Wires)
-                {
-                    wire.NullifyTerminalStates();
-                }
-            }
-        }
-    }
+//                 foreach (Wire wire in Wires)
+//                 {
+//                     wire.NullifyTerminalStates();
+//                 }
+//             }
+//         }
+//     }
 
 
-    public CircuitObject? PreviewObject 
-    {
-        get => _previewObject;
-        set 
-        {
-            _previewObject = value;
-        }
-    }
-}
+//     public CircuitObject? PreviewObject 
+//     {
+//         get => _previewObject;
+//         set 
+//         {
+//             _previewObject = value;
+//         }
+//     }
+// }
 

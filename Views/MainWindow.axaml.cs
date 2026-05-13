@@ -7,10 +7,17 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Media;
+using Avalonia.Controls.Primitives;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm;
+using System.Collections.ObjectModel;
+using IRis.ViewModels.CircuitObjects;
+using IRis.ViewModels.CircuitObjects.Components.Gates;
+using IRis.ViewModels.Core;
+using Avalonia.Input;
 
 using IRis.Models;
-using IRis.Services;
-using IRis.ViewModels;
+using IRis.Models.Core;
 using IRis.Views;
 
 
@@ -19,14 +26,18 @@ namespace IRis.Views;
 
 public partial class MainWindow : Window
 {
-    public Simulation Simulation { get; set; }
 
-    public MainWindow()
+
+
+    private void OnComponentDragDelta(object? sender, VectorEventArgs e)
     {
-        InitializeComponent();
-        Simulation = new(MainCanvas);
+        if (sender is Thumb thumb && thumb.DataContext is ComponentViewModel componentVm)
+        {
+            // Update the data. The UI will instantly follow because of the bindings!
+            componentVm.X += e.Vector.X;
+            componentVm.Y += e.Vector.Y;
+        }
     }
-
 
     private void OnAddAndClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
@@ -90,13 +101,6 @@ public partial class MainWindow : Window
 
     private void OnSimulationToggleClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Simulation.IsSimulating = !Simulation.IsSimulating;
-
-        if (sender is Button btn)
-        {
-            btn.Content = Simulation.IsSimulating ? "Simulation: ON" : "Simulation: OFF";
-            btn.Background = Simulation.IsSimulating ? Brushes.Green : Brushes.DarkRed;
-        }
     }
 
 

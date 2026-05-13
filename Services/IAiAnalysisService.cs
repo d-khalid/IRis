@@ -1,14 +1,14 @@
-using System.Threading.Tasks;
+// using System.Threading.Tasks;
 
-namespace IRis.Services;
+// namespace IRis.Services;
 
-public interface IAiPromptAnalysisService
-{
-    public Task<string> GetSerializedCircuit(string prompt, string systemPromptPath);
-}
+// public interface IAiPromptAnalysisService
+// {
+//     public Task<string> GetSerializedCircuit(string prompt, string systemPromptPath);
+// }
 
-public interface IAiImageAnalysisService
-{
-    public Task<string?> GetSerializedCircuit(string imagePath);
+// public interface IAiImageAnalysisService
+// {
+//     public Task<string?> GetSerializedCircuit(string imagePath);
 
-}
+// }
