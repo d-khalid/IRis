@@ -1,0 +1,31 @@
+<Window 
+    Title="IRis"
+    Icon="/Assets/avalonia-logo.ico"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+
+    xmlns:v="using:IRis.Views.Main"
+    xmlns:vm="using:IRis.ViewModels.Main"
+    x:Class="IRis.Views.Main.MainWindowView"
+    x:DataType="vm:MainWindowViewModel"
+
+    xmlns:gates="using:IRis.ViewModels.CircuitObjects.Components.Gates"
+    xmlns:circuitobjects="using:IRis.ViewModels.CircuitObjects"
+>
+    <DockPanel>
+        <v:TopMenuView DockPanel.Dock="Top" />
+        <v:LeftSidebarView DockPanel.Dock="Left" />
+        <v:TopToolbarView DockPanel.Dock="Top" />
+        <v:BottomStatusBarView DockPanel.Dock="Bottom" />
+        <v:MainCanvasView />
+    </DockPanel>
+
+    <Window.KeyBindings>
+    <!-- Will add key binds here -->
+    </Window.KeyBindings>
+</Window>

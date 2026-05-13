@@ -1,18 +1,19 @@
-using System;
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 using Avalonia.Controls.Primitives;
-using IRis.ViewModels.CircuitObjects;
 using Avalonia.Input;
+using System;
+using IRis.ViewModels.CircuitObjects;
 
 
 namespace IRis.Views.Main;
 
 
-public partial class MainWindow : Window
+public partial class MainCanvasView : UserControl
 {
-    public MainWindow()
+    public MainCanvasView()
     {
-        Avalonia.Markup.Xaml.AvaloniaXamlLoader.Load(this);
+        AvaloniaXamlLoader.Load(this);
     }
 
 
@@ -74,4 +75,3 @@ public partial class MainWindow : Window
         throw new NotImplementedException();
     }
 }
-

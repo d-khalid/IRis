@@ -18,6 +18,7 @@
                 Content="Simulation: OFF"
                 Click="OnSimulationToggleClick"
                 Background="DarkRed" 
+                Margin="10,0"
             />
         </Grid>
     </Border>
