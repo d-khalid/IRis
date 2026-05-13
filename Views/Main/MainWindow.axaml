@@ -17,15 +17,6 @@
     xmlns:gates="using:IRis.ViewModels.CircuitObjects.Components.Gates"
     xmlns:circuitobjects="using:IRis.ViewModels.CircuitObjects"
 >
-    <Design.DataContext>
-        <vm:MainWindowViewModel />
-    </Design.DataContext>
-
-    <Window.KeyBindings>    
-        <!-- <KeyBinding Gesture="Z" Command="{Binding CancelPreviewCommand}" /> -->
-        <!-- <KeyBinding Gesture="Delete" Command="{Binding DeleteSelectedCommand}" /> -->
-    </Window.KeyBindings>
-
     <DockPanel>
         <v:TopMenuView DockPanel.Dock="Top" />
 
@@ -154,5 +145,9 @@
             </ItemsControl>
         </ScrollViewer>
     </DockPanel>
+
+    <Window.KeyBindings>
+    <!-- Will add key binds here -->
+    </Window.KeyBindings>
 </Window>
 
