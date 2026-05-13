@@ -1,17 +1,22 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:IRis.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ui="using:FluentAvalonia.UI.Controls"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="IRis.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
-        xmlns:gates="using:IRis.ViewModels.CircuitObjects.Components.Gates"
-        xmlns:circuitobjects="using:IRis.ViewModels.CircuitObjects"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="IRis">
+<Window 
+    Title="IRis"
+    Icon="/Assets/avalonia-logo.ico"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+
+    xmlns:v="using:IRis.Views.Main"
+    xmlns:vm="using:IRis.ViewModels.Main"
+    x:Class="IRis.Views.Main.MainWindow"
+    x:DataType="vm:MainWindowViewModel"
+
+    xmlns:gates="using:IRis.ViewModels.CircuitObjects.Components.Gates"
+    xmlns:circuitobjects="using:IRis.ViewModels.CircuitObjects"
+>
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
@@ -22,130 +27,7 @@
     </Window.KeyBindings>
 
     <DockPanel>
-        <!-- Top Menu Bar -->
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File" >
-                <MenuItem 
-                    Header="New"
-                    Click="OnFileMenuNewClick"
-                >
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource new_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem 
-                    Header="Open..."
-                    Click="OnFileMenuOpenClick"
-                >
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource open_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem 
-                    Header="Save"
-                    Click="OnFileMenuSaveClick"
-                >
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource save_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem Header="Save As..." Click="OnFileMenuSaveAsClick" />
-
-                <Separator />
-
-                <MenuItem Header="Export" >
-                    <MenuFlyout>
-                        <MenuItem Header="Component" Click="OnExportMenuComponentClick" />
-                        <MenuItem Header="Circuit" Click="OnExportMenuCircuitClick" />
-                    </MenuFlyout>
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource arrow_export_rtl_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <Separator />
-
-                <MenuItem Header="Exit" Click="OnFileMenuExitClick" />
-            </MenuItem>
-
-            <MenuItem Header="Edit">
-                <MenuItem 
-                    Header="Undo"
-                    Click="OnEditMenuUndoClick"
-                >
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource arrow_undo_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem Header="Redo"
-                    Click="OnEditMenuRedoClick"
-                >
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource arrow_redo_regular}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <Separator />
-
-                <MenuItem Header="Cut"
-                          Click="OnEditMenuCutClick">
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource cut_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem Header="Copy"
-                          Click="OnEditMenuCopyClick">
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource copy_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem Header="Paste"
-                          Click="OnEditMenuPasteClick">
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource clipboard_paste_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem Header="Delete"
-                          Click="OnEditMenuDeleteClick">
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource delete_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-
-            <MenuItem Header="AI">
-                <MenuItem
-                    Header="Generate From Prompt"
-                    Click="OnAiMenuGenerateFromPromptClick">
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource star_emphasis_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-
-                <MenuItem
-                    Header="Generate From Image"
-                    Click="OnAiMenuGenerateFromImageClick">
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource image_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-
-            <MenuItem Header="Help">
-                <MenuItem Header="About" Click="OnHelpMenuAboutClick">
-                    <MenuItem.Icon>
-                        <PathIcon Data="{StaticResource question_regular}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-        </Menu>
+        <v:TopMenuView DockPanel.Dock="Top" />
 
         <!-- left sidebar (component adding buttons) -->
         <ScrollViewer DockPanel.Dock="Left" Width="150" BorderThickness="2">

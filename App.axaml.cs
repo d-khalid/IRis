@@ -3,9 +3,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
-
-using IRis.ViewModels;
-using IRis.Views;
+using IRis.ViewModels.Main;
+using IRis.Views.Main;
 
 
 namespace IRis;
