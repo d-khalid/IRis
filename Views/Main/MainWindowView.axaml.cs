@@ -1,8 +1,5 @@
 using System;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using IRis.ViewModels.CircuitObjects;
-using Avalonia.Input;
 
 
 namespace IRis.Views.Main;

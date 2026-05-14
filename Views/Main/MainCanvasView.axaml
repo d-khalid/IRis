@@ -4,56 +4,32 @@
     xmlns:vm="using:IRis.ViewModels.Main"
     x:DataType="vm:MainCanvasViewModel"
     x:Class="IRis.Views.Main.MainCanvasView"
+
+    xmlns:circuitobjects="using:IRis.ViewModels.Circuit.CircuitObjects"
 >
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <ItemsControl ItemsSource="{Binding CircuitObjects}">
-
-            <!-- Context Menu -->
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas x:Name="MainCanvas" Background="LightGray" MinWidth="2000" MinHeight="2000">
-                        <Canvas.ContextFlyout>
-                            <MenuFlyout>
-                                <MenuItem Header="Copy"
-                                        Click="OnContextMenuCopyClick">
-                                    <MenuItem.Icon>
-                                        <PathIcon Data="{StaticResource copy_regular}" />
-                                    </MenuItem.Icon>
-                                </MenuItem>
-
-                                <MenuItem Header="Cut"
-                                        Click="OnContextMenuCutClick">
-                                    <MenuItem.Icon>
-                                        <PathIcon Data="{StaticResource cut_regular}" />
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                                
-                                <MenuItem Header="Paste"
-                                        Click="OnContextMenuPasteClick">
-                                    <MenuItem.Icon>
-                                        <PathIcon Data="{StaticResource clipboard_paste_regular}" />
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                                
-                                <MenuItem Header="Delete"
-                                        Click="OnContextMenuDeleteClick">
-                                    <MenuItem.Icon>
-                                        <PathIcon Data="{StaticResource delete_regular}" />
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                            </MenuFlyout>
-                        </Canvas.ContextFlyout>
-                    </Canvas>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <!-- Binding X,Y coord of components -->
-            <ItemsControl.Styles>
-            </ItemsControl.Styles>
-
-            <!-- Component drawing is here -->
-            <ItemsControl.DataTemplates>
-            </ItemsControl.DataTemplates>
-        </ItemsControl>
+        <Canvas 
+            x:Name="MainCanvas"
+            Background="LightGray" 
+            MinWidth="2000" 
+            MinHeight="2000"
+        >
+            <Canvas.ContextFlyout>
+                <MenuFlyout>
+                    <MenuItem Header="Copy" Click="OnCopyClick">
+                        <MenuItem.Icon><PathIcon Data="{StaticResource copy_regular}" /></MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Cut" Click="OnCutClick">
+                        <MenuItem.Icon><PathIcon Data="{StaticResource cut_regular}" /></MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Paste" Click="OnPasteClick">
+                        <MenuItem.Icon><PathIcon Data="{StaticResource clipboard_paste_regular}" /></MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Delete" Click="OnDeleteClick">
+                        <MenuItem.Icon><PathIcon Data="{StaticResource delete_regular}" /></MenuItem.Icon>
+                    </MenuItem>
+                </MenuFlyout>
+            </Canvas.ContextFlyout>
+        </Canvas>
     </ScrollViewer>
 </UserControl>

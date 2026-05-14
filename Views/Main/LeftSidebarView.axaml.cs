@@ -1,5 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using System.Collections.Generic;
+using IRis.Models.Core;
 
 
 namespace IRis.Views.Main;

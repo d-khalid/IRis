@@ -13,16 +13,13 @@
     xmlns:vm="using:IRis.ViewModels.Main"
     x:Class="IRis.Views.Main.MainWindowView"
     x:DataType="vm:MainWindowViewModel"
-
-    xmlns:gates="using:IRis.ViewModels.CircuitObjects.Components.Gates"
-    xmlns:circuitobjects="using:IRis.ViewModels.CircuitObjects"
 >
     <DockPanel>
-        <v:TopMenuView DockPanel.Dock="Top" />
-        <v:LeftSidebarView DockPanel.Dock="Left" />
-        <v:TopToolbarView DockPanel.Dock="Top" />
-        <v:BottomStatusBarView DockPanel.Dock="Bottom" />
-        <v:MainCanvasView />
+        <v:TopMenuView DockPanel.Dock="Top" x:Name="TopMenu" />
+        <v:LeftSidebarView DockPanel.Dock="Left" x:Name="LeftSidebar" />
+        <v:TopToolbarView DockPanel.Dock="Top" x:Name="TopToolbar" />
+        <v:BottomStatusBarView DockPanel.Dock="Bottom" x:Name="BottomStatusBar" />
+        <v:MainCanvasView x:Name="MainCanvas" />
     </DockPanel>
 
     <Window.KeyBindings>

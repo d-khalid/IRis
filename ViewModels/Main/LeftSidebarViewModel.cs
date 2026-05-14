@@ -1,6 +1,10 @@
+using IRis.ViewModels;
+
+
 namespace IRis.ViewModels.Main;
 
 
-public partial class LeftSidebarViewModel : ViewModelBase
+public partial class LeftSidebarViewModel(SimulationViewModel simulation) : ViewModelBase
 {
+    private readonly SimulationViewModel _simulation = simulation;
 }
