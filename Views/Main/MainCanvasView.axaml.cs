@@ -30,9 +30,9 @@ public partial class MainCanvasView : UserControl
         if (vm.Simulation.Preview == null) return;
         if (vm.Simulation.Preview is not ComponentViewModel c) return;
 
+        vm.Simulation.Preview = null;
         c.Opacity = 1.0;
         vm.Simulation.Components.Add(c);
-        vm.Simulation.Preview = null;
     }
 
 

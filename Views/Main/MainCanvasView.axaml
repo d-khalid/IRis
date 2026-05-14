@@ -68,7 +68,7 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.Styles>
-                    <Style Selector="ItemsControl > ContentPresenter" x:DataType="circuitobjects:ComponentViewModel">
+                    <Style Selector="ContentPresenter" x:DataType="circuitobjects:ComponentViewModel">
                         <Setter Property="Canvas.Left" Value="{Binding X}" />
                         <Setter Property="Canvas.Top" Value="{Binding Y}" />
                         <Setter Property="Opacity" Value="{Binding Opacity}" />
@@ -77,15 +77,13 @@
             </ItemsControl>
 
             <!-- Setup X and Y of preview -->
-            <ContentControl Content="{Binding Simulation.Preview}">
-                <ContentControl.Styles>
-                    <Style Selector="ContentControl" x:DataType="circuitobjects:ComponentViewModel">
-                        <Setter Property="Canvas.Left" Value="{Binding X}" />
-                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
-                        <Setter Property="IsHitTestVisible" Value="False" />
-                    </Style>
-                </ContentControl.Styles>
-            </ContentControl>
+            <ContentControl 
+                Content="{Binding Simulation.Preview}"
+                x:CompileBindings="False"
+                Canvas.Left="{Binding Simulation.Preview.X}"
+                Canvas.Top="{Binding Simulation.Preview.Y}"
+                IsHitTestVisible="False"
+            />
         </Canvas>
     </ScrollViewer>
 </UserControl>
