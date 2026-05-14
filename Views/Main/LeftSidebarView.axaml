@@ -8,7 +8,7 @@
     <ScrollViewer Width="135" BorderThickness="2">
         <StackPanel Margin="15,0" Spacing="5">
             <TextBlock Text="Components" FontSize="18" FontWeight="Bold" Margin="0,6" />
-            <Button Content="AND Gate" Click="OnAddAndClick" />
+            <Button Content="AND Gate" Command="{Binding AddAndCommand}" />
             <Button Content="OR Gate" Click="OnAddOrClick" />
             <Button Content="NOT Gate" Click="OnAddNotClick" />
             <Button Content="NAND Gate" Click="OnAddNandClick" />

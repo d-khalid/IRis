@@ -7,13 +7,43 @@
 
     xmlns:circuitobjects="using:IRis.ViewModels.Circuit.CircuitObjects"
 >
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="circuitobjects:ComponentViewModel">
+            <Border Background="SteelBlue" 
+                    BorderBrush="Black" 
+                    BorderThickness="2"
+                    Width="{Binding Width}" 
+                    Height="{Binding Height}"
+                    CornerRadius="3">
+                <TextBlock Text="AND SHIT" 
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center" 
+                           Foreground="White" 
+                           FontWeight="Bold"/>
+            </Border>
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <Canvas 
             x:Name="MainCanvas"
             Background="LightGray" 
             MinWidth="2000" 
             MinHeight="2000"
+            PointerPressed="OnPointerPressed"
+            PointerMoved="OnPointerMoved"
         >
+            <Canvas.Background>
+                <VisualBrush TileMode="Tile" SourceRect="0,0,10,10" DestinationRect="0,0,10,10">
+                    <VisualBrush.Visual>
+                        <Canvas Width="10" Height="10" Background="#F0F0F0">
+                            <Line StartPoint="0,10" EndPoint="10,10" Stroke="#D3D3D3" StrokeThickness="1"/>
+                            <Line StartPoint="10,0" EndPoint="10,10" Stroke="#D3D3D3" StrokeThickness="1"/>
+                        </Canvas>
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </Canvas.Background>
+
             <Canvas.ContextFlyout>
                 <MenuFlyout>
                     <MenuItem Header="Copy" Click="OnCopyClick">
@@ -30,6 +60,32 @@
                     </MenuItem>
                 </MenuFlyout>
             </Canvas.ContextFlyout>
+
+            <ItemsControl ItemsSource="{Binding Simulation.Components}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Styles>
+                    <Style Selector="ItemsControl > ContentPresenter" x:DataType="circuitobjects:ComponentViewModel">
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                        <Setter Property="Opacity" Value="{Binding Opacity}" />
+                    </Style>
+                </ItemsControl.Styles>
+            </ItemsControl>
+
+            <!-- Setup X and Y of preview -->
+            <ContentControl Content="{Binding Simulation.Preview}">
+                <ContentControl.Styles>
+                    <Style Selector="ContentControl" x:DataType="circuitobjects:ComponentViewModel">
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                        <Setter Property="IsHitTestVisible" Value="False" />
+                    </Style>
+                </ContentControl.Styles>
+            </ContentControl>
         </Canvas>
     </ScrollViewer>
 </UserControl>

@@ -15,11 +15,11 @@
     x:DataType="vm:MainWindowViewModel"
 >
     <DockPanel>
-        <v:TopMenuView DockPanel.Dock="Top" x:Name="TopMenu" />
-        <v:LeftSidebarView DockPanel.Dock="Left" x:Name="LeftSidebar" />
-        <v:TopToolbarView DockPanel.Dock="Top" x:Name="TopToolbar" />
-        <v:BottomStatusBarView DockPanel.Dock="Bottom" x:Name="BottomStatusBar" />
-        <v:MainCanvasView x:Name="MainCanvas" />
+        <v:TopMenuView DockPanel.Dock="Top" />
+        <v:LeftSidebarView DockPanel.Dock="Left" DataContext="{Binding LeftSidebarVm}" />
+        <v:TopToolbarView DockPanel.Dock="Top" />
+        <v:BottomStatusBarView DockPanel.Dock="Bottom" />
+        <v:MainCanvasView DataContext="{Binding MainCanvasVm}" />
     </DockPanel>
 
     <Window.KeyBindings>

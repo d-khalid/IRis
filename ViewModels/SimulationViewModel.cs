@@ -7,10 +7,10 @@ using System.Collections.ObjectModel;
 namespace IRis.ViewModels;
 
 
-public partial class SimulationViewModel : ObservableObject
+public partial class SimulationViewModel : ViewModelBase
 {
-    public ObservableCollection<ComponentViewModel> Components = [];
-    public ObservableCollection<WireViewModel> Wires = [];
+    public ObservableCollection<ComponentViewModel> Components { get; } = [];
+    public ObservableCollection<WireViewModel> Wires { get; } = [];
     [ObservableProperty] private CircuitObjectViewModel? _preview = null;
 }
 

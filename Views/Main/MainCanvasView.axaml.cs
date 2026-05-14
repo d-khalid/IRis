@@ -20,19 +20,31 @@ public partial class MainCanvasView : UserControl
 
 
     private void OnPointerEnter(object? sender, PointerEventArgs e) {}
-    private void OnPointerExit(object? sender, PointerEventArgs e) {}
-    private void OnPointerMoved(object? sender, PointerEventArgs e) {}
-    private void OnPointerPressed(object? sender, PointerEventArgs e) {}
+    private void OnPointerExited(object? sender, PointerEventArgs e) {}
     private void OnPointerReleased(object? sender, PointerEventArgs e) {}
 
 
-    private void OnComponentDragDelta(object? sender, VectorEventArgs e)
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (sender is Thumb thumb && thumb.DataContext is ComponentViewModel componentVm)
-        {
-            componentVm.X += e.Vector.X;
-            componentVm.Y += e.Vector.Y;
-        }
+        if (DataContext is not MainCanvasViewModel vm) return;
+        if (vm.Simulation.Preview == null) return;
+        if (vm.Simulation.Preview is not ComponentViewModel c) return;
+
+        c.Opacity = 1.0;
+        vm.Simulation.Components.Add(c);
+        vm.Simulation.Preview = null;
+    }
+
+
+    private void OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (DataContext is not MainCanvasViewModel vm) return;
+        if (vm.Simulation.Preview == null) return;
+        if (vm.Simulation.Preview is not ComponentViewModel c) return;
+
+        Point pt = e.GetPosition((Visual)sender!);
+        c.X = pt.X;
+        c.Y = pt.Y;
     }
 
 
