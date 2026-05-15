@@ -2,18 +2,19 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:IRis.ViewModels.Main"
+
     x:DataType="vm:BottomStatusBarViewModel"
     x:Class="IRis.Views.Main.BottomStatusBarView"
 >
     <Border Background="DarkSlateGray" Height="25" Padding="5">
         <Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <TextBlock Margin="10,0">
+                <TextBlock Margin="10,0" FontSize="12">
                     <TextBlock.Text>
-                        <!-- <MultiBinding StringFormat="Cursor: ({0}, {1})">
+                        <MultiBinding StringFormat="Cursor: ({0}, {1})">
                             <Binding Path="Simulation.CurrentMousePos.X" />
                             <Binding Path="Simulation.CurrentMousePos.Y" />
-                        </MultiBinding> -->
+                        </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
             </StackPanel>

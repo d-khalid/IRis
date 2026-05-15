@@ -6,25 +6,40 @@
     x:Class="IRis.Views.Main.MainCanvasView"
 
     xmlns:circuitobjects="using:IRis.ViewModels.Circuit.CircuitObjects"
+    xmlns:paz="using:Avalonia.Controls.PanAndZoom"
 >
     <UserControl.DataTemplates>
         <DataTemplate DataType="circuitobjects:ComponentViewModel">
-            <Border Background="SteelBlue" 
-                    BorderBrush="Black" 
-                    BorderThickness="2"
-                    Width="{Binding Width}" 
-                    Height="{Binding Height}"
-                    CornerRadius="3">
-                <TextBlock Text="AND SHIT" 
-                           HorizontalAlignment="Center" 
-                           VerticalAlignment="Center" 
-                           Foreground="White" 
-                           FontWeight="Bold"/>
+            <Border 
+                Background="SteelBlue" 
+                BorderBrush="Black" 
+                BorderThickness="2"
+                Width="{Binding Width}" 
+                Height="{Binding Height}"
+                CornerRadius="3"
+            >
+                <TextBlock 
+                    Text="AND SHIT" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Foreground="White" 
+                    FontWeight="Bold"
+                />
             </Border>
         </DataTemplate>
     </UserControl.DataTemplates>
 
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+    <paz:ZoomBorder 
+        Name="ZoomBorder" 
+        Stretch="None" 
+        ZoomSpeed="1.2"
+        Background="SlateBlue" 
+        ClipToBounds="True" 
+        Focusable="True"
+        VerticalAlignment="Stretch" 
+        HorizontalAlignment="Stretch"
+        PanButton="Left"
+    >
         <Canvas 
             x:Name="MainCanvas"
             Background="LightGray" 
@@ -76,7 +91,6 @@
                 </ItemsControl.Styles>
             </ItemsControl>
 
-            <!-- Setup X and Y of preview -->
             <ContentControl 
                 Content="{Binding Simulation.Preview}"
                 x:CompileBindings="False"
@@ -85,5 +99,5 @@
                 IsHitTestVisible="False"
             />
         </Canvas>
-    </ScrollViewer>
+    </paz:ZoomBorder>
 </UserControl>

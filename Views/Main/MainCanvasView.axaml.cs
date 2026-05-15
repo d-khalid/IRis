@@ -6,6 +6,9 @@ using Avalonia;
 using System;
 using IRis.ViewModels.Circuit.CircuitObjects;
 using IRis.ViewModels.Main;
+using IRis.Models.Core;
+using IRis.Services;
+using IRis.ViewModels;
 
 
 namespace IRis.Views.Main;
@@ -13,6 +16,9 @@ namespace IRis.Views.Main;
 
 public partial class MainCanvasView : UserControl
 {
+    public SimulationViewModel Simulation = SimulationViewModel.GetInstance();
+
+
     public MainCanvasView()
     {
         AvaloniaXamlLoader.Load(this);
@@ -27,26 +33,36 @@ public partial class MainCanvasView : UserControl
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (DataContext is not MainCanvasViewModel vm) return;
-        if (vm.Simulation.Preview == null) return;
-        if (vm.Simulation.Preview is not ComponentViewModel c) return;
+        if (Simulation.Preview == null) return;
+        if (Simulation.Preview is not ComponentViewModel c) return;
 
-        vm.Simulation.Preview = null;
+        Simulation.Preview = null;
         c.Opacity = 1.0;
-        vm.Simulation.Components.Add(c);
+        Simulation.Components.Add(c);
     }
 
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (DataContext is not MainCanvasViewModel vm) return;
-        if (vm.Simulation.Preview == null) return;
-        if (vm.Simulation.Preview is not ComponentViewModel c) return;
+        Point pt = UtilityService.SnapPointToGrid(e.GetPosition((Visual)sender!));
+        Simulation.CurrentMousePos = pt;
 
-        Point pt = e.GetPosition((Visual)sender!);
+        if (Simulation.Preview == null) return;
+        if (Simulation.Preview is not ComponentViewModel c) return;
+
         c.X = pt.X;
         c.Y = pt.Y;
     }
+
+
+    // private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    // {
+    //     double newSpacing = Simulation.GridSpacing + (e.Delta.Y * 1.5);
+    //     // Simulation.GridSpacing = Math.Clamp(newSpacing, 5.0, 100.0);
+    //     Console.WriteLine(Simulation.GridSpacing);
+
+    //     e.Handled = true;
+    // }
 
 
     private void OnCopyClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {}
