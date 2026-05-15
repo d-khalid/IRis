@@ -34,4 +34,14 @@ public partial class SimulationViewModel : ViewModelBase
 
         return _instance;
     }
+
+
+    public void UnselectAll()
+    {
+        foreach (var c in Components)
+            if (c.IsSelected) c.IsSelected = false;
+
+        foreach (var w in Wires)
+            if (w.IsSelected) w.IsSelected = false;
+    }
 }

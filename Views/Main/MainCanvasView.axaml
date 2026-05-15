@@ -1,31 +1,55 @@
 <UserControl 
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:paz="using:Avalonia.Controls.PanAndZoom"
+
     xmlns:vm="using:IRis.ViewModels.Main"
     x:DataType="vm:MainCanvasViewModel"
     x:Class="IRis.Views.Main.MainCanvasView"
-
+    xmlns:gates="using:IRis.ViewModels.Circuit.CircuitObjects.Components.Gates"
     xmlns:circuitobjects="using:IRis.ViewModels.Circuit.CircuitObjects"
-    xmlns:paz="using:Avalonia.Controls.PanAndZoom"
 >
     <UserControl.DataTemplates>
-        <DataTemplate DataType="circuitobjects:ComponentViewModel">
-            <Border 
-                Background="SteelBlue" 
-                BorderBrush="Black" 
-                BorderThickness="2"
-                Width="{Binding Width}" 
-                Height="{Binding Height}"
-                CornerRadius="3"
+        <DataTemplate DataType="gates:AndGateViewModel">
+            <Grid 
+                Canvas.Left="{Binding X}"
+                Canvas.Top="{Binding Y}"
+                Width="{Binding Width}"
+                Height="{Binding Height}" 
+                Opacity="{Binding Opacity}"
+                Background="Transparent" 
+                PointerPressed="OnCircuitObjectClicked"
             >
-                <TextBlock 
-                    Text="AND SHIT" 
-                    HorizontalAlignment="Center" 
-                    VerticalAlignment="Center" 
-                    Foreground="White" 
-                    FontWeight="Bold"
+                <Viewbox Stretch="Fill">
+                    <Canvas Width="100" Height="90">
+                        <Path Fill="White" Stroke="Black" StrokeThickness="4">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathFigure StartPoint="5,5" IsClosed="True">
+                                        <LineSegment Point="5,85" />
+                                        <LineSegment Point="60,85" />
+                                        <ArcSegment 
+                                            Point="60,5" 
+                                            Size="35,40" 
+                                            SweepDirection="CounterClockwise" 
+                                            IsLargeArc="False" 
+                                        />
+                                        <LineSegment Point="5,5" />
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Canvas>
+                </Viewbox>
+
+                <Rectangle
+                    Fill="#40abcef9" 
+                    Stroke="DodgerBlue"
+                    StrokeThickness="1.5" 
+                    IsVisible="{Binding IsSelected}" 
+                    Margin="-5" 
                 />
-            </Border>
+            </Grid>
         </DataTemplate>
     </UserControl.DataTemplates>
 
@@ -47,6 +71,8 @@
             MinHeight="2000"
             PointerPressed="OnPointerPressed"
             PointerMoved="OnPointerMoved"
+            PointerEntered="OnPointerEntered"
+            PointerExited="OnPointerExited"
         >
             <Canvas.Background>
                 <VisualBrush TileMode="Tile" SourceRect="0,0,10,10" DestinationRect="0,0,10,10">
@@ -76,14 +102,18 @@
                 </MenuFlyout>
             </Canvas.ContextFlyout>
 
-            <ItemsControl ItemsSource="{Binding Simulation.Components}">
+            <ItemsControl 
+                ItemsSource="{Binding Simulation.Components}"
+                ClipToBounds="False" 
+                x:CompileBindings="False"
+            >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.Styles>
-                    <Style Selector="ContentPresenter" x:DataType="circuitobjects:ComponentViewModel">
+                    <Style Selector="ItemsControl > ContentPresenter">
                         <Setter Property="Canvas.Left" Value="{Binding X}" />
                         <Setter Property="Canvas.Top" Value="{Binding Y}" />
                         <Setter Property="Opacity" Value="{Binding Opacity}" />
@@ -91,12 +121,14 @@
                 </ItemsControl.Styles>
             </ItemsControl>
 
-            <ContentControl 
-                Content="{Binding Simulation.Preview}"
+            <ContentControl
+                x:Name="PreviewControl"
                 x:CompileBindings="False"
-                Canvas.Left="{Binding Simulation.Preview.X}"
-                Canvas.Top="{Binding Simulation.Preview.Y}"
+                Content="{Binding Simulation.Preview}"
+                Canvas.Left="{Binding Simulation.Preview.X, FallbackValue=0}"
+                Canvas.Top="{Binding Simulation.Preview.Y, FallbackValue=0}"
                 IsHitTestVisible="False"
+                IsVisible="False"
             />
         </Canvas>
     </paz:ZoomBorder>

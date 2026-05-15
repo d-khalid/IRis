@@ -9,6 +9,7 @@ using IRis.ViewModels.Main;
 using IRis.Models.Core;
 using IRis.Services;
 using IRis.ViewModels;
+using IRis.ViewModels.Circuit;
 
 
 namespace IRis.Views.Main;
@@ -21,24 +22,34 @@ public partial class MainCanvasView : UserControl
 
     public MainCanvasView()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
         DataContext = new MainCanvasViewModel();
     }
 
 
-    private void OnPointerEnter(object? sender, PointerEventArgs e) {}
-    private void OnPointerExited(object? sender, PointerEventArgs e) {}
-    private void OnPointerReleased(object? sender, PointerEventArgs e) {}
+    private void OnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        PreviewControl.IsVisible = true;
+    }
+
+
+    private void OnPointerExited(object? sender, PointerEventArgs e)
+    {
+        PreviewControl.IsVisible = false;
+    }
 
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (Simulation.Preview == null) return;
-        if (Simulation.Preview is not ComponentViewModel c) return;
+        Simulation.UnselectAll();
 
-        Simulation.Preview = null;
-        c.Opacity = 1.0;
-        Simulation.Components.Add(c);
+        if (Simulation.Preview == null) return;
+        if (Simulation.Preview is ComponentViewModel c)
+        {
+            Simulation.Preview = null;
+            c.Opacity = 1.0;
+            Simulation.Components.Add(c);
+        }
     }
 
 
@@ -55,14 +66,18 @@ public partial class MainCanvasView : UserControl
     }
 
 
-    // private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
-    // {
-    //     double newSpacing = Simulation.GridSpacing + (e.Delta.Y * 1.5);
-    //     // Simulation.GridSpacing = Math.Clamp(newSpacing, 5.0, 100.0);
-    //     Console.WriteLine(Simulation.GridSpacing);
+    private void OnPointerReleased(object? sender, PointerEventArgs e) {}
 
-    //     e.Handled = true;
-    // }
+
+    private void OnCircuitObjectClicked(object? sender, PointerPressedEventArgs e)
+    {
+        if (sender is Control c && c.DataContext is CircuitObjectViewModel co)
+        {
+            Simulation.UnselectAll();
+            co.IsSelected = true;
+            e.Handled = true;
+        }
+    }
 
 
     private void OnCopyClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {}
