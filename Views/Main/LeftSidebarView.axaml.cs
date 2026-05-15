@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using System.Collections.Generic;
 using IRis.Models.Core;
+using IRis.ViewModels.Main;
 
 
 namespace IRis.Views.Main;
@@ -12,6 +13,7 @@ public partial class LeftSidebarView : UserControl
     public LeftSidebarView()
     {
         AvaloniaXamlLoader.Load(this);
+        DataContext = new LeftSidebarViewModel();
     }
 
 

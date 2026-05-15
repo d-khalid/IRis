@@ -16,10 +16,10 @@
 >
     <DockPanel>
         <v:TopMenuView DockPanel.Dock="Top" />
-        <v:LeftSidebarView DockPanel.Dock="Left" DataContext="{Binding LeftSidebarVm}" />
+        <v:LeftSidebarView DockPanel.Dock="Left" />
         <v:TopToolbarView DockPanel.Dock="Top" />
         <v:BottomStatusBarView DockPanel.Dock="Bottom" />
-        <v:MainCanvasView DataContext="{Binding MainCanvasVm}" />
+        <v:MainCanvasView />
     </DockPanel>
 
     <Window.KeyBindings>

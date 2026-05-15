@@ -16,6 +16,7 @@ public partial class MainCanvasView : UserControl
     public MainCanvasView()
     {
         AvaloniaXamlLoader.Load(this);
+        DataContext = new MainCanvasViewModel();
     }
 
 
