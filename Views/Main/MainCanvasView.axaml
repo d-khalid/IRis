@@ -24,7 +24,7 @@
                         <Path Fill="White" Stroke="Black" StrokeThickness="4">
                             <Path.Data>
                                 <PathGeometry>
-                                    <PathFigure StartPoint="5,5" IsClosed="True">
+                                    <PathFigure StartPoint="5,85" IsClosed="True">
                                         <LineSegment Point="5,85" />
                                         <LineSegment Point="60,85" />
                                         <ArcSegment 

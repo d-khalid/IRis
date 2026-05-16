@@ -71,7 +71,7 @@ public partial class MainCanvasView : UserControl
                         {
                             foreach (CircuitObjectViewModel cobj in Simulation.CircuitObjects)
                             {
-                                if (cobj != co)
+                                if (cobj != co && cobj.IsSelected)
                                 {
                                     if (cobj is ComponentViewModel cc && (cc.X < minX || cc.Y < minY))
                                     {
