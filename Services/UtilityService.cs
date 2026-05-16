@@ -1,10 +1,6 @@
 using Avalonia;
-using Avalonia.Media;
 using System;
-using System.Globalization;
-using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
-using IRis.ViewModels;
+using Newtonsoft.Json;
 
 
 namespace IRis.Services;
@@ -20,9 +16,16 @@ public static class UtilityService {
     }
 
 
-    public static Point Sum(Point p1, Point p2)
+    public static T? Clone<T>(T source)
     {
-        return new Point(p1.X + p2.X, p1.Y + p2.Y);
+        JsonSerializerSettings settings = new()
+        {
+            TypeNameHandling = TypeNameHandling.All
+        };
+        
+        return JsonConvert.DeserializeObject<T>(
+            JsonConvert.SerializeObject(source, settings), settings
+        );
     }
 
 

@@ -1,6 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia;
 using System;
@@ -10,7 +8,6 @@ using IRis.Models.Core;
 using IRis.Services;
 using IRis.ViewModels;
 using IRis.ViewModels.Circuit;
-using System.ComponentModel;
 
 
 namespace IRis.Views.Main;
@@ -74,7 +71,7 @@ public partial class MainCanvasView : UserControl
 
             else if (Simulation.Preview is ComponentViewModel c)    // commit the component
             {
-                Simulation.Preview = null;
+                Simulation.Preview = UtilityService.Clone(c);
                 c.Opacity = 1.0;
                 Simulation.Components.Add(c);
             }
@@ -104,14 +101,10 @@ public partial class MainCanvasView : UserControl
             foreach (ComponentViewModel c in Simulation.Components) 
             {
                 if (!c.IsSelected && c.Intersects(selectionBounds))
-                {
                     c.IsSelected = true;
-                }
 
                 else if (c.IsSelected && !c.Intersects(selectionBounds)) 
-                {
                     c.IsSelected = false;
-                }
             }
         }
 

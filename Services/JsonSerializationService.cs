@@ -1,15 +1,8 @@
-// // default libs
 // using System;
 // using System.Collections.Generic;
 // using System.IO;
-// using System.Linq;
 // using Newtonsoft.Json;
-
-// // our modules
 // using IRis.Models;
-// using IRis.Models.Components;
-// using IRis.Models.Core;
-// using IRis.Models.DTOs;
 
 
 // namespace IRis.Services;
@@ -17,6 +10,7 @@
 
 // public static class JsonSerializationService
 // {
+
 //     public static void SaveToFile(Simulation simulation, string saveFilePath)
 //     {
 //         // Convert the circuit to DTOs
