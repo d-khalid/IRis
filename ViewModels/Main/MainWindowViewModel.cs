@@ -42,7 +42,7 @@ public partial class MainWindowViewModel : ViewModelBase
             if (co.IsSelected) 
             {
                 co.IsSelected = false;
-                Simulation.CopiedObjects.Add(UtilityService.Clone(co));
+                Simulation.CopiedObjects.Add(CloningService.Clone(co));
             }
         }
     }
@@ -62,7 +62,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         foreach (CircuitObjectViewModel co in Simulation.CopiedObjects)
         {
-            CircuitObjectViewModel clone = UtilityService.Clone(co);
+            CircuitObjectViewModel clone = CloningService.Clone(co);
             clone.Opacity = 0.5;
             Simulation.PreviewObjects.Add(clone);
         }

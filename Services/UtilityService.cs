@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using IRis.ViewModels.Circuit;
 using System.Collections.ObjectModel;
 using IRis.ViewModels.Circuit.CircuitObjects;
+using Avalonia.Controls;
 
 
 namespace IRis.Services;
@@ -16,19 +17,6 @@ public static class UtilityService {
         double snapX = Math.Round(pt.X / gridSpacing) * gridSpacing;
         double snapY = Math.Round(pt.Y / gridSpacing) * gridSpacing;
         return new Point(snapX, snapY);
-    }
-
-
-    public static T Clone<T>(T source)
-    {
-        JsonSerializerSettings settings = new()
-        {
-            TypeNameHandling = TypeNameHandling.All
-        };
-        
-        return JsonConvert.DeserializeObject<T>(
-            JsonConvert.SerializeObject(source, settings), settings
-        )!;
     }
 
 
@@ -62,6 +50,37 @@ public static class UtilityService {
                 c.Y = target.Y;
             }
         }
+    }
+
+
+    public static void SetObjectBounds(
+        AvaloniaObject obj, double x, double y, double width, double height) 
+    {
+        Canvas.SetLeft(obj, x);
+        Canvas.SetTop(obj, y);
+        
+        if (obj is Avalonia.Controls.Shapes.Rectangle r) 
+        {
+            r.Width = width;
+            r.Height = height;
+        }
+    }
+
+
+    public static Rect GetObjectBounds(AvaloniaObject obj) 
+    {
+        double x = Canvas.GetLeft(obj);
+        double y = Canvas.GetTop(obj);
+        double width = 0.0;
+        double height = 0.0;
+        
+        if (obj is Avalonia.Controls.Shapes.Rectangle r) 
+        {
+            width = r.Width;
+            height = r.Height;
+        }
+
+        return new Rect(x, y, width, height);
     }
 
 
@@ -209,4 +228,3 @@ public static class UtilityService {
     //     );
     // }
 }
-

@@ -74,7 +74,7 @@ public partial class MainCanvasView : UserControl
                 {
                     if (co is ComponentViewModel c)
                     {
-                        ComponentViewModel clone = UtilityService.Clone(c);
+                        ComponentViewModel clone = CloningService.Clone(c);
                         clone.Opacity = 1.0;
                         Simulation.CircuitObjects.Add(clone);
                     }
@@ -92,15 +92,15 @@ public partial class MainCanvasView : UserControl
 
         if (SelectionBox.IsVisible)     // update SelectionBox bounds and select comp within range
         {
-            SelectionBox.Width = Math.Abs(_selectionBoxStartPt.X - pt.X);
-            SelectionBox.Height = Math.Abs(_selectionBoxStartPt.Y - pt.Y);
-            Canvas.SetLeft(SelectionBox, Math.Min(_selectionBoxStartPt.X, pt.X));
-            Canvas.SetTop(SelectionBox, Math.Min(_selectionBoxStartPt.Y, pt.Y));
-
-            var selectionBounds = new Rect(
-                Canvas.GetLeft(SelectionBox), Canvas.GetTop(SelectionBox),
-                SelectionBox.Width, SelectionBox.Height
+            UtilityService.SetObjectBounds(
+                obj: SelectionBox,
+                width: Math.Abs(_selectionBoxStartPt.X - pt.X),
+                height: Math.Abs(_selectionBoxStartPt.Y - pt.Y),
+                x: Math.Min(_selectionBoxStartPt.X, pt.X),
+                y: Math.Min(_selectionBoxStartPt.Y, pt.Y)
             );
+
+            var selectionBounds = UtilityService.GetObjectBounds(SelectionBox);
 
             foreach (CircuitObjectViewModel co in Simulation.CircuitObjects) 
             {
