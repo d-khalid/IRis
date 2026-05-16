@@ -6,7 +6,7 @@
     x:DataType="vm:BottomStatusBarViewModel"
     x:Class="IRis.Views.Main.BottomStatusBarView"
 >
-    <Border Background="DarkSlateGray" Height="25" Padding="5">
+    <Border Background="DarkSlateGray" Height="22" Padding="4">
         <Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 <TextBlock Margin="10,0" FontSize="12">

@@ -62,6 +62,7 @@ public partial class MainCanvasView : UserControl
 
                     else
                     {
+                        Simulation.SelectObject(obj);
                         Simulation.DraggedObjects.Add(obj);
                     }
 
@@ -92,6 +93,20 @@ public partial class MainCanvasView : UserControl
                         clone.Opacity = 1.0;
                         Simulation.CircuitObjects.Add(clone);
                     }
+                }
+            }
+        }
+
+        else if (pt.Properties.IsRightButtonPressed)
+        {
+            CircuitObjectViewModel? obj = Simulation.GetContainerObject(pt.Position);
+
+            if (obj != null)
+            {
+                if (!obj.IsSelected)
+                {
+                    Simulation.UnselectAll();
+                    Simulation.SelectObject(obj);
                 }
             }
         }
