@@ -107,7 +107,7 @@
 
             <!-- rendering components list -->
             <ItemsControl 
-                ItemsSource="{Binding Simulation.Components}"
+                ItemsSource="{Binding Simulation.CircuitObjects}"
                 ClipToBounds="False" 
                 x:CompileBindings="False"
             >
@@ -118,8 +118,8 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.Styles>
                     <Style Selector="ItemsControl > ContentPresenter">
-                        <Setter Property="Canvas.Left" Value="{Binding X}" />
-                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                        <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
                         <Setter Property="Opacity" Value="{Binding Opacity}" />
                     </Style>
                 </ItemsControl.Styles>

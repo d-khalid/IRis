@@ -4,7 +4,6 @@ using Avalonia;
 using System;
 using IRis.ViewModels.Circuit.CircuitObjects;
 using IRis.ViewModels.Main;
-using IRis.Models.Core;
 using IRis.Services;
 using IRis.ViewModels;
 using IRis.ViewModels.Circuit;
@@ -56,11 +55,11 @@ public partial class MainCanvasView : UserControl
             if (Simulation.Preview == null)     // start SelectionBox
             {
                 Simulation.UnselectAll();
-                foreach (ComponentViewModel comp in Simulation.Components) 
+                foreach (CircuitObjectViewModel co in Simulation.CircuitObjects) 
                 {
-                    if (!comp.IsSelected && comp.Contains(pt.Position)) 
+                    if (co is ComponentViewModel c && !c.IsSelected && c.Contains(pt.Position))
                     {
-                        comp.IsSelected = true;
+                        c.IsSelected = true;
                     }
                 }
 
@@ -73,7 +72,7 @@ public partial class MainCanvasView : UserControl
             {
                 Simulation.Preview = UtilityService.Clone(c);
                 c.Opacity = 1.0;
-                Simulation.Components.Add(c);
+                Simulation.CircuitObjects.Add(c);
             }
         }
     }
@@ -98,20 +97,23 @@ public partial class MainCanvasView : UserControl
                 SelectionBox.Width, SelectionBox.Height
             );
 
-            foreach (ComponentViewModel c in Simulation.Components) 
+            foreach (CircuitObjectViewModel co in Simulation.CircuitObjects) 
             {
-                if (!c.IsSelected && c.Intersects(selectionBounds))
-                    c.IsSelected = true;
+                if (co is ComponentViewModel c)
+                {
+                    if (!c.IsSelected && c.Intersects(selectionBounds))
+                        c.IsSelected = true;
 
-                else if (c.IsSelected && !c.Intersects(selectionBounds)) 
-                    c.IsSelected = false;
+                    else if (c.IsSelected && !c.Intersects(selectionBounds)) 
+                        c.IsSelected = false;
+                }
             }
         }
 
         else if (Simulation.Preview is ComponentViewModel c)    // update Component X,Y
         {
-            c.X = pt.X;
-            c.Y = pt.Y;
+            c.X = snappedPt.X;
+            c.Y = snappedPt.Y;
         }
     }
 
