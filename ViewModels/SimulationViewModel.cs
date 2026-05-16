@@ -17,8 +17,10 @@ public partial class SimulationViewModel : ObservableObject
     public ObservableCollection<CircuitObjectViewModel> CircuitObjects { get; } = [];
     public ObservableCollection<CircuitObjectViewModel> CopiedObjects { get; } = [];
     public ObservableCollection<CircuitObjectViewModel> PreviewObjects { get; } = [];
+    public ObservableCollection<CircuitObjectViewModel> DraggedObjects { get; } = [];
 
     [ObservableProperty] private bool _isPreviewVisible;
+    public Point PreviewMouseOffset = new(0, 0);
 
 
     public SimulationViewModel()

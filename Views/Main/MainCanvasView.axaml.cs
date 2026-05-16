@@ -27,19 +27,15 @@ public partial class MainCanvasView : UserControl
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        if (Simulation.PreviewObjects.Count > 0 && !Simulation.IsPreviewVisible)
-        {
-            Simulation.IsPreviewVisible = true;
-        }
+        Simulation.IsPreviewVisible = true;
+        DraggedObjectsControl.IsVisible = true;
     }
 
 
     private void OnPointerExited(object? sender, PointerEventArgs e)
     {
-        if (Simulation.IsPreviewVisible)
-        {
-            Simulation.IsPreviewVisible = false;
-        }
+        Simulation.IsPreviewVisible = false;
+        DraggedObjectsControl.IsVisible = false;
     }
 
 
@@ -52,20 +48,68 @@ public partial class MainCanvasView : UserControl
         {
             e.Handled = true;   // disable pan chan
 
-            if (Simulation.PreviewObjects.Count == 0)     // start SelectionBox
+            if (Simulation.PreviewObjects.Count == 0)
             {
-                Simulation.UnselectAll();
-                foreach (CircuitObjectViewModel co in Simulation.CircuitObjects) 
+                bool hasClickedObject = false;  // drag objects
+                double minX = double.MaxValue;
+                double minY = double.MaxValue;
+
+                foreach (CircuitObjectViewModel co in Simulation.CircuitObjects)
                 {
-                    if (co is ComponentViewModel c && !c.IsSelected && c.Contains(pt.Position))
+                    if (co is ComponentViewModel c && c.Contains(pt.Position))
                     {
-                        c.IsSelected = true;
+                        if (c.X < minX || c.Y < minY)
+                        {
+                            minX = c.X;
+                            minY = c.Y;
+                        }
+
+                        hasClickedObject = true;
+                        Simulation.DraggedObjects.Add(co);
+
+                        if (co.IsSelected)
+                        {
+                            foreach (CircuitObjectViewModel cobj in Simulation.CircuitObjects)
+                            {
+                                if (cobj != co)
+                                {
+                                    if (cobj is ComponentViewModel cc && (cc.X < minX || cc.Y < minY))
+                                    {
+                                        minX = cc.X;
+                                        minY = cc.Y;
+                                    }
+
+                                    Simulation.DraggedObjects.Add(cobj);
+                                }
+                            }
+                        }
+
+                        break;
                     }
                 }
 
-                SelectionBox.IsVisible = true;
-                _selectionBoxStartPt = pt.Position;
-                e.Pointer.Capture(sender as Control);
+                if (hasClickedObject)
+                {
+                    Simulation.PreviewMouseOffset = new Point(
+                        pt.Position.X - minX, pt.Position.Y - minY
+                    );
+                }
+
+                if (!hasClickedObject)            // draw selection box from empty space
+                {
+                    Simulation.UnselectAll();
+                    foreach (CircuitObjectViewModel co in Simulation.CircuitObjects) 
+                    {
+                        if (co is ComponentViewModel c && !c.IsSelected && c.Contains(pt.Position))
+                        {
+                            c.IsSelected = true;
+                        }
+                    }
+
+                    SelectionBox.IsVisible = true;
+                    _selectionBoxStartPt = pt.Position;
+                   e.Pointer.Capture(sender as Control);
+                }
             }
 
             else if (Simulation.PreviewObjects.Count > 0)   // handle CircuitObject commits
@@ -118,7 +162,23 @@ public partial class MainCanvasView : UserControl
         else if (Simulation.PreviewObjects.Count > 0)    // update Component X,Y
         {
             UtilityService.SnapCollectionToPosition(
-                Simulation.PreviewObjects, Simulation.CurrentMousePos
+                Simulation.PreviewObjects, 
+                Simulation.CurrentMousePos, 
+                Simulation.PreviewMouseOffset
+            );
+        }
+
+        else if (Simulation.DraggedObjects.Count > 0)
+        {
+            foreach (CircuitObjectViewModel co in Simulation.DraggedObjects)
+            {
+                co.IsSelected = false;
+            }
+
+            UtilityService.SnapCollectionToPosition(
+                Simulation.DraggedObjects,
+                Simulation.CurrentMousePos,
+                Simulation.PreviewMouseOffset
             );
         }
     }
@@ -132,6 +192,11 @@ public partial class MainCanvasView : UserControl
             SelectionBox.Width = 0;
             SelectionBox.Height = 0;
             e.Pointer.Capture(null);
+        }
+
+        else if (Simulation.DraggedObjects.Count > 0)
+        {
+            Simulation.DraggedObjects.Clear();
         }
     }
 

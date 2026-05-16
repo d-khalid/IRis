@@ -21,7 +21,8 @@ public static class UtilityService {
 
 
     public static void SnapCollectionToPosition(
-        ObservableCollection<CircuitObjectViewModel> collection, Point Position) 
+        ObservableCollection<CircuitObjectViewModel> collection, 
+        Point Position, Point PositionMouseOffset) 
     {
         double minX = double.MaxValue;
         double minY = double.MaxValue;
@@ -42,8 +43,8 @@ public static class UtilityService {
         {
             if (co is ComponentViewModel c)
             {
-                c.X -= offsetX;
-                c.Y -= offsetY;
+                c.X -= offsetX + PositionMouseOffset.X;
+                c.Y -= offsetY + PositionMouseOffset.Y;
             }
         }
     }

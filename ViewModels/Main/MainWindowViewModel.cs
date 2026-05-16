@@ -56,10 +56,13 @@ public partial class MainWindowViewModel : ViewModelBase
         if (Simulation.CopiedObjects.Count == 0) return;
 
         UtilityService.SnapCollectionToPosition(
-            Simulation.CopiedObjects, Simulation.CurrentMousePos
+            Simulation.CopiedObjects, 
+            Simulation.CurrentMousePos,
+            Simulation.PreviewMouseOffset
         );
 
         Simulation.PreviewObjects.Clear();
+        Simulation.PreviewMouseOffset = new Point(0, 0);
         Simulation.IsPreviewVisible = true;
 
         foreach (CircuitObjectViewModel co in Simulation.CopiedObjects)

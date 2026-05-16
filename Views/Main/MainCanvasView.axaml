@@ -125,9 +125,30 @@
                 </ItemsControl.Styles>
             </ItemsControl>
 
+            <!-- rendering draggedobjects -->
+            <ItemsControl 
+                x:Name="DraggedObjectsControl"
+                ItemsSource="{Binding Simulation.DraggedObjects}"
+                ClipToBounds="False"
+                IsHitTestVisible="False"
+                x:CompileBindings="False"
+            >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Styles>
+                    <Style Selector="ItemsControl > ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
+                        <Setter Property="Opacity" Value="{Binding Opacity}" />
+                    </Style>
+                </ItemsControl.Styles>
+            </ItemsControl>
+
             <!-- rendering previewobjects -->
             <ItemsControl 
-                x:Name="PreviewControl"
                 ItemsSource="{Binding Simulation.PreviewObjects}"
                 ClipToBounds="False"
                 IsVisible="{Binding Simulation.IsPreviewVisible}"
