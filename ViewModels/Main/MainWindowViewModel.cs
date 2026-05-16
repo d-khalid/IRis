@@ -70,4 +70,25 @@ public partial class MainWindowViewModel : ViewModelBase
             Simulation.PreviewObjects.Add(clone);
         }
     }
+
+
+    [RelayCommand]
+    private void RotateKey()
+    {
+        if (Simulation.PreviewObjects.Count == 1)
+        {
+            if (Simulation.PreviewObjects[0] is ComponentViewModel c)
+            {
+                c.Rotation += 90;
+            }
+        }
+
+        else if (Simulation.SelectedObjects.Count == 1)
+        {
+            if (Simulation.SelectedObjects[0] is ComponentViewModel c)
+            {
+                c.Rotation += 90;
+            }
+        }
+    }
 }

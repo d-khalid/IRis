@@ -18,29 +18,18 @@
                 Height="{Binding Height}" 
                 Opacity="{Binding Opacity}"
                 Background="Transparent"
+                RenderTransformOrigin="50%,50%"
             >
-                <Viewbox Stretch="Fill">
-                    <Canvas Width="100" Height="90">
-                        <Path Fill="White" Stroke="Black" StrokeThickness="4">
-                            <Path.Data>
-                                <PathGeometry>
-                                    <PathFigure StartPoint="5,85" IsClosed="True">
-                                        <LineSegment Point="5,85" />
-                                        <LineSegment Point="60,85" />
-                                        <ArcSegment 
-                                            Point="60,5" 
-                                            Size="35,40" 
-                                            SweepDirection="CounterClockwise" 
-                                            IsLargeArc="False"
-                                        />
-                                        <LineSegment Point="5,5" />
-                                    </PathFigure>
-                                </PathGeometry>
-                            </Path.Data>
-                        </Path>
-                    </Canvas>
-                </Viewbox>
-
+                <Grid.RenderTransform>
+                    <RotateTransform Angle="{Binding Rotation}" />
+                </Grid.RenderTransform>
+                <Path 
+                    Fill="White" 
+                    Stroke="Black" 
+                    StrokeThickness="2"
+                    Stretch="Fill"
+                    Data="M 5,85 L 60,85 A 35,40 0 0 0 60,5 L 5,5 Z" 
+                />
                 <Rectangle
                     Stroke="DodgerBlue"
                     StrokeThickness="1" 

@@ -62,6 +62,7 @@ public partial class MainCanvasView : UserControl
 
                     else
                     {
+                        Simulation.UnselectAll();
                         Simulation.SelectObject(obj);
                         Simulation.DraggedObjects.Add(obj);
                     }

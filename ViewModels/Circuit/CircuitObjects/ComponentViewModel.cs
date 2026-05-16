@@ -11,6 +11,7 @@ public partial class ComponentViewModel : CircuitObjectViewModel
     [ObservableProperty] private double _y;
     [ObservableProperty] private double _width;
     [ObservableProperty] private double _height;
+    [ObservableProperty] private double _rotation;
 
 
     public bool Intersects(Rect rect)
