@@ -54,12 +54,9 @@ public partial class MainCanvasView : UserControl
                 {
                     if (obj.IsSelected)
                     {
-                        foreach (CircuitObjectViewModel co in Simulation.CircuitObjects)
+                        foreach (CircuitObjectViewModel co in Simulation.SelectedObjects)
                         {
-                            if (co.IsSelected)
-                            {
-                                Simulation.DraggedObjects.Add(co);
-                            }
+                            Simulation.DraggedObjects.Add(co);
                         }
                     }
 
@@ -77,7 +74,7 @@ public partial class MainCanvasView : UserControl
                     Simulation.UnselectAll();
 
                     var c = Simulation.GetContainerObject(pt.Position);
-                    if (c != null) c.IsSelected = true;
+                    if (c != null) Simulation.SelectObject(c);
 
                     SelectionBox.IsVisible = true;
                     _selectionBoxStartPt = pt.Position;
@@ -125,12 +122,12 @@ public partial class MainCanvasView : UserControl
                 {
                     if (!c.IsSelected && c.Intersects(selectionBounds))
                     {
-                        c.IsSelected = true;
+                        Simulation.SelectObject(c);
                     }
 
                     else if (c.IsSelected && !c.Intersects(selectionBounds))
                     {
-                        c.IsSelected = false;
+                        Simulation.UnselectObject(c);
                     }
                 }
             }
@@ -147,9 +144,12 @@ public partial class MainCanvasView : UserControl
 
         else if (Simulation.DraggedObjects.Count > 0)    // update Dragged X,Y
         {
-            foreach (CircuitObjectViewModel co in Simulation.DraggedObjects)
+            if (Simulation.DraggedObjects[0].IsSelected)
             {
-                co.IsSelected = false;
+                foreach (CircuitObjectViewModel co in Simulation.DraggedObjects)
+                {
+                    Simulation.UnselectObject(co);
+                }
             }
 
             UtilityService.SnapCollectionToPosition(

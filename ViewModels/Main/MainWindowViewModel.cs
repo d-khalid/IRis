@@ -19,11 +19,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void DeleteKey()
     {
-        for (int i = Simulation.CircuitObjects.Count-1; i >= 0; i--)
+        for (int i = Simulation.SelectedObjects.Count-1; i >= 0; i--)
         {
-            CircuitObjectViewModel co = Simulation.CircuitObjects[i];
-            if (co.IsSelected)
-                Simulation.CircuitObjects.Remove(co);
+            CircuitObjectViewModel co = Simulation.SelectedObjects[i];
+            Simulation.CircuitObjects.Remove(co);
+            Simulation.UnselectObject(co);
         }
     }
 
@@ -39,13 +39,11 @@ public partial class MainWindowViewModel : ViewModelBase
     private void CopyKey()
     {
         Simulation.CopiedObjects.Clear();
-        foreach (CircuitObjectViewModel co in Simulation.CircuitObjects)
+        for (int i = Simulation.SelectedObjects.Count-1; i >= 0; i--)
         {
-            if (co.IsSelected) 
-            {
-                co.IsSelected = false;
-                Simulation.CopiedObjects.Add(CloningService.Clone(co));
-            }
+            CircuitObjectViewModel co = Simulation.SelectedObjects[i];
+            Simulation.UnselectObject(co);
+            Simulation.CopiedObjects.Add(CloningService.Clone(co));
         }
     }
 

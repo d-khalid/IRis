@@ -17,7 +17,9 @@ public partial class SimulationViewModel : ObservableObject
     public ObservableCollection<CircuitObjectViewModel> CircuitObjects { get; } = [];
     public ObservableCollection<CircuitObjectViewModel> CopiedObjects { get; } = [];
     public ObservableCollection<CircuitObjectViewModel> PreviewObjects { get; } = [];
+
     public ObservableCollection<CircuitObjectViewModel> DraggedObjects { get; } = [];
+    public ObservableCollection<CircuitObjectViewModel> SelectedObjects { get; } = [];
 
     [ObservableProperty] private bool _isPreviewVisible;
     public Point PreviewMouseOffset = new(0, 0);
@@ -39,12 +41,27 @@ public partial class SimulationViewModel : ObservableObject
     }
 
 
+    public void SelectObject(CircuitObjectViewModel obj)
+    {
+        obj.IsSelected = true;
+        SelectedObjects.Add(obj);
+    }
+
+
+    public void UnselectObject(CircuitObjectViewModel obj)
+    {
+        obj.IsSelected = false;
+        SelectedObjects.Remove(obj);
+    }
+
+
     public void UnselectAll()
     {
+        SelectedObjects.Clear();
+
         foreach (CircuitObjectViewModel co in CircuitObjects)
         {
-            if (co.IsSelected)
-                co.IsSelected = false;
+            co.IsSelected = false;
         }
     }
 
@@ -53,11 +70,9 @@ public partial class SimulationViewModel : ObservableObject
     {
         foreach (CircuitObjectViewModel co in CircuitObjects)
         {
-            if (!co.IsSelected)
-                co.IsSelected = true;
+            SelectObject(co);
         }
     }
-
 
     public CircuitObjectViewModel? GetContainerObject(Point pt)
     {
