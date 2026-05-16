@@ -53,27 +53,17 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (Simulation.CopiedObjects.Count == 0) return;
 
-        Point min = UtilityService.GetMinPointFromCollection(Simulation.CopiedObjects);
-        double offsetX = min.X - Simulation.CurrentMousePos.X;
-        double offsetY = min.Y - Simulation.CurrentMousePos.Y;
+        UtilityService.SnapCollectionToPosition(
+            Simulation.CopiedObjects, Simulation.CurrentMousePos
+        );
 
         Simulation.PreviewObjects.Clear();
         Simulation.IsPreviewVisible = true;
+
         foreach (CircuitObjectViewModel co in Simulation.CopiedObjects)
         {
             CircuitObjectViewModel clone = UtilityService.Clone(co);
             clone.Opacity = 0.5;
-
-            if (clone is ComponentViewModel c)
-            {
-                Point target = UtilityService.SnapPointToGrid(
-                    new Point(c.X - offsetX, c.Y - offsetY
-                ));
-
-                c.X = target.X;
-                c.Y = target.Y;
-            }
-
             Simulation.PreviewObjects.Add(clone);
         }
     }

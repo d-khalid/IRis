@@ -32,7 +32,8 @@ public static class UtilityService {
     }
 
 
-    public static Point GetMinPointFromCollection(ObservableCollection<CircuitObjectViewModel> collection)
+    public static void SnapCollectionToPosition(
+        ObservableCollection<CircuitObjectViewModel> collection, Point Position) 
     {
         double minX = double.MaxValue;
         double minY = double.MaxValue;
@@ -46,7 +47,21 @@ public static class UtilityService {
             }
         }
 
-        return new Point(minX, minY);
+        double offsetX = minX - Position.X;
+        double offsetY = minY - Position.Y;
+
+        foreach (CircuitObjectViewModel co in collection)
+        {
+            if (co is ComponentViewModel c)
+            {
+                Point target = SnapPointToGrid(
+                    new Point(c.X - offsetX, c.Y - offsetY
+                ));
+
+                c.X = target.X;
+                c.Y = target.Y;
+            }
+        }
     }
 
 

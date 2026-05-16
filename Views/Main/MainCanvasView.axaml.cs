@@ -117,22 +117,9 @@ public partial class MainCanvasView : UserControl
 
         else if (Simulation.PreviewObjects.Count > 0)    // update Component X,Y
         {
-            Point min = UtilityService.GetMinPointFromCollection(Simulation.PreviewObjects);
-            double offsetX = min.X - Simulation.CurrentMousePos.X;
-            double offsetY = min.Y - Simulation.CurrentMousePos.Y;
-
-            foreach (CircuitObjectViewModel co in Simulation.PreviewObjects)
-            {
-                if (co is ComponentViewModel c)
-                {
-                    Point target = UtilityService.SnapPointToGrid(
-                        new Point(c.X - offsetX, c.Y - offsetY
-                    ));
-
-                    c.X = target.X;
-                    c.Y = target.Y;
-                }
-            }
+            UtilityService.SnapCollectionToPosition(
+                Simulation.PreviewObjects, Simulation.CurrentMousePos
+            );
         }
     }
 
