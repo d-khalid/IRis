@@ -18,6 +18,7 @@ namespace IRis.Views.Main;
 public partial class MainCanvasView : UserControl
 {
     public SimulationViewModel Simulation = SimulationViewModel.GetInstance();
+    private Point _selectionBoxStartPt;
 
 
     public MainCanvasView()
@@ -29,44 +30,86 @@ public partial class MainCanvasView : UserControl
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        PreviewControl.IsVisible = true;
+        if (Simulation.Preview != null && !PreviewControl.IsVisible)
+        {
+            PreviewControl.IsVisible = true;
+        }
     }
 
 
     private void OnPointerExited(object? sender, PointerEventArgs e)
     {
-        PreviewControl.IsVisible = false;
+        if (PreviewControl.IsVisible)
+        {
+            PreviewControl.IsVisible = false;
+        }
+
+        if (SelectionBox.IsVisible)
+        {
+            SelectionBox.IsVisible = false;
+            SelectionBox.Width = 0;
+            SelectionBox.Height = 0;
+        }
     }
 
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        Simulation.UnselectAll();
+        PointerPoint pt = e.GetCurrentPoint(sender as Control);
 
-        if (Simulation.Preview == null) return;
-        if (Simulation.Preview is ComponentViewModel c)
+        if (pt.Properties.IsLeftButtonPressed &&
+            !e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
-            Simulation.Preview = null;
-            c.Opacity = 1.0;
-            Simulation.Components.Add(c);
+            e.Handled = true;   // disable pan chan
+
+            if (Simulation.Preview == null)     // start SelectionBox
+            {
+                Simulation.UnselectAll();
+                SelectionBox.IsVisible = true;
+                _selectionBoxStartPt = pt.Position;
+            }
+
+            else if (Simulation.Preview is ComponentViewModel c)    // commit the component
+            {
+                Simulation.Preview = null;
+                c.Opacity = 1.0;
+                Simulation.Components.Add(c);
+            }
         }
     }
 
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        Point pt = UtilityService.SnapPointToGrid(e.GetPosition((Visual)sender!));
-        Simulation.CurrentMousePos = pt;
+        Point pt = e.GetPosition((Visual)sender!);
+        Point snappedPt = UtilityService.SnapPointToGrid(pt);
+        Simulation.CurrentMousePos = snappedPt;
 
-        if (Simulation.Preview == null) return;
-        if (Simulation.Preview is not ComponentViewModel c) return;
+        if (SelectionBox.IsVisible)     // update SelectionBox bounds
+        {
+            SelectionBox.Width = Math.Abs(_selectionBoxStartPt.X - pt.X);
+            SelectionBox.Height = Math.Abs(_selectionBoxStartPt.Y - pt.Y);
+            Canvas.SetLeft(SelectionBox, Math.Min(_selectionBoxStartPt.X, pt.X));
+            Canvas.SetTop(SelectionBox, Math.Min(_selectionBoxStartPt.Y, pt.Y));
+        }
 
-        c.X = pt.X;
-        c.Y = pt.Y;
+        else if (Simulation.Preview is ComponentViewModel c)    // update Component X,Y
+        {
+            c.X = pt.X;
+            c.Y = pt.Y;
+        }
     }
 
 
-    private void OnPointerReleased(object? sender, PointerEventArgs e) {}
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (SelectionBox.IsVisible)     // remove it
+        {
+            SelectionBox.IsVisible = false;
+            SelectionBox.Width = 0;
+            SelectionBox.Height = 0;
+        }
+    }
 
 
     private void OnCircuitObjectClicked(object? sender, PointerPressedEventArgs e)

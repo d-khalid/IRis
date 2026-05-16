@@ -43,12 +43,15 @@
                 </Viewbox>
 
                 <Rectangle
-                    Fill="#40abcef9" 
                     Stroke="DodgerBlue"
                     StrokeThickness="1.5" 
                     IsVisible="{Binding IsSelected}" 
                     Margin="-5" 
-                />
+                >
+                    <Rectangle.Fill>
+                        <SolidColorBrush Color="#2f99ef" Opacity="0.2" />
+                    </Rectangle.Fill>
+                </Rectangle>
             </Grid>
         </DataTemplate>
     </UserControl.DataTemplates>
@@ -71,6 +74,7 @@
             MinHeight="2000"
             PointerPressed="OnPointerPressed"
             PointerMoved="OnPointerMoved"
+            PointerReleased="OnPointerReleased"
             PointerEntered="OnPointerEntered"
             PointerExited="OnPointerExited"
         >
@@ -102,6 +106,7 @@
                 </MenuFlyout>
             </Canvas.ContextFlyout>
 
+            <!-- rendering components list -->
             <ItemsControl 
                 ItemsSource="{Binding Simulation.Components}"
                 ClipToBounds="False" 
@@ -121,6 +126,7 @@
                 </ItemsControl.Styles>
             </ItemsControl>
 
+            <!-- rendering preview -->
             <ContentControl
                 x:Name="PreviewControl"
                 x:CompileBindings="False"
@@ -130,6 +136,23 @@
                 IsHitTestVisible="False"
                 IsVisible="False"
             />
+            
+            <!-- rendering selection box -->
+            <Rectangle
+                x:Name="SelectionBox"
+                Stroke="DodgerBlue"
+                StrokeThickness="1.5"
+                Canvas.Left="0"
+                Canvas.Top="0"
+                Width="0"
+                Height="0"
+                IsVisible="False"
+                IsHitTestVisible="False"
+            >
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="#2f99ef" Opacity="0.2" />
+                </Rectangle.Fill>
+            </Rectangle>
         </Canvas>
     </paz:ZoomBorder>
 </UserControl>
