@@ -23,6 +23,7 @@
     </DockPanel>
 
     <Window.KeyBindings>
-    <!-- Will add key binds here -->
+        <KeyBinding Gesture="Delete" Command="{Binding DeleteKeyCommand}" />
+        <KeyBinding Gesture="Escape" Command="{Binding EscapeKeyCommand}" />
     </Window.KeyBindings>
 </Window>

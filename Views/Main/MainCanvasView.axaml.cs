@@ -128,27 +128,6 @@ public partial class MainCanvasView : UserControl
     }
 
 
-    private void OnKeyDown(object? sender, KeyEventArgs e) 
-    {
-        if (e.Key == Key.Delete)
-        {
-            for (int i = Simulation.Components.Count-1; i >= 0; i--)
-            {
-                ComponentViewModel c = Simulation.Components[i];
-                if (c.IsSelected)
-                    Simulation.Components.Remove(c);
-            }
-
-            for (int i = Simulation.Wires.Count-1; i >= 0; i--)
-            {
-                WireViewModel w = Simulation.Wires[i];
-                if (w.IsSelected)
-                    Simulation.Wires.Remove(w);
-            }
-        }
-    }
-
-
     private void OnCopyClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {}
     private void OnCutClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {}
     private void OnPasteClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {}
