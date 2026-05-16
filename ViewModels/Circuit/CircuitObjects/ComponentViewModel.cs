@@ -19,7 +19,7 @@ public partial class ComponentViewModel : CircuitObjectViewModel
     }
 
 
-    public bool HitTest(Point pt)
+    public bool Contains(Point pt)
     {
         return new Rect (X, Y, Width, Height).Contains(pt);
     }

@@ -59,6 +59,14 @@ public partial class MainCanvasView : UserControl
             if (Simulation.Preview == null)     // start SelectionBox
             {
                 Simulation.UnselectAll();
+                foreach (ComponentViewModel comp in Simulation.Components) 
+                {
+                    if (!comp.IsSelected && comp.Contains(pt.Position)) 
+                    {
+                        comp.IsSelected = true;
+                    }
+                }
+
                 SelectionBox.IsVisible = true;
                 _selectionBoxStartPt = pt.Position;
                 e.Pointer.Capture(sender as Control);
@@ -123,17 +131,6 @@ public partial class MainCanvasView : UserControl
             SelectionBox.Width = 0;
             SelectionBox.Height = 0;
             e.Pointer.Capture(null);
-        }
-    }
-
-
-    private void OnCircuitObjectClicked(object? sender, PointerPressedEventArgs e)
-    {
-        if (sender is Control c && c.DataContext is CircuitObjectViewModel co)
-        {
-            Simulation.UnselectAll();
-            co.IsSelected = true;
-            e.Handled = true;
         }
     }
 

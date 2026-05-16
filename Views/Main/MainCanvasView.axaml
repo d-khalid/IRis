@@ -17,8 +17,7 @@
                 Width="{Binding Width}"
                 Height="{Binding Height}" 
                 Opacity="{Binding Opacity}"
-                Background="Transparent" 
-                PointerPressed="OnCircuitObjectClicked"
+                Background="Transparent"
             >
                 <Viewbox Stretch="Fill">
                     <Canvas Width="100" Height="90">
@@ -77,7 +76,6 @@
             PointerReleased="OnPointerReleased"
             PointerEntered="OnPointerEntered"
             PointerExited="OnPointerExited"
-            KeyDown="OnKeyDown"
         >
             <Canvas.Background>
                 <VisualBrush TileMode="Tile" SourceRect="0,0,10,10" DestinationRect="0,0,10,10">
