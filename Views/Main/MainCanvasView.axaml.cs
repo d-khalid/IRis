@@ -87,7 +87,7 @@ public partial class MainCanvasView : UserControl
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
         Point pt = e.GetPosition((Visual)sender!);
-        Simulation.CurrentMousePos = new Point((int)pt.X, (int)pt.Y);
+        Simulation.CurrentMousePos = UtilityService.SnapPointToGrid(pt);
 
 
         if (SelectionBox.IsVisible)     // update SelectionBox bounds and select comp within range

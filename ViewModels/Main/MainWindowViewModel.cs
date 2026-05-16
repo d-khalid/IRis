@@ -37,6 +37,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void CopyKey()
     {
+        Simulation.CopiedObjects.Clear();
         foreach (CircuitObjectViewModel co in Simulation.CircuitObjects)
         {
             if (co.IsSelected) 

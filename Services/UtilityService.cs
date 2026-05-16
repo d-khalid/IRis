@@ -42,12 +42,8 @@ public static class UtilityService {
         {
             if (co is ComponentViewModel c)
             {
-                Point target = SnapPointToGrid(
-                    new Point(c.X - offsetX, c.Y - offsetY
-                ));
-
-                c.X = target.X;
-                c.Y = target.Y;
+                c.X -= offsetX;
+                c.Y -= offsetY;
             }
         }
     }
