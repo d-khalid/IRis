@@ -20,9 +20,19 @@ public static class UtilityService {
     }
 
 
-    public static void SnapCollectionToPosition(
-        ObservableCollection<CircuitObjectViewModel> collection, 
-        Point Position, Point PositionMouseOffset) 
+    public static Point Sum(Point p1, Point p2)
+    {
+        return new Point(p1.X + p2.X, p1.Y + p2.Y);
+    }
+
+
+    public static Point Difference(Point p1, Point p2)
+    {
+        return new Point(p1.X - p2.X, p1.Y - p2.Y);
+    }
+
+
+    public static Point GetMinPointInCollection(ObservableCollection<CircuitObjectViewModel> collection)
     {
         double minX = double.MaxValue;
         double minY = double.MaxValue;
@@ -36,8 +46,20 @@ public static class UtilityService {
             }
         }
 
-        double offsetX = minX - Position.X;
-        double offsetY = minY - Position.Y;
+        return new Point(minX, minY);
+    }
+
+
+    public static void SnapCollectionToPosition(
+        ObservableCollection<CircuitObjectViewModel> collection, 
+        Point Position, Point PositionMouseOffset) 
+    {
+        PositionMouseOffset = SnapPointToGrid(PositionMouseOffset);
+        Position = SnapPointToGrid(Position);
+        Point min = GetMinPointInCollection(collection);
+
+        double offsetX = min.X - Position.X;
+        double offsetY = min.Y - Position.Y;
 
         foreach (CircuitObjectViewModel co in collection)
         {

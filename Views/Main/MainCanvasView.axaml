@@ -31,7 +31,7 @@
                                             Point="60,5" 
                                             Size="35,40" 
                                             SweepDirection="CounterClockwise" 
-                                            IsLargeArc="False" 
+                                            IsLargeArc="False"
                                         />
                                         <LineSegment Point="5,5" />
                                     </PathFigure>
@@ -109,28 +109,6 @@
             <ItemsControl 
                 ItemsSource="{Binding Simulation.CircuitObjects}"
                 ClipToBounds="False" 
-                x:CompileBindings="False"
-            >
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.Styles>
-                    <Style Selector="ItemsControl > ContentPresenter">
-                        <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
-                        <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
-                        <Setter Property="Opacity" Value="{Binding Opacity}" />
-                    </Style>
-                </ItemsControl.Styles>
-            </ItemsControl>
-
-            <!-- rendering draggedobjects -->
-            <ItemsControl 
-                x:Name="DraggedObjectsControl"
-                ItemsSource="{Binding Simulation.DraggedObjects}"
-                ClipToBounds="False"
-                IsHitTestVisible="False"
                 x:CompileBindings="False"
             >
                 <ItemsControl.ItemsPanel>

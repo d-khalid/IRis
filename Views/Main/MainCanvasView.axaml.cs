@@ -28,14 +28,12 @@ public partial class MainCanvasView : UserControl
     private void OnPointerEntered(object? sender, PointerEventArgs e)
     {
         Simulation.IsPreviewVisible = true;
-        DraggedObjectsControl.IsVisible = true;
     }
 
 
     private void OnPointerExited(object? sender, PointerEventArgs e)
     {
         Simulation.IsPreviewVisible = false;
-        DraggedObjectsControl.IsVisible = false;
     }
 
 
@@ -50,69 +48,44 @@ public partial class MainCanvasView : UserControl
 
             if (Simulation.PreviewObjects.Count == 0)
             {
-                bool hasClickedObject = false;  // drag objects
-                double minX = double.MaxValue;
-                double minY = double.MaxValue;
+                CircuitObjectViewModel? obj = Simulation.GetContainerObject(pt.Position);
 
-                foreach (CircuitObjectViewModel co in Simulation.CircuitObjects)
+                if (obj != null)    // clicked to drag
                 {
-                    if (co is ComponentViewModel c && c.Contains(pt.Position))
+                    if (obj.IsSelected)
                     {
-                        if (c.X < minX || c.Y < minY)
+                        foreach (CircuitObjectViewModel co in Simulation.CircuitObjects)
                         {
-                            minX = c.X;
-                            minY = c.Y;
-                        }
-
-                        hasClickedObject = true;
-                        Simulation.DraggedObjects.Add(co);
-
-                        if (co.IsSelected)
-                        {
-                            foreach (CircuitObjectViewModel cobj in Simulation.CircuitObjects)
+                            if (co.IsSelected)
                             {
-                                if (cobj != co && cobj.IsSelected)
-                                {
-                                    if (cobj is ComponentViewModel cc && (cc.X < minX || cc.Y < minY))
-                                    {
-                                        minX = cc.X;
-                                        minY = cc.Y;
-                                    }
-
-                                    Simulation.DraggedObjects.Add(cobj);
-                                }
+                                Simulation.DraggedObjects.Add(co);
                             }
                         }
-
-                        break;
                     }
+
+                    else
+                    {
+                        Simulation.DraggedObjects.Add(obj);
+                    }
+
+                    Point min = UtilityService.GetMinPointInCollection(Simulation.DraggedObjects);
+                    Simulation.PreviewMouseOffset = UtilityService.Difference(pt.Position, min);
                 }
 
-                if (hasClickedObject)
-                {
-                    Simulation.PreviewMouseOffset = new Point(
-                        pt.Position.X - minX, pt.Position.Y - minY
-                    );
-                }
-
-                if (!hasClickedObject)            // draw selection box from empty space
+                else              // empty space => start selection box
                 {
                     Simulation.UnselectAll();
-                    foreach (CircuitObjectViewModel co in Simulation.CircuitObjects) 
-                    {
-                        if (co is ComponentViewModel c && !c.IsSelected && c.Contains(pt.Position))
-                        {
-                            c.IsSelected = true;
-                        }
-                    }
+
+                    var c = Simulation.GetContainerObject(pt.Position);
+                    if (c != null) c.IsSelected = true;
 
                     SelectionBox.IsVisible = true;
                     _selectionBoxStartPt = pt.Position;
-                   e.Pointer.Capture(sender as Control);
+                    e.Pointer.Capture(sender as Control);
                 }
             }
 
-            else if (Simulation.PreviewObjects.Count > 0)   // handle CircuitObject commits
+            else               // handle CircuitObject commits
             {
                 foreach (CircuitObjectViewModel co in Simulation.PreviewObjects)
                 {
@@ -151,15 +124,19 @@ public partial class MainCanvasView : UserControl
                 if (co is ComponentViewModel c)
                 {
                     if (!c.IsSelected && c.Intersects(selectionBounds))
+                    {
                         c.IsSelected = true;
+                    }
 
-                    else if (c.IsSelected && !c.Intersects(selectionBounds)) 
+                    else if (c.IsSelected && !c.Intersects(selectionBounds))
+                    {
                         c.IsSelected = false;
+                    }
                 }
             }
         }
 
-        else if (Simulation.PreviewObjects.Count > 0)    // update Component X,Y
+        else if (Simulation.PreviewObjects.Count > 0)    // update Preview X,Y
         {
             UtilityService.SnapCollectionToPosition(
                 Simulation.PreviewObjects, 
@@ -168,7 +145,7 @@ public partial class MainCanvasView : UserControl
             );
         }
 
-        else if (Simulation.DraggedObjects.Count > 0)
+        else if (Simulation.DraggedObjects.Count > 0)    // update Dragged X,Y
         {
             foreach (CircuitObjectViewModel co in Simulation.DraggedObjects)
             {
@@ -186,7 +163,7 @@ public partial class MainCanvasView : UserControl
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (SelectionBox.IsVisible)     // remove it
+        if (SelectionBox.IsVisible)                     // remove selectionBox
         {
             SelectionBox.IsVisible = false;
             SelectionBox.Width = 0;
@@ -194,7 +171,7 @@ public partial class MainCanvasView : UserControl
             e.Pointer.Capture(null);
         }
 
-        else if (Simulation.DraggedObjects.Count > 0)
+        else if (Simulation.DraggedObjects.Count > 0)   // remove dragging references
         {
             Simulation.DraggedObjects.Clear();
         }

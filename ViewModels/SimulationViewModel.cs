@@ -47,4 +47,26 @@ public partial class SimulationViewModel : ObservableObject
                 co.IsSelected = false;
         }
     }
+
+
+    public void SelectAll()
+    {
+        foreach (CircuitObjectViewModel co in CircuitObjects)
+        {
+            if (!co.IsSelected)
+                co.IsSelected = true;
+        }
+    }
+
+
+    public CircuitObjectViewModel? GetContainerObject(Point pt)
+    {
+        foreach (CircuitObjectViewModel co in CircuitObjects)
+        {
+            if (co is ComponentViewModel c && c.Contains(pt))
+                return co;
+        }
+
+        return null;
+    }
 }
