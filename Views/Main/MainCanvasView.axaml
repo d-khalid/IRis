@@ -129,7 +129,8 @@
             <ItemsControl 
                 x:Name="PreviewControl"
                 ItemsSource="{Binding Simulation.PreviewObjects}"
-                ClipToBounds="False" 
+                ClipToBounds="False"
+                IsVisible="{Binding Simulation.IsPreviewVisible}"
                 IsHitTestVisible="False"
                 x:CompileBindings="False"
             >

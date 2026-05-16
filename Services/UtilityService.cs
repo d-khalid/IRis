@@ -1,6 +1,9 @@
 using Avalonia;
 using System;
 using Newtonsoft.Json;
+using IRis.ViewModels.Circuit;
+using System.Collections.ObjectModel;
+using IRis.ViewModels.Circuit.CircuitObjects;
 
 
 namespace IRis.Services;
@@ -26,6 +29,24 @@ public static class UtilityService {
         return JsonConvert.DeserializeObject<T>(
             JsonConvert.SerializeObject(source, settings), settings
         )!;
+    }
+
+
+    public static Point GetMinPointFromCollection(ObservableCollection<CircuitObjectViewModel> collection)
+    {
+        double minX = double.MaxValue;
+        double minY = double.MaxValue;
+
+        foreach (CircuitObjectViewModel co in collection)
+        {
+            if (co is ComponentViewModel c)
+            {
+                if (c.X < minX) minX = c.X;
+                if (c.Y < minY) minY = c.Y;
+            }
+        }
+
+        return new Point(minX, minY);
     }
 
 

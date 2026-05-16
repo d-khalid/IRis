@@ -18,6 +18,8 @@ public partial class SimulationViewModel : ViewModelBase
     public ObservableCollection<CircuitObjectViewModel> CopiedObjects { get; } = [];
     public ObservableCollection<CircuitObjectViewModel> PreviewObjects { get; } = [];
 
+    [ObservableProperty] private bool _isPreviewVisible;
+
 
     public SimulationViewModel()
     {

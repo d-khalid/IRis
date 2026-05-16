@@ -25,5 +25,7 @@
     <Window.KeyBindings>
         <KeyBinding Gesture="Delete" Command="{Binding DeleteKeyCommand}" />
         <KeyBinding Gesture="Escape" Command="{Binding EscapeKeyCommand}" />
+        <KeyBinding Gesture="Ctrl+C" Command="{Binding CopyKeyCommand}" />
+        <KeyBinding Gesture="Ctrl+V" Command="{Binding PasteKeyCommand}" />
     </Window.KeyBindings>
 </Window>

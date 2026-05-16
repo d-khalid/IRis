@@ -27,18 +27,18 @@ public partial class MainCanvasView : UserControl
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        if (Simulation.PreviewObjects.Count > 0 && !PreviewControl.IsVisible)
+        if (Simulation.PreviewObjects.Count > 0 && !Simulation.IsPreviewVisible)
         {
-            PreviewControl.IsVisible = true;
+            Simulation.IsPreviewVisible = true;
         }
     }
 
 
     private void OnPointerExited(object? sender, PointerEventArgs e)
     {
-        if (PreviewControl.IsVisible)
+        if (Simulation.IsPreviewVisible)
         {
-            PreviewControl.IsVisible = false;
+            Simulation.IsPreviewVisible = false;
         }
     }
 
@@ -68,7 +68,7 @@ public partial class MainCanvasView : UserControl
                 e.Pointer.Capture(sender as Control);
             }
 
-            else if (Simulation.PreviewObjects.Count > 0)
+            else if (Simulation.PreviewObjects.Count > 0)   // handle CircuitObject commits
             {
                 foreach (CircuitObjectViewModel co in Simulation.PreviewObjects)
                 {
@@ -87,8 +87,8 @@ public partial class MainCanvasView : UserControl
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
         Point pt = e.GetPosition((Visual)sender!);
-        Point snappedPt = UtilityService.SnapPointToGrid(pt);
-        Simulation.CurrentMousePos = snappedPt;
+        Simulation.CurrentMousePos = new Point((int)pt.X, (int)pt.Y);
+
 
         if (SelectionBox.IsVisible)     // update SelectionBox bounds and select comp within range
         {
@@ -96,7 +96,6 @@ public partial class MainCanvasView : UserControl
             SelectionBox.Height = Math.Abs(_selectionBoxStartPt.Y - pt.Y);
             Canvas.SetLeft(SelectionBox, Math.Min(_selectionBoxStartPt.X, pt.X));
             Canvas.SetTop(SelectionBox, Math.Min(_selectionBoxStartPt.Y, pt.Y));
-
 
             var selectionBounds = new Rect(
                 Canvas.GetLeft(SelectionBox), Canvas.GetTop(SelectionBox),
@@ -118,12 +117,20 @@ public partial class MainCanvasView : UserControl
 
         else if (Simulation.PreviewObjects.Count > 0)    // update Component X,Y
         {
+            Point min = UtilityService.GetMinPointFromCollection(Simulation.PreviewObjects);
+            double offsetX = min.X - Simulation.CurrentMousePos.X;
+            double offsetY = min.Y - Simulation.CurrentMousePos.Y;
+
             foreach (CircuitObjectViewModel co in Simulation.PreviewObjects)
             {
                 if (co is ComponentViewModel c)
                 {
-                    c.X = snappedPt.X;
-                    c.Y = snappedPt.Y;
+                    Point target = UtilityService.SnapPointToGrid(
+                        new Point(c.X - offsetX, c.Y - offsetY
+                    ));
+
+                    c.X = target.X;
+                    c.Y = target.Y;
                 }
             }
         }
