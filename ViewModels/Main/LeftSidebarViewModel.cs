@@ -8,7 +8,7 @@ using Tmds.DBus.Protocol;
 namespace IRis.ViewModels.Main;
 
 
-public partial class LeftSidebarViewModel : ObservableObject
+public partial class LeftSidebarViewModel : ViewModelBase
 {
     [ObservableProperty] 
     private SimulationViewModel _simulation = SimulationViewModel.GetInstance();

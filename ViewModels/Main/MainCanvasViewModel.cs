@@ -11,7 +11,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace IRis.ViewModels.Main;
 
 
-public partial class MainCanvasViewModel : ObservableObject
+public partial class MainCanvasViewModel : ViewModelBase
 {
     [ObservableProperty] 
     private SimulationViewModel _simulation = SimulationViewModel.GetInstance();

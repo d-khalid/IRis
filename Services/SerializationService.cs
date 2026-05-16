@@ -10,7 +10,7 @@ using IRis.ViewModels.Circuit;
 namespace IRis.Services;
 
 
-public static class JsonSerializationService
+public static class SerializationService
 {
     public static void SaveToFile(ObservableCollection<CircuitObjectViewModel> collection, string saveFilePath)
     {

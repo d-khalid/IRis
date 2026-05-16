@@ -4,6 +4,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace IRis.ViewModels.Main;
 
 
-public partial class TopToolbarViewModel : ObservableObject
+public partial class TopToolbarViewModel : ViewModelBase
 {
 }
