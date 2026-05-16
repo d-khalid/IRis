@@ -17,11 +17,10 @@ public partial class LeftSidebarViewModel : ViewModelBase
     [RelayCommand]
     private void AddAnd()
     {
-        Simulation.Preview = new AndGateViewModel()
-        {
+        Simulation.PreviewObjects.Add(new AndGateViewModel() { 
             Width = 50,
             Height = 50,
             Opacity = 0.5
-        };
+        });
     }
 }

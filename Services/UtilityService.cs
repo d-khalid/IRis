@@ -16,7 +16,7 @@ public static class UtilityService {
     }
 
 
-    public static T? Clone<T>(T source)
+    public static T Clone<T>(T source)
     {
         JsonSerializerSettings settings = new()
         {
@@ -25,7 +25,7 @@ public static class UtilityService {
         
         return JsonConvert.DeserializeObject<T>(
             JsonConvert.SerializeObject(source, settings), settings
-        );
+        )!;
     }
 
 

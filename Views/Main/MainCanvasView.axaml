@@ -105,7 +105,7 @@
                 </MenuFlyout>
             </Canvas.ContextFlyout>
 
-            <!-- rendering components list -->
+            <!-- rendering circuitobjects -->
             <ItemsControl 
                 ItemsSource="{Binding Simulation.CircuitObjects}"
                 ClipToBounds="False" 
@@ -125,16 +125,27 @@
                 </ItemsControl.Styles>
             </ItemsControl>
 
-            <!-- rendering preview -->
-            <ContentControl
+            <!-- rendering previewobjects -->
+            <ItemsControl 
                 x:Name="PreviewControl"
-                x:CompileBindings="False"
-                Content="{Binding Simulation.Preview}"
-                Canvas.Left="{Binding Simulation.Preview.X, FallbackValue=0}"
-                Canvas.Top="{Binding Simulation.Preview.Y, FallbackValue=0}"
+                ItemsSource="{Binding Simulation.PreviewObjects}"
+                ClipToBounds="False" 
                 IsHitTestVisible="False"
-                IsVisible="False"
-            />
+                x:CompileBindings="False"
+            >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Styles>
+                    <Style Selector="ItemsControl > ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
+                        <Setter Property="Opacity" Value="{Binding Opacity}" />
+                    </Style>
+                </ItemsControl.Styles>
+            </ItemsControl>
             
             <!-- rendering selection box -->
             <Rectangle

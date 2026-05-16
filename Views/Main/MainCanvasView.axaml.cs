@@ -27,7 +27,7 @@ public partial class MainCanvasView : UserControl
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        if (Simulation.Preview != null && !PreviewControl.IsVisible)
+        if (Simulation.PreviewObjects.Count > 0 && !PreviewControl.IsVisible)
         {
             PreviewControl.IsVisible = true;
         }
@@ -52,7 +52,7 @@ public partial class MainCanvasView : UserControl
         {
             e.Handled = true;   // disable pan chan
 
-            if (Simulation.Preview == null)     // start SelectionBox
+            if (Simulation.PreviewObjects.Count == 0)     // start SelectionBox
             {
                 Simulation.UnselectAll();
                 foreach (CircuitObjectViewModel co in Simulation.CircuitObjects) 
@@ -68,11 +68,17 @@ public partial class MainCanvasView : UserControl
                 e.Pointer.Capture(sender as Control);
             }
 
-            else if (Simulation.Preview is ComponentViewModel c)    // commit the component
+            else if (Simulation.PreviewObjects.Count > 0)
             {
-                Simulation.Preview = UtilityService.Clone(c);
-                c.Opacity = 1.0;
-                Simulation.CircuitObjects.Add(c);
+                foreach (CircuitObjectViewModel co in Simulation.PreviewObjects)
+                {
+                    if (co is ComponentViewModel c)
+                    {
+                        ComponentViewModel clone = UtilityService.Clone(c);
+                        clone.Opacity = 1.0;
+                        Simulation.CircuitObjects.Add(clone);
+                    }
+                }
             }
         }
     }
@@ -110,10 +116,16 @@ public partial class MainCanvasView : UserControl
             }
         }
 
-        else if (Simulation.Preview is ComponentViewModel c)    // update Component X,Y
+        else if (Simulation.PreviewObjects.Count > 0)    // update Component X,Y
         {
-            c.X = snappedPt.X;
-            c.Y = snappedPt.Y;
+            foreach (CircuitObjectViewModel co in Simulation.PreviewObjects)
+            {
+                if (co is ComponentViewModel c)
+                {
+                    c.X = snappedPt.X;
+                    c.Y = snappedPt.Y;
+                }
+            }
         }
     }
 

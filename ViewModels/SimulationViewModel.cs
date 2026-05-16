@@ -12,11 +12,11 @@ namespace IRis.ViewModels;
 public partial class SimulationViewModel : ViewModelBase
 {
     private static SimulationViewModel? _instance = null;
+    [ObservableProperty] private Point _currentMousePos = new(0, 0);
 
     public ObservableCollection<CircuitObjectViewModel> CircuitObjects { get; } = [];
-
-    [ObservableProperty] private CircuitObjectViewModel? _preview = null;
-    [ObservableProperty] private Point _currentMousePos = new(0, 0);
+    public ObservableCollection<CircuitObjectViewModel> CopiedObjects { get; } = [];
+    public ObservableCollection<CircuitObjectViewModel> PreviewObjects { get; } = [];
 
 
     public SimulationViewModel()

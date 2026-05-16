@@ -27,6 +27,6 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void EscapeKey()
     {
-        Simulation.Preview = null;
+        Simulation.PreviewObjects.Clear();
     }
 }
