@@ -9,7 +9,7 @@ using Avalonia;
 namespace IRis.ViewModels;
 
 
-public partial class SimulationViewModel : ViewModelBase
+public partial class SimulationViewModel : ObservableObject
 {
     private static SimulationViewModel? _instance = null;
     [ObservableProperty] private Point _currentMousePos = new(0, 0);

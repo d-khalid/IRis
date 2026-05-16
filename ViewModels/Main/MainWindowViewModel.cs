@@ -5,12 +5,13 @@ using IRis.ViewModels.Circuit;
 using IRis.ViewModels.Circuit.CircuitObjects;
 using Avalonia;
 using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 
 namespace IRis.ViewModels.Main;
 
 
-public partial class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel : ObservableObject
 {
     public SimulationViewModel Simulation { get; } = SimulationViewModel.GetInstance();
 
