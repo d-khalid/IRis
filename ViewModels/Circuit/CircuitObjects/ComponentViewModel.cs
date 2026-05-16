@@ -1,3 +1,4 @@
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 
@@ -10,6 +11,16 @@ public partial class ComponentViewModel : CircuitObjectViewModel
     [ObservableProperty] private double _y;
     [ObservableProperty] private double _width;
     [ObservableProperty] private double _height;
-    [ObservableProperty] private double _opacity = 0.5;
-}
 
+
+    public bool Intersects(Rect rect)
+    {
+        return rect.Intersects(new Rect(X, Y, Width, Height));
+    }
+
+
+    public bool HitTest(Point pt)
+    {
+        return new Rect (X, Y, Width, Height).Contains(pt);
+    }
+}

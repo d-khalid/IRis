@@ -44,12 +44,12 @@
 
                 <Rectangle
                     Stroke="DodgerBlue"
-                    StrokeThickness="1.5" 
+                    StrokeThickness="1" 
                     IsVisible="{Binding IsSelected}" 
                     Margin="-5" 
                 >
                     <Rectangle.Fill>
-                        <SolidColorBrush Color="#2f99ef" Opacity="0.2" />
+                        <SolidColorBrush Color="#469adf" Opacity="0.1" />
                     </Rectangle.Fill>
                 </Rectangle>
             </Grid>
@@ -77,6 +77,7 @@
             PointerReleased="OnPointerReleased"
             PointerEntered="OnPointerEntered"
             PointerExited="OnPointerExited"
+            KeyDown="OnKeyDown"
         >
             <Canvas.Background>
                 <VisualBrush TileMode="Tile" SourceRect="0,0,10,10" DestinationRect="0,0,10,10">

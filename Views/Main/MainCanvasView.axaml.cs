@@ -10,6 +10,7 @@ using IRis.Models.Core;
 using IRis.Services;
 using IRis.ViewModels;
 using IRis.ViewModels.Circuit;
+using System.ComponentModel;
 
 
 namespace IRis.Views.Main;
@@ -43,13 +44,6 @@ public partial class MainCanvasView : UserControl
         {
             PreviewControl.IsVisible = false;
         }
-
-        if (SelectionBox.IsVisible)
-        {
-            SelectionBox.IsVisible = false;
-            SelectionBox.Width = 0;
-            SelectionBox.Height = 0;
-        }
     }
 
 
@@ -67,6 +61,7 @@ public partial class MainCanvasView : UserControl
                 Simulation.UnselectAll();
                 SelectionBox.IsVisible = true;
                 _selectionBoxStartPt = pt.Position;
+                e.Pointer.Capture(sender as Control);
             }
 
             else if (Simulation.Preview is ComponentViewModel c)    // commit the component
@@ -85,12 +80,31 @@ public partial class MainCanvasView : UserControl
         Point snappedPt = UtilityService.SnapPointToGrid(pt);
         Simulation.CurrentMousePos = snappedPt;
 
-        if (SelectionBox.IsVisible)     // update SelectionBox bounds
+        if (SelectionBox.IsVisible)     // update SelectionBox bounds and select comp within range
         {
             SelectionBox.Width = Math.Abs(_selectionBoxStartPt.X - pt.X);
             SelectionBox.Height = Math.Abs(_selectionBoxStartPt.Y - pt.Y);
             Canvas.SetLeft(SelectionBox, Math.Min(_selectionBoxStartPt.X, pt.X));
             Canvas.SetTop(SelectionBox, Math.Min(_selectionBoxStartPt.Y, pt.Y));
+
+
+            var selectionBounds = new Rect(
+                Canvas.GetLeft(SelectionBox), Canvas.GetTop(SelectionBox),
+                SelectionBox.Width, SelectionBox.Height
+            );
+
+            foreach (ComponentViewModel c in Simulation.Components) 
+            {
+                if (!c.IsSelected && c.Intersects(selectionBounds))
+                {
+                    c.IsSelected = true;
+                }
+
+                else if (c.IsSelected && !c.Intersects(selectionBounds)) 
+                {
+                    c.IsSelected = false;
+                }
+            }
         }
 
         else if (Simulation.Preview is ComponentViewModel c)    // update Component X,Y
@@ -108,6 +122,7 @@ public partial class MainCanvasView : UserControl
             SelectionBox.IsVisible = false;
             SelectionBox.Width = 0;
             SelectionBox.Height = 0;
+            e.Pointer.Capture(null);
         }
     }
 
