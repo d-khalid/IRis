@@ -7,6 +7,8 @@ using Avalonia;
 using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
+using IRis.ViewModels.Circuit.CircuitObjects.Components.Gates;
+using IRis.Models.Core;
 
 
 namespace IRis.ViewModels.Main;
@@ -106,6 +108,40 @@ public partial class MainWindowViewModel : ViewModelBase
                 c.X = newCenterX - (c.Width / 2.0);
                 c.Y = newCenterY - (c.Height / 2.0);
             }
+        }
+    }
+
+
+    [RelayCommand]
+    private void AddInputKey()
+    {
+        ObservableCollection<CircuitObjectViewModel> collection;
+
+        if (Simulation.PreviewObjects.Count > 0) collection = Simulation.PreviewObjects;
+        else if (Simulation.SelectedObjects.Count > 0) collection = Simulation.SelectedObjects;
+        else return;
+
+        foreach (CircuitObjectViewModel co in collection)
+        {
+            if (co is AndGateViewModel ag)
+                ag.AddInput(new(new Terminal(TerminalType.Input)));
+        }
+    }
+
+
+    [RelayCommand]
+    private void RemoveInputKey()
+    {
+        ObservableCollection<CircuitObjectViewModel> collection;
+
+        if (Simulation.PreviewObjects.Count > 0) collection = Simulation.PreviewObjects;
+        else if (Simulation.SelectedObjects.Count > 0) collection = Simulation.SelectedObjects;
+        else return;
+
+        foreach (CircuitObjectViewModel co in collection)
+        {
+            if (co is AndGateViewModel ag)
+                ag.RemoveInput(ag.Inputs[^1]);
         }
     }
 }

@@ -18,6 +18,15 @@ public partial class AndGateViewModel : GateViewModel
         Width = Height = Inputs.Count * 20;
     }
 
+    
+    public void RemoveInput(TerminalViewModel input)
+    {
+        if (Inputs.Count == 2) return;
+
+        Inputs.Remove(input);
+        Width = Height = Inputs.Count * 20;
+    }
+
 
     protected override void UpdateInputTerminals()
     {

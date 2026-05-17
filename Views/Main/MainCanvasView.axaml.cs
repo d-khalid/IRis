@@ -16,6 +16,7 @@ public partial class MainCanvasView : UserControl
 {
     public SimulationViewModel Simulation = SimulationViewModel.GetInstance();
     private Point _selectionBoxStartPt;
+    private bool _draggedObjectsMoved;
 
 
     public MainCanvasView()
@@ -67,6 +68,7 @@ public partial class MainCanvasView : UserControl
                         Simulation.DraggedObjects.Add(obj);
                     }
 
+                    _draggedObjectsMoved = false;
                     Point min = UtilityService.GetMinPointInCollection(Simulation.DraggedObjects);
                     Simulation.PreviewMouseOffset = UtilityService.Difference(pt.Position, min);
                 }
@@ -173,6 +175,8 @@ public partial class MainCanvasView : UserControl
                 Simulation.CurrentMousePos,
                 Simulation.PreviewMouseOffset
             );
+
+            _draggedObjectsMoved = true;
         }
     }
 
@@ -189,6 +193,21 @@ public partial class MainCanvasView : UserControl
 
         else if (Simulation.DraggedObjects.Count > 0)   // remove dragging references
         {
+            if (_draggedObjectsMoved)
+            {
+                foreach (CircuitObjectViewModel co in Simulation.DraggedObjects)
+                {
+                    Simulation.SelectObject(co);
+                }
+            }
+
+            else
+            {
+                Simulation.UnselectAll();
+                var obj = Simulation.GetContainerObject(Simulation.CurrentMousePos);
+                if (obj != null) Simulation.SelectObject(obj);
+            }
+
             Simulation.DraggedObjects.Clear();
         }
     }

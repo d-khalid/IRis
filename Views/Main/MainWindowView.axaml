@@ -28,5 +28,7 @@
         <KeyBinding Gesture="Ctrl+C" Command="{Binding CopyKeyCommand}" />
         <KeyBinding Gesture="Ctrl+V" Command="{Binding PasteKeyCommand}" />
         <KeyBinding Gesture="R" Command="{Binding RotateKeyCommand}" />
+        <KeyBinding Gesture="A" Command="{Binding AddInputKeyCommand}" />
+        <KeyBinding Gesture="S" Command="{Binding RemoveInputKeyCommand}" />
     </Window.KeyBindings>
 </Window>
