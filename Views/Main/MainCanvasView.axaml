@@ -23,13 +23,46 @@
                 <Grid.RenderTransform>
                     <RotateTransform Angle="{Binding Rotation}" />
                 </Grid.RenderTransform>
-                <Path 
+
+                <ItemsControl ItemsSource="{Binding Inputs}" ClipToBounds="False">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="1" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Line 
+                                StartPoint="0,0" 
+                                EndPoint="10,0" 
+                                Stroke="Black" 
+                                StrokeThickness="2" 
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="-10,0,0,0"
+                            />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Line 
+                    StartPoint="0,0" 
+                    EndPoint="10,0" 
+                    Stroke="Black" 
+                    StrokeThickness="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="0,0,-10,0"
+                />
+
+                <Path
                     Fill="White" 
                     Stroke="Black" 
                     StrokeThickness="2"
                     Stretch="Fill"
-                    Data="M 5,85 L 60,85 A 35,40 0 0 0 60,5 L 5,5 Z" 
+                    Data="M 0,100 L 60,100 A 40,40 0 0 0 60,0 L 0,0 Z" 
                 />
+
                 <Rectangle
                     Stroke="DodgerBlue"
                     StrokeThickness="1" 
