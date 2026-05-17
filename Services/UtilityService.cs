@@ -32,6 +32,30 @@ public static class UtilityService {
     }
 
 
+    public static Point Average(Point p1, Point p2)
+    {
+        return new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
+    }
+
+
+    public static Point GetMaxPointInCollection(ObservableCollection<CircuitObjectViewModel> collection)
+    {
+        double maxX = 0.0;
+        double maxY = 0.0;
+
+        foreach (CircuitObjectViewModel co in collection)
+        {
+            if (co is ComponentViewModel c)
+            {
+                if (c.X + c.Width > maxX) maxX = c.X + c.Width;
+                if (c.Y + c.Height > maxY) maxY = c.Y + c.Height;
+            }
+        }
+
+        return new Point(maxX, maxY);
+    }
+
+
     public static Point GetMinPointInCollection(ObservableCollection<CircuitObjectViewModel> collection)
     {
         double minX = double.MaxValue;

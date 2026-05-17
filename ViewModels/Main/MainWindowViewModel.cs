@@ -6,6 +6,7 @@ using IRis.ViewModels.Circuit.CircuitObjects;
 using Avalonia;
 using System;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 
 
 namespace IRis.ViewModels.Main;
@@ -75,19 +76,35 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void RotateKey()
     {
-        if (Simulation.PreviewObjects.Count == 1)
-        {
-            if (Simulation.PreviewObjects[0] is ComponentViewModel c)
-            {
-                c.Rotation += 90;
-            }
-        }
+        ObservableCollection<CircuitObjectViewModel> collection;
 
-        else if (Simulation.SelectedObjects.Count == 1)
+        if (Simulation.PreviewObjects.Count > 0) collection = Simulation.PreviewObjects;
+        else if (Simulation.SelectedObjects.Count > 0) collection = Simulation.SelectedObjects;
+        else return;
+
+        Point min = UtilityService.GetMinPointInCollection(collection);
+        Point max = UtilityService.GetMaxPointInCollection(collection);
+        Point center = UtilityService.Average(min, max);
+
+        foreach (CircuitObjectViewModel co in collection)
         {
-            if (Simulation.SelectedObjects[0] is ComponentViewModel c)
+            if (co is ComponentViewModel c)
             {
-                c.Rotation += 90;
+                c.Rotation = (c.Rotation + 90) % 360;
+
+                // this MATH bellow was done by Gemini 3.1 Pro, it works
+
+                double objCenterX = c.X + (c.Width / 2.0);
+                double objCenterY = c.Y + (c.Height / 2.0);
+
+                double translatedX = objCenterX - center.X;
+                double translatedY = objCenterY - center.Y;
+
+                double newCenterX = -translatedY + center.X;
+                double newCenterY = translatedX + center.Y;
+
+                c.X = newCenterX - (c.Width / 2.0);
+                c.Y = newCenterY - (c.Height / 2.0);
             }
         }
     }
