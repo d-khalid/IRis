@@ -17,4 +17,17 @@ public partial class AndGateViewModel : GateViewModel
         Inputs.Add(input);
         Width = Height = Inputs.Count * 20;
     }
+
+
+    protected override void UpdateInputTerminals()
+    {
+        double x = X - 10;
+        double multiplier = 20;
+
+        for (int i = 0; i < Inputs.Count; i++)
+        {
+            Inputs[i].X = x;
+            Inputs[i].Y = Y + (i * multiplier) + 10;
+        }
+    }
 }

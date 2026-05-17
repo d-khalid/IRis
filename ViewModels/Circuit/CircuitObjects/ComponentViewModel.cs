@@ -5,13 +5,19 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace IRis.ViewModels.Circuit.CircuitObjects;
 
 
-public partial class ComponentViewModel : CircuitObjectViewModel
+public abstract partial class ComponentViewModel : CircuitObjectViewModel
 {
     [ObservableProperty] private double _x;
     [ObservableProperty] private double _y;
     [ObservableProperty] private double _width;
     [ObservableProperty] private double _height;
     [ObservableProperty] private double _rotation;
+
+    partial void OnXChanged(double value) => UpdateTerminals();
+    partial void OnYChanged(double value) => UpdateTerminals();
+    partial void OnWidthChanged(double value) => UpdateTerminals();
+    partial void OnHeightChanged(double value) => UpdateTerminals();
+    partial void OnRotationChanged(double value) => UpdateTerminals();
 
 
     public bool Intersects(Rect rect)
@@ -24,4 +30,7 @@ public partial class ComponentViewModel : CircuitObjectViewModel
     {
         return new Rect (X, Y, Width, Height).Contains(pt);
     }
+
+
+    protected abstract void UpdateTerminals();
 }

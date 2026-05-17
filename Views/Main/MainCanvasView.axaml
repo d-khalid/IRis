@@ -6,8 +6,9 @@
     xmlns:vm="using:IRis.ViewModels.Main"
     x:DataType="vm:MainCanvasViewModel"
     x:Class="IRis.Views.Main.MainCanvasView"
-    xmlns:gates="using:IRis.ViewModels.Circuit.CircuitObjects.Components.Gates"
     xmlns:circuitobjects="using:IRis.ViewModels.Circuit.CircuitObjects"
+    xmlns:core="using:IRis.ViewModels.Circuit.CircuitObjects.Core"
+    xmlns:gates="using:IRis.ViewModels.Circuit.CircuitObjects.Components.Gates"
 >
     <UserControl.DataTemplates>
         <DataTemplate DataType="gates:AndGateViewModel">
@@ -32,28 +33,51 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Line 
-                                StartPoint="0,0" 
-                                EndPoint="10,0" 
-                                Stroke="Black" 
-                                StrokeThickness="2" 
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Margin="-10,0,0,0"
-                            />
+                            <Grid ClipToBounds="False">
+                                <Line 
+                                    StartPoint="0,0" 
+                                    EndPoint="10,0" 
+                                    Stroke="Black" 
+                                    StrokeThickness="2" 
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Margin="-10,0,0,0"
+                                />
+                                <Ellipse 
+                                    Width="10" 
+                                    Height="10" 
+                                    Fill="DarkGreen"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Margin="-15,0,0,0"
+                                    Cursor="Cross"
+                                />
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <Line 
-                    StartPoint="0,0" 
-                    EndPoint="10,0" 
-                    Stroke="Black" 
-                    StrokeThickness="2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Margin="0,0,-10,0"
-                />
+                <Grid ClipToBounds="False">
+                    <Line 
+                        StartPoint="0,0" 
+                        EndPoint="10,0" 
+                        Stroke="Black" 
+                        StrokeThickness="2"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Margin="0,0,-10,0"
+                    />
+                    <Ellipse 
+                        DataContext="{Binding Output}"
+                        Width="10"
+                        Height="10"
+                        Fill="DarkGreen" 
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Margin="0,0,-15,0"
+                        Cursor="Cross"
+                    />
+                </Grid>
 
                 <Path
                     Fill="White" 
@@ -67,7 +91,7 @@
                     Stroke="DodgerBlue"
                     StrokeThickness="1" 
                     IsVisible="{Binding IsSelected}" 
-                    Margin="-5" 
+                    Margin="-20,-5" 
                 >
                     <Rectangle.Fill>
                         <SolidColorBrush Color="#469adf" Opacity="0.1" />
