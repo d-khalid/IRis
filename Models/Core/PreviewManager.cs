@@ -37,9 +37,15 @@ public partial class PreviewManager : ObservableObject
     }
 
 
-    public void SetVisible(bool state)
+    public void Show()
     {
-        IsVisible = state;
+        IsVisible = true;
+    }
+
+
+    public void Hide()
+    {
+        IsVisible = false;
     }
 
 
@@ -61,7 +67,7 @@ public partial class PreviewManager : ObservableObject
     }
 
 
-    public void Commit() 
+    public void CommitAll() 
     {
         foreach (var co in Objects)
         {

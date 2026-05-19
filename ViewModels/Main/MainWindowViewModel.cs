@@ -69,7 +69,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         Preview.Ditch();
         Preview.MouseOffset = new Point(0, 0);
-        Preview.SetVisible(true);
+        Preview.Show();
 
         foreach (CircuitObjectViewModel co in Simulation.CopiedObjects)
         {

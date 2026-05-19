@@ -18,7 +18,8 @@ public partial class MainCanvasView : UserControl
 {
     public SimulationManager Simulation = SimulationManager.GetInstance();
     public PreviewManager Preview = PreviewManager.GetInstance();
-    private Point _selectionBoxStartPt;
+    public SelectionManager Selection = SelectionManager.GetInstance();
+
     private bool _draggedObjectsMoved;
 
 
@@ -31,28 +32,28 @@ public partial class MainCanvasView : UserControl
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        Preview.SetVisible(true);
+        Preview.Show();
     }
 
 
     private void OnPointerExited(object? sender, PointerEventArgs e)
     {
-        Preview.SetVisible(false);
+        Preview.Hide();
     }
 
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         PointerPoint pt = e.GetCurrentPoint(sender as Control);
-        bool notPanningCanvas = pt.Properties.IsLeftButtonPressed &&
+        bool isNotPanningCanvas = pt.Properties.IsLeftButtonPressed &&
             !e.KeyModifiers.HasFlag(KeyModifiers.Control);
 
 
-        if (notPanningCanvas)
+        if (isNotPanningCanvas)
         {
             e.Handled = true;
 
-            if (Preview.HasObjects()) Preview.Commit();
+            if (Preview.HasObjects()) Preview.CommitAll();
 
             else
             {
@@ -82,14 +83,8 @@ public partial class MainCanvasView : UserControl
 
                 else              // empty space => start selection box
                 {
-                    Simulation.UnselectAll();
-
-                    var c = Simulation.GetContainerObject(pt.Position);
-                    if (c != null) Simulation.SelectObject(c);
-
-                    SelectionBox.IsVisible = true;
-                    _selectionBoxStartPt = pt.Position;
-                    e.Pointer.Capture(sender as Control);
+                    Selection.Start();
+                    e.Pointer.Capture(sender as Control);   // keeps focus till released
                 }
             }
         }
@@ -102,33 +97,9 @@ public partial class MainCanvasView : UserControl
         Simulation.CurrentMousePos = SimulationService.SnapPointToGrid(pt);
 
 
-        if (SelectionBox.IsVisible)     // update SelectionBox bounds and select comp within range
+        if (Selection.IsVisible)     // update SelectionBox bounds and select comp within range
         {
-            SimulationService.SetObjectBounds(
-                obj: SelectionBox,
-                width: Math.Abs(_selectionBoxStartPt.X - pt.X),
-                height: Math.Abs(_selectionBoxStartPt.Y - pt.Y),
-                x: Math.Min(_selectionBoxStartPt.X, pt.X),
-                y: Math.Min(_selectionBoxStartPt.Y, pt.Y)
-            );
-
-            var selectionBounds = SimulationService.GetObjectBounds(SelectionBox);
-
-            foreach (CircuitObjectViewModel co in Simulation.Objects) 
-            {
-                if (co is ComponentViewModel c)
-                {
-                    if (!c.IsSelected && c.Intersects(selectionBounds))
-                    {
-                        Simulation.SelectObject(c);
-                    }
-
-                    else if (c.IsSelected && !c.Intersects(selectionBounds))
-                    {
-                        Simulation.UnselectObject(c);
-                    }
-                }
-            }
+            Selection.Update();
         }
 
         else if (Preview.HasObjects())
@@ -146,7 +117,7 @@ public partial class MainCanvasView : UserControl
             {
                 foreach (CircuitObjectViewModel co in Simulation.DraggedObjects)
                 {
-                    Simulation.UnselectObject(co);
+                    Selection.Remove(co);
                 }
             }
 
@@ -163,11 +134,9 @@ public partial class MainCanvasView : UserControl
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (SelectionBox.IsVisible)                     // remove selectionBox
+        if (Selection.IsVisible)
         {
-            SelectionBox.IsVisible = false;
-            SelectionBox.Width = 0;
-            SelectionBox.Height = 0;
+            Selection.Hide();
             e.Pointer.Capture(null);
         }
 

@@ -198,11 +198,11 @@
                 x:Name="SelectionBox"
                 Stroke="DodgerBlue"
                 StrokeThickness="1.5"
-                Canvas.Left="0"
-                Canvas.Top="0"
-                Width="0"
-                Height="0"
-                IsVisible="False"
+                Canvas.Left="{Binding Selection.X}"
+                Canvas.Top="{Binding Selection.Y}"
+                Width="{Binding Selection.Width}"
+                Height="{Binding Selection.Height}"
+                IsVisible="{Binding Selection.IsVisible}"
                 IsHitTestVisible="False"
             >
                 <Rectangle.Fill>
