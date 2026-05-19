@@ -6,12 +6,12 @@ using System;
 using Avalonia;
 
 
-namespace IRis.ViewModels;
+namespace IRis.Models.Core;
 
 
-public partial class SimulationViewModel : ObservableObject
+public partial class SimulationManager : ObservableObject
 {
-    private static SimulationViewModel? _instance = null;
+    private static SimulationManager? _instance = null;
     [ObservableProperty] private Point _currentMousePos = new(0, 0);
 
     public ObservableCollection<CircuitObjectViewModel> CircuitObjects { get; } = [];
@@ -25,17 +25,17 @@ public partial class SimulationViewModel : ObservableObject
     public Point PreviewMouseOffset = new(0, 0);
 
 
-    public SimulationViewModel()
+    public SimulationManager()
     {
         if (_instance != null)
             throw new Exception("use GetInstance function instead pls.");
     }
 
 
-    public static SimulationViewModel GetInstance()
+    public static SimulationManager GetInstance()
     {
         if (_instance == null)
-            _instance = new SimulationViewModel();
+            _instance = new SimulationManager();
 
         return _instance;
     }

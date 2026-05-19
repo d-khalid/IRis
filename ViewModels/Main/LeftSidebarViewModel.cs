@@ -14,7 +14,7 @@ namespace IRis.ViewModels.Main;
 public partial class LeftSidebarViewModel : ViewModelBase
 {
     [ObservableProperty] 
-    private SimulationViewModel _simulation = SimulationViewModel.GetInstance();
+    private SimulationManager _simulation = SimulationManager.GetInstance();
 
 
     [RelayCommand]

@@ -7,6 +7,7 @@ using IRis.ViewModels.Main;
 using IRis.Services;
 using IRis.ViewModels;
 using IRis.ViewModels.Circuit;
+using IRis.Models.Core;
 
 
 namespace IRis.Views.Main;
@@ -14,7 +15,7 @@ namespace IRis.Views.Main;
 
 public partial class MainCanvasView : UserControl
 {
-    public SimulationViewModel Simulation = SimulationViewModel.GetInstance();
+    public SimulationManager Simulation = SimulationManager.GetInstance();
     private Point _selectionBoxStartPt;
     private bool _draggedObjectsMoved;
 

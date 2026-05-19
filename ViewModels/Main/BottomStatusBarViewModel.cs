@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.Models.Core;
 
 
 namespace IRis.ViewModels.Main;
@@ -7,5 +8,5 @@ namespace IRis.ViewModels.Main;
 public partial class BottomStatusBarViewModel : ViewModelBase
 {
     [ObservableProperty] 
-    private SimulationViewModel _simulation = SimulationViewModel.GetInstance();
+    private SimulationManager _simulation = SimulationManager.GetInstance();
 }
