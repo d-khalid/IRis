@@ -151,9 +151,9 @@
                 </MenuFlyout>
             </Canvas.ContextFlyout>
 
-            <!-- rendering circuitobjects -->
+            <!-- rendering objects -->
             <ItemsControl 
-                ItemsSource="{Binding Simulation.CircuitObjects}"
+                ItemsSource="{Binding Simulation.Objects}"
                 ClipToBounds="False" 
                 x:CompileBindings="False"
             >
@@ -171,11 +171,11 @@
                 </ItemsControl.Styles>
             </ItemsControl>
 
-            <!-- rendering previewobjects -->
+            <!-- rendering previews -->
             <ItemsControl 
-                ItemsSource="{Binding Simulation.PreviewObjects}"
+                ItemsSource="{Binding Preview.Objects}"
                 ClipToBounds="False"
-                IsVisible="{Binding Simulation.IsPreviewVisible}"
+                IsVisible="{Binding Preview.IsVisible}"
                 IsHitTestVisible="False"
                 x:CompileBindings="False"
             >

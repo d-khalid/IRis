@@ -1,9 +1,10 @@
 using IRis.ViewModels.Circuit;
-using IRis.ViewModels.Circuit.CircuitObjects;
+using IRis.Models.Circuit.CircuitObjects.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System;
 using Avalonia;
+using IRis.ViewModels.Circuit.CircuitObjects;
 
 
 namespace IRis.Models.Core;
@@ -14,15 +15,11 @@ public partial class SimulationManager : ObservableObject
     private static SimulationManager? _instance = null;
     [ObservableProperty] private Point _currentMousePos = new(0, 0);
 
-    public ObservableCollection<CircuitObjectViewModel> CircuitObjects { get; } = [];
+    public ObservableCollection<CircuitObjectViewModel> Objects { get; } = [];
     public ObservableCollection<CircuitObjectViewModel> CopiedObjects { get; } = [];
-    public ObservableCollection<CircuitObjectViewModel> PreviewObjects { get; } = [];
 
     public ObservableCollection<CircuitObjectViewModel> DraggedObjects { get; } = [];
     public ObservableCollection<CircuitObjectViewModel> SelectedObjects { get; } = [];
-
-    [ObservableProperty] private bool _isPreviewVisible;
-    public Point PreviewMouseOffset = new(0, 0);
 
 
     public SimulationManager()
@@ -59,7 +56,7 @@ public partial class SimulationManager : ObservableObject
     {
         SelectedObjects.Clear();
 
-        foreach (CircuitObjectViewModel co in CircuitObjects)
+        foreach (CircuitObjectViewModel co in Objects)
         {
             co.IsSelected = false;
         }
@@ -68,7 +65,7 @@ public partial class SimulationManager : ObservableObject
 
     public void SelectAll()
     {
-        foreach (CircuitObjectViewModel co in CircuitObjects)
+        foreach (CircuitObjectViewModel co in Objects)
         {
             SelectObject(co);
         }
@@ -76,7 +73,7 @@ public partial class SimulationManager : ObservableObject
 
     public CircuitObjectViewModel? GetContainerObject(Point pt)
     {
-        foreach (CircuitObjectViewModel co in CircuitObjects)
+        foreach (CircuitObjectViewModel co in Objects)
         {
             if (co is ComponentViewModel c && c.Contains(pt))
                 return co;

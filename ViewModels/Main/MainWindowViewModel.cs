@@ -2,13 +2,17 @@
 using IRis.Services;
 using IRis.ViewModels;
 using IRis.ViewModels.Circuit;
-using IRis.ViewModels.Circuit.CircuitObjects;
+using IRis.Models.Circuit.CircuitObjects.Core;
 using Avalonia;
 using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using IRis.ViewModels.Circuit.CircuitObjects.Components.Gates;
 using IRis.Models.Core;
+using IRis.ViewModels.Circuit.CircuitObjects.Core;
+using IRis.ViewModels.Circuit.CircuitObjects.Components;
+using IRis.ViewModels.Circuit.CircuitObjects;
+
 
 
 namespace IRis.ViewModels.Main;
@@ -17,6 +21,7 @@ namespace IRis.ViewModels.Main;
 public partial class MainWindowViewModel : ViewModelBase
 {
     public SimulationManager Simulation { get; } = SimulationManager.GetInstance();
+    public PreviewManager Preview { get; } = PreviewManager.GetInstance();
 
 
     [RelayCommand]
@@ -25,7 +30,7 @@ public partial class MainWindowViewModel : ViewModelBase
         for (int i = Simulation.SelectedObjects.Count-1; i >= 0; i--)
         {
             CircuitObjectViewModel co = Simulation.SelectedObjects[i];
-            Simulation.CircuitObjects.Remove(co);
+            Simulation.Objects.Remove(co);
             Simulation.UnselectObject(co);
         }
     }
@@ -34,7 +39,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void EscapeKey()
     {
-        Simulation.PreviewObjects.Clear();
+        Preview.Ditch();
     }
 
 
@@ -56,21 +61,21 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (Simulation.CopiedObjects.Count == 0) return;
 
-        UtilityService.SnapCollectionToPosition(
+        SimulationService.SnapCollectionToPosition(
             Simulation.CopiedObjects, 
             Simulation.CurrentMousePos,
-            Simulation.PreviewMouseOffset
+            Preview.MouseOffset
         );
 
-        Simulation.PreviewObjects.Clear();
-        Simulation.PreviewMouseOffset = new Point(0, 0);
-        Simulation.IsPreviewVisible = true;
+        Preview.Ditch();
+        Preview.MouseOffset = new Point(0, 0);
+        Preview.SetVisible(true);
 
         foreach (CircuitObjectViewModel co in Simulation.CopiedObjects)
         {
             CircuitObjectViewModel clone = CloningService.Clone(co);
             clone.Opacity = 0.5;
-            Simulation.PreviewObjects.Add(clone);
+            Preview.Add(clone);
         }
     }
 
@@ -80,13 +85,13 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         ObservableCollection<CircuitObjectViewModel> collection;
 
-        if (Simulation.PreviewObjects.Count > 0) collection = Simulation.PreviewObjects;
+        if (Preview.HasObjects()) collection = Preview.Objects;
         else if (Simulation.SelectedObjects.Count > 0) collection = Simulation.SelectedObjects;
         else return;
 
-        Point min = UtilityService.GetMinPointInCollection(collection);
-        Point max = UtilityService.GetMaxPointInCollection(collection);
-        Point center = UtilityService.Average(min, max);
+        Point min = SimulationService.GetMinPointInCollection(collection);
+        Point max = SimulationService.GetMaxPointInCollection(collection);
+        Point center = SimulationService.Average(min, max);
 
         foreach (CircuitObjectViewModel co in collection)
         {
@@ -117,14 +122,14 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         ObservableCollection<CircuitObjectViewModel> collection;
 
-        if (Simulation.PreviewObjects.Count > 0) collection = Simulation.PreviewObjects;
+        if (Preview.HasObjects()) collection = Preview.Objects;
         else if (Simulation.SelectedObjects.Count > 0) collection = Simulation.SelectedObjects;
         else return;
 
         foreach (CircuitObjectViewModel co in collection)
         {
             if (co is AndGateViewModel ag)
-                ag.AddInput(new(new Terminal(TerminalType.Input)));
+                ag.AddInput(new TerminalViewModel(new Terminal(TerminalType.Input)));
         }
     }
 
@@ -134,7 +139,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         ObservableCollection<CircuitObjectViewModel> collection;
 
-        if (Simulation.PreviewObjects.Count > 0) collection = Simulation.PreviewObjects;
+        if (Preview.HasObjects()) collection = Preview.Objects;
         else if (Simulation.SelectedObjects.Count > 0) collection = Simulation.SelectedObjects;
         else return;
 

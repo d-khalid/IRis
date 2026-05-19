@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using IRis.Models.Core;
+using IRis.Models.Circuit.CircuitObjects.Core;
 
 
 namespace IRis.ViewModels.Circuit.CircuitObjects.Core;

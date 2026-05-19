@@ -3,14 +3,15 @@ using System;
 using Newtonsoft.Json;
 using IRis.ViewModels.Circuit;
 using System.Collections.ObjectModel;
-using IRis.ViewModels.Circuit.CircuitObjects;
+using IRis.Models.Circuit.CircuitObjects.Core;
 using Avalonia.Controls;
+using IRis.ViewModels.Circuit.CircuitObjects;
 
 
 namespace IRis.Services;
 
 
-public static class UtilityService {
+public static class SimulationService {
     public static Point SnapPointToGrid(Point pt)
     {
         double gridSpacing = 10.0;

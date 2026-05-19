@@ -2,12 +2,13 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia;
 using System;
-using IRis.ViewModels.Circuit.CircuitObjects;
+using IRis.Models.Circuit.CircuitObjects.Core;
 using IRis.ViewModels.Main;
 using IRis.Services;
 using IRis.ViewModels;
 using IRis.ViewModels.Circuit;
 using IRis.Models.Core;
+using IRis.ViewModels.Circuit.CircuitObjects;
 
 
 namespace IRis.Views.Main;
@@ -16,6 +17,7 @@ namespace IRis.Views.Main;
 public partial class MainCanvasView : UserControl
 {
     public SimulationManager Simulation = SimulationManager.GetInstance();
+    public PreviewManager Preview = PreviewManager.GetInstance();
     private Point _selectionBoxStartPt;
     private bool _draggedObjectsMoved;
 
@@ -29,26 +31,30 @@ public partial class MainCanvasView : UserControl
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        Simulation.IsPreviewVisible = true;
+        Preview.SetVisible(true);
     }
 
 
     private void OnPointerExited(object? sender, PointerEventArgs e)
     {
-        Simulation.IsPreviewVisible = false;
+        Preview.SetVisible(false);
     }
 
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         PointerPoint pt = e.GetCurrentPoint(sender as Control);
+        bool notPanningCanvas = pt.Properties.IsLeftButtonPressed &&
+            !e.KeyModifiers.HasFlag(KeyModifiers.Control);
 
-        if (pt.Properties.IsLeftButtonPressed &&
-            !e.KeyModifiers.HasFlag(KeyModifiers.Control))
+
+        if (notPanningCanvas)
         {
-            e.Handled = true;   // disable pan chan
+            e.Handled = true;
 
-            if (Simulation.PreviewObjects.Count == 0)
+            if (Preview.HasObjects()) Preview.Commit();
+
+            else
             {
                 CircuitObjectViewModel? obj = Simulation.GetContainerObject(pt.Position);
 
@@ -70,8 +76,8 @@ public partial class MainCanvasView : UserControl
                     }
 
                     _draggedObjectsMoved = false;
-                    Point min = UtilityService.GetMinPointInCollection(Simulation.DraggedObjects);
-                    Simulation.PreviewMouseOffset = UtilityService.Difference(pt.Position, min);
+                    Point min = SimulationService.GetMinPointInCollection(Simulation.DraggedObjects);
+                    Preview.MouseOffset = SimulationService.Difference(pt.Position, min);
                 }
 
                 else              // empty space => start selection box
@@ -86,33 +92,6 @@ public partial class MainCanvasView : UserControl
                     e.Pointer.Capture(sender as Control);
                 }
             }
-
-            else               // handle CircuitObject commits
-            {
-                foreach (CircuitObjectViewModel co in Simulation.PreviewObjects)
-                {
-                    if (co is ComponentViewModel c)
-                    {
-                        ComponentViewModel clone = CloningService.Clone(c);
-                        clone.Opacity = 1.0;
-                        Simulation.CircuitObjects.Add(clone);
-                    }
-                }
-            }
-        }
-
-        else if (pt.Properties.IsRightButtonPressed)
-        {
-            CircuitObjectViewModel? obj = Simulation.GetContainerObject(pt.Position);
-
-            if (obj != null)
-            {
-                if (!obj.IsSelected)
-                {
-                    Simulation.UnselectAll();
-                    Simulation.SelectObject(obj);
-                }
-            }
         }
     }
 
@@ -120,12 +99,12 @@ public partial class MainCanvasView : UserControl
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
         Point pt = e.GetPosition((Visual)sender!);
-        Simulation.CurrentMousePos = UtilityService.SnapPointToGrid(pt);
+        Simulation.CurrentMousePos = SimulationService.SnapPointToGrid(pt);
 
 
         if (SelectionBox.IsVisible)     // update SelectionBox bounds and select comp within range
         {
-            UtilityService.SetObjectBounds(
+            SimulationService.SetObjectBounds(
                 obj: SelectionBox,
                 width: Math.Abs(_selectionBoxStartPt.X - pt.X),
                 height: Math.Abs(_selectionBoxStartPt.Y - pt.Y),
@@ -133,9 +112,9 @@ public partial class MainCanvasView : UserControl
                 y: Math.Min(_selectionBoxStartPt.Y, pt.Y)
             );
 
-            var selectionBounds = UtilityService.GetObjectBounds(SelectionBox);
+            var selectionBounds = SimulationService.GetObjectBounds(SelectionBox);
 
-            foreach (CircuitObjectViewModel co in Simulation.CircuitObjects) 
+            foreach (CircuitObjectViewModel co in Simulation.Objects) 
             {
                 if (co is ComponentViewModel c)
                 {
@@ -152,12 +131,12 @@ public partial class MainCanvasView : UserControl
             }
         }
 
-        else if (Simulation.PreviewObjects.Count > 0)    // update Preview X,Y
+        else if (Preview.HasObjects())
         {
-            UtilityService.SnapCollectionToPosition(
-                Simulation.PreviewObjects, 
+            SimulationService.SnapCollectionToPosition(
+                Preview.Objects, 
                 Simulation.CurrentMousePos, 
-                Simulation.PreviewMouseOffset
+                Preview.MouseOffset
             );
         }
 
@@ -171,10 +150,10 @@ public partial class MainCanvasView : UserControl
                 }
             }
 
-            UtilityService.SnapCollectionToPosition(
+            SimulationService.SnapCollectionToPosition(
                 Simulation.DraggedObjects,
                 Simulation.CurrentMousePos,
-                Simulation.PreviewMouseOffset
+                Preview.MouseOffset
             );
 
             _draggedObjectsMoved = true;

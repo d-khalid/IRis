@@ -1,7 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.Generic;
-using IRis.ViewModels.Circuit.CircuitObjects.Core;
+using IRis.Models.Circuit.CircuitObjects.Core;
 using System.Collections.ObjectModel;
+using IRis.ViewModels.Circuit.CircuitObjects.Core;
 
 
 namespace IRis.ViewModels.Circuit.CircuitObjects.Components.Gates;
