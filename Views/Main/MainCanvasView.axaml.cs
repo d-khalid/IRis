@@ -63,7 +63,7 @@ public partial class MainCanvasView : UserControl
                 {
                     if (obj.IsSelected)
                     {
-                        foreach (CircuitObjectViewModel co in Simulation.SelectedObjects)
+                        foreach (CircuitObjectViewModel co in Selection.Objects)
                         {
                             Simulation.DraggedObjects.Add(co);
                         }
@@ -71,8 +71,8 @@ public partial class MainCanvasView : UserControl
 
                     else
                     {
-                        Simulation.UnselectAll();
-                        Simulation.SelectObject(obj);
+                        Selection.Ditch();
+                        Selection.Add(obj);
                         Simulation.DraggedObjects.Add(obj);
                     }
 
@@ -113,13 +113,7 @@ public partial class MainCanvasView : UserControl
 
         else if (Simulation.DraggedObjects.Count > 0)    // update Dragged X,Y
         {
-            if (Simulation.DraggedObjects[0].IsSelected)
-            {
-                foreach (CircuitObjectViewModel co in Simulation.DraggedObjects)
-                {
-                    Selection.Remove(co);
-                }
-            }
+            Selection.Ditch();
 
             SimulationService.SnapCollectionToPosition(
                 Simulation.DraggedObjects,
@@ -144,17 +138,14 @@ public partial class MainCanvasView : UserControl
         {
             if (_draggedObjectsMoved)
             {
-                foreach (CircuitObjectViewModel co in Simulation.DraggedObjects)
-                {
-                    Simulation.SelectObject(co);
-                }
+                Selection.AddCollection(Simulation.DraggedObjects);
             }
 
             else
             {
-                Simulation.UnselectAll();
+                Selection.Ditch();
                 var obj = Simulation.GetContainerObject(Simulation.CurrentMousePos);
-                if (obj != null) Simulation.SelectObject(obj);
+                if (obj != null) Selection.Add(obj);
             }
 
             Simulation.DraggedObjects.Clear();

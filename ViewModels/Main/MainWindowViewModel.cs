@@ -22,16 +22,17 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     public SimulationManager Simulation { get; } = SimulationManager.GetInstance();
     public PreviewManager Preview { get; } = PreviewManager.GetInstance();
+    public SelectionManager Selection { get; } = SelectionManager.GetInstance();
 
 
     [RelayCommand]
     private void DeleteKey()
     {
-        for (int i = Simulation.SelectedObjects.Count-1; i >= 0; i--)
+        for (int i = Selection.Objects.Count-1; i >= 0; i--)
         {
-            CircuitObjectViewModel co = Simulation.SelectedObjects[i];
+            CircuitObjectViewModel co = Selection.Objects[i];
             Simulation.Objects.Remove(co);
-            Simulation.UnselectObject(co);
+            Selection.Remove(co);
         }
     }
 
@@ -47,10 +48,10 @@ public partial class MainWindowViewModel : ViewModelBase
     private void CopyKey()
     {
         Simulation.CopiedObjects.Clear();
-        for (int i = Simulation.SelectedObjects.Count-1; i >= 0; i--)
+        for (int i = Selection.Objects.Count-1; i >= 0; i--)
         {
-            CircuitObjectViewModel co = Simulation.SelectedObjects[i];
-            Simulation.UnselectObject(co);
+            CircuitObjectViewModel co = Selection.Objects[i];
+            Selection.Remove(co);
             Simulation.CopiedObjects.Add(CloningService.Clone(co));
         }
     }
@@ -86,7 +87,7 @@ public partial class MainWindowViewModel : ViewModelBase
         ObservableCollection<CircuitObjectViewModel> collection;
 
         if (Preview.HasObjects()) collection = Preview.Objects;
-        else if (Simulation.SelectedObjects.Count > 0) collection = Simulation.SelectedObjects;
+        else if (Selection.HasObjects()) collection = Selection.Objects;
         else return;
 
         Point min = SimulationService.GetMinPointInCollection(collection);
@@ -123,7 +124,7 @@ public partial class MainWindowViewModel : ViewModelBase
         ObservableCollection<CircuitObjectViewModel> collection;
 
         if (Preview.HasObjects()) collection = Preview.Objects;
-        else if (Simulation.SelectedObjects.Count > 0) collection = Simulation.SelectedObjects;
+        else if (Selection.HasObjects()) collection = Selection.Objects;
         else return;
 
         foreach (CircuitObjectViewModel co in collection)
@@ -140,7 +141,7 @@ public partial class MainWindowViewModel : ViewModelBase
         ObservableCollection<CircuitObjectViewModel> collection;
 
         if (Preview.HasObjects()) collection = Preview.Objects;
-        else if (Simulation.SelectedObjects.Count > 0) collection = Simulation.SelectedObjects;
+        else if (Selection.HasObjects()) collection = Selection.Objects;
         else return;
 
         foreach (CircuitObjectViewModel co in collection)

@@ -17,9 +17,7 @@ public partial class SimulationManager : ObservableObject
 
     public ObservableCollection<CircuitObjectViewModel> Objects { get; } = [];
     public ObservableCollection<CircuitObjectViewModel> CopiedObjects { get; } = [];
-
     public ObservableCollection<CircuitObjectViewModel> DraggedObjects { get; } = [];
-    public ObservableCollection<CircuitObjectViewModel> SelectedObjects { get; } = [];
 
 
     public SimulationManager()
@@ -37,39 +35,6 @@ public partial class SimulationManager : ObservableObject
         return _instance;
     }
 
-
-    public void SelectObject(CircuitObjectViewModel obj)
-    {
-        obj.IsSelected = true;
-        SelectedObjects.Add(obj);
-    }
-
-
-    public void UnselectObject(CircuitObjectViewModel obj)
-    {
-        obj.IsSelected = false;
-        SelectedObjects.Remove(obj);
-    }
-
-
-    public void UnselectAll()
-    {
-        SelectedObjects.Clear();
-
-        foreach (CircuitObjectViewModel co in Objects)
-        {
-            co.IsSelected = false;
-        }
-    }
-
-
-    public void SelectAll()
-    {
-        foreach (CircuitObjectViewModel co in Objects)
-        {
-            SelectObject(co);
-        }
-    }
 
     public CircuitObjectViewModel? GetContainerObject(Point pt)
     {

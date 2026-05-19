@@ -7,7 +7,6 @@ using Avalonia;
 using IRis.ViewModels.Circuit.CircuitObjects;
 using IRis.Services;
 using Avalonia.Input;
-using Avalonia.Controls;
 
 
 namespace IRis.Models.Core;
@@ -46,10 +45,9 @@ public partial class SelectionManager : ObservableObject
 
     public void Start()
     {
-        Simulation.UnselectAll();
-
+        Ditch();
         var c = Simulation.GetContainerObject(Simulation.CurrentMousePos);
-        if (c != null) Simulation.SelectObject(c);
+        if (c != null) c.IsSelected = true;
 
         IsVisible = true;
         _selectionBoxStartPt = Simulation.CurrentMousePos;
@@ -83,16 +81,22 @@ public partial class SelectionManager : ObservableObject
     }
 
 
+    public void AddCollection(ObservableCollection<CircuitObjectViewModel> collection)
+    {
+        foreach (var co in collection) Add(co);
+    }
+
+
     public void Add(CircuitObjectViewModel obj)
     {
-        Simulation.SelectObject(obj);
+        obj.IsSelected = true;
         Objects.Add(obj);
     }
 
 
     public void Remove(CircuitObjectViewModel obj)
     {
-        Simulation.UnselectObject(obj);
+        obj.IsSelected = false;
         Objects.Remove(obj);
     }
 
@@ -105,8 +109,8 @@ public partial class SelectionManager : ObservableObject
 
     public void Ditch()
     {
+        foreach (var co in Objects) co.IsSelected = false;
         Objects.Clear();
-        Simulation.UnselectAll();
     }
 
 
