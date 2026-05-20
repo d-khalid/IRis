@@ -4,6 +4,7 @@ using Avalonia;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.ViewModels.Circuit.CircuitObjects.Core;
+using System;
 
 
 namespace IRis.ViewModels.Circuit.CircuitObjects;
@@ -11,10 +12,10 @@ namespace IRis.ViewModels.Circuit.CircuitObjects;
 
 public partial class WireViewModel : CircuitObjectViewModel
 {
-    public ObservableCollection<Point> Points { get; } = [];
+    public ObservableCollection<Point> Points { get; set; } = [];
 
-    public TerminalViewModel MainInput;
-    public TerminalViewModel MainOutput;
+    public TerminalViewModel MainInput { get; set; }
+    public TerminalViewModel MainOutput { get; set; }
 
 
     public WireViewModel(TerminalViewModel mainInput, TerminalViewModel mainOutput)

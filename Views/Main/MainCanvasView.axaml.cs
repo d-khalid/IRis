@@ -82,6 +82,7 @@ public partial class MainCanvasView : UserControl
                 SelectionBox.Ditch();
 
             Drag.Update();
+            Simulation.InvalidateWires();
         }
     }
 
@@ -131,9 +132,7 @@ public partial class MainCanvasView : UserControl
             if (Drag.Used)
                 SelectionBox.AddCollection(Drag.Objects);
             else
-            {
                 SelectionBox.Focus(co);
-            }
         }
     }
 
@@ -162,6 +161,20 @@ public partial class MainCanvasView : UserControl
     {
         e.Handled = true;
         var t = ((sender as Control)!.DataContext as TerminalViewModel)!;
+
+        if (Preview.HasObjects())
+        {
+            if (!Preview.IsNewWire()) return;
+            WireViewModel w = (Preview.Objects[0] as WireViewModel)!;
+
+            if (w.MainOutput.IsOrphan)
+                w.MainOutput = t;
+            else if (w.MainInput.IsOrphan)
+                w.MainInput = t;
+
+            Preview.CommitAll();
+            return;
+        }
 
         TerminalViewModel input = t;
         TerminalViewModel output = t;

@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using IRis.Models.Circuit.CircuitObjects.Core;
 using Avalonia.Controls;
 using IRis.ViewModels.Circuit.CircuitObjects;
+using IRis.Models.Core;
 
 
 namespace IRis.Services;
@@ -96,10 +97,17 @@ public static class SimulationService {
 
             else if (co is WireViewModel w)
             {
-                var t = w.MainInput.IsOrphan ? w.MainInput : w.MainOutput;
+                if (w.MainInput.IsOrphan)
+                {
+                    w.MainInput.X = Position.X;
+                    w.MainInput.Y = Position.Y;
+                }
 
-                t.X = Position.X;
-                t.Y = Position.Y;
+                else if (w.MainOutput.IsOrphan)
+                {
+                    w.MainOutput.X = Position.X;
+                    w.MainOutput.Y = Position.Y;
+                }
 
                 w.InvalidatePoints();
             }

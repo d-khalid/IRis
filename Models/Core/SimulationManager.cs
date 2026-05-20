@@ -35,6 +35,16 @@ public partial class SimulationManager : ObservableObject
     }
 
 
+    public void InvalidateWires()
+    {
+        foreach (var co in Objects)
+        {
+            if (co is WireViewModel w)
+                w.InvalidatePoints();
+        }
+    }
+
+
     public CircuitObjectViewModel? GetContainerObject(Point pt)
     {
         foreach (CircuitObjectViewModel co in Objects)

@@ -72,6 +72,12 @@ public partial class PreviewManager : ObservableObject
     }
 
 
+    public bool IsNewWire()
+    {
+        return Objects.Count == 1 && Objects[0] is WireViewModel;
+    }
+
+
     public void Ditch()
     {
         Objects.Clear();
@@ -80,11 +86,27 @@ public partial class PreviewManager : ObservableObject
 
     public void CommitAll() 
     {
+        if (IsNewWire())
+        {
+            WireViewModel w = (Objects[0] as WireViewModel)!;
+            w.Opacity = 1.0;
+            Simulation.Objects.Add(w);
+            Ditch();
+            return;
+        }
+
         foreach (var co in Objects)
         {
             if (co is ComponentViewModel c)
             {
                 ComponentViewModel clone = CloningService.Clone(c);
+                clone.Opacity = 1.0;
+                Simulation.Objects.Add(clone);
+            }
+
+            else if (co is WireViewModel w)
+            {
+                WireViewModel clone = CloningService.Clone(w);
                 clone.Opacity = 1.0;
                 Simulation.Objects.Add(clone);
             }
