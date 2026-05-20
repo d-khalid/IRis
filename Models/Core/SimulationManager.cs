@@ -17,7 +17,6 @@ public partial class SimulationManager : ObservableObject
 
     public ObservableCollection<CircuitObjectViewModel> Objects { get; } = [];
     public ObservableCollection<CircuitObjectViewModel> CopiedObjects { get; } = [];
-    public ObservableCollection<CircuitObjectViewModel> DraggedObjects { get; } = [];
 
 
     public SimulationManager()

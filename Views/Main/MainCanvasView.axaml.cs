@@ -19,8 +19,7 @@ public partial class MainCanvasView : UserControl
     public SimulationManager Simulation = SimulationManager.GetInstance();
     public PreviewManager Preview = PreviewManager.GetInstance();
     public SelectionManager Selection = SelectionManager.GetInstance();
-
-    private bool _draggedObjectsMoved;
+    public DragManager Drag = DragManager.GetInstance();
 
 
     public MainCanvasView()
@@ -63,21 +62,18 @@ public partial class MainCanvasView : UserControl
                 {
                     if (obj.IsSelected)
                     {
-                        foreach (CircuitObjectViewModel co in Selection.Objects)
-                        {
-                            Simulation.DraggedObjects.Add(co);
-                        }
+                        Drag.AddCollection(Simulation.Objects);
                     }
 
                     else
                     {
                         Selection.Ditch();
                         Selection.Add(obj);
-                        Simulation.DraggedObjects.Add(obj);
+                        Drag.Add(obj);
                     }
 
-                    _draggedObjectsMoved = false;
-                    Point min = SimulationService.GetMinPointInCollection(Simulation.DraggedObjects);
+                    Drag.HasBeenUsed = false;
+                    Point min = SimulationService.GetMinPointInCollection(Drag.Objects);
                     Preview.MouseOffset = SimulationService.Difference(pt.Position, min);
                 }
 
@@ -111,17 +107,17 @@ public partial class MainCanvasView : UserControl
             );
         }
 
-        else if (Simulation.DraggedObjects.Count > 0)    // update Dragged X,Y
+        else if (Drag.HasObjects())    // update Dragged X,Y
         {
             Selection.Ditch();
 
             SimulationService.SnapCollectionToPosition(
-                Simulation.DraggedObjects,
+                Drag.Objects,
                 Simulation.CurrentMousePos,
                 Preview.MouseOffset
             );
 
-            _draggedObjectsMoved = true;
+            Drag.HasBeenUsed = true;
         }
     }
 
@@ -134,11 +130,11 @@ public partial class MainCanvasView : UserControl
             e.Pointer.Capture(null);
         }
 
-        else if (Simulation.DraggedObjects.Count > 0)   // remove dragging references
+        else if (Drag.HasObjects())   // remove dragging references
         {
-            if (_draggedObjectsMoved)
+            if (Drag.HasBeenUsed)
             {
-                Selection.AddCollection(Simulation.DraggedObjects);
+                Selection.AddCollection(Drag.Objects);
             }
 
             else
@@ -148,7 +144,7 @@ public partial class MainCanvasView : UserControl
                 if (obj != null) Selection.Add(obj);
             }
 
-            Simulation.DraggedObjects.Clear();
+            Drag.Ditch();
         }
     }
 
