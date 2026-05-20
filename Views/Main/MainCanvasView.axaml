@@ -12,13 +12,14 @@
 >
     <UserControl.DataTemplates>
         <DataTemplate DataType="gates:AndGateViewModel">
-            <Grid 
+            <Grid
+                PointerPressed="OnCircuitObjectPointerPressed"
+                PointerReleased="OnCircuitObjectPointerReleased"
                 Canvas.Left="{Binding X}"
                 Canvas.Top="{Binding Y}"
                 Width="{Binding Width}"
                 Height="{Binding Height}" 
                 Opacity="{Binding Opacity}"
-                Background="Transparent"
                 RenderTransformOrigin="50%,50%"
             >
                 <Grid.RenderTransform>
@@ -195,7 +196,6 @@
             
             <!-- rendering selection box -->
             <Rectangle
-                x:Name="SelectionBox"
                 Stroke="DodgerBlue"
                 StrokeThickness="1.5"
                 Canvas.Left="{Binding Selection.X}"

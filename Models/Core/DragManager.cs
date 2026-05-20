@@ -15,9 +15,10 @@ public partial class DragManager : ObservableObject
 {
     private static DragManager? _instance = null;
     public SimulationManager Simulation = SimulationManager.GetInstance();
+    public PreviewManager Preview = PreviewManager.GetInstance();
 
     public ObservableCollection<CircuitObjectViewModel> Objects { get; } = [];
-    public bool HasBeenUsed = false;
+    public bool Used = false;
 
 
     public DragManager()
@@ -39,12 +40,25 @@ public partial class DragManager : ObservableObject
     public void Add(CircuitObjectViewModel obj)
     {
         Objects.Add(obj);
+        Used = false;
     }
 
 
     public void AddCollection(ObservableCollection<CircuitObjectViewModel> collection)
     {
         foreach (var co in collection) Objects.Add(co);
+    }
+
+
+    public void Update()
+    {
+        Used = true;
+
+        SimulationService.SnapCollectionToPosition(
+            Objects,
+            Simulation.CurrentMousePos,
+            Preview.MouseOffset
+        );
     }
 
 

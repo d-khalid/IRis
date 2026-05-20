@@ -114,6 +114,13 @@ public partial class SelectionManager : ObservableObject
     }
 
 
+    public void Focus(CircuitObjectViewModel co)
+    {
+        Ditch();
+        Add(co);
+    }
+
+
     public void Show()
     {
         IsVisible = true;

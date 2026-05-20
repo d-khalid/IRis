@@ -2,13 +2,13 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia;
 using System;
-using IRis.Models.Circuit.CircuitObjects.Core;
 using IRis.ViewModels.Main;
 using IRis.Services;
 using IRis.ViewModels;
 using IRis.ViewModels.Circuit;
 using IRis.Models.Core;
 using IRis.ViewModels.Circuit.CircuitObjects;
+using Avalonia.Media;
 
 
 namespace IRis.Views.Main;
@@ -18,7 +18,7 @@ public partial class MainCanvasView : UserControl
 {
     public SimulationManager Simulation = SimulationManager.GetInstance();
     public PreviewManager Preview = PreviewManager.GetInstance();
-    public SelectionManager Selection = SelectionManager.GetInstance();
+    public SelectionManager SelectionBox = SelectionManager.GetInstance();
     public DragManager Drag = DragManager.GetInstance();
 
 
@@ -43,109 +43,114 @@ public partial class MainCanvasView : UserControl
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        PointerPoint pt = e.GetCurrentPoint(sender as Control);
-        bool isNotPanningCanvas = pt.Properties.IsLeftButtonPressed &&
-            !e.KeyModifiers.HasFlag(KeyModifiers.Control);
+        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed || 
+            e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;     // if user wants to move canvas
 
+        e.Handled = true;
 
-        if (isNotPanningCanvas)
+        if (Preview.HasObjects()) 
+            Preview.CommitAll();
+        else
         {
-            e.Handled = true;
-
-            if (Preview.HasObjects()) Preview.CommitAll();
-
-            else
-            {
-                CircuitObjectViewModel? obj = Simulation.GetContainerObject(pt.Position);
-
-                if (obj != null)    // clicked to drag
-                {
-                    if (obj.IsSelected)
-                    {
-                        Drag.AddCollection(Simulation.Objects);
-                    }
-
-                    else
-                    {
-                        Selection.Ditch();
-                        Selection.Add(obj);
-                        Drag.Add(obj);
-                    }
-
-                    Drag.HasBeenUsed = false;
-                    Point min = SimulationService.GetMinPointInCollection(Drag.Objects);
-                    Preview.MouseOffset = SimulationService.Difference(pt.Position, min);
-                }
-
-                else              // empty space => start selection box
-                {
-                    Selection.Start();
-                    e.Pointer.Capture(sender as Control);   // keeps focus till released
-                }
-            }
+            SelectionBox.Start();
+            e.Pointer.Capture(sender as Control);   // keeps focus till released
         }
     }
 
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        Point pt = e.GetPosition((Visual)sender!);
-        Simulation.CurrentMousePos = SimulationService.SnapPointToGrid(pt);
+        e.Handled = true;
 
+        Simulation.CurrentMousePos = SimulationService.SnapPointToGrid(
+            e.GetPosition((Visual)sender!));
 
-        if (Selection.IsVisible)     // update SelectionBox bounds and select comp within range
-        {
-            Selection.Update();
-        }
+        if (SelectionBox.IsVisible)
+            SelectionBox.Update();
 
         else if (Preview.HasObjects())
+            Preview.Update();
+
+        else if (Drag.HasObjects())
         {
-            SimulationService.SnapCollectionToPosition(
-                Preview.Objects, 
-                Simulation.CurrentMousePos, 
-                Preview.MouseOffset
-            );
-        }
+            if (SelectionBox.HasObjects()) 
+                SelectionBox.Ditch();
 
-        else if (Drag.HasObjects())    // update Dragged X,Y
-        {
-            Selection.Ditch();
-
-            SimulationService.SnapCollectionToPosition(
-                Drag.Objects,
-                Simulation.CurrentMousePos,
-                Preview.MouseOffset
-            );
-
-            Drag.HasBeenUsed = true;
+            Drag.Update();
         }
     }
 
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (Selection.IsVisible)
+        e.Handled = true;
+
+        if (SelectionBox.IsVisible)
         {
-            Selection.Hide();
+            SelectionBox.Hide();
             e.Pointer.Capture(null);
         }
+    }
 
-        else if (Drag.HasObjects())   // remove dragging references
+
+    private void OnCircuitObjectPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        e.Handled = true;
+        var co = (sender as Control)!.DataContext as CircuitObjectViewModel;
+
+        if (co is ComponentViewModel c)
         {
-            if (Drag.HasBeenUsed)
-            {
-                Selection.AddCollection(Drag.Objects);
-            }
-
+            if (c.IsSelected) 
+                Drag.AddCollection(SelectionBox.Objects);
             else
             {
-                Selection.Ditch();
-                var obj = Simulation.GetContainerObject(Simulation.CurrentMousePos);
-                if (obj != null) Selection.Add(obj);
+                SelectionBox.Focus(c);
+                Drag.Add(c);
             }
 
-            Drag.Ditch();
+            Point min = SimulationService.GetMinPointInCollection(Drag.Objects);
+            Preview.MouseOffset = SimulationService.Difference(Simulation.CurrentMousePos, min);
         }
+    }
+
+
+    private void OnCircuitObjectPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        e.Handled = true;
+        var co = ((sender as Control)!.DataContext as CircuitObjectViewModel)!;
+
+        if (Drag.HasObjects())
+        {
+            Drag.Ditch();
+
+            if (Drag.Used)
+                SelectionBox.AddCollection(Drag.Objects);
+            else
+            {
+                SelectionBox.Focus(co);
+            }
+        }
+    }
+
+
+    private void OnCircuitObjectPointerEntered(object? sender, PointerEventArgs e)
+    {
+        e.Handled = true;
+        if (Preview.HasObjects()) return;
+
+        var co = ((sender as Control)!.DataContext as CircuitObjectViewModel)!;
+
+    }
+
+
+    private void OnCircuitObjectPointerExited(object? sender, PointerEventArgs e)
+    {
+        e.Handled = true;
+        if (Preview.HasObjects()) return;
+
+        var co = ((sender as Control)!.DataContext as CircuitObjectViewModel)!;
+
     }
 
 

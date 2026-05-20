@@ -37,6 +37,16 @@ public partial class PreviewManager : ObservableObject
     }
 
 
+    public void Update()
+    {
+        SimulationService.SnapCollectionToPosition(
+            Objects,
+            Simulation.CurrentMousePos, 
+            MouseOffset
+        );
+    }
+
+
     public void Show()
     {
         IsVisible = true;
