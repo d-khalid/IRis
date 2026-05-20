@@ -7,6 +7,7 @@ using Avalonia;
 using IRis.Models.Circuit.CircuitObjects.Core;
 using IRis.Models.Core;
 using IRis.ViewModels.Circuit.CircuitObjects.Core;
+using System;
 
 
 namespace IRis.ViewModels.Main;
@@ -26,8 +27,8 @@ public partial class LeftSidebarViewModel : ViewModelBase
     {
         AndGateViewModel gate = new() { Opacity = 0.5 };
 
-        TerminalViewModel i1 = new(new Terminal(TerminalType.Input), gate);
-        TerminalViewModel i2 = new(new Terminal(TerminalType.Input), gate);
+        TerminalViewModel i1 = new(TerminalType.Input, gate);
+        TerminalViewModel i2 = new(TerminalType.Input, gate);
 
         gate.AddInput(i1);
         gate.AddInput(i2);

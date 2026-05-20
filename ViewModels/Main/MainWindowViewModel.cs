@@ -130,7 +130,7 @@ public partial class MainWindowViewModel : ViewModelBase
         foreach (CircuitObjectViewModel co in collection)
         {
             if (co is AndGateViewModel ag)
-                ag.AddInput(new TerminalViewModel(new Terminal(TerminalType.Input), ag));
+                ag.AddInput(new TerminalViewModel(TerminalType.Input, ag));
         }
     }
 

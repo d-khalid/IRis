@@ -9,12 +9,12 @@ namespace IRis.ViewModels.Circuit.CircuitObjects.Components;
 
 public abstract partial class GateViewModel : ComponentViewModel
 {
-    public TerminalViewModel Output { get; }
+    [ObservableProperty] private TerminalViewModel _output;
 
 
     public GateViewModel()
     {
-        Output = new TerminalViewModel(new Terminal(TerminalType.Output), this);
+        Output = new TerminalViewModel(TerminalType.Output, this);
     }
 
 

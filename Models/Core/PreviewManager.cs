@@ -6,6 +6,7 @@ using System;
 using Avalonia;
 using IRis.ViewModels.Circuit.CircuitObjects;
 using IRis.Services;
+using IRis.ViewModels.Circuit.CircuitObjects.Components.Gates;
 
 
 namespace IRis.Models.Core;

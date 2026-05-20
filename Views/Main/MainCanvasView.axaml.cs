@@ -167,9 +167,9 @@ public partial class MainCanvasView : UserControl
         TerminalViewModel output = t;
 
         if (t.FetchType() is TerminalType.Input)
-            output = new(new Terminal(TerminalType.Output), null);
+            output = new(TerminalType.Output, null);
         else
-            input = new(new Terminal(TerminalType.Input), null);
+            input = new(TerminalType.Input, null);
 
         WireViewModel wire = new(input, output);
         Preview.Add(wire);

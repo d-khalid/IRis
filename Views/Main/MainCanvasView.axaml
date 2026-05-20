@@ -106,10 +106,6 @@
         </DataTemplate>
 
         <DataTemplate DataType="circuitobjects:WireViewModel">
-            <!-- 
-            We wrap this in a panel that forces its Canvas position to 0,0, 
-            allowing the Polyline Points to use absolute canvas coordinates.
-            -->
             <Grid Canvas.Left="0" Canvas.Top="0" ClipToBounds="False">
                 <Polyline 
                     Points="{Binding Points}" 

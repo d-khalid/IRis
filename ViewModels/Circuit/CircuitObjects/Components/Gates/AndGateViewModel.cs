@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using IRis.Models.Circuit.CircuitObjects.Core;
 using System.Collections.ObjectModel;
 using IRis.ViewModels.Circuit.CircuitObjects.Core;
+using System;
 
 
 namespace IRis.ViewModels.Circuit.CircuitObjects.Components.Gates;
