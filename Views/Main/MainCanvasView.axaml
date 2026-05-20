@@ -34,7 +34,9 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid ClipToBounds="False">
+                            <Grid 
+                                ClipToBounds="False"
+                            >
                                 <Line 
                                     StartPoint="0,0" 
                                     EndPoint="10,0" 
@@ -45,8 +47,9 @@
                                     Margin="-10,0,0,0"
                                 />
                                 <Ellipse 
+                                    PointerPressed="OnDotPointerPressed"
                                     Width="10" 
-                                    Height="10" 
+                                    Height="10"
                                     Fill="DarkGreen"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
@@ -70,6 +73,7 @@
                     />
                     <Ellipse 
                         DataContext="{Binding Output}"
+                        PointerPressed="OnDotPointerPressed"
                         Width="10"
                         Height="10"
                         Fill="DarkGreen" 
@@ -98,6 +102,22 @@
                         <SolidColorBrush Color="#469adf" Opacity="0.1" />
                     </Rectangle.Fill>
                 </Rectangle>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate DataType="circuitobjects:WireViewModel">
+            <!-- 
+            We wrap this in a panel that forces its Canvas position to 0,0, 
+            allowing the Polyline Points to use absolute canvas coordinates.
+            -->
+            <Grid Canvas.Left="0" Canvas.Top="0" ClipToBounds="False">
+                <Polyline 
+                    Points="{Binding Points}" 
+                    Stroke="Black" 
+                    StrokeThickness="2"
+                    StrokeJoin="Round"
+                    StrokeLineCap="Round"
+                />
             </Grid>
         </DataTemplate>
     </UserControl.DataTemplates>

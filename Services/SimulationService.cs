@@ -93,6 +93,19 @@ public static class SimulationService {
                 c.X -= offsetX + PositionMouseOffset.X;
                 c.Y -= offsetY + PositionMouseOffset.Y;
             }
+
+            else if (co is WireViewModel w)
+            {
+                var t = w.MainInput.IsOrphan() ? w.MainInput : w.MainOutput;
+
+                t.X = Position.X;
+                t.Y = Position.Y;
+
+                w.InvalidatePoints();
+
+                Console.WriteLine(t.X);
+                Console.WriteLine(t.Y);
+            }
         }
     }
 

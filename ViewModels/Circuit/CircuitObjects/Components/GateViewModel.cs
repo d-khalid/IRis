@@ -9,8 +9,13 @@ namespace IRis.ViewModels.Circuit.CircuitObjects.Components;
 
 public abstract partial class GateViewModel : ComponentViewModel
 {
-    public TerminalViewModel Output { get; } = new TerminalViewModel(
-        new Terminal(TerminalType.Output));
+    public TerminalViewModel Output { get; }
+
+
+    public GateViewModel()
+    {
+        Output = new TerminalViewModel(new Terminal(TerminalType.Output), this);
+    }
 
 
     protected override void UpdateTerminals()

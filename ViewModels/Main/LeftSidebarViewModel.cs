@@ -24,10 +24,10 @@ public partial class LeftSidebarViewModel : ViewModelBase
     [RelayCommand]
     private void AddAnd()
     {
-        TerminalViewModel i1 = new(new Terminal(TerminalType.Input));
-        TerminalViewModel i2 = new(new Terminal(TerminalType.Input));
-
         AndGateViewModel gate = new() { Opacity = 0.5 };
+
+        TerminalViewModel i1 = new(new Terminal(TerminalType.Input), gate);
+        TerminalViewModel i2 = new(new Terminal(TerminalType.Input), gate);
 
         gate.AddInput(i1);
         gate.AddInput(i2);

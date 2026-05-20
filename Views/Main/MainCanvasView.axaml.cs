@@ -9,6 +9,10 @@ using IRis.ViewModels.Circuit;
 using IRis.Models.Core;
 using IRis.ViewModels.Circuit.CircuitObjects;
 using Avalonia.Media;
+using IRis.ViewModels.Circuit.CircuitObjects.Core;
+using IRis.Models.Circuit.CircuitObjects.Core;
+using Avalonia.VisualTree;
+using System.Linq;
 
 
 namespace IRis.Views.Main;
@@ -151,6 +155,24 @@ public partial class MainCanvasView : UserControl
 
         var co = ((sender as Control)!.DataContext as CircuitObjectViewModel)!;
 
+    }
+
+
+    private void OnDotPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        e.Handled = true;
+        var t = ((sender as Control)!.DataContext as TerminalViewModel)!;
+
+        TerminalViewModel input = t;
+        TerminalViewModel output = t;
+
+        if (t.FetchType() is TerminalType.Input)
+            output = new(new Terminal(TerminalType.Output), null);
+        else
+            input = new(new Terminal(TerminalType.Input), null);
+
+        WireViewModel wire = new(input, output);
+        Preview.Add(wire);
     }
 
 
