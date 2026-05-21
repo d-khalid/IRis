@@ -7,6 +7,7 @@ using IRis.Models.Circuit.CircuitObjects.Core;
 using Avalonia.Controls;
 using IRis.ViewModels.Circuit.CircuitObjects;
 using IRis.Models.Core;
+using System.Collections.Generic;
 
 
 namespace IRis.Services;
@@ -108,8 +109,6 @@ public static class SimulationService {
                     w.MainOutput.X = Position.X;
                     w.MainOutput.Y = Position.Y;
                 }
-
-                w.InvalidatePoints();
             }
         }
     }

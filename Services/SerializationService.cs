@@ -12,9 +12,17 @@ namespace IRis.Services;
 
 public static class SerializationService
 {
-    public static void SaveToFile(ObservableCollection<CircuitObjectViewModel> collection, string saveFilePath)
+    public static string Serialize(ObservableCollection<CircuitObjectViewModel> collection)
     {
-        string json = JsonConvert.SerializeObject(collection, Formatting.Indented);
-        File.WriteAllText(saveFilePath, json);
+        if (collection is null) return "";
+
+        return JsonConvert.SerializeObject(collection, Formatting.Indented);
+    }
+
+
+    public static ObservableCollection<CircuitObjectViewModel>? Deserialize(string json)
+    {
+        return (ObservableCollection<CircuitObjectViewModel>?)
+            JsonConvert.DeserializeObject(json);
     }
 }

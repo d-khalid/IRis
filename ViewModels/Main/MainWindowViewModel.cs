@@ -23,6 +23,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public SimulationManager Simulation { get; } = SimulationManager.GetInstance();
     public PreviewManager Preview { get; } = PreviewManager.GetInstance();
     public SelectionManager Selection { get; } = SelectionManager.GetInstance();
+    public ClipboardManager Clipboard { get; } = ClipboardManager.GetInstance();
 
 
     [RelayCommand]
@@ -47,12 +48,15 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void CopyKey()
     {
-        Simulation.CopiedObjects.Clear();
-        for (int i = Selection.Objects.Count-1; i >= 0; i--)
+        if (Preview.HasObjects())
         {
-            CircuitObjectViewModel co = Selection.Objects[i];
-            Selection.Remove(co);
-            Simulation.CopiedObjects.Add(CloningService.Clone(co));
+            Clipboard.Copy(Preview.Objects);
+            Preview.Ditch();
+        }
+        else if (Selection.HasObjects())
+        {
+            Clipboard.Copy(Selection.Objects);
+            Selection.Ditch();
         }
     }
 
@@ -60,24 +64,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void PasteKey()
     {
-        if (Simulation.CopiedObjects.Count == 0) return;
-
-        SimulationService.SnapCollectionToPosition(
-            Simulation.CopiedObjects, 
-            Simulation.CurrentMousePos,
-            Preview.MouseOffset
-        );
-
-        Preview.Ditch();
-        Preview.MouseOffset = new Point(0, 0);
-        Preview.Show();
-
-        foreach (CircuitObjectViewModel co in Simulation.CopiedObjects)
-        {
-            CircuitObjectViewModel clone = CloningService.Clone(co);
-            clone.Opacity = 0.5;
-            Preview.Add(clone);
-        }
+        Clipboard.Paste(Preview.Objects);
     }
 
 

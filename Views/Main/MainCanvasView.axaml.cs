@@ -82,7 +82,6 @@ public partial class MainCanvasView : UserControl
                 SelectionBox.Ditch();
 
             Drag.Update();
-            Simulation.InvalidateWires();
         }
     }
 

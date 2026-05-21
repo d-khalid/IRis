@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System;
 using Avalonia;
 using IRis.ViewModels.Circuit.CircuitObjects;
+using System.Collections.Generic;
 
 
 namespace IRis.Models.Core;
@@ -35,16 +36,6 @@ public partial class SimulationManager : ObservableObject
     }
 
 
-    public void InvalidateWires()
-    {
-        foreach (var co in Objects)
-        {
-            if (co is WireViewModel w)
-                w.InvalidatePoints();
-        }
-    }
-
-
     public CircuitObjectViewModel? GetContainerObject(Point pt)
     {
         foreach (CircuitObjectViewModel co in Objects)
@@ -54,5 +45,28 @@ public partial class SimulationManager : ObservableObject
         }
 
         return null;
+    }
+
+
+    public static HashSet<Point> GetOccupiedHashSet()
+    {
+        HashSet<Point> hashSet = [];
+        
+
+
+        return [];
+    }
+
+
+    public void Add(CircuitObjectViewModel obj)
+    {
+        Objects.Add(obj);
+    }
+
+
+    public void AddCollection(ObservableCollection<CircuitObjectViewModel> collection)
+    {
+        foreach (var co in collection)
+            Objects.Add(co);
     }
 }

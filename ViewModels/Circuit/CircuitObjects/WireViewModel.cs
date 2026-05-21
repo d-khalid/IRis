@@ -22,6 +22,9 @@ public partial class WireViewModel : CircuitObjectViewModel
     {
         MainInput = mainInput;
         MainOutput = mainOutput;
+
+        MainInput.PropertyChanged += (_, _) => InvalidatePoints();
+        MainOutput.PropertyChanged += (_, _) => InvalidatePoints();
     } 
 
 
