@@ -4,13 +4,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System;
 using Avalonia;
-using IRis.ViewModels.Circuit.CircuitObjects;
-using System.Collections.Generic;
-
 using IRis.Services;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
-using System.Threading.Tasks;
 
 
 namespace IRis.Models.Core;
@@ -19,7 +15,7 @@ namespace IRis.Models.Core;
 public partial class ClipboardManager : ObservableObject
 {
     private static ClipboardManager? _instance = null;
-    private static readonly SimulationManager _simulation = SimulationManager.GetInstance();
+    private static readonly Simulation _simulation = (Simulation)Simulation.GetInstance();
     public ObservableCollection<CircuitObjectViewModel> Objects { get; } = [];
 
 

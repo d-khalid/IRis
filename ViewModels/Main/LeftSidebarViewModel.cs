@@ -16,7 +16,7 @@ namespace IRis.ViewModels.Main;
 public partial class LeftSidebarViewModel : ViewModelBase
 {
     [ObservableProperty]
-    private SimulationManager _simulation = SimulationManager.GetInstance();
+    private Simulation _simulation = (Simulation)Simulation.GetInstance();
 
     [ObservableProperty]
     private PreviewManager _preview = PreviewManager.GetInstance();

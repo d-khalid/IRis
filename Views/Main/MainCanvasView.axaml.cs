@@ -20,7 +20,7 @@ namespace IRis.Views.Main;
 
 public partial class MainCanvasView : UserControl
 {
-    public SimulationManager Simulation = SimulationManager.GetInstance();
+    public Simulation Simulation = (Simulation)Simulation.GetInstance();
     public PreviewManager Preview = PreviewManager.GetInstance();
     public SelectionManager SelectionBox = SelectionManager.GetInstance();
     public DragManager Drag = DragManager.GetInstance();

@@ -9,17 +9,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
 
-    xmlns:v="using:IRis.Views.Main"
-    xmlns:vm="using:IRis.ViewModels.Main"
-    x:Class="IRis.Views.Main.MainWindowView"
+    xmlns:vm="using:IRis.ViewModels"
+    xmlns:main="using:IRis.Views.Main"
     x:DataType="vm:MainWindowViewModel"
+    x:Class="IRis.Views.MainWindowView"
 >
     <DockPanel>
-        <v:TopMenuView DockPanel.Dock="Top" />
-        <v:LeftSidebarView DockPanel.Dock="Left" />
-        <v:TopToolbarView DockPanel.Dock="Top" />
-        <v:BottomStatusBarView DockPanel.Dock="Bottom" />
-        <v:MainCanvasView />
+        <main:TopMenuView DockPanel.Dock="Top" />
+        <main:LeftSidebarView DockPanel.Dock="Left" />
+        <main:TopToolbarView DockPanel.Dock="Top" />
+        <Border Background="DarkSlateGray" Height="25" DockPanel.Dock="Bottom">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <TextBlock Margin="10,0" FontSize="12">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="Cursor: ({0}, {1})">
+                                <Binding Path="MousePosition.X" />
+                                <Binding Path="MousePosition.Y" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <main:MainCanvasView />
     </DockPanel>
 
     <Window.KeyBindings>

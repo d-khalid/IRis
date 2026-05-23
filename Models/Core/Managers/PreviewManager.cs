@@ -15,7 +15,7 @@ namespace IRis.Models.Core;
 public partial class PreviewManager : ObservableObject
 {
     private static PreviewManager? _instance = null;
-    public SimulationManager Simulation = SimulationManager.GetInstance();
+    public Simulation Simulation = (Simulation)Simulation.GetInstance();
     public ObservableCollection<CircuitObjectViewModel> Objects { get; } = [];
 
     [ObservableProperty] private bool _isVisible;

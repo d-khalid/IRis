@@ -1,29 +1,27 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using IRis.Services;
-using IRis.ViewModels;
 using IRis.ViewModels.Circuit;
 using IRis.Models.Circuit.CircuitObjects.Core;
 using Avalonia;
-using System;
-using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using IRis.ViewModels.Circuit.CircuitObjects.Components.Gates;
 using IRis.Models.Core;
 using IRis.ViewModels.Circuit.CircuitObjects.Core;
-using IRis.ViewModels.Circuit.CircuitObjects.Components;
 using IRis.ViewModels.Circuit.CircuitObjects;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 
-
-namespace IRis.ViewModels.Main;
+namespace IRis.ViewModels;
 
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    public SimulationManager Simulation { get; } = SimulationManager.GetInstance();
+    public Simulation Simulation { get; } = (Simulation)Simulation.GetInstance();
     public PreviewManager Preview { get; } = PreviewManager.GetInstance();
     public SelectionManager Selection { get; } = SelectionManager.GetInstance();
     public ClipboardManager Clipboard { get; } = ClipboardManager.GetInstance();
+    
+    [ObservableProperty] private Point _mousePosition = new(0, 0);
 
 
     [RelayCommand]

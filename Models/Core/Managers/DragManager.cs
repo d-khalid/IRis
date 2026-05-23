@@ -14,7 +14,7 @@ namespace IRis.Models.Core;
 public partial class DragManager : ObservableObject
 {
     private static DragManager? _instance = null;
-    public SimulationManager Simulation = SimulationManager.GetInstance();
+    public Simulation Simulation = (Simulation)Simulation.GetInstance();
     public PreviewManager Preview = PreviewManager.GetInstance();
 
     public ObservableCollection<CircuitObjectViewModel> Objects { get; } = [];

@@ -15,7 +15,7 @@ namespace IRis.Models.Core;
 public partial class SelectionManager : ObservableObject
 {
     private static SelectionManager? _instance = null;
-    public SimulationManager Simulation = SimulationManager.GetInstance();
+    public Simulation Simulation = (Simulation)Simulation.GetInstance();
 
     public ObservableCollection<CircuitObjectViewModel> Objects { get; } = [];
     private Point _selectionBoxStartPt;
@@ -46,8 +46,14 @@ public partial class SelectionManager : ObservableObject
     public void Start()
     {
         Ditch();
-        var c = Simulation.GetContainerObject(Simulation.CurrentMousePos);
-        if (c != null) c.IsSelected = true;
+
+        foreach (CircuitObjectViewModel co in Simulation.Objects)
+        {
+            if (co is ComponentViewModel c && c.Contains(Simulation.CurrentMousePos))
+            {
+                c.IsSelected = true;
+            }
+        }
 
         IsVisible = true;
         _selectionBoxStartPt = Simulation.CurrentMousePos;
