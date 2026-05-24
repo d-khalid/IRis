@@ -14,11 +14,11 @@ namespace IRis.ViewModels.Main;
 public partial class MainCanvasViewModel : ViewModelBase
 {
     [ObservableProperty] 
-    private Simulation _simulation = (Simulation)Simulation.GetInstance();
+    private Simulation _simulation = Simulation.GetInstance();
 
     [ObservableProperty] 
-    private Preview _preview = (Preview)Preview.GetInstance();
+    private Preview _preview = Preview.GetInstance();
 
     [ObservableProperty] 
-    private Selection _selection = (Selection)Selection.GetInstance();
+    private Selection _selection = Selection.GetInstance();
 }

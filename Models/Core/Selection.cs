@@ -23,7 +23,7 @@ public partial class Selection : ManagerBase<Selection>
     {
         Ditch();
 
-        Simulation sim = (Simulation)Simulation.GetInstance();
+        Simulation sim = Simulation.GetInstance();
         foreach (CircuitObjectViewModel co in sim.Objects)
         {
             if (co is ComponentViewModel c && c.Contains(sim.CurrentMousePos))

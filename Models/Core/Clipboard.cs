@@ -15,7 +15,7 @@ namespace IRis.Models.Core;
 public partial class ClipboardManager : ObservableObject
 {
     private static ClipboardManager? _instance = null;
-    private static readonly Simulation _simulation = (Simulation)Simulation.GetInstance();
+    private static readonly Simulation _simulation = Simulation.GetInstance();
     public ObservableCollection<CircuitObjectViewModel> Objects { get; } = [];
 
 

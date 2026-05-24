@@ -13,7 +13,7 @@ public partial class Preview : ManagerBase<Preview>
 
     public void Update()
     {
-        Simulation sim = (Simulation)Simulation.GetInstance();
+        Simulation sim = Simulation.GetInstance();
         SimulationService.SnapCollectionToPosition(
             Objects,
             sim.CurrentMousePos, 
@@ -30,7 +30,7 @@ public partial class Preview : ManagerBase<Preview>
 
     public void CommitAll() 
     {
-        Simulation sim = (Simulation)Simulation.GetInstance();
+        Simulation sim = Simulation.GetInstance();
 
         if (IsNewWire())
         {

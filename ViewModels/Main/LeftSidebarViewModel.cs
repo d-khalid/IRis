@@ -16,10 +16,10 @@ namespace IRis.ViewModels.Main;
 public partial class LeftSidebarViewModel : ViewModelBase
 {
     [ObservableProperty]
-    private Simulation _simulation = (Simulation)Simulation.GetInstance();
+    private Simulation _simulation = Simulation.GetInstance();
 
     [ObservableProperty]
-    private Preview _preview = (Preview)Preview.GetInstance();
+    private Preview _preview = Preview.GetInstance();
 
 
     [RelayCommand]
