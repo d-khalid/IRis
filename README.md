@@ -27,3 +27,21 @@ For getting an instance of a Child class, just call the GetInstance method. For 
 ```csharp
 var instance = Simulation.GetInstance();
 ```
+
+### Views
+
+#### Adding Icons to Menu
+
+Grab a Path geometry from [fluenticons](https://fluenticons.co/). Add it in a StreamGeometry tag in `app.axaml` as follows:
+
+```xml
+<StreamGeometry x:Key="arrow_left_regular">
+    M10.295 19.716a1 1 0 0 0 1.404-1.425l-5.37-5.29h13.67a1 1 0 1 0 0-2H6.336L11.7 5.714a1 1 0 0 0-1.404-1.424l-6.924 6.822a1.25 1.25 0 0 0 0 1.78l6.924 6.823Z
+</StreamGeometry>
+```
+
+Now refer to it as a Static Resource in MenuIcon:
+
+```xml
+<MenuItem.Icon><PathIcon Data="{StaticResource save_edit}" /></MenuItem.Icon>
+```
