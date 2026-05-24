@@ -15,6 +15,8 @@
             <Grid
                 PointerPressed="OnCircuitObjectPointerPressed"
                 PointerReleased="OnCircuitObjectPointerReleased"
+                PointerEntered="OnCircuitObjectPointerEntered"
+                PointerExited="OnCircuitObjectPointerExited"
                 Canvas.Left="{Binding X}"
                 Canvas.Top="{Binding Y}"
                 Width="{Binding Width}"
@@ -96,10 +98,11 @@
                     Stroke="DodgerBlue"
                     StrokeThickness="1" 
                     IsVisible="{Binding IsSelected}" 
-                    Margin="-20,-5" 
+                    Margin="-20,-5"
+                    IsHitTestVisible="False"
                 >
                     <Rectangle.Fill>
-                        <SolidColorBrush Color="#469adf" Opacity="0.1" />
+                        <SolidColorBrush Color="#469adf" Opacity="{Binding SelectionOpacity}" />
                     </Rectangle.Fill>
                 </Rectangle>
             </Grid>

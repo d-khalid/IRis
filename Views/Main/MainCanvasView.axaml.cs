@@ -8,6 +8,7 @@ using IRis.Models.Core;
 using IRis.ViewModels.Circuit.CircuitObjects;
 using IRis.ViewModels.Circuit.CircuitObjects.Core;
 using IRis.Models.Circuit.CircuitObjects.Core;
+using System;
 
 
 namespace IRis.Views.Main;
@@ -42,10 +43,8 @@ public partial class MainCanvasView : UserControl
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed || 
-            e.KeyModifiers.HasFlag(KeyModifiers.Control))
-            return;     // if user wants to move canvas
-
+        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed) return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
         if (Preview.HasObjects()) 
@@ -61,22 +60,19 @@ public partial class MainCanvasView : UserControl
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
         e.Handled = true;
-
         Simulation.CurrentMousePos = SimulationService.SnapPointToGrid(
             e.GetPosition((Visual)sender!));
 
         if (Selection.IsVisible)
             Selection.UpdateBox(selectables: Simulation.Objects);
-
         else if (Preview.HasObjects())
-            Preview.Update();
-
+            Preview.UpdatePosition(current: Simulation.CurrentMousePos);
         else if (Drag.HasObjects())
         {
             if (Selection.HasObjects()) 
                 Selection.Ditch();
 
-            Drag.Update();
+            Drag.UpdatePosition(current: Simulation.CurrentMousePos);
         }
     }
 
@@ -97,19 +93,17 @@ public partial class MainCanvasView : UserControl
     {
         e.Handled = true;
         var co = (sender as Control)!.DataContext as CircuitObjectViewModel;
+        Selection.DitchPartial();
 
         if (co is ComponentViewModel c)
         {
             if (c.IsSelected) 
-                Drag.AddCollection(Selection.Objects);
+                Drag.StartWith(Selection.Objects);
             else
             {
                 Selection.Focus(c);
-                Drag.Add(c);
+                Drag.StartWith(c);
             }
-
-            Point min = SimulationService.GetMinPointInCollection(Drag.Objects);
-            Preview.MouseOffset = SimulationService.Difference(Simulation.CurrentMousePos, min);
         }
     }
 
@@ -126,7 +120,7 @@ public partial class MainCanvasView : UserControl
             else
                 Selection.Focus(co);
 
-            Drag.Ditch();
+            Drag.End();
         }
     }
 
@@ -135,9 +129,10 @@ public partial class MainCanvasView : UserControl
     {
         e.Handled = true;
         if (Preview.HasObjects()) return;
+        if ((sender as Control)!.DataContext is not CircuitObjectViewModel co) return;
 
-        var co = ((sender as Control)!.DataContext as CircuitObjectViewModel)!;
-
+        if (!Selection.Objects.Contains(co))
+            Selection.AddPartial(co);
     }
 
 
@@ -146,8 +141,7 @@ public partial class MainCanvasView : UserControl
         e.Handled = true;
         if (Preview.HasObjects()) return;
 
-        var co = ((sender as Control)!.DataContext as CircuitObjectViewModel)!;
-
+        Selection.DitchPartial();
     }
 
 
@@ -155,6 +149,7 @@ public partial class MainCanvasView : UserControl
     {
         e.Handled = true;
         var t = ((sender as Control)!.DataContext as TerminalViewModel)!;
+        Selection.DitchPartial();
 
         if (Preview.HasObjects())
         {

@@ -12,7 +12,9 @@ namespace IRis.Models.Core;
 public partial class Selection : ManagerBase<Selection>
 {
     private Point _selectionBoxStartPt;
+    public CircuitObjectViewModel? Partial = null;
 
+    [ObservableProperty] private double _opacity;
     [ObservableProperty] private double _width;
     [ObservableProperty] private double _height;
     [ObservableProperty] private double _x;
@@ -22,17 +24,9 @@ public partial class Selection : ManagerBase<Selection>
     public void StartBox()
     {
         Ditch();
-
-        Simulation sim = Simulation.GetInstance();
-        foreach (CircuitObjectViewModel co in sim.Objects)
-        {
-            if (co is ComponentViewModel c && c.Contains(sim.CurrentMousePos))
-            {
-                c.IsSelected = true;
-            }
-        }
-
         Show();
+
+        var sim = Simulation.GetInstance();
         _selectionBoxStartPt = sim.CurrentMousePos;
     }
 
@@ -72,6 +66,12 @@ public partial class Selection : ManagerBase<Selection>
     }
 
 
+    public void Highlight(CircuitObjectViewModel co)
+    {
+        Add(co);
+    }
+
+
     public void Focus(CircuitObjectViewModel co)
     {
         Ditch();
@@ -87,9 +87,29 @@ public partial class Selection : ManagerBase<Selection>
     }
 
 
+    public void AddPartial(CircuitObjectViewModel co)
+    {
+        Partial = co;
+        co.SelectionOpacity = 0.01;
+        co.IsSelected = true;
+    }
+
+
+    public void DitchPartial()
+    {
+        if (Partial != null)
+        {
+            Partial.IsSelected = false;
+            Partial.SelectionOpacity = 0.0;
+            Partial = null;
+        }
+    }
+
+
     public override void Add(CircuitObjectViewModel co)
     {
         base.Add(co);
+        co.SelectionOpacity = 0.1;
         co.IsSelected = true;
     }
 
@@ -97,6 +117,7 @@ public partial class Selection : ManagerBase<Selection>
     public override void Remove(CircuitObjectViewModel co)
     {
         co.IsSelected = false;
+        co.SelectionOpacity = 0.0;
         base.Remove(co);
     }
 

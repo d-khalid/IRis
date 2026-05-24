@@ -15,7 +15,6 @@ namespace IRis.Models.Core;
 public partial class ClipboardManager : ObservableObject
 {
     private static ClipboardManager? _instance = null;
-    private static readonly Simulation _simulation = Simulation.GetInstance();
     public ObservableCollection<CircuitObjectViewModel> Objects { get; } = [];
 
 
@@ -52,15 +51,18 @@ public partial class ClipboardManager : ObservableObject
 
     public async void Paste(ObservableCollection<CircuitObjectViewModel> collection)
     {
+        var sim = Simulation.GetInstance();
+
         if (Objects.Count > 0)   // if we have the objects in this instance
         {
             SimulationService.SnapCollectionToPosition(
-                Objects, _simulation.CurrentMousePos, new Point(0, 0)
+                Objects, sim.CurrentMousePos, new Point(0, 0)
             );
 
             foreach (var co in Objects)
             {
                 co.Opacity = 0.5;
+                co.IsSelected = false;
                 collection.Add(co);
             }
 
@@ -80,7 +82,7 @@ public partial class ClipboardManager : ObservableObject
             if (pasted is null) return;
 
             SimulationService.SnapCollectionToPosition(
-                pasted, _simulation.CurrentMousePos, new Point(0, 0)
+                pasted, sim.CurrentMousePos, new Point(0, 0)
             );
 
             foreach (var co in pasted)

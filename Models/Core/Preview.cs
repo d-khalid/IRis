@@ -11,14 +11,9 @@ public partial class Preview : ManagerBase<Preview>
     public Point MouseOffset = new(0, 0);
 
 
-    public void Update()
+    public void UpdatePosition(Point current)
     {
-        Simulation sim = Simulation.GetInstance();
-        SimulationService.SnapCollectionToPosition(
-            Objects,
-            sim.CurrentMousePos, 
-            MouseOffset
-        );
+        SimulationService.SnapCollectionToPosition(Objects, current, MouseOffset);
     }
 
 
