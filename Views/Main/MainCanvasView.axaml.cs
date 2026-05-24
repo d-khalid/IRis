@@ -1,18 +1,13 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia;
-using System;
 using IRis.ViewModels.Main;
 using IRis.Services;
-using IRis.ViewModels;
 using IRis.ViewModels.Circuit;
 using IRis.Models.Core;
 using IRis.ViewModels.Circuit.CircuitObjects;
-using Avalonia.Media;
 using IRis.ViewModels.Circuit.CircuitObjects.Core;
 using IRis.Models.Circuit.CircuitObjects.Core;
-using Avalonia.VisualTree;
-using System.Linq;
 
 
 namespace IRis.Views.Main;

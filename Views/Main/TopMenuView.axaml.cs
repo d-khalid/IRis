@@ -9,7 +9,7 @@ public partial class TopMenuView : UserControl
 {
     public TopMenuView()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
     }
 
     private void OnNewClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {}
