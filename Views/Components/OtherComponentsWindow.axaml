@@ -1,0 +1,28 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
+        x:Class="IRis.Views.OtherComponentsWindow"
+        Title="Add Other Component"
+        Width="400" Height="460"
+        WindowStartupLocation="CenterOwner">
+
+    <StackPanel Margin="10" Spacing="10">
+        <TextBlock Text="Select a Component to Add" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <ListBox x:Name="ComponentListBox" Height="350">
+        
+        <!-- Custom Components Loaded at runtime from RuntimeComponents -->
+        </ListBox>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+            <Button Content="Delete" Click="OnDeleteClick" 
+                    HorizontalContentAlignment="Center" Width="80"/>
+            <Button Content="Add" Click="OnAddClick" 
+                    HorizontalContentAlignment="Center" Width="80"/>
+            <Button Content="Cancel" Click="OnCancelClick" 
+                    HorizontalContentAlignment="Center" Width="80"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

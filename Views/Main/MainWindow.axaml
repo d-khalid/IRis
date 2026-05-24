@@ -1,0 +1,238 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:IRis.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="IRis.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="IRis">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Window.KeyBindings>    
+        <KeyBinding Gesture="Z" Command="{Binding CancelPreviewCommand}" />
+        <KeyBinding Gesture="Delete" Command="{Binding DeleteSelectedCommand}" />
+    </Window.KeyBindings>
+
+    <DockPanel>
+        <!-- Top Menu Bar -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File" >
+                <MenuItem 
+                    Header="New"
+                    Click="OnFileMenuNewClick"
+                >
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource new_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem 
+                    Header="Open..."
+                    Click="OnFileMenuOpenClick"
+                >
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource open_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem 
+                    Header="Save"
+                    Click="OnFileMenuSaveClick"
+                >
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource save_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem Header="Save As..." Click="OnFileMenuSaveAsClick" />
+
+                <Separator />
+
+                <MenuItem Header="Export" >
+                    <MenuFlyout>
+                        <MenuItem Header="Component" Click="OnExportMenuComponentClick" />
+                        <MenuItem Header="Circuit" Click="OnExportMenuCircuitClick" />
+                    </MenuFlyout>
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource arrow_export_rtl_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <Separator />
+
+                <MenuItem Header="Exit" Click="OnFileMenuExitClick" />
+            </MenuItem>
+
+            <MenuItem Header="Edit">
+                <MenuItem 
+                    Header="Undo"
+                    Click="OnEditMenuUndoClick"
+                >
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource arrow_undo_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem Header="Redo"
+                    Click="OnEditMenuRedoClick"
+                >
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource arrow_redo_regular}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <Separator />
+
+                <MenuItem Header="Cut"
+                          Click="OnEditMenuCutClick">
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource cut_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem Header="Copy"
+                          Click="OnEditMenuCopyClick">
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource copy_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem Header="Paste"
+                          Click="OnEditMenuPasteClick">
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource clipboard_paste_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem Header="Delete"
+                          Click="OnEditMenuDeleteClick">
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource delete_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+
+            <MenuItem Header="AI">
+                <MenuItem
+                    Header="Generate From Prompt"
+                    Click="OnAiMenuGenerateFromPromptClick">
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource star_emphasis_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem
+                    Header="Generate From Image"
+                    Click="OnAiMenuGenerateFromImageClick">
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource image_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+
+            <MenuItem Header="Help">
+                <MenuItem Header="About" Click="OnHelpMenuAboutClick">
+                    <MenuItem.Icon>
+                        <PathIcon Data="{StaticResource question_regular}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <!-- left sidebar (component adding buttons) -->
+        <ScrollViewer DockPanel.Dock="Left" Width="150" BorderThickness="2">
+            <StackPanel Margin="15,0" Spacing="5">
+                <TextBlock Text="Components" FontSize="18" FontWeight="Bold" Margin="0,6" />
+
+                <Button Content="AND Gate" Click="OnAddAndClick" />
+                <Button Content="OR Gate" Click="OnAddOrClick" />
+                <Button Content="NOT Gate" Click="OnAddNotClick" />
+                <Button Content="NAND Gate" Click="OnAddNandClick" />
+                <Button Content="NOR Gate" Click="OnAddNorClick" />
+                <Button Content="XOR Gate" Click="OnAddXorClick" />
+                <Button Content="XNOR Gate" Click="OnAddXnorClick" />
+                <Button Content="Other" Click="OnAddOtherComponentClick" />
+            </StackPanel>
+        </ScrollViewer>
+
+
+        <!-- top toolbar (the one bellow menu) -->
+        <Border DockPanel.Dock="Top" Padding="5">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
+                    <Button Content="Toggle Switch" Click="OnAddToggleClick" />
+                    <Button Content="Logic Probe" Click="OnAddProbeClick" />
+                    <Button Content="D Latch" Click="OnAddDLatchClick" />
+                    <Button Content="Wire" Click="OnAddWireClick" />
+                </StackPanel>
+                <Button HorizontalAlignment="Right"
+                        Content="Simulation: OFF"
+                        Click="OnSimulationToggleClick"
+                        Background="DarkRed" />
+            </Grid>
+        </Border>
+
+        <!-- Bottom Status Bar -->
+        <Border Background="DarkSlateGray" Height="30" DockPanel.Dock="Bottom" Padding="5">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <TextBlock Margin="10,0">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="Cursor: ({0}, {1})">
+                                <Binding Path="Simulation.CurrentMousePos.X" />
+                                <Binding Path="Simulation.CurrentMousePos.Y" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Canvas Area -->
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Canvas x:Name="MainCanvas" Background="LightGray" MinWidth="2000" MinHeight="2000">
+                <!-- Circuit elements will be added here programmatically -->
+
+                <!-- Context Menu Setup -->
+                <Canvas.ContextFlyout>
+                    <MenuFlyout>
+                        <MenuItem Header="Copy"
+                                  Click="OnContextMenuCopyClick">
+                            <MenuItem.Icon>
+                                <PathIcon Data="{StaticResource copy_regular}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <MenuItem Header="Cut"
+                                  Click="OnContextMenuCutClick">
+                            <MenuItem.Icon>
+                                <PathIcon Data="{StaticResource cut_regular}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        
+                        <MenuItem Header="Paste"
+                                  Click="OnContextMenuPasteClick">
+                            <MenuItem.Icon>
+                                <PathIcon Data="{StaticResource clipboard_paste_regular}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        
+                        <MenuItem Header="Delete"
+                                  Click="OnContextMenuDeleteClick">
+                            <MenuItem.Icon>
+                                <PathIcon Data="{StaticResource delete_regular}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuFlyout>
+                </Canvas.ContextFlyout>
+            </Canvas>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
+

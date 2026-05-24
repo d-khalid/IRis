@@ -1,0 +1,47 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:IRis.ViewModels"
+    x:Class="IRis.Views.ComponentPropertiesWindow"
+    x:DataType="vm:ComponentPropertiesViewModel"
+    Width="400" Height="250"
+    Title="Component Properties">
+    
+    <!-- <StackPanel  -->
+    <!--     Orientation="Vertical" -->
+    <!--     HorizontalAlignment="Stretch" -->
+    <!--     Spacing="5"> -->
+    <!--     ~1~ <TextBlock Text="Properties"></TextBlock> @1@ -->
+    <!--     ~1~ <Separator/> @1@ -->
+    <!--      -->
+    <!--     <StackPanel Orientation="Horizontal" -->
+    <!--                 Spacing="2"> -->
+    <!--          -->
+    <!--         <TextBlock Text="Component Type: "  -->
+    <!--                    FontSize="{StaticResource FontSizeLarge}"/> -->
+    <!--         <TextBox Text="{Binding ComponentType}"/> -->
+    <!--     </StackPanel> -->
+    <!--      -->
+    <!--     <StackPanel Orientation="Horizontal" -->
+    <!--                 Spacing="2"> -->
+    <!--         <TextBlock Text="Rotation (deg): " -->
+    <!--                    FontSize="{StaticResource FontSizeLarge}"/> -->
+    <!--         <NumericUpDown Value="{Binding ComponentRotation}" -->
+    <!--                        Minimum="0"/> -->
+    <!--          -->
+    <!--     </StackPanel> -->
+    <!--      -->
+    <!--     <StackPanel Orientation="Horizontal" -->
+    <!--                 Spacing="2"> -->
+    <!--         <TextBlock Text="No. of Inputs: " -->
+    <!--                    FontSize="{StaticResource FontSizeLarge}"/> -->
+    <!--         <NumericUpDown Value="{Binding NumInputs}" -->
+    <!--                        Minimum="1"/> -->
+    <!--     </StackPanel> -->
+    <!--      -->
+    <!-- </StackPanel> -->
+    <!-- -->
+    
+    <!-- Use a grid -->
+    
+</Window>
