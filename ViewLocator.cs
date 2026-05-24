@@ -3,11 +3,12 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using IRis.ViewModels;
 
+
 namespace IRis;
+
 
 public class ViewLocator : IDataTemplate
 {
-
     public Control? Build(object? param)
     {
         if (param is null)
@@ -23,6 +24,7 @@ public class ViewLocator : IDataTemplate
         
         return new TextBlock { Text = "Not Found: " + name };
     }
+
 
     public bool Match(object? data)
     {

@@ -1,0 +1,25 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.Generic;
+using Avalonia;
+
+
+namespace IRis.Models.Core;
+
+
+public partial class Simulation : ManagerBase<Simulation>
+{
+    [ObservableProperty] private Point _currentMousePos = new(0, 0);
+    private readonly HashSet<Point> _forbiddenMatrix = [];
+
+
+    public void UpdateForbiddenMatrix()
+    {
+        _forbiddenMatrix.Clear();
+    }
+
+
+    public bool IsForbidden(Point pt)
+    {
+        return _forbiddenMatrix.Contains(pt);
+    }
+}
