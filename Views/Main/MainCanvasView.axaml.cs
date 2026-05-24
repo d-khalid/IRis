@@ -21,9 +21,9 @@ namespace IRis.Views.Main;
 public partial class MainCanvasView : UserControl
 {
     public Simulation Simulation = (Simulation)Simulation.GetInstance();
-    public PreviewManager Preview = PreviewManager.GetInstance();
-    public SelectionManager SelectionBox = SelectionManager.GetInstance();
-    public DragManager Drag = DragManager.GetInstance();
+    public Preview Preview = (Preview)Preview.GetInstance();
+    public Selection Selection = (Selection)Selection.GetInstance();
+    public Drag Drag = (Drag)Drag.GetInstance();
 
 
     public MainCanvasView()
@@ -57,7 +57,7 @@ public partial class MainCanvasView : UserControl
             Preview.CommitAll();
         else
         {
-            SelectionBox.Start();
+            Selection.StartBox();
             e.Pointer.Capture(sender as Control);   // keeps focus till released
         }
     }
@@ -70,16 +70,16 @@ public partial class MainCanvasView : UserControl
         Simulation.CurrentMousePos = SimulationService.SnapPointToGrid(
             e.GetPosition((Visual)sender!));
 
-        if (SelectionBox.IsVisible)
-            SelectionBox.Update();
+        if (Selection.IsVisible)
+            Selection.UpdateBox(selectables: Simulation.Objects);
 
         else if (Preview.HasObjects())
             Preview.Update();
 
         else if (Drag.HasObjects())
         {
-            if (SelectionBox.HasObjects()) 
-                SelectionBox.Ditch();
+            if (Selection.HasObjects()) 
+                Selection.Ditch();
 
             Drag.Update();
         }
@@ -90,9 +90,9 @@ public partial class MainCanvasView : UserControl
     {
         e.Handled = true;
 
-        if (SelectionBox.IsVisible)
+        if (Selection.IsVisible)
         {
-            SelectionBox.Hide();
+            Selection.FinishBox();
             e.Pointer.Capture(null);
         }
     }
@@ -106,10 +106,10 @@ public partial class MainCanvasView : UserControl
         if (co is ComponentViewModel c)
         {
             if (c.IsSelected) 
-                Drag.AddCollection(SelectionBox.Objects);
+                Drag.AddCollection(Selection.Objects);
             else
             {
-                SelectionBox.Focus(c);
+                Selection.Focus(c);
                 Drag.Add(c);
             }
 
@@ -126,12 +126,12 @@ public partial class MainCanvasView : UserControl
 
         if (Drag.HasObjects())
         {
-            Drag.Ditch();
-
             if (Drag.Used)
-                SelectionBox.AddCollection(Drag.Objects);
+                Selection.AddCollection(Drag.Objects);
             else
-                SelectionBox.Focus(co);
+                Selection.Focus(co);
+
+            Drag.Ditch();
         }
     }
 

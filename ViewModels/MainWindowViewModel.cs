@@ -17,8 +17,8 @@ namespace IRis.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     public Simulation Simulation { get; } = (Simulation)Simulation.GetInstance();
-    public PreviewManager Preview { get; } = PreviewManager.GetInstance();
-    public SelectionManager Selection { get; } = SelectionManager.GetInstance();
+    public Preview Preview { get; } = (Preview)Preview.GetInstance();
+    public Selection Selection { get; } = (Selection)Selection.GetInstance();
     public ClipboardManager Clipboard { get; } = ClipboardManager.GetInstance();
     
     [ObservableProperty] private Point _mousePosition = new(0, 0);

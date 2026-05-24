@@ -19,7 +19,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
     private Simulation _simulation = (Simulation)Simulation.GetInstance();
 
     [ObservableProperty]
-    private PreviewManager _preview = PreviewManager.GetInstance();
+    private Preview _preview = (Preview)Preview.GetInstance();
 
 
     [RelayCommand]

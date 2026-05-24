@@ -7,9 +7,11 @@ using System;
 namespace IRis.Models.Core;
 
 
-public abstract partial class ManagerBase : ObservableObject
+public abstract partial class ManagerBase<T> : ObservableObject
+    where T : ManagerBase<T>, new()
 {
-    protected static ManagerBase? _instance;
+    private static T? _instance = null;
+    [ObservableProperty] private bool _isVisible;
     public ObservableCollection<CircuitObjectViewModel> Objects { get; } = [];
 
 
@@ -20,26 +22,33 @@ public abstract partial class ManagerBase : ObservableObject
     }
 
 
-    public void Add(CircuitObjectViewModel obj)
+    public static T GetInstance()
+    {
+        _instance ??= new();
+        return _instance;
+    }
+
+
+    public virtual void Add(CircuitObjectViewModel obj)
     {
         Objects.Add(obj);
     }
 
 
-    public void Remove(CircuitObjectViewModel obj)
+    public virtual void Remove(CircuitObjectViewModel obj)
     {
         Objects.Remove(obj);
     }
 
 
-    public void AddCollection(ObservableCollection<CircuitObjectViewModel> collection)
+    public virtual void AddCollection(ObservableCollection<CircuitObjectViewModel> collection)
     {
         foreach (var co in collection)
             Objects.Add(co);
     }
 
 
-    public void RemoveCollection(ObservableCollection<CircuitObjectViewModel> collection)
+    public virtual void RemoveCollection(ObservableCollection<CircuitObjectViewModel> collection)
     {
         foreach (var co in collection)
         {
@@ -52,5 +61,30 @@ public abstract partial class ManagerBase : ObservableObject
                 }
             }
         }
+    }
+
+
+    public virtual void Ditch()
+    {
+        for (int i = Objects.Count-1; i >= 0; i--)
+            Remove(Objects[i]);
+    }
+
+
+    public bool HasObjects()
+    {
+        return Objects.Count > 0;
+    }
+
+
+    public virtual void Show()
+    {
+        IsVisible = true;
+    }
+
+
+    public virtual void Hide()
+    {
+        IsVisible = false;
     }
 }

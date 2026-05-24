@@ -6,19 +6,10 @@ using Avalonia;
 namespace IRis.Models.Core;
 
 
-public partial class Simulation : ManagerBase, ISingleton
+public partial class Simulation : ManagerBase<Simulation>
 {
     [ObservableProperty] private Point _currentMousePos = new(0, 0);
     private readonly HashSet<Point> _forbiddenMatrix = [];
-
-
-    public static object GetInstance()
-    {
-        if (_instance == null)
-            _instance = new Simulation();
-
-        return _instance;
-    }
 
 
     public void UpdateForbiddenMatrix()

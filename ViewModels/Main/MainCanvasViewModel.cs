@@ -17,8 +17,8 @@ public partial class MainCanvasViewModel : ViewModelBase
     private Simulation _simulation = (Simulation)Simulation.GetInstance();
 
     [ObservableProperty] 
-    private PreviewManager _preview = PreviewManager.GetInstance();
+    private Preview _preview = (Preview)Preview.GetInstance();
 
     [ObservableProperty] 
-    private SelectionManager _selection = SelectionManager.GetInstance();
+    private Selection _selection = (Selection)Selection.GetInstance();
 }
