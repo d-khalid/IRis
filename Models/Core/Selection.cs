@@ -106,6 +106,26 @@ public partial class Selection : ManagerBase<Selection>
     }
 
 
+    public void HidePartial()
+    {
+        if (Partial is not null)
+        {
+            Partial.IsSelected = false;
+            Partial.SelectionOpacity = 0.0;
+        }
+    }
+
+
+    public void ShowPartial()
+    {
+        if (Partial is not null)
+        {
+            Partial.SelectionOpacity = 0.01;
+            Partial.IsSelected = true;
+        }
+    }
+
+
     public override void Add(CircuitObjectViewModel co)
     {
         base.Add(co);
@@ -124,8 +144,7 @@ public partial class Selection : ManagerBase<Selection>
 
     public override void AddCollection(ObservableCollection<CircuitObjectViewModel> collection)
     {
-        base.AddCollection(collection);
-        foreach (var co in collection) co.IsSelected = true;
+        foreach (var co in collection) Add(co);
     }
 
 

@@ -28,6 +28,11 @@
                     <RotateTransform Angle="{Binding Rotation}" />
                 </Grid.RenderTransform>
 
+                <Rectangle
+                    Margin="-20,-5"
+                    Fill="Transparent"
+                />
+
                 <ItemsControl ItemsSource="{Binding Inputs}" ClipToBounds="False">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -50,6 +55,8 @@
                                 />
                                 <Ellipse 
                                     PointerPressed="OnDotPointerPressed"
+                                    PointerEntered="OnDotPointerEntered"
+                                    PointerExited="OnDotPointerExited"
                                     Width="10" 
                                     Height="10"
                                     Fill="DarkGreen"
@@ -76,6 +83,8 @@
                     <Ellipse 
                         DataContext="{Binding Output}"
                         PointerPressed="OnDotPointerPressed"
+                        PointerEntered="OnDotPointerEntered"
+                        PointerExited="OnDotPointerExited"
                         Width="10"
                         Height="10"
                         Fill="DarkGreen" 

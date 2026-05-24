@@ -128,7 +128,7 @@ public partial class MainCanvasView : UserControl
     private void OnCircuitObjectPointerEntered(object? sender, PointerEventArgs e)
     {
         e.Handled = true;
-        if (Preview.HasObjects()) return;
+        if (Preview.HasObjects() || Drag.HasObjects()) return;
         if ((sender as Control)!.DataContext is not CircuitObjectViewModel co) return;
 
         if (!Selection.Objects.Contains(co))
@@ -139,7 +139,7 @@ public partial class MainCanvasView : UserControl
     private void OnCircuitObjectPointerExited(object? sender, PointerEventArgs e)
     {
         e.Handled = true;
-        if (Preview.HasObjects()) return;
+        if (Preview.HasObjects() || Drag.HasObjects()) return;
 
         Selection.DitchPartial();
     }
@@ -175,6 +175,20 @@ public partial class MainCanvasView : UserControl
 
         WireViewModel wire = new(input, output);
         Preview.Add(wire);
+    }
+
+
+    private void OnDotPointerEntered(object? sender, PointerEventArgs e)
+    {
+        e.Handled = true;
+        Selection.HidePartial();
+    }
+
+
+    private void OnDotPointerExited(object? sender, PointerEventArgs e)
+    {
+        e.Handled = true;
+        Selection.ShowPartial();
     }
 
 
