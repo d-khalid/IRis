@@ -1,7 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Drawing;
+using CommunityToolkit.Mvvm.ComponentModel;
+
 
 namespace IRis.ViewModels;
 
-public class ViewModelBase : ObservableObject
+
+public abstract partial class ViewModelBase : ObservableObject
 {
+    [ObservableProperty] private Point _MousePosition = new(0, 0);
 }

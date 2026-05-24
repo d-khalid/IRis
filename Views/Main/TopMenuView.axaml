@@ -1,0 +1,85 @@
+<UserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:IRis.ViewModels.Main"
+    x:DataType="vm:TopMenuViewModel"
+    x:Class="IRis.Views.Main.TopMenuView"
+>
+    <Menu>
+        <MenuItem Header="File" >
+            <MenuItem Header="New" Click="OnNewClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource new_regular}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Open..." Click="OnOpenClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource open_regular}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Save" Click="OnSaveClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource save_regular}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Save As..." Click="OnSaveAsClick" />
+            <Separator />
+            <MenuItem Header="Exit" Click="OnExitClick" />
+        </MenuItem>
+
+        <MenuItem Header="Edit">
+            <MenuItem Header="Undo" Click="OnUndoClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource arrow_undo_regular}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Redo" Click="OnRedoClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource arrow_redo_regular}"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="Cut" Click="OnCutClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource cut_regular}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Copy" Click="OnCopyClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource copy_regular}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Paste" Click="OnPasteClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource clipboard_paste_regular}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Delete" Click="OnDeleteClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource delete_regular}" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </MenuItem>
+
+        <MenuItem Header="AI">
+            <MenuItem Header="Generate From Prompt" Click="OnGenerateFromPromptClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource star_emphasis_regular}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Generate From Image" Click="OnGenerateFromImageClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource image_regular}" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </MenuItem>
+
+        <MenuItem Header="Help">
+            <MenuItem Header="About" Click="OnAboutClick">
+                <MenuItem.Icon>
+                    <PathIcon Data="{StaticResource question_regular}" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </MenuItem>
+    </Menu>
+</UserControl>
