@@ -170,7 +170,6 @@ public partial class MainCanvasView : UserControl
     }
 
 
-    private void OnCopyClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {}
     private void OnCutClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {}
     private void OnPasteClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {}
     private void OnDeleteClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e) {}

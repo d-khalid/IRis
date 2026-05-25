@@ -1,8 +1,6 @@
 <UserControl 
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="using:IRis.ViewModels.Main"
-    x:DataType="vm:TopToolbarViewModel"
     x:Class="IRis.Views.Main.TopToolbarView"
 >
     <Border Padding="5">
@@ -13,10 +11,11 @@
                 <Button Content="D Latch" Click="OnDLatchClick" />
             </StackPanel>
             <Button 
+                x:Name="SimulationToggle"
                 HorizontalAlignment="Right"
                 Content="Simulation: OFF"
                 Click="OnSimulationToggleClick"
-                Background="DarkRed" 
+                Background="DarkRed"
                 Margin="10,0"
             />
         </Grid>

@@ -166,7 +166,7 @@
 
             <Canvas.ContextFlyout>
                 <MenuFlyout>
-                    <MenuItem Header="Copy" Click="OnCopyClick">
+                    <MenuItem Header="Copy" Command="{Binding CopyCommand}">
                         <MenuItem.Icon><PathIcon Data="{StaticResource copy_regular}" /></MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Cut" Click="OnCutClick">

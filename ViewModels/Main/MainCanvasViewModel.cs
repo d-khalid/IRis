@@ -13,12 +13,24 @@ namespace IRis.ViewModels.Main;
 
 public partial class MainCanvasViewModel : ViewModelBase
 {
-    [ObservableProperty] 
-    private Simulation _simulation = Simulation.GetInstance();
+    [ObservableProperty] private Simulation _simulation = Simulation.GetInstance();
+    [ObservableProperty] private Preview _preview = Preview.GetInstance();
+    [ObservableProperty] private Selection _selection = Selection.GetInstance();
+    public ClipboardManager Clipboard { get; } = ClipboardManager.GetInstance();
 
-    [ObservableProperty] 
-    private Preview _preview = Preview.GetInstance();
 
-    [ObservableProperty] 
-    private Selection _selection = Selection.GetInstance();
+    [RelayCommand]
+    private void CopyCommand()
+    {
+        if (Preview.HasObjects())
+        {
+            Clipboard.Copy(Preview.Objects);
+            Preview.Ditch();
+        }
+        else if (Selection.HasObjects())
+        {
+            Clipboard.Copy(Selection.Objects);
+            Selection.Ditch();
+        }
+    }
 }
