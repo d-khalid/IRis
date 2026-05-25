@@ -1,6 +1,8 @@
 using Avalonia;
 using IRis.ViewModels.Circuit.CircuitObjects;
 using IRis.Services;
+using IRis.ViewModels.Circuit.CircuitObjects.Core;
+using IRis.Models.Circuit.CircuitObjects.Core;
 
 
 namespace IRis.Models.Core;
@@ -17,24 +19,53 @@ public partial class Preview : ManagerBase<Preview>
     }
 
 
-    public bool IsNewWire()
+    public bool HasNewWire()
     {
         return Objects.Count == 1 && Objects[0] is WireViewModel;
+    }
+
+
+    public void EndWireAt(TerminalViewModel t)
+    {
+        if (Objects.Count == 1 && Objects[0] is WireViewModel) return;
+
+        var w = (Objects[0] as WireViewModel)!;
+
+        if (w.MainInput.IsOrphan) w.MainInput = t;
+        else if (w.MainOutput.IsOrphan) w.MainOutput = t;
+        else return;
+
+        var sim = Simulation.GetInstance();
+        w.Opacity = 1.0;
+        sim.Objects.Add(w);
+        Ditch();
+    }
+
+
+    public void StartWireAt(TerminalViewModel t)
+    {
+        TerminalViewModel input;
+        TerminalViewModel output;
+
+        if (t.FetchType() is TerminalType.Input)
+        {
+            input = t;
+            output = new(TerminalType.Output, null);
+        }
+        else
+        {
+            input = new(TerminalType.Input, null);
+            output = t;
+        }
+
+        WireViewModel wire = new(input, output);
+        Add(wire);
     }
 
 
     public void CommitAll() 
     {
         Simulation sim = Simulation.GetInstance();
-
-        if (IsNewWire())
-        {
-            WireViewModel w = (Objects[0] as WireViewModel)!;
-            w.Opacity = 1.0;
-            sim.Objects.Add(w);
-            Ditch();
-            return;
-        }
 
         foreach (var co in Objects)
         {

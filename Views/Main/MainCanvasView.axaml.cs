@@ -7,8 +7,6 @@ using IRis.ViewModels.Circuit;
 using IRis.Models.Core;
 using IRis.ViewModels.Circuit.CircuitObjects;
 using IRis.ViewModels.Circuit.CircuitObjects.Core;
-using IRis.Models.Circuit.CircuitObjects.Core;
-using System;
 
 
 namespace IRis.Views.Main;
@@ -47,7 +45,7 @@ public partial class MainCanvasView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (Preview.HasObjects()) 
+        if (Preview.HasObjects() && !Preview.HasNewWire()) 
             Preview.CommitAll();
         else
         {
@@ -83,7 +81,7 @@ public partial class MainCanvasView : UserControl
 
         if (Selection.IsVisible)
         {
-            Selection.FinishBox();
+            Selection.EndBox();
             e.Pointer.Capture(null);
         }
     }
@@ -145,47 +143,27 @@ public partial class MainCanvasView : UserControl
     }
 
 
-    private void OnDotPointerPressed(object? sender, PointerPressedEventArgs e)
+    private void OnTerminalPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         e.Handled = true;
         var t = ((sender as Control)!.DataContext as TerminalViewModel)!;
         Selection.DitchPartial();
 
-        if (Preview.HasObjects())
-        {
-            if (!Preview.IsNewWire()) return;
-            WireViewModel w = (Preview.Objects[0] as WireViewModel)!;
-
-            if (w.MainOutput.IsOrphan)
-                w.MainOutput = t;
-            else if (w.MainInput.IsOrphan)
-                w.MainInput = t;
-
-            Preview.CommitAll();
-            return;
-        }
-
-        TerminalViewModel input = t;
-        TerminalViewModel output = t;
-
-        if (t.FetchType() is TerminalType.Input)
-            output = new(TerminalType.Output, null);
+        if (Preview.HasNewWire())
+            Preview.EndWireAt(t);
         else
-            input = new(TerminalType.Input, null);
-
-        WireViewModel wire = new(input, output);
-        Preview.Add(wire);
+            Preview.StartWireAt(t);
     }
 
 
-    private void OnDotPointerEntered(object? sender, PointerEventArgs e)
+    private void OnTerminalPointerEntered(object? sender, PointerEventArgs e)
     {
         e.Handled = true;
         Selection.HidePartial();
     }
 
 
-    private void OnDotPointerExited(object? sender, PointerEventArgs e)
+    private void OnTerminalPointerExited(object? sender, PointerEventArgs e)
     {
         e.Handled = true;
         Selection.ShowPartial();

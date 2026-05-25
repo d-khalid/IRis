@@ -54,9 +54,9 @@
                                     Margin="-10,0,0,0"
                                 />
                                 <Ellipse 
-                                    PointerPressed="OnDotPointerPressed"
-                                    PointerEntered="OnDotPointerEntered"
-                                    PointerExited="OnDotPointerExited"
+                                    PointerPressed="OnTerminalPointerPressed"
+                                    PointerEntered="OnTerminalPointerEntered"
+                                    PointerExited="OnTerminalPointerExited"
                                     Width="10" 
                                     Height="10"
                                     Fill="DarkGreen"
@@ -82,9 +82,9 @@
                     />
                     <Ellipse 
                         DataContext="{Binding Output}"
-                        PointerPressed="OnDotPointerPressed"
-                        PointerEntered="OnDotPointerEntered"
-                        PointerExited="OnDotPointerExited"
+                        PointerPressed="OnTerminalPointerPressed"
+                        PointerEntered="OnTerminalPointerEntered"
+                        PointerExited="OnTerminalPointerExited"
                         Width="10"
                         Height="10"
                         Fill="DarkGreen" 
@@ -109,9 +109,10 @@
                     IsVisible="{Binding IsSelected}" 
                     Margin="-20,-5"
                     IsHitTestVisible="False"
+                    Opacity="{Binding SelectionOpacity}"
                 >
                     <Rectangle.Fill>
-                        <SolidColorBrush Color="#469adf" Opacity="{Binding SelectionOpacity}" />
+                        <SolidColorBrush Color="#469adf" Opacity="0.2" />
                     </Rectangle.Fill>
                 </Rectangle>
             </Grid>

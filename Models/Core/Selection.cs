@@ -60,7 +60,7 @@ public partial class Selection : ManagerBase<Selection>
     }
 
 
-    public void FinishBox()
+    public void EndBox()
     {
         Hide();
     }
@@ -90,7 +90,7 @@ public partial class Selection : ManagerBase<Selection>
     public void AddPartial(CircuitObjectViewModel co)
     {
         Partial = co;
-        co.SelectionOpacity = 0.01;
+        co.SelectionOpacity = 0.5;
         co.IsSelected = true;
     }
 
@@ -120,7 +120,7 @@ public partial class Selection : ManagerBase<Selection>
     {
         if (Partial is not null)
         {
-            Partial.SelectionOpacity = 0.01;
+            Partial.SelectionOpacity = 0.5;
             Partial.IsSelected = true;
         }
     }
@@ -129,7 +129,7 @@ public partial class Selection : ManagerBase<Selection>
     public override void Add(CircuitObjectViewModel co)
     {
         base.Add(co);
-        co.SelectionOpacity = 0.1;
+        co.SelectionOpacity = 1.0;
         co.IsSelected = true;
     }
 
