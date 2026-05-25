@@ -1,0 +1,19 @@
+<UserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+    xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
+    x:DataType="vm:ComponentViewModel"
+    x:Class="IRis.Views.Main.Canvas.CircuitObjects.ComponentView"
+
+    xmlns:components="using:IRis.ViewModels.Canvas.CircuitObjects.Components"
+    xmlns:views="using:IRis.Views.Canvas.CircuitObjects.Components"
+>
+    <DataTemplate DataType="components:GateViewModel">
+        <views:GateView />
+    </DataTemplate>
+
+    <DataTemplate DataType="components:ToggleViewModel">
+        <views:ToggleView />
+    </DataTemplate>
+</UserControl>

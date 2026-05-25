@@ -2,18 +2,21 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="IRis.Views.Main.LeftSidebarView"
+
+    xmlns:vm="using:IRis.ViewModels.Main"
+    x:DataType="vm:LeftSidebarViewModel"
 >
     <ScrollViewer Width="135" BorderThickness="2">
         <StackPanel Margin="15,0" Spacing="5">
             <TextBlock Text="Components" FontSize="14" FontWeight="Bold" Margin="0,6" />
-            <Button Content="AND Gate" Click="OnAddAndClick" />
-            <Button Content="OR Gate" Click="OnAddOrClick" />
-            <Button Content="NOT Gate" Click="OnAddNotClick" />
-            <Button Content="NAND Gate" Click="OnAddNandClick" />
-            <Button Content="NOR Gate" Click="OnAddNorClick" />
-            <Button Content="XOR Gate" Click="OnAddXorClick" />
-            <Button Content="XNOR Gate" Click="OnAddXnorClick" />
-            <Button Content="Other" Click="OnAddOtherComponentClick" />
+            <Button Content="AND Gate" Command="{Binding AddAndCommand}" />
+            <Button Content="OR Gate" />
+            <Button Content="NOT Gate" />
+            <Button Content="NAND Gate" />
+            <Button Content="NOR Gate" />
+            <Button Content="XOR Gate" />
+            <Button Content="XNOR Gate" />
+            <Button Content="Other" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

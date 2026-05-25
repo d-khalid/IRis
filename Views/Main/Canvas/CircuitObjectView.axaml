@@ -1,0 +1,19 @@
+<UserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+    xmlns:vm="using:IRis.ViewModels.Main.Canvas"
+    x:DataType="vm:CircuitObjectViewModel"
+    x:Class="IRis.Views.Main.Canvas.CircuitObjectView"
+
+    xmlns:circuitobjects="using:IRis.ViewModels.Canvas.CircuitObjects"
+    xmlns:views="using:IRis.Views.Canvas.CircuitObjects"
+>
+    <DataTemplate DataType="circuitobjects:ComponentViewModel">
+        <views:ComponentView />
+    </DataTemplate>
+
+    <DataTemplate DataType="circuitobjects:WireViewModel">
+        <views:WireView />
+    </DataTemplate>
+</UserControl>

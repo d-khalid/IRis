@@ -3,7 +3,7 @@ using IRis.Models.Circuit.CircuitObjects.Core;
 using IRis.ViewModels.Circuit.Core;
 
 
-namespace IRis.ViewModels.Circuit.CircuitObjects.Components;
+namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
 
 public partial class ToggleViewModel : ComponentViewModel

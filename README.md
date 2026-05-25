@@ -30,6 +30,12 @@ var instance = Simulation.GetInstance();
 
 ### Views
 
+#### Usage of Views
+
+Most of the interactive functionality is dealt with in views, except where either the code file becomes too long/messy or where framework limitations come in our way, then we have to use ViewModels.
+
+This might be lowkey a bad design choice. But I don't plan in changing it soon, so be it.
+
 #### Adding Icons to Menu
 
 Grab a Path geometry from [fluenticons](https://fluenticons.co/). Add it in a StreamGeometry tag in `app.axaml` as follows:
@@ -45,6 +51,7 @@ Now refer to it as a Static Resource in MenuIcon:
 ```xml
 <MenuItem.Icon><PathIcon Data="{StaticResource save_edit}" /></MenuItem.Icon>
 ```
+
 
 ### ViewModels
 

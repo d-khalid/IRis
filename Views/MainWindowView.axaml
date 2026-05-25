@@ -32,7 +32,7 @@
                 </StackPanel>
             </Grid>
         </Border>
-        <main:MainCanvasView />
+        <main:CanvasView />
     </DockPanel>
 
     <Window.KeyBindings>

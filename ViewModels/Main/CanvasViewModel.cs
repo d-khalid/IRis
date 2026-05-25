@@ -1,45 +1,56 @@
-using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia;
-using IRis.ViewModels.Main;
-using IRis.Services;
-using IRis.ViewModels.Circuit;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Core;
-using IRis.ViewModels.Circuit.CircuitObjects;
-using IRis.ViewModels.Circuit.Core;
+using Avalonia.Input;
+using Avalonia.Controls;
+using IRis.Services;
+using Avalonia;
+using IRis.ViewModels.Main.Canvas;
+using IRis.ViewModels.Main.Canvas.CircuitObjects;
+using IRis.ViewModels.Main.Canvas.Core;
 
 
-namespace IRis.Views.Main;
+namespace IRis.ViewModels.Main;
 
 
-public partial class MainCanvasView : UserControl
+public partial class CanvasViewModel : ViewModelBase
 {
-    public Simulation Simulation = Simulation.GetInstance();
-    public Preview Preview = Preview.GetInstance();
-    public Selection Selection = Selection.GetInstance();
-    public Drag Drag = Drag.GetInstance();
+    [ObservableProperty] private Simulation _simulation = Simulation.GetInstance();
+    [ObservableProperty] private Preview _preview = Preview.GetInstance();
+    [ObservableProperty] private Selection _selection = Selection.GetInstance();
+    [ObservableProperty] private Drag _drag = Drag.GetInstance();
+    public ClipboardManager Clipboard { get; } = ClipboardManager.GetInstance();
 
 
-    public MainCanvasView()
+    [RelayCommand]
+    private void CopyCommand()
     {
-        InitializeComponent();
-        DataContext = new MainCanvasViewModel();
+        if (Preview.HasObjects())
+        {
+            Clipboard.Copy(Preview.Objects);
+            Preview.Ditch();
+        }
+        else if (Selection.HasObjects())
+        {
+            Clipboard.Copy(Selection.Objects);
+            Selection.Ditch();
+        }
     }
 
 
-    private void OnPointerEntered(object? sender, PointerEventArgs e)
+    public void PointerEntered()
     {
         Preview.Show();
     }
 
 
-    private void OnPointerExited(object? sender, PointerEventArgs e)
+    public void PointerExited()
     {
         Preview.Hide();
     }
 
 
-    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    public void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed) return;
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
@@ -55,7 +66,7 @@ public partial class MainCanvasView : UserControl
     }
 
 
-    private void OnPointerMoved(object? sender, PointerEventArgs e)
+    public void PointerMoved(object? sender, PointerEventArgs e)
     {
         e.Handled = true;
         Simulation.CurrentMousePos = SimulationService.SnapPointToGrid(
@@ -75,7 +86,7 @@ public partial class MainCanvasView : UserControl
     }
 
 
-    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    public void PointerReleased(PointerReleasedEventArgs e)
     {
         e.Handled = true;
 

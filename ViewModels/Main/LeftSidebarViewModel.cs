@@ -1,0 +1,29 @@
+using CommunityToolkit.Mvvm.Input;
+using IRis.Models.Circuit.CircuitObjects.Core;
+using IRis.Models.Core;
+using IRis.ViewModels.Circuit.CircuitObjects.Components.Gates;
+using IRis.ViewModels.Circuit.Core;
+using Avalonia;
+
+
+namespace IRis.ViewModels.Main;
+
+
+public partial class LeftSidebarViewModel : ViewModelBase
+{
+    [RelayCommand]
+    private static void AddAnd()
+    {
+        var prev = Preview.GetInstance();
+        AndGateViewModel gate = new() { Opacity = 0.5 };
+
+        TerminalViewModel i1 = new(TerminalType.Input, gate);
+        TerminalViewModel i2 = new(TerminalType.Input, gate);
+
+        gate.AddInput(i1);
+        gate.AddInput(i2);
+
+        prev.Add(gate);
+        prev.MouseOffset = new Point(gate.Width / 2, gate.Height / 2);
+    }
+}

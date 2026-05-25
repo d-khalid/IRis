@@ -2,7 +2,7 @@ using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 
-namespace IRis.ViewModels.Circuit.CircuitObjects;
+namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 
 public abstract partial class ComponentViewModel : CircuitObjectViewModel

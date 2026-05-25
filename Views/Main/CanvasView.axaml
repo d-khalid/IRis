@@ -4,13 +4,15 @@
     xmlns:paz="using:Avalonia.Controls.PanAndZoom"
 
     xmlns:vm="using:IRis.ViewModels.Main"
-    x:DataType="vm:MainCanvasViewModel"
-    x:Class="IRis.Views.Main.MainCanvasView"
-    xmlns:circuitobjects="using:IRis.ViewModels.Circuit.CircuitObjects"
-    xmlns:core="using:IRis.ViewModels.Circuit.Core"
-    xmlns:gates="using:IRis.ViewModels.Circuit.CircuitObjects.Components.Gates"
+    x:DataType="vm:CanvasViewModel"
+    x:Class="IRis.Views.Main.CanvasView"
+    xmlns:views="using:IRis.Views.Canvas"
 >
     <UserControl.DataTemplates>
+        <DataTemplate DataType="canvas:CircuitObjectViewModel">
+            <views:CircuitObjectView />
+        </DataTemplate>
+
         <DataTemplate DataType="gates:AndGateViewModel">
             <Grid
                 PointerPressed="OnCircuitObjectPointerPressed"
@@ -142,8 +144,7 @@
         HorizontalAlignment="Stretch"
         PanButton="Left"
     >
-        <Canvas 
-            x:Name="MainCanvas"
+        <Canvas
             Background="LightGray" 
             MinWidth="2000" 
             MinHeight="2000"

@@ -2,77 +2,64 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="IRis.Views.Main.TopMenuView"
+
+    xmlns:vm="using:IRis.ViewModels.Main"
+    x:DataType="vm:TopMenuViewModel"
 >
     <Menu>
-        <MenuItem Header="File" >
-            <MenuItem Header="New" Click="OnNewClick">
-                <MenuItem.Icon>
-                    <PathIcon Data="{StaticResource new_regular}" />
-                </MenuItem.Icon>
+        <MenuItem Header="File">
+            <MenuItem Header="New">
+                <MenuItem.Icon><PathIcon Data="{StaticResource new_regular}" /></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Open..." Click="OnOpenClick">
+            <MenuItem Header="Open...">
                 <MenuItem.Icon><PathIcon Data="{StaticResource open_regular}" /></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Save" Click="OnSaveClick">
+            <MenuItem Header="Save">
                 <MenuItem.Icon><PathIcon Data="{StaticResource save_regular}" /></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Save As..." Click="OnSaveAsClick">
+            <MenuItem Header="Save As...">
                 <MenuItem.Icon><PathIcon Data="{StaticResource save_edit}" /></MenuItem.Icon>
             </MenuItem>
             <Separator />
-            <MenuItem Header="Exit" Click="OnExitClick">
+            <MenuItem Header="Exit">
                 <MenuItem.Icon><PathIcon Data="{StaticResource arrow_left_regular}" /></MenuItem.Icon>
             </MenuItem>
         </MenuItem>
 
         <MenuItem Header="Edit">
-            <MenuItem Header="Undo" Click="OnUndoClick">
+            <MenuItem Header="Undo">
                 <MenuItem.Icon><PathIcon Data="{StaticResource arrow_undo_regular}" /></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Redo" Click="OnRedoClick">
+            <MenuItem Header="Redo">
                 <MenuItem.Icon><PathIcon Data="{StaticResource arrow_redo_regular}"/></MenuItem.Icon>
             </MenuItem>
             <Separator />
-            <MenuItem Header="Cut" Click="OnCutClick">
-                <MenuItem.Icon>
-                    <PathIcon Data="{StaticResource cut_regular}" />
-                </MenuItem.Icon>
+            <MenuItem Header="Cut">
+                <MenuItem.Icon><PathIcon Data="{StaticResource cut_regular}" /></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Copy" Click="OnCopyClick">
-                <MenuItem.Icon>
-                    <PathIcon Data="{StaticResource copy_regular}" />
-                </MenuItem.Icon>
+            <MenuItem Header="Copy">
+                <MenuItem.Icon><PathIcon Data="{StaticResource copy_regular}" /></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Paste" Click="OnPasteClick">
-                <MenuItem.Icon>
-                    <PathIcon Data="{StaticResource clipboard_paste_regular}" />
-                </MenuItem.Icon>
+            <MenuItem Header="Paste">
+                <MenuItem.Icon><PathIcon Data="{StaticResource clipboard_paste_regular}" /></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Delete" Click="OnDeleteClick">
-                <MenuItem.Icon>
-                    <PathIcon Data="{StaticResource delete_regular}" />
-                </MenuItem.Icon>
+            <MenuItem Header="Delete">
+                <MenuItem.Icon><PathIcon Data="{StaticResource delete_regular}" /></MenuItem.Icon>
             </MenuItem>
         </MenuItem>
 
         <MenuItem Header="AI">
-            <MenuItem Header="Generate From Prompt" Click="OnGenerateFromPromptClick">
-                <MenuItem.Icon>
-                    <PathIcon Data="{StaticResource star_emphasis_regular}" />
-                </MenuItem.Icon>
+            <MenuItem Header="Generate From Prompt">
+                <MenuItem.Icon><PathIcon Data="{StaticResource star_emphasis_regular}" /></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Generate From Image" Click="OnGenerateFromImageClick">
-                <MenuItem.Icon>
-                    <PathIcon Data="{StaticResource image_regular}" />
-                </MenuItem.Icon>
+            <MenuItem Header="Generate From Image">
+                <MenuItem.Icon><PathIcon Data="{StaticResource image_regular}" /></MenuItem.Icon>
             </MenuItem>
         </MenuItem>
 
         <MenuItem Header="Help">
-            <MenuItem Header="About" Click="OnAboutClick">
-                <MenuItem.Icon>
-                    <PathIcon Data="{StaticResource question_regular}" />
-                </MenuItem.Icon>
+            <MenuItem Header="About">
+                <MenuItem.Icon><PathIcon Data="{StaticResource question_regular}" /></MenuItem.Icon>
             </MenuItem>
         </MenuItem>
     </Menu>

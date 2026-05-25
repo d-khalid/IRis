@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using IRis.ViewModels.Circuit.Core;
 
 
-namespace IRis.ViewModels.Circuit.CircuitObjects.Components.Gates;
+namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 
 
 public abstract partial class MultiInputGateViewModel : GateViewModel

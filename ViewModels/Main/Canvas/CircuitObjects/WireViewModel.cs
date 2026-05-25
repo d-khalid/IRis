@@ -7,7 +7,7 @@ using IRis.ViewModels.Circuit.Core;
 using System;
 
 
-namespace IRis.ViewModels.Circuit.CircuitObjects;
+namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 
 public partial class WireViewModel : CircuitObjectViewModel

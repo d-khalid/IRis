@@ -1,7 +1,7 @@
 namespace IRis.Models.Base;
 
 
-public interface IOutputProvider
+public interface ISimulatable
 {
-    public void ComputeOutput();
+    public void Simulate();
 }

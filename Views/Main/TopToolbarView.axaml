@@ -2,22 +2,24 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="IRis.Views.Main.TopToolbarView"
+
+    xmlns:vm="using:IRis.ViewModels"
+    x:DataType="vm:TopToolbarViewModel"
 >
-    <Border Padding="5">
-        <Grid>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
-                <Button Content="Toggle Switch" Click="OnToggleClick" />
-                <Button Content="Logic Probe" Click="OnProbeClick" />
-                <Button Content="D Latch" Click="OnDLatchClick" />
-            </StackPanel>
-            <Button 
-                x:Name="SimulationToggle"
+    <DockPanel Margin="5">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
+            <Button Content="Toggle Switch" />
+            <Button Content="Logic Probe" />
+            <Button Content="D Latch" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
+            <Button
                 HorizontalAlignment="Right"
-                Content="Simulation: OFF"
-                Click="OnSimulationToggleClick"
-                Background="DarkRed"
-                Margin="10,0"
+                Content="{Binding SimulationToggleContent}"
+                Command="{Binding SimulationToggleCommand}"
+                Background="{Binding SimulationToggleBackground}"
+                Margin="5,0"
             />
-        </Grid>
-    </Border>
+        </StackPanel>
+    </DockPanel>
 </UserControl>
