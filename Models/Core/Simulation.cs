@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.Generic;
 using Avalonia;
+using IRis.Models.Base;
 
 
 namespace IRis.Models.Core;

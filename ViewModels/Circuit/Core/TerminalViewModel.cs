@@ -1,8 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Circuit.CircuitObjects.Core;
+using IRis.ViewModels.Circuit.CircuitObjects;
 
 
-namespace IRis.ViewModels.Circuit.CircuitObjects.Core;
+namespace IRis.ViewModels.Circuit.Core;
 
 
 public partial class TerminalViewModel(TerminalType type, ComponentViewModel? parent) : ObservableObject

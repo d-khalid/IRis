@@ -6,7 +6,7 @@ using IRis.Services;
 using IRis.ViewModels.Circuit;
 using IRis.Models.Core;
 using IRis.ViewModels.Circuit.CircuitObjects;
-using IRis.ViewModels.Circuit.CircuitObjects.Core;
+using IRis.ViewModels.Circuit.Core;
 
 
 namespace IRis.Views.Main;

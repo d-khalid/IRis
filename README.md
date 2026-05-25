@@ -50,4 +50,4 @@ Now refer to it as a Static Resource in MenuIcon:
 
 #### CircuitObjects Structure
 
-Every object in a circuit inherits from CircuitObjectViewModel and stores an instance of it's model privately. One thing to note here is that the classes in the namespace IRis.ViewModels.Circuit.CircuitObject.Core do not inherit from the CircuitObject because they are just dead objects being used to store data by CircuitObjects.
+Every object in a circuit inherits from CircuitObjectViewModel and stores an instance of it's model privately.

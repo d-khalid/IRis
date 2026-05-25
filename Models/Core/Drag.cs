@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using IRis.ViewModels.Circuit;
 using System;
 using IRis.ViewModels.Circuit.CircuitObjects;
+using IRis.Models.Base;
 
 
 namespace IRis.Models.Core;

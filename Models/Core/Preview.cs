@@ -1,8 +1,9 @@
 using Avalonia;
 using IRis.ViewModels.Circuit.CircuitObjects;
 using IRis.Services;
-using IRis.ViewModels.Circuit.CircuitObjects.Core;
+using IRis.ViewModels.Circuit.Core;
 using IRis.Models.Circuit.CircuitObjects.Core;
+using IRis.Models.Base;
 
 
 namespace IRis.Models.Core;

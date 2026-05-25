@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 using IRis.Models.Circuit.CircuitObjects.Core;
-using IRis.ViewModels.Circuit.CircuitObjects.Core;
+using IRis.ViewModels.Circuit.Core;
 
 
 namespace IRis.ViewModels.Circuit.CircuitObjects.Components.Gates;

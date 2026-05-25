@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Circuit.CircuitObjects.Core;
-using IRis.ViewModels.Circuit.CircuitObjects.Core;
+using IRis.ViewModels.Circuit.Core;
 
 
 namespace IRis.ViewModels.Circuit.CircuitObjects.Components;

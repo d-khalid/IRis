@@ -7,7 +7,7 @@
     x:DataType="vm:MainCanvasViewModel"
     x:Class="IRis.Views.Main.MainCanvasView"
     xmlns:circuitobjects="using:IRis.ViewModels.Circuit.CircuitObjects"
-    xmlns:core="using:IRis.ViewModels.Circuit.CircuitObjects.Core"
+    xmlns:core="using:IRis.ViewModels.Circuit.Core"
     xmlns:gates="using:IRis.ViewModels.Circuit.CircuitObjects.Components.Gates"
 >
     <UserControl.DataTemplates>
