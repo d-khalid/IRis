@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using IRis.ViewModels.Circuit.Core;
+using IRis.ViewModels.Main.Canvas.Core;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;

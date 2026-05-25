@@ -6,121 +6,16 @@
     xmlns:vm="using:IRis.ViewModels.Main"
     x:DataType="vm:CanvasViewModel"
     x:Class="IRis.Views.Main.CanvasView"
-    xmlns:views="using:IRis.Views.Canvas"
+
+    xmlns:views="using:IRis.Views.Main.Canvas"
+    xmlns:canvas="using:IRis.ViewModels.Main.Canvas"
 >
     <UserControl.DataTemplates>
         <DataTemplate DataType="canvas:CircuitObjectViewModel">
-            <views:CircuitObjectView />
+            <views:CircuitObjectView Opacity="{Binding Opacity}" />
         </DataTemplate>
 
-        <DataTemplate DataType="gates:AndGateViewModel">
-            <Grid
-                PointerPressed="OnCircuitObjectPointerPressed"
-                PointerReleased="OnCircuitObjectPointerReleased"
-                PointerEntered="OnCircuitObjectPointerEntered"
-                PointerExited="OnCircuitObjectPointerExited"
-                Canvas.Left="{Binding X}"
-                Canvas.Top="{Binding Y}"
-                Width="{Binding Width}"
-                Height="{Binding Height}" 
-                Opacity="{Binding Opacity}"
-                RenderTransformOrigin="50%,50%"
-            >
-                <Grid.RenderTransform>
-                    <RotateTransform Angle="{Binding Rotation}" />
-                </Grid.RenderTransform>
-
-                <Rectangle
-                    Margin="-20,-5"
-                    Fill="Transparent"
-                />
-
-                <ItemsControl ItemsSource="{Binding Inputs}" ClipToBounds="False">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="1" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid 
-                                ClipToBounds="False"
-                            >
-                                <Line 
-                                    StartPoint="0,0" 
-                                    EndPoint="10,0" 
-                                    Stroke="Black" 
-                                    StrokeThickness="2" 
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Margin="-10,0,0,0"
-                                />
-                                <Ellipse 
-                                    PointerPressed="OnTerminalPointerPressed"
-                                    PointerEntered="OnTerminalPointerEntered"
-                                    PointerExited="OnTerminalPointerExited"
-                                    Width="10" 
-                                    Height="10"
-                                    Fill="DarkGreen"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Margin="-15,0,0,0"
-                                    Cursor="Cross"
-                                />
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                <Grid ClipToBounds="False">
-                    <Line 
-                        StartPoint="0,0" 
-                        EndPoint="10,0" 
-                        Stroke="Black" 
-                        StrokeThickness="2"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Margin="0,0,-10,0"
-                    />
-                    <Ellipse 
-                        DataContext="{Binding Output}"
-                        PointerPressed="OnTerminalPointerPressed"
-                        PointerEntered="OnTerminalPointerEntered"
-                        PointerExited="OnTerminalPointerExited"
-                        Width="10"
-                        Height="10"
-                        Fill="DarkGreen" 
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Margin="0,0,-15,0"
-                        Cursor="Cross"
-                    />
-                </Grid>
-
-                <Path
-                    Fill="White" 
-                    Stroke="Black" 
-                    StrokeThickness="2"
-                    Stretch="Fill"
-                    Data="M 0,100 L 60,100 A 40,40 0 0 0 60,0 L 0,0 Z" 
-                />
-
-                <Rectangle
-                    Stroke="DodgerBlue"
-                    StrokeThickness="1" 
-                    IsVisible="{Binding IsSelected}" 
-                    Margin="-20,-5"
-                    IsHitTestVisible="False"
-                    Opacity="{Binding SelectionOpacity}"
-                >
-                    <Rectangle.Fill>
-                        <SolidColorBrush Color="#469adf" Opacity="0.2" />
-                    </Rectangle.Fill>
-                </Rectangle>
-            </Grid>
-        </DataTemplate>
-
-        <DataTemplate DataType="circuitobjects:WireViewModel">
+        <!-- <DataTemplate DataType="circuitobjects:WireViewModel">
             <Grid Canvas.Left="0" Canvas.Top="0" ClipToBounds="False">
                 <Polyline 
                     Points="{Binding Points}" 
@@ -130,7 +25,7 @@
                     StrokeLineCap="Round"
                 />
             </Grid>
-        </DataTemplate>
+        </DataTemplate> -->
     </UserControl.DataTemplates>
 
     <paz:ZoomBorder 
@@ -170,13 +65,13 @@
                     <MenuItem Header="Copy" Command="{Binding CopyCommand}">
                         <MenuItem.Icon><PathIcon Data="{StaticResource copy_regular}" /></MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Cut" Click="OnCutClick">
+                    <MenuItem Header="Cut">
                         <MenuItem.Icon><PathIcon Data="{StaticResource cut_regular}" /></MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Paste" Click="OnPasteClick">
+                    <MenuItem Header="Paste">
                         <MenuItem.Icon><PathIcon Data="{StaticResource clipboard_paste_regular}" /></MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Delete" Click="OnDeleteClick">
+                    <MenuItem Header="Delete">
                         <MenuItem.Icon><PathIcon Data="{StaticResource delete_regular}" /></MenuItem.Icon>
                     </MenuItem>
                 </MenuFlyout>

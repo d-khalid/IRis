@@ -1,11 +1,10 @@
 using Avalonia;
 using System;
 using Newtonsoft.Json;
-using IRis.ViewModels.Circuit;
+using IRis.ViewModels.Main.Canvas;
 using System.Collections.ObjectModel;
-using IRis.Models.Circuit.CircuitObjects.Core;
 using Avalonia.Controls;
-using IRis.ViewModels.Circuit.CircuitObjects;
+using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using IRis.Models.Core;
 using System.Collections.Generic;
 

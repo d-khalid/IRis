@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Circuit.CircuitObjects.Core;
-using IRis.ViewModels.Circuit.Core;
+using IRis.ViewModels.Main.Canvas.Core;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;

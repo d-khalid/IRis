@@ -1,4 +1,4 @@
-using IRis.ViewModels.Circuit;
+using IRis.ViewModels.Main.Canvas;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System;

@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -29,6 +30,12 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
     public bool Contains(Point pt)
     {
         return new Rect (X, Y, Width, Height).Contains(pt);
+    }
+
+
+    public void PointerPressed()
+    {
+        Console.WriteLine("Component Pointer Press");
     }
 
 

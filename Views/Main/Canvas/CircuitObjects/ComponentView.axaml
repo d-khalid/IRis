@@ -6,14 +6,24 @@
     x:DataType="vm:ComponentViewModel"
     x:Class="IRis.Views.Main.Canvas.CircuitObjects.ComponentView"
 
-    xmlns:components="using:IRis.ViewModels.Canvas.CircuitObjects.Components"
-    xmlns:views="using:IRis.Views.Canvas.CircuitObjects.Components"
+    xmlns:components="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
+    xmlns:views="using:IRis.Views.Main.Canvas.CircuitObjects.Components"
 >
-    <DataTemplate DataType="components:GateViewModel">
-        <views:GateView />
-    </DataTemplate>
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="components:GateViewModel">
+            <views:GateView />
+        </DataTemplate>
+    </UserControl.DataTemplates>
 
-    <DataTemplate DataType="components:ToggleViewModel">
-        <views:ToggleView />
-    </DataTemplate>
+    <ContentControl
+        Content="{Binding}"
+        Width="{Binding Width}"
+        Height="{Binding Height}"
+        PointerPressed="OnPointerPressed"
+        RenderTransformOrigin="50%,50%"
+    >
+        <ContentControl.RenderTransform>
+            <RotateTransform Angle="{Binding Rotation}" />
+        </ContentControl.RenderTransform>
+    </ContentControl>
 </UserControl>

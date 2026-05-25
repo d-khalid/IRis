@@ -1,3 +1,4 @@
+using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Circuit.CircuitObjects.Core;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
@@ -18,5 +19,11 @@ public partial class TerminalViewModel(TerminalType type, ComponentViewModel? pa
     public TerminalType FetchType()
     {
         return Model.Type;
+    }
+
+
+    public void PointerPressed()
+    {
+        Console.WriteLine("Terminal Pointer Press");
     }
 }

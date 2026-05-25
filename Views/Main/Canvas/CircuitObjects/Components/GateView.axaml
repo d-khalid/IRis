@@ -6,8 +6,8 @@
     x:DataType="vm:GateViewModel"
     x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.GateView"
 
-    xmlns:gates="using:IRis.ViewModels.Canvas.CircuitObjects.Components.Gates"
-    xmlns:views="using:IRis.Views.Canvas.CircuitObjects.Components.Gates"
+    xmlns:gates="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates"
+    xmlns:views="using:IRis.Views.Main.Canvas.CircuitObjects.Components.Gates"
 >
     <DataTemplate DataType="gates:AndGateViewModel">
         <views:AndGateView />

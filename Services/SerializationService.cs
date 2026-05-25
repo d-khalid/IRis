@@ -4,7 +4,7 @@ using System.IO;
 using Newtonsoft.Json;
 using IRis.Models;
 using System.Collections.ObjectModel;
-using IRis.ViewModels.Circuit;
+using IRis.ViewModels.Main.Canvas;
 
 
 namespace IRis.Services;

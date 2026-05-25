@@ -5,11 +5,10 @@ using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 namespace IRis.Views.Main.Canvas.CircuitObjects.Components.Gates;
 
 
-public partial class AndGateView : UserControl
+public partial class MultiInputGateView : UserControl
 {
-    public AndGateView()
+    public MultiInputGateView()
     {
         InitializeComponent();
-        DataContext = new AndGateViewModel();
     }
 }

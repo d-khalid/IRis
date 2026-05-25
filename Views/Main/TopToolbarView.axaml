@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="IRis.Views.Main.TopToolbarView"
 
-    xmlns:vm="using:IRis.ViewModels"
+    xmlns:vm="using:IRis.ViewModels.Main"
     x:DataType="vm:TopToolbarViewModel"
 >
     <DockPanel Margin="5">

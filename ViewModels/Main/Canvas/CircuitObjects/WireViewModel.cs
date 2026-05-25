@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using Avalonia;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
-using IRis.ViewModels.Circuit.Core;
+using IRis.ViewModels.Main.Canvas.Core;
 using System;
 
 

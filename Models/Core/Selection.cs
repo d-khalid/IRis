@@ -1,9 +1,9 @@
-using IRis.ViewModels.Circuit;
+using IRis.ViewModels.Main.Canvas;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System;
 using Avalonia;
-using IRis.ViewModels.Circuit.CircuitObjects;
+using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using IRis.Models.Base;
 
 

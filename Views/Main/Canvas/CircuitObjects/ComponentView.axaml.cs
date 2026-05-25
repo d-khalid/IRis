@@ -1,5 +1,6 @@
 using Avalonia.Controls;
-using IRis.ViewModels.Main.Canvas;
+using Avalonia.Input;
+using IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 
 namespace IRis.Views.Main.Canvas.CircuitObjects;
@@ -10,6 +11,11 @@ public partial class ComponentView : UserControl
     public ComponentView()
     {
         InitializeComponent();
-        DataContext = new ComponentViewModel();
+    }
+
+
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        (DataContext as ComponentViewModel)!.PointerPressed();
     }
 }
