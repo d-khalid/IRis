@@ -1,4 +1,5 @@
 using System;
+using IRis.Models.Main.Canvas.CircuitObjects;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Core;
@@ -22,7 +23,7 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
     partial void OnRotationChanged(double value) => UpdateTerminals();
 
 
-    public ComponentViewModel()
+    public ComponentViewModel(Component model) : base(model)
     {
         ZIndex = 1;
     }

@@ -8,19 +8,20 @@ using IRis.ViewModels.Main.Canvas.CircuitObjects;
 namespace IRis.ViewModels.Main.Canvas.Core;
 
 
-public partial class TerminalViewModel(TerminalType type, ComponentViewModel? parent) : ObservableObject
+public partial class TerminalViewModel(Terminal model, TerminalType type, bool isOrphan) :
+    ObservableObject
 {
-    public Terminal Model { get; } = new(type);
-    public bool IsOrphan { get; set; } = parent == null;
+    private Terminal Model { get; set; } = model;
+
+    public Terminal GetModel() => Model;
+    public void SetState(LogicState state) => Model.State = state;
+    public LogicState GetState() => Model.State;
+
+    public TerminalType Type = type;
+    public bool IsOrphan { get; set; } = isOrphan;
 
     [ObservableProperty] private double _x;
     [ObservableProperty] private double _y;
-
-
-    public TerminalType FetchType()
-    {
-        return Model.Type;
-    }
 
 
     public void PointerPressed()

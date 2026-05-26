@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.Models.Main.Canvas.CircuitObjects.Components;
 using IRis.Models.Main.Canvas.Core;
 using IRis.ViewModels.Main.Canvas.Core;
 
@@ -11,9 +12,10 @@ public abstract partial class GateViewModel : ComponentViewModel
     [ObservableProperty] private TerminalViewModel _output;
 
 
-    public GateViewModel()
+    public GateViewModel(Gate model, TerminalViewModel output) : base(model)
     {
-        Output = new TerminalViewModel(TerminalType.Output, this);
+        if (output is not null) Output = output;
+        else Output = new(new Terminal(), TerminalType.Output, false);
     }
 
 

@@ -57,4 +57,16 @@ Now refer to it as a Static Resource in MenuIcon:
 
 #### CircuitObjects Structure
 
-Every object in a circuit inherits from CircuitObjectViewModel and stores an instance of it's model privately.
+Every object in a circuit inherits from CircuitObjectViewModel and stores an instance of it's model privately just in case it is ever needed.
+
+#### Creating a Wire
+
+For instantiating a WireViewModel, we have to create 2X `Terminal`, 1X `Wire` with those terminals, and 2X `TerminalViewModel` with those terminals. Simple, right?
+
+#### Creating a Component
+
+Let's take an example of `AndGateViewModel` for simplicity. We prepare 3X `Terminal` for inputs and output respectively, then we create 1X `AndGate` and 3X `TerminalViewModel` from the 3X `Terminal` we have. Then we just pass everything to the constructor.
+
+#### Baby-Sitting Models
+
+The `TerminalViewModel` for wires and gates can change on runtime (i.e. when a wire is attached to a gate), which is covered by allowing a method `TerminalViewModel.GetModel()` that allows access to the underlying terminal.

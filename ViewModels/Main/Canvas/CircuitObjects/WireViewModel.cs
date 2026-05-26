@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using Avalonia;
 using IRis.ViewModels.Main.Canvas.Core;
 using System.ComponentModel;
+using IRis.Models.Main.Canvas.CircuitObjects;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
@@ -14,7 +15,8 @@ public partial class WireViewModel : CircuitObjectViewModel
     private TerminalViewModel _mainOutput;
 
 
-    public WireViewModel(TerminalViewModel mainInput, TerminalViewModel mainOutput)
+    public WireViewModel(Wire model, TerminalViewModel mainInput, TerminalViewModel mainOutput) : 
+        base(model)
     {
         _mainInput = mainInput;
         _mainInput.PropertyChanged += OnTerminalPropertyChanged;
@@ -28,6 +30,7 @@ public partial class WireViewModel : CircuitObjectViewModel
         get => _mainInput;
         set {
             _mainInput = value;
+            (Model as Wire)!.MainInput = value.GetModel();
             _mainInput.PropertyChanged += OnTerminalPropertyChanged;
         }
     }
@@ -37,6 +40,7 @@ public partial class WireViewModel : CircuitObjectViewModel
         get => _mainOutput;
         set {
             _mainOutput = value;
+            (Model as Wire)!.MainOutput = value.GetModel();
             _mainOutput.PropertyChanged += OnTerminalPropertyChanged;
         }
     }

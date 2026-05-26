@@ -1,9 +1,9 @@
 namespace IRis.Models.Main.Canvas.Core;
 
 
-public class Terminal(TerminalType type)
+public class Terminal()
 {
-    public TerminalType Type = type;
+    public LogicState State = LogicState.Low;
 }
 
 

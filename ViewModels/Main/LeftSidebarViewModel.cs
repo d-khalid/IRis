@@ -3,7 +3,7 @@ using IRis.Models.Main.Canvas.Core;
 using IRis.Models.Core;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 using IRis.ViewModels.Main.Canvas.Core;
-using Avalonia;
+using IRis.Models.Main.Canvas.CircuitObjects.Components.Gates;
 
 
 namespace IRis.ViewModels.Main;
@@ -16,18 +16,19 @@ public partial class LeftSidebarViewModel : ViewModelBase
     {
         var sel = Selection.GetInstance();
         var prev = Preview.GetInstance();
-
         sel.Ditch();
-        prev.Ditch();
 
-        AndGateViewModel gate = new() { Opacity = 0.5 };
-        TerminalViewModel i1 = new(TerminalType.Input, gate);
-        TerminalViewModel i2 = new(TerminalType.Input, gate);
+        Terminal i1 = new();
+        Terminal i2 = new();
+        Terminal o = new();
 
-        gate.AddInput(i1);
-        gate.AddInput(i2);
-        prev.Add(gate);
+        TerminalViewModel input1 = new(i1, TerminalType.Input, false);
+        TerminalViewModel input2 = new(i2, TerminalType.Input, false);
+        TerminalViewModel output = new(o, TerminalType.Output, false);
 
-        prev.MouseOffset = new Point(gate.Width / 2, gate.Height / 2);
+        AndGate model = new(i1, i2, o);
+        AndGateViewModel gate = new(model, input1, input2, output);
+
+        prev.Pick(gate);
     }
 }

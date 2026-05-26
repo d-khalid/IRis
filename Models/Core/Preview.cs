@@ -4,6 +4,7 @@ using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 using IRis.Models.Main.Canvas.Core;
 using IRis.Base;
+using IRis.Models.Main.Canvas.CircuitObjects;
 
 
 namespace IRis.Models.Core;
@@ -26,6 +27,36 @@ public partial class Preview : ManagerBase<Preview>
     }
 
 
+    public void Pick(ComponentViewModel c)
+    {
+        Ditch();
+        Add(c);
+        MouseOffset = new Point(c.Width / 2, c.Height / 2);
+    }
+
+
+    public void StartWireAt(TerminalViewModel t)
+    {
+        Terminal i = new();
+        Terminal o = new();
+
+        if (t.Type is TerminalType.Input) i = t.GetModel();
+        else if (t.Type is TerminalType.Output) o = t.GetModel();
+        else return;
+
+        TerminalViewModel input = t;
+        TerminalViewModel output = t;
+
+        if (t.Type is TerminalType.Input) output = new(o, TerminalType.Output, true);
+        else if (t.Type is TerminalType.Output) input = new(o, TerminalType.Input, true);
+        else return;
+
+        Wire model = new(i, o);
+        WireViewModel wire = new(model, input, output);
+        Add(wire);
+    }
+
+
     public void EndWireAt(TerminalViewModel t)
     {
         if (!HasNewWire()) return;
@@ -39,27 +70,6 @@ public partial class Preview : ManagerBase<Preview>
         w.Opacity = 1.0;
         sim.Objects.Add(w);
         Ditch();
-    }
-
-
-    public void StartWireAt(TerminalViewModel t)
-    {
-        TerminalViewModel input;
-        TerminalViewModel output;
-
-        if (t.FetchType() is TerminalType.Input)
-        {
-            input = t;
-            output = new(TerminalType.Output, null);
-        }
-        else
-        {
-            input = new(TerminalType.Input, null);
-            output = t;
-        }
-
-        WireViewModel wire = new(input, output);
-        Add(wire);
     }
 
 
