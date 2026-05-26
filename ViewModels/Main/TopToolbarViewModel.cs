@@ -14,7 +14,7 @@ public partial class TopToolbarViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private void SimulationToggleCommand()
+    private void SimulationToggle()
     {
         var sim = Simulation.GetInstance();
 

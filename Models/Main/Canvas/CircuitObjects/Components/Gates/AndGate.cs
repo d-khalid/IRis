@@ -1,3 +1,4 @@
+using System;
 using IRis.Models.Main.Canvas.Core;
 
 
@@ -12,10 +13,10 @@ public class AndGate(Terminal i1, Terminal i2, Terminal output) : MultiInputGate
         foreach (var i in Inputs)
         {
             if (i.State == LogicState.Low)
-            {
                 result = LogicState.Low;
-                break;
-            }
+
+            else if (i.State == LogicState.Unknown)
+                result = LogicState.Unknown;
         }
 
         Output.State = result;

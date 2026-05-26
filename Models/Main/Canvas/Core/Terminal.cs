@@ -1,9 +1,12 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
+
 namespace IRis.Models.Main.Canvas.Core;
 
 
-public class Terminal()
+public partial class Terminal : ObservableObject
 {
-    public LogicState State = LogicState.Low;
+    [ObservableProperty] private LogicState _state = LogicState.Unknown;
 }
 
 

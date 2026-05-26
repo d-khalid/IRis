@@ -14,7 +14,7 @@
             PointerExited="OnPointerExited"
             Width="10" 
             Height="10"
-            Fill="DarkGreen"
+            Fill="{Binding Color}"
             Cursor="Cross"
         />
     </Grid>
