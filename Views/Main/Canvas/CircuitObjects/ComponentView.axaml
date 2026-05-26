@@ -8,6 +8,7 @@
 
     xmlns:components="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
     xmlns:views="using:IRis.Views.Main.Canvas.CircuitObjects.Components"
+    ClipToBounds="False"
 >
     <UserControl.DataTemplates>
         <DataTemplate DataType="components:GateViewModel">
@@ -21,6 +22,7 @@
         Height="{Binding Height}"
         PointerPressed="OnPointerPressed"
         RenderTransformOrigin="50%,50%"
+        ClipToBounds="False"
     >
         <ContentControl.RenderTransform>
             <RotateTransform Angle="{Binding Rotation}" />

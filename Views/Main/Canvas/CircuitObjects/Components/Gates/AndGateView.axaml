@@ -7,9 +7,11 @@
     x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.Gates.AndGateView"
 
     xmlns:core="using:IRis.Views.Main.Canvas.Core"
+    ClipToBounds="False"
 >
-    <Grid>
+    <Grid ClipToBounds="False">
         <Rectangle Margin="-20,-5" Fill="Transparent" />
+
         <ItemsControl ItemsSource="{Binding Inputs}" ClipToBounds="False">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -33,6 +35,7 @@
                         <core:TerminalView 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center" 
+                            Margin="-20,0,0,0"
                         />
                     </Grid>
                 </DataTemplate>
@@ -53,6 +56,7 @@
                 DataContext="{Binding Output}" 
                 HorizontalAlignment="Right" 
                 VerticalAlignment="Center" 
+                Margin="0,0,-20,0"
             />
         </Grid>
 

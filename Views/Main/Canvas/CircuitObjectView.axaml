@@ -8,6 +8,7 @@
 
     xmlns:circuitobjects="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
     xmlns:views="using:IRis.Views.Main.Canvas.CircuitObjects"
+    ClipToBounds="False"
 >
     <UserControl.DataTemplates>
         <DataTemplate DataType="circuitobjects:ComponentViewModel">
@@ -19,5 +20,5 @@
         </DataTemplate> -->
     </UserControl.DataTemplates>
 
-    <ContentControl Content="{Binding}" />
+    <ContentControl Content="{Binding}" ClipToBounds="False" />
 </UserControl>

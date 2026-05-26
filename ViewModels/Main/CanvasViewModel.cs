@@ -23,7 +23,7 @@ public partial class CanvasViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private void CopyCommand()
+    private void Copy()
     {
         if (Preview.HasObjects())
         {

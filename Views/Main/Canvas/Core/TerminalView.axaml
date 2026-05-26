@@ -5,6 +5,7 @@
     xmlns:vm="using:IRis.ViewModels.Main.Canvas.Core"
     x:DataType="vm:TerminalViewModel"
     x:Class="IRis.Views.Main.Canvas.Core.TerminalView"
+    ClipToBounds="False"
 >
     <Grid ClipToBounds="False">
         <Ellipse
@@ -12,7 +13,6 @@
             Width="10" 
             Height="10"
             Fill="DarkGreen"
-            Margin="-15,0,0,0"
             Cursor="Cross"
         />
     </Grid>

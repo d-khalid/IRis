@@ -8,6 +8,7 @@
 
     xmlns:gates="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates"
     xmlns:views="using:IRis.Views.Main.Canvas.CircuitObjects.Components.Gates"
+    ClipToBounds="False"
 >
     <UserControl.DataTemplates>
         <DataTemplate DataType="gates:AndGateViewModel">
@@ -15,5 +16,5 @@
         </DataTemplate>
     </UserControl.DataTemplates>
 
-    <ContentControl Content="{Binding}" />
+    <ContentControl Content="{Binding}" ClipToBounds="False" />
 </UserControl>

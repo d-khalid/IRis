@@ -9,6 +9,7 @@
 
     xmlns:views="using:IRis.Views.Main.Canvas"
     xmlns:canvas="using:IRis.ViewModels.Main.Canvas"
+    xmlns:circuitobjects="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
 >
     <UserControl.DataTemplates>
         <DataTemplate DataType="canvas:CircuitObjectViewModel">
@@ -40,7 +41,6 @@
         PanButton="Left"
     >
         <Canvas
-            Background="LightGray" 
             MinWidth="2000" 
             MinHeight="2000"
             PointerPressed="OnPointerPressed"
@@ -89,10 +89,14 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.Styles>
-                    <Style Selector="ItemsControl > ContentPresenter">
+                    <Style 
+                        Selector="ItemsControl > ContentPresenter"
+                        x:DataType="circuitobjects:ComponentViewModel"
+                    >
                         <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
                         <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
                         <Setter Property="Opacity" Value="{Binding Opacity}" />
+                        <Setter Property="ClipToBounds" Value="False" />
                     </Style>
                 </ItemsControl.Styles>
             </ItemsControl>
@@ -111,10 +115,14 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.Styles>
-                    <Style Selector="ItemsControl > ContentPresenter">
+                    <Style 
+                        Selector="ItemsControl > ContentPresenter" 
+                        x:DataType="circuitobjects:ComponentViewModel"
+                    >
                         <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
                         <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
                         <Setter Property="Opacity" Value="{Binding Opacity}" />
+                        <Setter Property="ClipToBounds" Value="False" />
                     </Style>
                 </ItemsControl.Styles>
             </ItemsControl>
