@@ -16,6 +16,28 @@ public partial class ComponentView : UserControl
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        e.Handled = true;
         (DataContext as ComponentViewModel)!.PointerPressed();
+    }
+
+
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        e.Handled = true;
+        (DataContext as ComponentViewModel)!.PointerReleased();
+    }
+
+
+    private void OnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        e.Handled = true;
+        (DataContext as ComponentViewModel)!.PointerEntered();
+    }
+
+
+    private void OnPointerExited(object? sender, PointerEventArgs e)
+    {
+        e.Handled = true;
+        (DataContext as ComponentViewModel)!.PointerExited();
     }
 }

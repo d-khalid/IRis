@@ -21,6 +21,9 @@
         Width="{Binding Width}"
         Height="{Binding Height}"
         PointerPressed="OnPointerPressed"
+        PointerReleased="OnPointerReleased"
+        PointerEntered="OnPointerEntered"
+        PointerExited="OnPointerExited"
         RenderTransformOrigin="50%,50%"
         ClipToBounds="False"
     >

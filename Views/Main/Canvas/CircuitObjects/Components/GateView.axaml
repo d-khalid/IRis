@@ -11,10 +11,25 @@
     ClipToBounds="False"
 >
     <UserControl.DataTemplates>
-        <DataTemplate DataType="gates:AndGateViewModel">
-            <views:AndGateView />
+        <DataTemplate DataType="gates:MultiInputGateViewModel">
+            <views:MultiInputGateView />
         </DataTemplate>
     </UserControl.DataTemplates>
 
-    <ContentControl Content="{Binding}" ClipToBounds="False" />
+    <Grid ClipToBounds="False">
+        <ContentControl Content="{Binding}" ClipToBounds="False" />
+
+        <Rectangle
+            Stroke="DodgerBlue"
+            StrokeThickness="1"
+            IsVisible="{Binding IsSelected}" 
+            Margin="-20,-5"
+            IsHitTestVisible="False"
+            Opacity="{Binding SelectionOpacity}"
+        >
+            <Rectangle.Fill>
+                <SolidColorBrush Color="#469adf" Opacity="0.2" />
+            </Rectangle.Fill>
+        </Rectangle>
+    </Grid>
 </UserControl>

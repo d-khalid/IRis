@@ -1,6 +1,7 @@
 using System;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.Models.Core;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
@@ -35,7 +36,53 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
 
     public void PointerPressed()
     {
-        Console.WriteLine("Component Pointer Press");
+        var sel = Selection.GetInstance();
+        var drag = Drag.GetInstance();
+        sel.DitchPartial();
+
+        if (IsSelected)
+            drag.StartWith(sel.Objects);
+        else
+        {
+            sel.Focus(this);
+            drag.StartWith(this);
+        }
+    }
+
+
+    public void PointerReleased()
+    {
+        var drag = Drag.GetInstance();
+        var sel = Selection.GetInstance();
+
+        if (drag.HasObjects())
+        {
+            if (drag.Used)
+                sel.AddCollection(drag.Objects);
+            else
+                sel.Focus(this);
+
+            drag.End();
+        }
+    }
+
+
+    public void PointerEntered()
+    {
+        var drag = Drag.GetInstance();
+        var sel = Selection.GetInstance();
+        var prev = Preview.GetInstance();
+
+        if (prev.HasObjects() || drag.HasObjects()) return;
+        if (!sel.Objects.Contains(this))
+            sel.AddPartial(this);
+    }
+
+
+    public void PointerExited()
+    {
+        var sel = Selection.GetInstance();
+        sel.DitchPartial();
     }
 
 

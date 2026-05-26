@@ -9,76 +9,11 @@
     xmlns:core="using:IRis.Views.Main.Canvas.Core"
     ClipToBounds="False"
 >
-    <Grid ClipToBounds="False">
-        <Rectangle Margin="-20,-5" Fill="Transparent" />
-
-        <ItemsControl ItemsSource="{Binding Inputs}" ClipToBounds="False">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="1" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Grid 
-                        ClipToBounds="False"
-                    >
-                        <Line 
-                            StartPoint="0,0" 
-                            EndPoint="10,0" 
-                            Stroke="Black" 
-                            StrokeThickness="2" 
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Margin="-10,0,0,0"
-                        />
-                        <core:TerminalView 
-                            HorizontalAlignment="Left" 
-                            VerticalAlignment="Center" 
-                            Margin="-20,0,0,0"
-                        />
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-
-        <Grid ClipToBounds="False">
-            <Line 
-                StartPoint="0,0" 
-                EndPoint="10,0" 
-                Stroke="Black" 
-                StrokeThickness="2"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Margin="0,0,-10,0"
-            />
-            <core:TerminalView 
-                DataContext="{Binding Output}" 
-                HorizontalAlignment="Right" 
-                VerticalAlignment="Center" 
-                Margin="0,0,-20,0"
-            />
-        </Grid>
-
-        <Path
-            Fill="White" 
-            Stroke="Black" 
-            StrokeThickness="2"
-            Stretch="Fill"
-            Data="M 0,100 L 60,100 A 40,40 0 0 0 60,0 L 0,0 Z" 
-        />
-
-        <Rectangle
-            Stroke="DodgerBlue"
-            StrokeThickness="1"
-            IsVisible="{Binding IsSelected}" 
-            Margin="-20,-5"
-            IsHitTestVisible="False"
-            Opacity="{Binding SelectionOpacity}"
-        >
-            <Rectangle.Fill>
-                <SolidColorBrush Color="#469adf" Opacity="0.2" />
-            </Rectangle.Fill>
-        </Rectangle>
-    </Grid>
+    <Path
+        Fill="White" 
+        Stroke="Black" 
+        StrokeThickness="2"
+        Stretch="Fill"
+        Data="M 0,100 L 60,100 A 40,40 0 0 0 60,0 L 0,0 Z" 
+    />
 </UserControl>

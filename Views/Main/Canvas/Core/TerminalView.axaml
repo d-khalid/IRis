@@ -10,6 +10,8 @@
     <Grid ClipToBounds="False">
         <Ellipse
             PointerPressed="OnPointerPressed"
+            PointerEntered="OnPointerEntered"
+            PointerExited="OnPointerExited"
             Width="10" 
             Height="10"
             Fill="DarkGreen"

@@ -8,9 +8,66 @@
 
     xmlns:multiinputgates="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates"
     xmlns:views="using:IRis.Views.Main.Canvas.CircuitObjects.Components.Gates"
+    xmlns:core="using:IRis.Views.Main.Canvas.Core"
     ClipToBounds="False"
 >
-    <DataTemplate DataType="multiinputgates:AndGateViewModel">
-        <views:AndGateView />
-    </DataTemplate>
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="multiinputgates:AndGateViewModel">
+            <views:AndGateView />
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
+    <Grid ClipToBounds="False">
+        <Rectangle Margin="-20,-5" Fill="Transparent" />
+
+        <ItemsControl ItemsSource="{Binding Inputs}" ClipToBounds="False">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="1" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid 
+                        ClipToBounds="False"
+                    >
+                        <Line 
+                            StartPoint="0,0" 
+                            EndPoint="10,0" 
+                            Stroke="Black" 
+                            StrokeThickness="2" 
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Margin="-10,0,0,0"
+                        />
+                        <core:TerminalView 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Center" 
+                            Margin="-20,0,0,0"
+                        />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Grid ClipToBounds="False">
+            <Line 
+                StartPoint="0,0" 
+                EndPoint="10,0" 
+                Stroke="Black" 
+                StrokeThickness="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Margin="0,0,-10,0"
+            />
+            <core:TerminalView 
+                DataContext="{Binding Output}" 
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Center" 
+                Margin="0,0,-20,0"
+            />
+        </Grid>
+
+        <ContentControl Content="{Binding}" ClipToBounds="False" />
+    </Grid>
 </UserControl>
