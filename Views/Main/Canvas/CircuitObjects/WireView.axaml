@@ -1,0 +1,19 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+    xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
+    x:DataType="vm:WireViewModel"
+    x:Class="IRis.Views.Main.Canvas.CircuitObjects.WireView"
+    ClipToBounds="False"
+>
+    <Grid Canvas.Left="0" Canvas.Top="0" ClipToBounds="False">
+        <Polyline 
+            Points="{Binding Points}" 
+            Stroke="Black" 
+            StrokeThickness="2"
+            StrokeJoin="Round"
+            StrokeLineCap="Round"
+        />
+    </Grid>
+</UserControl>

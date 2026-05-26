@@ -15,9 +15,9 @@
             <views:ComponentView />
         </DataTemplate>
 
-        <!-- <DataTemplate DataType="circuitobjects:WireViewModel">
+        <DataTemplate DataType="circuitobjects:WireViewModel">
             <views:WireView />
-        </DataTemplate> -->
+        </DataTemplate>
     </UserControl.DataTemplates>
 
     <ContentControl Content="{Binding}" ClipToBounds="False" />

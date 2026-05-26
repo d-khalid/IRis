@@ -15,18 +15,6 @@
         <DataTemplate DataType="canvas:CircuitObjectViewModel">
             <views:CircuitObjectView Opacity="{Binding Opacity}" />
         </DataTemplate>
-
-        <!-- <DataTemplate DataType="circuitobjects:WireViewModel">
-            <Grid Canvas.Left="0" Canvas.Top="0" ClipToBounds="False">
-                <Polyline 
-                    Points="{Binding Points}" 
-                    Stroke="Black" 
-                    StrokeThickness="2"
-                    StrokeJoin="Round"
-                    StrokeLineCap="Round"
-                />
-            </Grid>
-        </DataTemplate> -->
     </UserControl.DataTemplates>
 
     <paz:ZoomBorder 

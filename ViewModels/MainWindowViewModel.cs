@@ -16,22 +16,18 @@ namespace IRis.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    public Simulation Simulation { get; } = Simulation.GetInstance();
-    public Preview Preview { get; } = Preview.GetInstance();
-    public Selection Selection { get; } = Selection.GetInstance();
-    public ClipboardManager Clipboard { get; } = ClipboardManager.GetInstance();
-    
-    [ObservableProperty] private Point _mousePosition = new(0, 0);
+    [ObservableProperty] private Simulation _simulation = Simulation.GetInstance();
 
 
     [RelayCommand]
     private void DeleteKey()
     {
-        for (int i = Selection.Objects.Count-1; i >= 0; i--)
+        var sel = Selection.GetInstance();
+        for (int i = sel.Objects.Count-1; i >= 0; i--)
         {
-            CircuitObjectViewModel co = Selection.Objects[i];
+            CircuitObjectViewModel co = sel.Objects[i];
             Simulation.Objects.Remove(co);
-            Selection.Remove(co);
+            sel.Remove(co);
         }
     }
 
@@ -39,22 +35,27 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void EscapeKey()
     {
-        Preview.Ditch();
+        var prev = Preview.GetInstance();
+        prev.Ditch();
     }
 
 
     [RelayCommand]
     private void CopyKey()
     {
-        if (Preview.HasObjects())
+        var prev = Preview.GetInstance();
+        var sel = Selection.GetInstance();
+        var clip = ClipboardManager.GetInstance();
+
+        if (prev.HasObjects())
         {
-            Clipboard.Copy(Preview.Objects);
-            Preview.Ditch();
+            clip.Copy(prev.Objects);
+            prev.Ditch();
         }
-        else if (Selection.HasObjects())
+        else if (sel.HasObjects())
         {
-            Clipboard.Copy(Selection.Objects);
-            Selection.Ditch();
+            clip.Copy(sel.Objects);
+            sel.Ditch();
         }
     }
 
@@ -62,7 +63,10 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void PasteKey()
     {
-        Clipboard.Paste(Preview.Objects);
+        var clip = ClipboardManager.GetInstance();
+        var prev = Preview.GetInstance();
+
+        clip.Paste(prev.Objects);
     }
 
 
@@ -70,9 +74,11 @@ public partial class MainWindowViewModel : ViewModelBase
     private void RotateKey()
     {
         ObservableCollection<CircuitObjectViewModel> collection;
+        var prev = Preview.GetInstance();
+        var sel = Selection.GetInstance();
 
-        if (Preview.HasObjects()) collection = Preview.Objects;
-        else if (Selection.HasObjects()) collection = Selection.Objects;
+        if (prev.HasObjects()) collection = prev.Objects;
+        else if (sel.HasObjects()) collection = sel.Objects;
         else return;
 
         Point min = SimulationService.GetMinPointInCollection(collection);
@@ -107,9 +113,11 @@ public partial class MainWindowViewModel : ViewModelBase
     private void AddInputKey()
     {
         ObservableCollection<CircuitObjectViewModel> collection;
+        var prev = Preview.GetInstance();
+        var sel = Selection.GetInstance();
 
-        if (Preview.HasObjects()) collection = Preview.Objects;
-        else if (Selection.HasObjects()) collection = Selection.Objects;
+        if (prev.HasObjects()) collection = prev.Objects;
+        else if (sel.HasObjects()) collection = sel.Objects;
         else return;
 
         foreach (CircuitObjectViewModel co in collection)
@@ -124,9 +132,11 @@ public partial class MainWindowViewModel : ViewModelBase
     private void RemoveInputKey()
     {
         ObservableCollection<CircuitObjectViewModel> collection;
+        var prev = Preview.GetInstance();
+        var sel = Selection.GetInstance();
 
-        if (Preview.HasObjects()) collection = Preview.Objects;
-        else if (Selection.HasObjects()) collection = Selection.Objects;
+        if (prev.HasObjects()) collection = prev.Objects;
+        else if (sel.HasObjects()) collection = sel.Objects;
         else return;
 
         foreach (CircuitObjectViewModel co in collection)
