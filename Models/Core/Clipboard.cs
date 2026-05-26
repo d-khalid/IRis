@@ -1,5 +1,6 @@
 using IRis.ViewModels.Main.Canvas;
-using IRis.Models.Circuit.CircuitObjects.Core;
+using IRis.Models.Main.Canvas.Core;
+using IRis.Base;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using System;

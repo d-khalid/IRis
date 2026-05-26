@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System;
 
 
-namespace IRis.Models.Base;
+namespace IRis.Base;
 
 
 public abstract partial class ManagerBase<T> : ObservableObject

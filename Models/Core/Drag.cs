@@ -3,8 +3,7 @@ using Avalonia;
 using System.Collections.ObjectModel;
 using IRis.ViewModels.Main.Canvas;
 using System;
-using IRis.ViewModels.Main.Canvas.CircuitObjects;
-using IRis.Models.Base;
+using IRis.Base;
 
 
 namespace IRis.Models.Core;

@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
-using IRis.Models.Circuit.CircuitObjects.Core;
+using IRis.Models.Main.Canvas.Core;
 using IRis.Models.Core;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 using IRis.ViewModels.Main.Canvas.Core;

@@ -2,8 +2,8 @@ using Avalonia;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
-using IRis.Models.Circuit.CircuitObjects.Core;
-using IRis.Models.Base;
+using IRis.Models.Main.Canvas.Core;
+using IRis.Base;
 
 
 namespace IRis.Models.Core;
@@ -28,8 +28,7 @@ public partial class Preview : ManagerBase<Preview>
 
     public void EndWireAt(TerminalViewModel t)
     {
-        if (Objects.Count == 1 && Objects[0] is WireViewModel) return;
-
+        if (!HasNewWire()) return;
         var w = (Objects[0] as WireViewModel)!;
 
         if (w.MainInput.IsOrphan) w.MainInput = t;

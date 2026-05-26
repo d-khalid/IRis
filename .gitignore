@@ -18,6 +18,7 @@ temp.txt
 *.sln.docstates
 *.env
 *.txt
+global.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

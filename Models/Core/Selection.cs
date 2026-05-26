@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System;
 using Avalonia;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
-using IRis.Models.Base;
+using IRis.Base;
 
 
 namespace IRis.Models.Core;

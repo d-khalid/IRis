@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using IRis.Services;
 using IRis.ViewModels.Main.Canvas;
-using IRis.Models.Circuit.CircuitObjects.Core;
+using IRis.Models.Main.Canvas.Core;
 using Avalonia;
 using System.Collections.ObjectModel;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;

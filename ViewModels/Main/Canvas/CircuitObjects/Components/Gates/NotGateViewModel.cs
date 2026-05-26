@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using IRis.Models.Circuit.CircuitObjects.Core;
 using IRis.ViewModels.Main.Canvas.Core;
 
 

@@ -9,7 +9,11 @@
     xmlns:gates="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates"
     xmlns:views="using:IRis.Views.Main.Canvas.CircuitObjects.Components.Gates"
 >
-    <DataTemplate DataType="gates:AndGateViewModel">
-        <views:AndGateView />
-    </DataTemplate>
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="gates:AndGateViewModel">
+            <views:AndGateView />
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
+    <ContentControl Content="{Binding}" />
 </UserControl>

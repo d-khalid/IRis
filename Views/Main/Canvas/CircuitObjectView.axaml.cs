@@ -10,6 +10,5 @@ public partial class CircuitObjectView : UserControl
     public CircuitObjectView()
     {
         InitializeComponent();
-        DataContext = new CircuitObjectViewModel();
     }
 }

@@ -10,6 +10,5 @@ public partial class AndGateView : UserControl
     public AndGateView()
     {
         InitializeComponent();
-        DataContext = new AndGateViewModel();
     }
 }
