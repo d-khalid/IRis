@@ -77,13 +77,18 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.Styles>
-                    <Style 
+                    <Style
+                        Selector="ItemsControl > ContentPresenter"
+                        x:DataType="canvas:CircuitObjectViewModel"
+                    >
+                        <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}" />
+                    </Style>
+                    <Style
                         Selector="ItemsControl > ContentPresenter"
                         x:DataType="circuitobjects:ComponentViewModel"
                     >
                         <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
                         <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
-                        <Setter Property="Opacity" Value="{Binding Opacity}" />
                         <Setter Property="ClipToBounds" Value="False" />
                     </Style>
                 </ItemsControl.Styles>
@@ -103,13 +108,18 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.Styles>
+                    <Style
+                        Selector="ItemsControl > ContentPresenter"
+                        x:DataType="canvas:CircuitObjectViewModel"
+                    >
+                        <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}" />
+                    </Style>
                     <Style 
                         Selector="ItemsControl > ContentPresenter" 
                         x:DataType="circuitobjects:ComponentViewModel"
                     >
                         <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
                         <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
-                        <Setter Property="Opacity" Value="{Binding Opacity}" />
                         <Setter Property="ClipToBounds" Value="False" />
                     </Style>
                 </ItemsControl.Styles>

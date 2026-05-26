@@ -11,12 +11,12 @@
     ClipToBounds="False"
 >
     <UserControl.DataTemplates>
-        <DataTemplate DataType="circuitobjects:ComponentViewModel">
-            <views:ComponentView />
-        </DataTemplate>
-
         <DataTemplate DataType="circuitobjects:WireViewModel">
             <views:WireView />
+        </DataTemplate>
+
+        <DataTemplate DataType="circuitobjects:ComponentViewModel">
+            <views:ComponentView />
         </DataTemplate>
     </UserControl.DataTemplates>
 

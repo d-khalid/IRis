@@ -22,6 +22,12 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
     partial void OnRotationChanged(double value) => UpdateTerminals();
 
 
+    public ComponentViewModel()
+    {
+        ZIndex = 1;
+    }
+
+
     public bool Intersects(Rect rect)
     {
         return rect.Intersects(new Rect(X, Y, Width, Height));
