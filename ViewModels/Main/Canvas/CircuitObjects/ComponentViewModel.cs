@@ -101,5 +101,5 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
     }
 
 
-    protected abstract void UpdateTerminals();
+    public abstract void UpdateTerminals();
 }

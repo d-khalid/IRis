@@ -43,11 +43,19 @@ public partial class ToggleViewModel : ComponentViewModel
     public LogicState State
     {
         get => (Model as Toggle)!.State;
-        set => (Model as Toggle)!.State = value;
+        set 
+        {
+            (Model as Toggle)!.State = value;
+            if (value is LogicState.High)
+            {
+                Background = new(Colors.DarkGreen);
+                Label = "1";
+            }
+        }
     }
 
 
-    protected override void UpdateTerminals()
+    public override void UpdateTerminals()
     {
         if (Output is null) return;
         double unrotatedX = X + (Width + 10);

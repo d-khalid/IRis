@@ -38,6 +38,7 @@ public partial class ClipboardManager : ObservableObject
     public void Copy(ObservableCollection<CircuitObjectViewModel> collection)
     {
         if (collection is null) return;
+        Objects.Clear();
         var clonedCollection = CloningService.Clone(collection);
 
         foreach (var co in clonedCollection)
@@ -62,14 +63,13 @@ public partial class ClipboardManager : ObservableObject
                 Objects, sim.CurrentMousePos, new Point(0, 0)
             );
 
-            foreach (var co in Objects)
+            var cloned = CloningService.Clone(Objects);
+
+            foreach (var co in cloned)
             {
                 co.Opacity = 0.5;
-                co.IsSelected = false;
                 collection.Add(co);
             }
-
-            Objects.Clear();
         }
 
         else                     // get from clipboard

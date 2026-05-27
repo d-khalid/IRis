@@ -43,7 +43,7 @@ public partial class ProbeViewModel : ComponentViewModel
     }
 
 
-    protected override void UpdateTerminals()
+    public override void UpdateTerminals()
     {
         if (Input is null) return;
         double unrotatedX = X - 10;

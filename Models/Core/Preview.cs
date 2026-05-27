@@ -4,7 +4,6 @@ using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 using IRis.Models.Main.Canvas.Core;
 using IRis.Base;
-using System;
 
 
 namespace IRis.Models.Core;
@@ -70,14 +69,15 @@ public partial class Preview : ManagerBase<Preview>
     public void CommitAll() 
     {
         Simulation sim = Simulation.GetInstance();
+        var cloned = CloningService.Clone(Objects);
 
-        foreach (var co in Objects)
+        foreach (var co in cloned)
         {
-            // var clone = CloningService.Clone(co);
+            if (co is WireViewModel w)
+                w.Redraw();    // force wire redraw
+
             co.Opacity = 1.0;
             sim.Add(co);
         }
-
-        Ditch();
     }
 }

@@ -9,14 +9,17 @@ public class AndGate : MultiInputGate
 {
     public override void Simulate()
     {
-        LogicState result = LogicState.High;
+        LogicState result = LogicState.Unknown;
         foreach (var i in Inputs)
         {
             if (i.State == LogicState.Low)
+            {
                 result = LogicState.Low;
+                break;
+            }
 
-            // else if (i.State == LogicState.Unknown)
-            //     result = LogicState.Unknown;
+            else if (i.State == LogicState.High)
+                result = LogicState.High;
         }
 
         Output.State = result;

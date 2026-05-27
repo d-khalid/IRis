@@ -24,7 +24,7 @@ public abstract partial class GateViewModel(Gate model) : ComponentViewModel(mod
     }
 
 
-    protected override void UpdateTerminals()
+    public override void UpdateTerminals()
     {
         UpdateOutputTerminal();
         UpdateInputTerminals();

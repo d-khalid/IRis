@@ -6,6 +6,7 @@ using IRis.Models.Main.Canvas.CircuitObjects;
 using IRis.Models.Main.Canvas.Core;
 using IRis.Models.Core;
 using Newtonsoft.Json;
+using System;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
@@ -45,8 +46,10 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
     }
 
 
-    private void Redraw()
+    public void Redraw()
     {
+        if (MainInput is null || MainOutput is null) return;
+
         Points.Clear();
         Points.Add(new Point((int)MainInput.X, (int)MainInput.Y));
         Points.Add(new Point((int)MainOutput.X, (int)MainOutput.Y));

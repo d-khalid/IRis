@@ -102,3 +102,7 @@ public LogicState State
     set => (Model as Toggle)!.State = value;
 }
 ```
+
+#### Wires
+
+Wire cloning is too tricky to be messed with. One IMPORTANT thing if you are working on this codebase would be to always clone a collection of objects together. NEVER EVER think of cloning each object separately. Otherwise their memory references would break, and you would end up with disconnected weird-behaving wires.
