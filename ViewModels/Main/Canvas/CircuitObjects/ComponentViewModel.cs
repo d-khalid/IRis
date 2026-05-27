@@ -15,12 +15,19 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
     [ObservableProperty] private double _width;
     [ObservableProperty] private double _height;
     [ObservableProperty] private double _rotation;
+    public double TextRotation => -Rotation;
 
     partial void OnXChanged(double value) => UpdateTerminals();
     partial void OnYChanged(double value) => UpdateTerminals();
     partial void OnWidthChanged(double value) => UpdateTerminals();
     partial void OnHeightChanged(double value) => UpdateTerminals();
-    partial void OnRotationChanged(double value) => UpdateTerminals();
+
+
+    partial void OnRotationChanged(double value)
+    {
+        UpdateTerminals();
+        OnPropertyChanged(nameof(TextRotation));
+    }
 
 
     public ComponentViewModel(Component model) : base(model)

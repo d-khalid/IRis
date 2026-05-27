@@ -27,7 +27,7 @@ public partial class ComponentView : UserControl
 
         if (sim.Running && DataContext is ToggleViewModel t)
             t.Toggle();
-        else
+        else if (!sim.Running)
             (DataContext as ComponentViewModel)!.PointerPressed();
     }
 

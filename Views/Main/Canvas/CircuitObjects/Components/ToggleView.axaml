@@ -20,16 +20,21 @@
             BorderThickness="2"
             CornerRadius="1"
         >
-            <TextBlock
-                Text="{Binding Label}"
-                Foreground="White"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontSize="14"
-                FontWeight="ExtraBold"
-                IsHitTestVisible="False"
-                Margin="0,-2,0,0"
-            />
+            <Grid>
+                <Grid.RenderTransform>
+                    <RotateTransform Angle="{Binding TextRotation}" />
+                </Grid.RenderTransform>
+                <TextBlock
+                    Text="{Binding Label}"
+                    Foreground="White"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    FontWeight="ExtraBold"
+                    IsHitTestVisible="False"
+                    Margin="0,-1,0,0"
+                />
+            </Grid>
         </Border>
 
         <Line
