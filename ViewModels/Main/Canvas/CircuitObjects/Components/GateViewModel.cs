@@ -12,10 +12,9 @@ public abstract partial class GateViewModel : ComponentViewModel
     [ObservableProperty] private TerminalViewModel _output;
 
 
-    public GateViewModel(Gate model, TerminalViewModel output) : base(model)
+    public GateViewModel(Gate model) : base(model)
     {
-        if (output is not null) Output = output;
-        else Output = new(new Terminal(), TerminalType.Output, false);
+        Output = new TerminalViewModel(model.Output, TerminalType.Output, false);
     }
 
 

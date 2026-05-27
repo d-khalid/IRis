@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using IRis.Models.Main.Canvas.CircuitObjects.Components.Gates;
+using IRis.Models.Main.Canvas.Core;
 using IRis.ViewModels.Main.Canvas.Core;
+using Newtonsoft.Json;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
@@ -8,14 +10,13 @@ namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 
 public abstract partial class MultiInputGateViewModel : GateViewModel
 {
-    public ObservableCollection<TerminalViewModel> Inputs { get; } = [];
+    [JsonIgnore] public ObservableCollection<TerminalViewModel> Inputs { get; } = [];
 
 
-    public MultiInputGateViewModel(MultiInputGate model, TerminalViewModel i1, TerminalViewModel i2, 
-        TerminalViewModel output) : base(model, output)
+    public MultiInputGateViewModel(MultiInputGate model) : base(model)
     {
-        if (i1 is not null) Inputs.Add(i1);
-        if (i2 is not null) Inputs.Add(i2);
+        foreach (Terminal i in model.Inputs)
+            Inputs.Add(new TerminalViewModel(i, TerminalType.Input, false));
 
         Width = Height = Inputs.Count * 20;
     }

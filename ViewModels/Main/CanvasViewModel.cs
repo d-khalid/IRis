@@ -47,18 +47,14 @@ public partial class CanvasViewModel : ViewModelBase
     }
 
 
-    public void PointerPressed(object? sender, PointerPressedEventArgs e)
+    public void PointerPressed(Control sender, PointerPressedEventArgs e)
     {
-        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed) return;
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
-        e.Handled = true;
-
         if (Preview.HasObjects() && !Preview.HasNewWire()) 
             Preview.CommitAll();
         else
         {
             Selection.StartBox();
-            e.Pointer.Capture(sender as Control);   // keeps focus till released
+            e.Pointer.Capture(sender);   // keeps focus till released
         }
     }
 

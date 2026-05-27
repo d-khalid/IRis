@@ -29,7 +29,13 @@ public partial class CanvasView : UserControl
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        (DataContext as CanvasViewModel)!.PointerPressed(sender, e);
+        var ctrl = (sender as Control)!;
+
+        if (!e.GetCurrentPoint(ctrl).Properties.IsLeftButtonPressed) return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+
+        e.Handled = true;
+        (DataContext as CanvasViewModel)!.PointerPressed(ctrl, e);
     }
 
 

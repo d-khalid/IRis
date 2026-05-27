@@ -14,4 +14,10 @@ public class Wire(Terminal mainInput, Terminal mainOutput) : CircuitObject
     {
         MainOutput.State = MainInput.State;
     }
+
+
+    public override void Reset()
+    {
+        MainOutput.State = LogicState.Unknown;
+    }
 }

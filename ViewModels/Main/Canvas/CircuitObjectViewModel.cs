@@ -14,6 +14,7 @@ public partial class CircuitObjectViewModel(CircuitObject model) : ObservableObj
     [ObservableProperty] [property: JsonIgnore] private double _selectionOpacity = 0.1;
     [ObservableProperty] [property: JsonIgnore] private int _zIndex = 0;
 
-    [JsonProperty] protected CircuitObject Model { get; set; } = model;
+    protected CircuitObject Model { get; set; } = model;
     public void Simulate() => Model.Simulate();
+    public void Reset() => Model.Reset();
 }

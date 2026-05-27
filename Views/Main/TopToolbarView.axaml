@@ -8,7 +8,7 @@
 >
     <DockPanel Margin="5">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
-            <Button Content="Toggle Switch" />
+            <Button Content="Toggle Switch" Command="{Binding AddToggleCommand}" />
             <Button Content="Logic Probe" />
             <Button Content="D Latch" />
         </StackPanel>

@@ -10,7 +10,7 @@ public abstract class MultiInputGate : Gate
     public List<Terminal> Inputs = [];
 
 
-    public MultiInputGate(Terminal i1, Terminal i2, Terminal output) : base(output)
+    public MultiInputGate(Terminal i1, Terminal i2) : base(new Terminal())
     {
         AddInput(i1);
         AddInput(i2);

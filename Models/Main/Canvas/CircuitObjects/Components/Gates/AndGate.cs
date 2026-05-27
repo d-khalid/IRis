@@ -5,7 +5,7 @@ using IRis.Models.Main.Canvas.Core;
 namespace IRis.Models.Main.Canvas.CircuitObjects.Components.Gates;
 
 
-public class AndGate(Terminal i1, Terminal i2, Terminal output) : MultiInputGate(i1, i2, output)
+public class AndGate() : MultiInputGate(new Terminal(), new Terminal())
 {
     public override void Simulate()
     {
@@ -15,10 +15,16 @@ public class AndGate(Terminal i1, Terminal i2, Terminal output) : MultiInputGate
             if (i.State == LogicState.Low)
                 result = LogicState.Low;
 
-            else if (i.State == LogicState.Unknown)
-                result = LogicState.Unknown;
+            // else if (i.State == LogicState.Unknown)
+            //     result = LogicState.Unknown;
         }
 
         Output.State = result;
+    }
+
+
+    public override void Reset()
+    {
+        Output.State = LogicState.Unknown;
     }
 }

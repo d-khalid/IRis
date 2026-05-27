@@ -79,10 +79,17 @@ public partial class Preview : ManagerBase<Preview>
 
         foreach (var co in Objects)
         {
-            co.Opacity = 1.0;
-            sim.Add(co);
-        }
+            if (co is ComponentViewModel c)
+            {
+                var clone = CloningService.Clone(c);
+                clone.Opacity = 1.0;
+                sim.Add(clone);
+            }
 
-        Ditch();
+            else if (co is WireViewModel w)
+            {
+                
+            }
+        }
     }
 }

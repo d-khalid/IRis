@@ -50,5 +50,6 @@ public partial class Simulation : ManagerBase<Simulation>
     {
         _timer.Stop();
         Running = false;
+        foreach (var co in Objects) co.Reset();
     }
 }
