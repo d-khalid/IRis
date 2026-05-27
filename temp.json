@@ -1,0 +1,32 @@
+{
+  "$type": "System.Collections.ObjectModel.ObservableCollection`1[[IRis.ViewModels.Main.Canvas.CircuitObjectViewModel, IRis]], System.ObjectModel",
+  "$values": [
+    {
+      "$id": "1",
+      "$type": "IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates.AndGateViewModel, IRis",
+      "Inputs": {
+        "$type": "System.Collections.ObjectModel.ObservableCollection`1[[IRis.ViewModels.Main.Canvas.Core.TerminalViewModel, IRis]], System.ObjectModel",
+        "$values": [
+          {
+            "$id": "2",
+            "$type": "IRis.ViewModels.Main.Canvas.Core.TerminalViewModel, IRis",
+            "Type": 0
+          },
+          {
+            "$id": "3",
+            "$type": "IRis.ViewModels.Main.Canvas.Core.TerminalViewModel, IRis",
+            "Type": 0
+          }
+        ]
+      },
+      "Output": {
+        "$id": "4",
+        "$type": "IRis.ViewModels.Main.Canvas.Core.TerminalViewModel, IRis",
+        "Type": 1
+      },
+      "X": 860.0,
+      "Y": 940.0,
+      "Rotation": 0.0
+    }
+  ]
+}

@@ -3,6 +3,7 @@ using IRis.Models.Main.Canvas.CircuitObjects;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Core;
+using Newtonsoft.Json;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
@@ -12,10 +13,10 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
 {
     [ObservableProperty] private double _x;
     [ObservableProperty] private double _y;
-    [ObservableProperty] private double _width;
-    [ObservableProperty] private double _height;
+    [ObservableProperty] [property: JsonIgnore] private double _width;
+    [ObservableProperty] [property: JsonIgnore] private double _height;
     [ObservableProperty] private double _rotation;
-    public double TextRotation => -Rotation;
+    [JsonIgnore] public double TextRotation => -Rotation;
 
     partial void OnXChanged(double value) => UpdateTerminals();
     partial void OnYChanged(double value) => UpdateTerminals();

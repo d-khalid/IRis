@@ -22,10 +22,18 @@ public partial class WireViewModel : CircuitObjectViewModel
         base(model)
     {
         
-        _mainInput = new(model.MainInput, TerminalType.Input, true);
+        _mainInput = new TerminalViewModel() 
+        {
+            Type = TerminalType.Input,
+            IsOrphan = true
+        };
         _mainInput.PropertyChanged += OnTerminalPropertyChanged;
 
-        _mainOutput = new(model.MainOutput, TerminalType.Output, true);
+        _mainOutput = new TerminalViewModel()
+        {
+            Type = TerminalType.Output,
+            IsOrphan = true
+        };
         _mainOutput.PropertyChanged += OnTerminalPropertyChanged;
     }
 

@@ -9,14 +9,17 @@ using IRis.ViewModels.Main.Canvas.Core;
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
 
-public abstract partial class GateViewModel : ComponentViewModel
+public abstract partial class GateViewModel(Gate model) : ComponentViewModel(model)
 {
-    [ObservableProperty] private TerminalViewModel _output;
-
-
-    public GateViewModel(Gate model) : base(model)
+    private TerminalViewModel _output = null!;
+    public TerminalViewModel Output
     {
-        Output = new TerminalViewModel(model.Output, TerminalType.Output, false);
+        get => _output;
+        set
+        {
+            SetProperty(ref _output, value);
+            (Model as Gate)!.Output = value.GetModel();
+        }
     }
 
 
@@ -29,6 +32,7 @@ public abstract partial class GateViewModel : ComponentViewModel
 
     protected void UpdateOutputTerminal()
     {
+        if (Output is null) return;
         double unrotatedX = X + (Width + 10);
         double unrotatedY = Y + (Height / 2);
 

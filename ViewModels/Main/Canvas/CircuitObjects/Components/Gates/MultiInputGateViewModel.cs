@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using Avalonia;
 using IRis.Models.Main.Canvas.CircuitObjects.Components.Gates;
 using IRis.Models.Main.Canvas.Core;
@@ -12,35 +13,31 @@ namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 
 public abstract partial class MultiInputGateViewModel : GateViewModel
 {
-    [JsonIgnore] public ObservableCollection<TerminalViewModel> Inputs { get; } = [];
+    public ObservableCollection<TerminalViewModel> Inputs { get; } = [];
 
 
     public MultiInputGateViewModel(MultiInputGate model) : base(model)
     {
-        foreach (Terminal i in model.Inputs)
-            Inputs.Add(new TerminalViewModel(i, TerminalType.Input, false));
+        Inputs.CollectionChanged += (sender, e) =>
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                var vm = (e.NewItems![0] as TerminalViewModel)!;
+                vm.Type = TerminalType.Input;
 
-        Width = Height = Inputs.Count * 20;
-    }
+                (Model as MultiInputGate)!.Inputs.Add(vm.GetModel());
+            }
 
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                var vm = (e.OldItems![0] as TerminalViewModel)!;
+                vm.Type = TerminalType.Input;
 
-    public void AddInput(TerminalViewModel input)
-    {
-        if (Inputs.Count == 50) return;
-        Inputs.Add(input);
-        Width = Height = Inputs.Count * 20;
+                (Model as MultiInputGate)!.Inputs.Remove(vm.GetModel());
+            }
 
-        (Model as MultiInputGate)!.AddInput(input.GetModel());
-    }
-
-    
-    public void RemoveInput(TerminalViewModel input)
-    {
-        if (Inputs.Count == 2) return;
-        Inputs.Remove(input);
-        Width = Height = Inputs.Count * 20;
-
-        (Model as MultiInputGate)!.RemoveInput(input.GetModel());
+            Width = Height = Inputs.Count * 20;
+        };
     }
 
 

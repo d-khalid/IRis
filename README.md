@@ -65,8 +65,33 @@ For instantiating a WireViewModel, we have to create 2X `Terminal`, 1X `Wire` wi
 
 #### Creating a Component
 
-Let's take an example of `AndGateViewModel` for simplicity. We prepare 3X `Terminal` for inputs and output respectively, then we create 1X `AndGate` and 3X `TerminalViewModel` from the 3X `Terminal` we have. Then we just pass everything to the constructor.
+Let's take an example of `AndGateViewModel` for simplicity. We create a new instance, put in the Output terminal using an object initializer, and then add two inputs to make it look sane:
 
-#### Baby-Sitting Models
+```csharp
+AndGateViewModel gate = new()
+{
+    Output = new TerminalViewModel() { Type = TerminalType.Output }
+};
+gate.Inputs.Add(new TerminalViewModel());
+gate.Inputs.Add(new TerminalViewModel());
+```
+
+Normally the Type field of the `TerminalViewModel` has to be explicitly mentioned, but in this case, the `AndGateViewModel` Inputs list intercept function assigns the type implicitly. Also, the field **IsOrphan** is set to false by default and is only meant to be used for previews.
+
+
+### Models
+
+These are frankly the slaves of the entire app. They are held captive by ViewModels and created and managed privately inside ViewModels. None of the outside logic should be referring to these except for the case of `TerminalViewModel`.
 
 The `TerminalViewModel` for wires and gates can change on runtime (i.e. when a wire is attached to a gate), which is covered by allowing a method `TerminalViewModel.GetModel()` that allows access to the underlying terminal.
+
+
+### Json Serialization
+
+Take a sip of copium please. What you'll read next might be tough to swallow. And small bites are always appreciated.
+
+#### Components
+
+For each component, taking an example of a gate, lets say, we have X input terminals and 1 output terminal. We would need to store the terminal memory references, which `Newtonsoft.Json` currently does with id numbers. This helps mapping them back to connections during deserialization.
+
+Furthermore, the component needs it's X,Y coordinates to be mapped back to it's position properly. It would also be necessary to keep the Rotation as that is also important during deserialization. Rest of the component's visual properties can be created on runtime.

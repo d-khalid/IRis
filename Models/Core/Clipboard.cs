@@ -38,8 +38,10 @@ public partial class ClipboardManager : ObservableObject
     public void Copy(ObservableCollection<CircuitObjectViewModel> collection)
     {
         if (collection is null) return;
-        foreach (var co in collection)
-            Objects.Add(CloningService.Clone(co));
+        var clonedCollection = CloningService.Clone(collection);
+
+        foreach (var co in clonedCollection)
+            Objects.Add(co);
 
         if (Application.Current?.ApplicationLifetime is not 
             IClassicDesktopStyleApplicationLifetime app || 

@@ -23,7 +23,7 @@ public partial class ToggleViewModel : ComponentViewModel
     public ToggleViewModel() : this(new Toggle()) {}
     private ToggleViewModel(Toggle model) : base(model)
     {
-        Output = new(model.Output, TerminalType.Output, false);
+        Output = new TerminalViewModel() { Type = TerminalType.Output };
         Width = Height = 20;
     }
 

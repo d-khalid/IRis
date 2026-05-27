@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.Input;
 using IRis.Models.Core;
+using IRis.Models.Main.Canvas.Core;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
+using IRis.ViewModels.Main.Canvas.Core;
 
 
 namespace IRis.ViewModels.Main;
@@ -11,10 +13,15 @@ public partial class LeftSidebarViewModel : ViewModelBase
     [RelayCommand]
     private static void AddAnd()
     {
-        var sel = Selection.GetInstance();
-        var prev = Preview.GetInstance();
+        Selection.GetInstance().Ditch();
 
-        sel.Ditch();
-        prev.Pick(new AndGateViewModel());
+        AndGateViewModel gate = new()
+        {
+            Output = new TerminalViewModel() { Type = TerminalType.Output }
+        };
+        gate.Inputs.Add(new TerminalViewModel());
+        gate.Inputs.Add(new TerminalViewModel());
+
+        Preview.GetInstance().Pick(gate);
     }
 }

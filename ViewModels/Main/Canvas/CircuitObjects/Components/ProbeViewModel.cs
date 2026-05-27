@@ -21,7 +21,7 @@ public partial class ProbeViewModel : ComponentViewModel
     public ProbeViewModel() : this(new Probe()) {}
     private ProbeViewModel(Probe model) : base(model)
     {
-        Input = new(model.Input, TerminalType.Input, false);
+        Input = new TerminalViewModel() { Type = TerminalType.Input };
         Width = Height = 20;
 
         model.Input.PropertyChanged += (_, e) =>

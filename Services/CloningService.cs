@@ -9,7 +9,8 @@ public static class CloningService {
     {
         JsonSerializerSettings settings = new()
         {
-            TypeNameHandling = TypeNameHandling.All
+            TypeNameHandling = TypeNameHandling.All,
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects
         };
         
         return JsonConvert.DeserializeObject<T>(

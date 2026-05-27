@@ -7,24 +7,5 @@ namespace IRis.Models.Main.Canvas.CircuitObjects.Components.Gates;
 
 public abstract class MultiInputGate : Gate
 {
-    public List<Terminal> Inputs = [];
-
-
-    public MultiInputGate(Terminal i1, Terminal i2) : base(new Terminal())
-    {
-        AddInput(i1);
-        AddInput(i2);
-    }
-
-
-    public void AddInput(Terminal input)
-    {
-        Inputs.Add(input);
-    }
-
-
-    public void RemoveInput(Terminal input)
-    {
-        Inputs.Remove(input);
-    }
+    public List<Terminal> Inputs { get; } = [];
 }

@@ -69,9 +69,11 @@ public partial class Preview : ManagerBase<Preview>
 
         foreach (var co in Objects)
         {
-            var clone = CloningService.Clone(co);
-            clone.Opacity = 1.0;
-            sim.Add(clone);
+            // var clone = CloningService.Clone(co);
+            co.Opacity = 1.0;
+            sim.Add(co);
         }
+
+        Ditch();
     }
 }

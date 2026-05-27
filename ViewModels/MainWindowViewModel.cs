@@ -132,7 +132,7 @@ public partial class MainWindowViewModel : ViewModelBase
         foreach (CircuitObjectViewModel co in collection)
         {
             if (co is MultiInputGateViewModel mig)
-                mig.AddInput(new TerminalViewModel(new Terminal(), TerminalType.Input, false));
+                mig.Inputs.Add(new TerminalViewModel());
         }
     }
 
@@ -153,7 +153,7 @@ public partial class MainWindowViewModel : ViewModelBase
         foreach (CircuitObjectViewModel co in collection)
         {
             if (co is AndGateViewModel ag)
-                ag.RemoveInput(ag.Inputs[^1]);
+                ag.Inputs.Remove(ag.Inputs[^1]);
         }
     }
 }
