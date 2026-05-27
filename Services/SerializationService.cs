@@ -29,7 +29,14 @@ public static class SerializationService
 
     public static ObservableCollection<CircuitObjectViewModel>? Deserialize(string json)
     {
-        return (ObservableCollection<CircuitObjectViewModel>?)
-            JsonConvert.DeserializeObject(json, Settings());
+        try
+        {
+            return (ObservableCollection<CircuitObjectViewModel>?)
+                JsonConvert.DeserializeObject(json, Settings());
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
     }
 }
