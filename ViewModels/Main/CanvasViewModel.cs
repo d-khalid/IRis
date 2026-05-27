@@ -61,7 +61,6 @@ public partial class CanvasViewModel : ViewModelBase
 
     public void PointerMoved(object? sender, PointerEventArgs e)
     {
-        e.Handled = true;
         Simulation.CurrentMousePos = SimulationService.SnapPointToGrid(
             e.GetPosition((Visual)sender!));
 
@@ -81,8 +80,6 @@ public partial class CanvasViewModel : ViewModelBase
 
     public void PointerReleased(PointerReleasedEventArgs e)
     {
-        e.Handled = true;
-
         if (Selection.IsVisible)
         {
             Selection.EndBox();

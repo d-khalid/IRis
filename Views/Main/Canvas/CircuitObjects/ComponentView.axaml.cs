@@ -26,7 +26,7 @@ public partial class ComponentView : UserControl
         var sim = Simulation.GetInstance();
 
         if (sim.Running && DataContext is ToggleViewModel t)
-            t.PointerDoublePressed();
+            t.Toggle();
         else
             (DataContext as ComponentViewModel)!.PointerPressed();
     }
@@ -34,7 +34,9 @@ public partial class ComponentView : UserControl
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
+
         var sim = Simulation.GetInstance();
 
         if (!sim.Running)
@@ -44,7 +46,8 @@ public partial class ComponentView : UserControl
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        e.Handled = true;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+
         var sim = Simulation.GetInstance();
 
         if (!sim.Running)
@@ -54,7 +57,8 @@ public partial class ComponentView : UserControl
 
     private void OnPointerExited(object? sender, PointerEventArgs e)
     {
-        e.Handled = true;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+
         var sim = Simulation.GetInstance();
 
         if (!sim.Running)

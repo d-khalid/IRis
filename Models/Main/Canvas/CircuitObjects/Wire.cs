@@ -4,10 +4,10 @@ using IRis.Models.Main.Canvas.Core;
 namespace IRis.Models.Main.Canvas.CircuitObjects;
 
 
-public class Wire(Terminal mainInput, Terminal mainOutput) : CircuitObject
+public class Wire : CircuitObject
 {
-    public Terminal MainInput = mainInput;
-    public Terminal MainOutput = mainOutput;
+    public Terminal MainInput = new();
+    public Terminal MainOutput = new();
 
 
     public override void Simulate()

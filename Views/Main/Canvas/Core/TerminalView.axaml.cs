@@ -16,6 +16,9 @@ public partial class TerminalView : UserControl
 
     public void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed) return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+
         e.Handled = true;
         (DataContext as TerminalViewModel)!.PointerPressed();
     }
@@ -23,6 +26,8 @@ public partial class TerminalView : UserControl
 
     public void OnPointerEntered(object? sender, PointerEventArgs e)
     {
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+
         e.Handled = true;
         (DataContext as TerminalViewModel)!.PointerEntered();
     }
@@ -30,6 +35,8 @@ public partial class TerminalView : UserControl
 
     public void OnPointerExited(object? sender, PointerEventArgs e)
     {
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+
         e.Handled = true;
         (DataContext as TerminalViewModel)!.PointerExited();
     }

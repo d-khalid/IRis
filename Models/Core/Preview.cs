@@ -4,7 +4,6 @@ using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 using IRis.Models.Main.Canvas.Core;
 using IRis.Base;
-using IRis.Models.Main.Canvas.CircuitObjects;
 
 
 namespace IRis.Models.Core;
@@ -37,22 +36,12 @@ public partial class Preview : ManagerBase<Preview>
 
     public void StartWireAt(TerminalViewModel t)
     {
-        Terminal i = new();
-        Terminal o = new();
+        WireViewModel wire = new();
 
-        if (t.Type is TerminalType.Input) i = t.GetModel();
-        else if (t.Type is TerminalType.Output) o = t.GetModel();
+        if (t.Type is TerminalType.Output) wire.MainInput = t;
+        else if (t.Type is TerminalType.Input) wire.MainOutput = t;
         else return;
 
-        TerminalViewModel input = t;
-        TerminalViewModel output = t;
-
-        if (t.Type is TerminalType.Input) output = new(o, TerminalType.Output, true);
-        else if (t.Type is TerminalType.Output) input = new(o, TerminalType.Input, true);
-        else return;
-
-        Wire model = new(i, o);
-        WireViewModel wire = new(model, input, output);
         Add(wire);
     }
 
@@ -60,15 +49,15 @@ public partial class Preview : ManagerBase<Preview>
     public void EndWireAt(TerminalViewModel t)
     {
         if (!HasNewWire()) return;
-        var w = (Objects[0] as WireViewModel)!;
+        var wire = (Objects[0] as WireViewModel)!;
 
-        if (w.MainInput.IsOrphan) w.MainInput = t;
-        else if (w.MainOutput.IsOrphan) w.MainOutput = t;
+        if (wire.MainInput.IsOrphan) wire.MainInput = t;
+        else if (wire.MainOutput.IsOrphan) wire.MainOutput = t;
         else return;
 
         var sim = Simulation.GetInstance();
-        w.Opacity = 1.0;
-        sim.Objects.Add(w);
+        wire.Opacity = 1.0;
+        sim.Objects.Add(wire);
         Ditch();
     }
 

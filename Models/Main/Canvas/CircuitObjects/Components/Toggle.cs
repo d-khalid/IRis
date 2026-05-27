@@ -7,7 +7,7 @@ namespace IRis.Models.Main.Canvas.CircuitObjects.Components;
 public class Toggle : Component
 {
     public Terminal Output = new();
-    public LogicState State = LogicState.High;
+    public LogicState State = LogicState.Low;
 
 
     public override void Simulate()

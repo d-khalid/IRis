@@ -41,6 +41,9 @@ public partial class Simulation : ManagerBase<Simulation>
 
     public void Start()
     {
+        Selection.GetInstance().Ditch();
+        Preview.GetInstance().Ditch();
+
         Running = true;
         _timer.Start();
     }
