@@ -4,9 +4,9 @@ using Avalonia.Controls;
 namespace IRis.Views.Main.Canvas.CircuitObjects.Components;
 
 
-public partial class ToggleView : UserControl
+public partial class ProbeView : UserControl
 {
-    public ToggleView()
+    public ProbeView()
     {
         InitializeComponent();
     }

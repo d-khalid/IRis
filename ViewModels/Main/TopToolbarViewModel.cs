@@ -45,4 +45,15 @@ public partial class TopToolbarViewModel : ViewModelBase
         sel.Ditch();
         prev.Pick(new ToggleViewModel());
     }
+
+
+    [RelayCommand]
+    private static void AddProbe()
+    {
+        var sel = Selection.GetInstance();
+        var prev = Preview.GetInstance();
+
+        sel.Ditch();
+        prev.Pick(new ProbeViewModel());
+    }
 }

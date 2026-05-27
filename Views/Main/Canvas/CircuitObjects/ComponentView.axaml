@@ -17,6 +17,9 @@
         <DataTemplate DataType="components:ToggleViewModel">
             <views:ToggleView />
         </DataTemplate>
+        <DataTemplate DataType="components:ProbeViewModel">
+            <views:ProbeView />
+        </DataTemplate>
     </UserControl.DataTemplates>
 
     <ContentControl
