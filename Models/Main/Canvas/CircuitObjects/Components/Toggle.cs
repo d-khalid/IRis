@@ -6,7 +6,7 @@ namespace IRis.Models.Main.Canvas.CircuitObjects.Components;
 
 public class Toggle : Component
 {
-    public Terminal Output = new();
+    public Terminal Output = null!;
     public LogicState State = LogicState.Low;
 
 

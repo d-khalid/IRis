@@ -44,7 +44,7 @@ public partial class TopToolbarViewModel : ViewModelBase
         var prev = Preview.GetInstance();
 
         sel.Ditch();
-        prev.Pick(new ToggleViewModel() { Output = new TerminalViewModel() });
+        prev.Pick(new ToggleViewModel() { Output = new() });
     }
 
 
@@ -55,6 +55,6 @@ public partial class TopToolbarViewModel : ViewModelBase
         var prev = Preview.GetInstance();
 
         sel.Ditch();
-        prev.Pick(new ProbeViewModel());
+        prev.Pick(new ProbeViewModel() { Input = new() });
     }
 }

@@ -22,6 +22,7 @@ public partial class ToggleViewModel : ComponentViewModel
         get => _output;
         set
         {
+            value.Type = TerminalType.Output;
             SetProperty(ref _output, value);
             (Model as Toggle)!.Output = value.GetModel();
         }

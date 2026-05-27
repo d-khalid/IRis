@@ -6,7 +6,7 @@ namespace IRis.Models.Main.Canvas.CircuitObjects.Components;
 
 public class Probe : Component
 {
-    public Terminal Input = new();
+    public Terminal Input = null!;
     public LogicState State = LogicState.Unknown;
 
 

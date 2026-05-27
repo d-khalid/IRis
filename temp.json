@@ -3,15 +3,14 @@
   "$values": [
     {
       "$id": "1",
-      "$type": "IRis.ViewModels.Main.Canvas.CircuitObjects.Components.ToggleViewModel, IRis",
-      "Output": {
+      "$type": "IRis.ViewModels.Main.Canvas.CircuitObjects.Components.ProbeViewModel, IRis",
+      "Input": {
         "$id": "2",
         "$type": "IRis.ViewModels.Main.Canvas.Core.TerminalViewModel, IRis",
         "Type": 0
       },
-      "State": 0,
-      "X": 900.0,
-      "Y": 950.0,
+      "X": 850.0,
+      "Y": 910.0,
       "Rotation": 0.0
     }
   ]
