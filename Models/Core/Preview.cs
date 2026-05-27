@@ -37,7 +37,11 @@ public partial class Preview : ManagerBase<Preview>
 
     public void StartWireAt(TerminalViewModel t)
     {
-        WireViewModel wire = new();
+        WireViewModel wire = new() 
+        { 
+            MainInput = new() { IsOrphan = true }, 
+            MainOutput = new() { IsOrphan = true }
+        };
 
         if (t.Type is TerminalType.Output) wire.MainInput = t;
         else if (t.Type is TerminalType.Input) wire.MainOutput = t;

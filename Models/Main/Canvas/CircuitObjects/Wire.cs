@@ -6,8 +6,8 @@ namespace IRis.Models.Main.Canvas.CircuitObjects;
 
 public class Wire : CircuitObject
 {
-    public Terminal MainInput = new();
-    public Terminal MainOutput = new();
+    public Terminal MainInput = null!;
+    public Terminal MainOutput = null!;
 
 
     public override void Simulate()

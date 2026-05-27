@@ -5,52 +5,32 @@ using System.ComponentModel;
 using IRis.Models.Main.Canvas.CircuitObjects;
 using IRis.Models.Main.Canvas.Core;
 using IRis.Models.Core;
+using Newtonsoft.Json;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 
-public partial class WireViewModel : CircuitObjectViewModel
+public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 {
-    public ObservableCollection<Point> Points { get; set; } = [];
-    private TerminalViewModel _mainInput;
-    private TerminalViewModel _mainOutput;
+    [JsonIgnore] public ObservableCollection<Point> Points { get; } = [];
 
-
-    public WireViewModel() : this(new Wire()) {}
-    private WireViewModel(Wire model) : 
-        base(model)
-    {
-        
-        _mainInput = new TerminalViewModel() 
-        {
-            Type = TerminalType.Input,
-            IsOrphan = true
-        };
-        _mainInput.PropertyChanged += OnTerminalPropertyChanged;
-
-        _mainOutput = new TerminalViewModel()
-        {
-            Type = TerminalType.Output,
-            IsOrphan = true
-        };
-        _mainOutput.PropertyChanged += OnTerminalPropertyChanged;
-    }
-
-
+    private TerminalViewModel _mainInput = null!;
     public TerminalViewModel MainInput { 
         get => _mainInput;
         set {
+            value.Type = TerminalType.Input;
             _mainInput = value;
             (Model as Wire)!.MainInput = value.GetModel();
             _mainInput.PropertyChanged += OnTerminalPropertyChanged;
         }
     }
 
-
+    private TerminalViewModel _mainOutput = null!;
     public TerminalViewModel MainOutput { 
         get => _mainOutput;
         set {
+            value.Type = TerminalType.Output;
             _mainOutput = value;
             (Model as Wire)!.MainOutput = value.GetModel();
             _mainOutput.PropertyChanged += OnTerminalPropertyChanged;
