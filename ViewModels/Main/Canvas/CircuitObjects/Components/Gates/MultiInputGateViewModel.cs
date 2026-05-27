@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
+using Avalonia;
 using IRis.Models.Main.Canvas.CircuitObjects.Components.Gates;
 using IRis.Models.Main.Canvas.Core;
+using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 using Newtonsoft.Json;
 
@@ -44,13 +46,19 @@ public abstract partial class MultiInputGateViewModel : GateViewModel
 
     protected override void UpdateInputTerminals()
     {
-        double x = X - 10;
+        double unrotatedX = X - 10;
         double multiplier = 20;
 
         for (int i = 0; i < Inputs.Count; i++)
         {
-            Inputs[i].X = x;
-            Inputs[i].Y = Y + (i * multiplier) + 10;
+            double unrotatedY = Y + (i * multiplier) + 10;
+
+            Point rotatedPos = SimulationService.RotateTerminalPosition(
+                unrotatedX, unrotatedY, Rotation, Width, Height, X, Y
+            );
+
+            Inputs[i].X = rotatedPos.X;
+            Inputs[i].Y = rotatedPos.Y;
         }
     }
 }

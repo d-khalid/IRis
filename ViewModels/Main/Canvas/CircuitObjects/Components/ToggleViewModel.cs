@@ -6,6 +6,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Main.Canvas.CircuitObjects.Components;
 using IRis.Models.Main.Canvas.Core;
 using IRis.ViewModels.Main.Canvas.Core;
+using Avalonia;
+using IRis.Services;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
@@ -28,8 +30,15 @@ public partial class ToggleViewModel : ComponentViewModel
 
     protected override void UpdateTerminals()
     {
-        Output.X = X + (Width + 10);
-        Output.Y = Y + (Height / 2);
+        double unrotatedX = X + (Width + 10);
+        double unrotatedY = Y + (Height / 2);
+
+        Point rotatedPos = SimulationService.RotateTerminalPosition(
+            unrotatedX, unrotatedY, Rotation, Width, Height, X, Y
+        );
+
+        Output.X = rotatedPos.X;
+        Output.Y = rotatedPos.Y;
     }
 
 

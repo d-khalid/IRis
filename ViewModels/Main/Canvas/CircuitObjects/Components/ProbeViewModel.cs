@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Main.Canvas.CircuitObjects.Components;
 using IRis.Models.Main.Canvas.Core;
 using IRis.ViewModels.Main.Canvas.Core;
+using Avalonia;
+using IRis.Services;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
@@ -32,8 +34,15 @@ public partial class ProbeViewModel : ComponentViewModel
 
     protected override void UpdateTerminals()
     {
-        Input.X = X + (Width + 10);
-        Input.Y = Y + (Height / 2);
+        double unrotatedX = X - 10;
+        double unrotatedY = Y + 10;
+
+        Point rotatedPos = SimulationService.RotateTerminalPosition(
+            unrotatedX, unrotatedY, Rotation, Width, Height, X, Y
+        );
+
+        Input.X = rotatedPos.X;
+        Input.Y = rotatedPos.Y;
     }
 
 

@@ -111,4 +111,29 @@ public static class SimulationService {
             }
         }
     }
+
+
+    public static Point RotateTerminalPosition(double unrotatedX, double unrotatedY, 
+        double rotation, double width, double height, double x, double y)
+    {
+        if (rotation == 0) return new Point(unrotatedX, unrotatedY);
+
+        // do I look like a MATHEMATICIAN?! NO, and
+        // this was written by gemini 3.1 pro. It works
+
+        double centerX = x + (width / 2.0);
+        double centerY = y + (height / 2.0);
+        double radians = rotation * Math.PI / 180.0;
+        
+        double cos = Math.Round(Math.Cos(radians));
+        double sin = Math.Round(Math.Sin(radians));
+
+        double translatedX = unrotatedX - centerX;
+        double translatedY = unrotatedY - centerY;
+
+        double rotatedX = (translatedX * cos) - (translatedY * sin) + centerX;
+        double rotatedY = (translatedX * sin) + (translatedY * cos) + centerY;
+
+        return new Point(rotatedX, rotatedY);
+    }
 }
