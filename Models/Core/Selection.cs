@@ -5,6 +5,7 @@ using System;
 using Avalonia;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using IRis.Base;
+using IRis.Views.Main.Canvas.CircuitObjects;
 
 
 namespace IRis.Models.Core;
@@ -45,18 +46,10 @@ public partial class Selection : ManagerBase<Selection>
         var selectionBounds = new Rect(X, Y, Width, Height);
         foreach (CircuitObjectViewModel co in selectables) 
         {
-            if (co is ComponentViewModel c)
-            {
-                if (!c.IsSelected && c.Intersects(selectionBounds))
-                {
-                    Add(c);
-                }
-
-                else if (c.IsSelected && !c.Intersects(selectionBounds))
-                {
-                    Remove(c);
-                }
-            }
+            if (!co.IsSelected && co.Intersects(selectionBounds))
+                Add(co);
+            else if (co.IsSelected && !co.Intersects(selectionBounds))
+                Remove(co);
         }
     }
 
@@ -91,7 +84,8 @@ public partial class Selection : ManagerBase<Selection>
     public void AddPartial(CircuitObjectViewModel co)
     {
         Partial = co;
-        co.SelectionOpacity = 0.5;
+        if (co is ComponentViewModel c) c.SelectionOpacity = 0.5;
+        else if (co is WireViewModel w) w.SelectionOpacity = 0.2;
         co.IsSelected = true;
     }
 
@@ -130,7 +124,8 @@ public partial class Selection : ManagerBase<Selection>
     public override void Add(CircuitObjectViewModel co)
     {
         base.Add(co);
-        co.SelectionOpacity = 1.0;
+        if (co is ComponentViewModel c) c.SelectionOpacity = 1.0;
+        else if (co is WireViewModel w) w.SelectionOpacity = 0.4;
         co.IsSelected = true;
     }
 

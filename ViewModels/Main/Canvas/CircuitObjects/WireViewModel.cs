@@ -4,6 +4,7 @@ using IRis.ViewModels.Main.Canvas.Core;
 using System.ComponentModel;
 using IRis.Models.Main.Canvas.CircuitObjects;
 using IRis.Models.Main.Canvas.Core;
+using IRis.Models.Core;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
@@ -64,8 +65,48 @@ public partial class WireViewModel : CircuitObjectViewModel
     }
 
 
-    public bool Contains(Point pt)
+    public override bool Contains(Point pt)
     {
         return Points.Contains(pt);
+    }
+
+
+    public override bool Intersects(Rect rect)
+    {
+        for (int i = 0; i < Points.Count - 1; i++)
+        {
+            if (rect.Contains(Points[i]) || rect.Contains(Points[i + 1]))
+                return true;
+            else if (new Rect(Points[i], Points[i + 1]).Inflate(6).Intersects(rect))
+                return true;
+        }
+
+        return false;
+    }
+
+
+    public void PointerPressed()
+    {
+        var sel = Selection.GetInstance();
+        sel.DitchPartial();
+        sel.Focus(this);
+    }
+
+
+    public void PointerEntered()
+    {
+        var drag = Drag.GetInstance();
+        var sel = Selection.GetInstance();
+        var prev = Preview.GetInstance();
+
+        if (prev.HasObjects() || drag.HasObjects()) return;
+        if (!sel.Objects.Contains(this))
+            sel.AddPartial(this);
+    }
+
+
+    public void PointerExited()
+    {
+        Selection.GetInstance().DitchPartial();
     }
 }

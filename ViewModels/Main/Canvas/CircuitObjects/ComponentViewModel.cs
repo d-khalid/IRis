@@ -29,15 +29,15 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
     }
 
 
-    public bool Intersects(Rect rect)
+    public override bool Intersects(Rect rect)
     {
         return rect.Intersects(new Rect(X, Y, Width, Height));
     }
 
 
-    public bool Contains(Point pt)
+    public override bool Contains(Point pt)
     {
-        return new Rect (X, Y, Width, Height).Contains(pt);
+        return new Rect(X, Y, Width, Height).Contains(pt);
     }
 
 

@@ -62,6 +62,6 @@ public partial class ComponentView : UserControl
         var sim = Simulation.GetInstance();
 
         if (!sim.Running)
-            (DataContext as ComponentViewModel)!.PointerExited();
+            (DataContext as ComponentViewModel)?.PointerExited();
     }
 }
