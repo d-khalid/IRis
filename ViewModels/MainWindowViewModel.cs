@@ -45,6 +45,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         var prev = Preview.GetInstance();
         var sel = Selection.GetInstance();
+        var drag = Drag.GetInstance();
         var clip = ClipboardManager.GetInstance();
 
         if (prev.HasObjects())
@@ -56,6 +57,10 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             clip.Copy(sel.Objects);
             sel.Ditch();
+        }
+        else if (drag.HasObjects())
+        {
+            clip.Copy(drag.Objects);
         }
     }
 
@@ -76,9 +81,11 @@ public partial class MainWindowViewModel : ViewModelBase
         ObservableCollection<CircuitObjectViewModel> collection;
         var prev = Preview.GetInstance();
         var sel = Selection.GetInstance();
+        var drag = Drag.GetInstance();
 
         if (prev.HasObjects()) collection = prev.Objects;
         else if (sel.HasObjects()) collection = sel.Objects;
+        else if (drag.HasObjects()) collection = drag.Objects;
         else return;
 
         Point min = SimulationService.GetMinPointInCollection(collection);
@@ -115,15 +122,17 @@ public partial class MainWindowViewModel : ViewModelBase
         ObservableCollection<CircuitObjectViewModel> collection;
         var prev = Preview.GetInstance();
         var sel = Selection.GetInstance();
+        var drag = Drag.GetInstance();
 
         if (prev.HasObjects()) collection = prev.Objects;
         else if (sel.HasObjects()) collection = sel.Objects;
+        else if (drag.HasObjects()) collection = drag.Objects;
         else return;
 
         foreach (CircuitObjectViewModel co in collection)
         {
-            if (co is AndGateViewModel ag)
-                ag.AddInput(new TerminalViewModel(new Terminal(), TerminalType.Input, false));
+            if (co is MultiInputGateViewModel mig)
+                mig.AddInput(new TerminalViewModel(new Terminal(), TerminalType.Input, false));
         }
     }
 
@@ -134,9 +143,11 @@ public partial class MainWindowViewModel : ViewModelBase
         ObservableCollection<CircuitObjectViewModel> collection;
         var prev = Preview.GetInstance();
         var sel = Selection.GetInstance();
+        var drag = Drag.GetInstance();
 
         if (prev.HasObjects()) collection = prev.Objects;
         else if (sel.HasObjects()) collection = sel.Objects;
+        else if (drag.HasObjects()) collection = drag.Objects;
         else return;
 
         foreach (CircuitObjectViewModel co in collection)

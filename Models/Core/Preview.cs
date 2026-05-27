@@ -4,6 +4,7 @@ using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 using IRis.Models.Main.Canvas.Core;
 using IRis.Base;
+using System;
 
 
 namespace IRis.Models.Core;
@@ -68,17 +69,9 @@ public partial class Preview : ManagerBase<Preview>
 
         foreach (var co in Objects)
         {
-            if (co is ComponentViewModel c)
-            {
-                var clone = CloningService.Clone(c);
-                clone.Opacity = 1.0;
-                sim.Add(clone);
-            }
-
-            else if (co is WireViewModel w)
-            {
-                
-            }
+            var clone = CloningService.Clone(co);
+            clone.Opacity = 1.0;
+            sim.Add(clone);
         }
     }
 }

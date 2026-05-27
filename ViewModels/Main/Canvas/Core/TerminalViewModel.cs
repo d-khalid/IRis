@@ -57,6 +57,8 @@ public partial class TerminalViewModel : ObservableObject
         var prev = Preview.GetInstance();
 
         sel.DitchPartial();
+        sel.Ditch();
+
         if (prev.HasNewWire())
             prev.EndWireAt(this);
         else
