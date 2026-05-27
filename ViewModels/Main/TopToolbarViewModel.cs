@@ -4,6 +4,7 @@ using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 using IRis.Views.Main.Canvas.CircuitObjects.Components;
+using IRis.ViewModels.Main.Canvas.Core;
 
 
 namespace IRis.ViewModels.Main;
@@ -43,7 +44,7 @@ public partial class TopToolbarViewModel : ViewModelBase
         var prev = Preview.GetInstance();
 
         sel.Ditch();
-        prev.Pick(new ToggleViewModel());
+        prev.Pick(new ToggleViewModel() { Output = new TerminalViewModel() });
     }
 
 

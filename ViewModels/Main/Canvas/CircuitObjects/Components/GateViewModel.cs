@@ -17,6 +17,7 @@ public abstract partial class GateViewModel(Gate model) : ComponentViewModel(mod
         get => _output;
         set
         {
+            value.Type = TerminalType.Output;
             SetProperty(ref _output, value);
             (Model as Gate)!.Output = value.GetModel();
         }

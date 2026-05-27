@@ -15,12 +15,9 @@ public partial class LeftSidebarViewModel : ViewModelBase
     {
         Selection.GetInstance().Ditch();
 
-        AndGateViewModel gate = new()
-        {
-            Output = new TerminalViewModel() { Type = TerminalType.Output }
-        };
-        gate.Inputs.Add(new TerminalViewModel());
-        gate.Inputs.Add(new TerminalViewModel());
+        AndGateViewModel gate = new() { Output = new() };
+        gate.Inputs.Add(new());
+        gate.Inputs.Add(new());
 
         Preview.GetInstance().Pick(gate);
     }

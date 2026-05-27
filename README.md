@@ -68,12 +68,9 @@ For instantiating a WireViewModel, we have to create 2X `Terminal`, 1X `Wire` wi
 Let's take an example of `AndGateViewModel` for simplicity. We create a new instance, put in the Output terminal using an object initializer, and then add two inputs to make it look sane:
 
 ```csharp
-AndGateViewModel gate = new()
-{
-    Output = new TerminalViewModel() { Type = TerminalType.Output }
-};
-gate.Inputs.Add(new TerminalViewModel());
-gate.Inputs.Add(new TerminalViewModel());
+AndGateViewModel gate = new() { Output = new() };
+gate.Inputs.Add(new());
+gate.Inputs.Add(new());
 ```
 
 Normally the Type field of the `TerminalViewModel` has to be explicitly mentioned, but in this case, the `AndGateViewModel` Inputs list intercept function assigns the type implicitly. Also, the field **IsOrphan** is set to false by default and is only meant to be used for previews.
@@ -95,3 +92,13 @@ Take a sip of copium please. What you'll read next might be tough to swallow. An
 For each component, taking an example of a gate, lets say, we have X input terminals and 1 output terminal. We would need to store the terminal memory references, which `Newtonsoft.Json` currently does with id numbers. This helps mapping them back to connections during deserialization.
 
 Furthermore, the component needs it's X,Y coordinates to be mapped back to it's position properly. It would also be necessary to keep the Rotation as that is also important during deserialization. Rest of the component's visual properties can be created on runtime.
+
+One important thing here is that for `ToggleViewModel`, the State has to be kept in the json because it would be annoying to have to set the state of each of the toggles of our circuit each time we load it from a file. But the State is stored in the model which we are not serializing right? That's exactly the reason we have this wrapper for it in the `ToggleViewModel`:
+
+```csharp
+public LogicState State
+{
+    get => (Model as Toggle)!.State;
+    set => (Model as Toggle)!.State = value;
+}
+```

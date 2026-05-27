@@ -18,7 +18,7 @@ public enum TerminalType
 
 public enum LogicState
 {
-    High,
     Low,
+    High,
     Unknown
 }
