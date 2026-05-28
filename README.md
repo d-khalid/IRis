@@ -10,6 +10,8 @@ IRis is an AI-powered circuit simulation software made with **Avalonia** and **C
 
 ## Documentation
 
+This is some rough work. We'll rearrange it when we finish this project.
+
 ### Models
 
 #### ManagerBase:
@@ -106,3 +108,8 @@ public LogicState State
 #### Wires
 
 Wire cloning is too tricky to be messed with. One IMPORTANT thing if you are working on this codebase would be to always clone a collection of objects together. NEVER EVER think of cloning each object separately. Otherwise their memory references would break, and you would end up with disconnected weird-behaving wires.
+
+
+### Cloning Service
+
+Currently it relies on JsonSerialization. One thing to note is that the entire app's functionality depend on cloning, and cloning depends on serialization. If serialization/deserialization breaks, nothing will behave as expected.

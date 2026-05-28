@@ -5,18 +5,72 @@
 
     xmlns:vm="using:IRis.ViewModels.Main"
     x:DataType="vm:LeftSidebarViewModel"
+
+    xmlns:vcomponents="using:IRis.Views.Main.Canvas.CircuitObjects.Components"
+    xmlns:vgates="using:IRis.Views.Main.Canvas.CircuitObjects.Components.Gates"
+
+    xmlns:components="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
+    xmlns:gates="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates"
+    FontSize="12"
 >
-    <ScrollViewer Width="135" BorderThickness="2">
-        <StackPanel Margin="15,0" Spacing="5">
-            <TextBlock Text="Components" FontSize="14" FontWeight="Bold" Margin="0,6" />
-            <Button Content="AND Gate" Command="{Binding AddAndCommand}" />
-            <Button Content="OR Gate" />
-            <Button Content="NOT Gate" />
-            <Button Content="NAND Gate" />
-            <Button Content="NOR Gate" />
-            <Button Content="XOR Gate" />
-            <Button Content="XNOR Gate" />
-            <Button Content="Other" />
+    <UserControl.Resources>
+        <components:ToggleViewModel x:Key="SampleToggle" />
+        <components:ProbeViewModel x:Key="SampleProbe" />
+        <gates:AndGateViewModel x:Key="SampleAnd" />
+    </UserControl.Resources>
+
+    <ScrollViewer Width="200" BorderThickness="0">
+        <StackPanel Margin="5,5" Spacing="5">
+            <Expander Header="I/O" IsExpanded="True" Padding="5,5">
+                <StackPanel Margin="0,0" Spacing="5">
+                    <Button Command="{Binding AddToggleCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Viewbox Height="18">
+                                <vcomponents:ToggleView DataContext="{StaticResource SampleToggle}" />
+                            </Viewbox>
+                            <TextBlock Text="Toggle Switch" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding AddProbeCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Viewbox Height="18">
+                                <vcomponents:ProbeView DataContext="{StaticResource SampleProbe}" />
+                            </Viewbox>
+                            <TextBlock Text="Logic Probe" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Expander>
+            <Expander Header="Gates" IsExpanded="False" Padding="5,5">
+                <StackPanel Margin="0,0" Spacing="5">
+                    <Button Command="{Binding AddAndCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Viewbox Height="18">
+                                <vgates:AndGateView DataContext="{StaticResource SampleAnd}" />
+                            </Viewbox>
+                            <TextBlock Text="AND Gate" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Content="OR Gate" />
+                    <Button Content="NOT Gate" />
+                    <Button Content="NAND Gate" />
+                    <Button Content="NOR Gate" />
+                    <Button Content="XOR Gate" />
+                    <Button Content="XNOR Gate" />
+                </StackPanel>
+            </Expander>
+            <Expander Header="Advanced" IsExpanded="False" Padding="5,5">
+                <StackPanel Margin="0,0" Spacing="5">
+                    <Button Content="MUX" />
+                    <Button Content="DEMUX" />
+                </StackPanel>
+            </Expander>
+            <Expander Header="Clock" IsExpanded="False" Padding="5,5">
+                <StackPanel Margin="0,0" Spacing="5">
+                    <Button Content="Latch" />
+                    <Button Content="FlipFlop" />
+                </StackPanel>
+            </Expander>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

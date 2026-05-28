@@ -35,26 +35,4 @@ public partial class TopToolbarViewModel : ViewModelBase
             sim.End();
         }
     }
-
-
-    [RelayCommand]
-    private static void AddToggle()
-    {
-        var sel = Selection.GetInstance();
-        var prev = Preview.GetInstance();
-
-        sel.Ditch();
-        prev.Pick(new ToggleViewModel() { Output = new() });
-    }
-
-
-    [RelayCommand]
-    private static void AddProbe()
-    {
-        var sel = Selection.GetInstance();
-        var prev = Preview.GetInstance();
-
-        sel.Ditch();
-        prev.Pick(new ProbeViewModel() { Input = new() });
-    }
 }

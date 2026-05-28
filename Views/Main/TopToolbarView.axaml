@@ -6,19 +6,22 @@
     xmlns:vm="using:IRis.ViewModels.Main"
     x:DataType="vm:TopToolbarViewModel"
 >
-    <DockPanel Margin="5">
+    <DockPanel Margin="5,0,5,5">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
-            <Button Content="Toggle Switch" Command="{Binding AddToggleCommand}" />
-            <Button Content="Logic Probe" Command="{Binding AddProbeCommand}" />
-            <Button Content="D Latch" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
+            <Button MaxWidth="28" MaxHeight="32">
+                <PathIcon Data="{StaticResource arrow_undo_regular}" Width="12" Height="12" />
+            </Button>
+            <Button MaxWidth="28" MaxHeight="32">
+                <PathIcon Data="{StaticResource arrow_redo_regular}" Width="12" Height="12" />
+            </Button>
             <Button
                 HorizontalAlignment="Right"
-                Content="{Binding SimulationToggleContent}"
                 Command="{Binding SimulationToggleCommand}"
                 Background="{Binding SimulationToggleBackground}"
-                Margin="5,0"
+                Content="Simulate"
+                FontSize="12"
             />
         </StackPanel>
     </DockPanel>

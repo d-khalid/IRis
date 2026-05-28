@@ -5,6 +5,7 @@
 
     xmlns:vm="using:IRis.ViewModels.Main"
     x:DataType="vm:TopMenuViewModel"
+    FontSize="12"
 >
     <Menu>
         <MenuItem Header="File">
