@@ -16,50 +16,50 @@ namespace IRis.ViewModels.Main;
 public partial class CanvasViewModel : ViewModelBase
 {
     [ObservableProperty] private AvaloniaList<CircuitObjectViewModel> _circuit = 
-        Simulation.GetInstance().Objects;
-    [ObservableProperty] private Preview _preview = Preview.GetInstance();
-    [ObservableProperty] private SelectionBox _selectionBox = SelectionBox.GetInstance();
-    [ObservableProperty] private AppState _appState = AppState.GetInstance();
+        Simulation.Get().Objects;
+    [ObservableProperty] private Preview _preview = Preview.Get();
+    [ObservableProperty] private SelectionBox _selectionBox = SelectionBox.Get();
+    [ObservableProperty] private AppState _appState = AppState.Get();
 
 
     [RelayCommand]
     private static void Copy()
     {
-        if (!Preview.GetInstance().IsEmpty())
+        if (!Preview.Get().IsEmpty())
         {
-            ClipboardService.Copy(Preview.GetInstance().Objects);
-            Preview.GetInstance().Nuke();
+            ClipboardService.Copy(Preview.Get().Objects);
+            Preview.Get().Nuke();
         }
 
-        else if (!Selection.GetInstance().IsEmpty())
+        else if (!Selection.Get().IsEmpty())
         {
-            ClipboardService.Copy(Selection.GetInstance().Objects);
-            Selection.GetInstance().UnHighlightAll();
+            ClipboardService.Copy(Selection.Get().Objects);
+            Selection.Get().UnHighlightAll();
         }
     }
 
 
     public void PointerEntered()
     {
-        if (!Preview.GetInstance().IsEmpty())
-            Preview.GetInstance().Show();
+        if (!Preview.Get().IsEmpty())
+            Preview.Get().Show();
     }
 
 
     public void PointerExited()
     {
-        if (!Preview.GetInstance().IsEmpty())
-            Preview.GetInstance().Hide();
+        if (!Preview.Get().IsEmpty())
+            Preview.Get().Hide();
     }
 
 
     public static void PointerPressed(Control sender, PointerPressedEventArgs e)
     {
-        if (!Preview.GetInstance().IsEmpty() && !Preview.GetInstance().HasNewWire())
-            Preview.GetInstance().Commit();
+        if (!Preview.Get().IsEmpty() && !Preview.Get().HasNewWire())
+            Preview.Get().Commit();
         else
         {
-            SelectionBox.GetInstance().StartAt(AppState.GetInstance().MousePosition);
+            SelectionBox.Get().StartAt(AppState.Get().MousePosition);
             e.Pointer.Capture(sender);   // keeps focus till released
         }
     }
@@ -67,25 +67,25 @@ public partial class CanvasViewModel : ViewModelBase
 
     public void PointerMoved(object? sender, PointerEventArgs e)
     {
-        AppState.GetInstance().MousePosition = 
+        AppState.Get().MousePosition = 
             SimulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
 
-        if (SelectionBox.GetInstance().Exists())
-            SelectionBox.GetInstance().UpdateTo(AppState.GetInstance().MousePosition);
+        if (SelectionBox.Get().Exists())
+            SelectionBox.Get().UpdateTo(AppState.Get().MousePosition);
 
-        else if (!Preview.GetInstance().IsEmpty())
-            Preview.GetInstance().UpdatePositionTo(AppState.GetInstance().MousePosition);
+        else if (!Preview.Get().IsEmpty())
+            Preview.Get().UpdatePositionTo(AppState.Get().MousePosition);
 
         else if (DragService.IsRunning())
-            DragService.UpdatePositionTo(AppState.GetInstance().MousePosition);
+            DragService.UpdatePositionTo(AppState.Get().MousePosition);
     }
 
 
     public static void PointerReleased(PointerReleasedEventArgs e)
     {
-        if (SelectionBox.GetInstance().Exists())
+        if (SelectionBox.Get().Exists())
         {
-            SelectionBox.GetInstance().Nuke();
+            SelectionBox.Get().Nuke();
             e.Pointer.Capture(null);
         }
     }

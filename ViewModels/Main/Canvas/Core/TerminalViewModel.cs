@@ -34,7 +34,7 @@ public partial class TerminalViewModel : ObservableObject
 
     private void UpdateColor()
     {
-        if (!AppState.GetInstance().TerminalColorChangeAllowed)
+        if (!AppState.Get().TerminalColorChangeAllowed)
         {
             Color = "DarkGray";
             return;
@@ -52,15 +52,15 @@ public partial class TerminalViewModel : ObservableObject
 
     public void PointerPressed()
     {
-        if (!Selection.GetInstance().IsEmpty()) 
-            Selection.GetInstance().UnHighlightAll();
+        if (!Selection.Get().IsEmpty()) 
+            Selection.Get().UnHighlightAll();
 
         HoverEffectService.Stop();
 
-        if (Preview.GetInstance().HasNewWire())
-            Preview.GetInstance().EndWireAt(this);
+        if (Preview.Get().HasNewWire())
+            Preview.Get().EndWireAt(this);
         else
-            Preview.GetInstance().StartWireAt(this);
+            Preview.Get().StartWireAt(this);
     }
 
 

@@ -16,10 +16,10 @@ public static class SerializationService
     };
 
 
-    public static string Serialize(AvaloniaList<CircuitObjectViewModel> collection)
+    public static string Serialize<T>(T source)
     {
-        if (collection is null) return "";
-        return JsonConvert.SerializeObject(collection, Settings());
+        if (source is null) return "";
+        return JsonConvert.SerializeObject(source, Settings());
     }
 
 

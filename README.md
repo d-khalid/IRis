@@ -27,7 +27,7 @@ The Show() and Hide() functions of the BaseManager can work differently for each
 For getting an instance of a Child class, just call the GetInstance method. For example:
 
 ```csharp
-var instance = Simulation.GetInstance();
+var instance = Simulation.Get();
 ```
 
 ### Views

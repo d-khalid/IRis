@@ -19,7 +19,7 @@ public partial class SelectionBox : SingletonBase<SelectionBox>
 
     public void StartAt(Point position)
     {
-        Selection.GetInstance().UnHighlightAll();
+        Selection.Get().UnHighlightAll();
         SelectionBoxStartPt = position;
         IsVisible = true;
     }
@@ -33,9 +33,9 @@ public partial class SelectionBox : SingletonBase<SelectionBox>
         Y = Math.Min(SelectionBoxStartPt.Y, position.Y);
 
         var selectionBounds = new Rect(X, Y, Width, Height);
-        var sel = Selection.GetInstance();
+        var sel = Selection.Get();
 
-        foreach (CircuitObjectViewModel co in Simulation.GetInstance().Objects)
+        foreach (CircuitObjectViewModel co in Simulation.Get().Objects)
         {
             if (!co.IsSelected && co.Intersects(selectionBounds))
             {

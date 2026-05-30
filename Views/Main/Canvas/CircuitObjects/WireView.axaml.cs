@@ -21,7 +21,7 @@ public partial class WireView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (!Simulation.GetInstance().Running)
+        if (!Simulation.Get().Running)
             (DataContext as WireViewModel)!.PointerPressed();
     }
 
@@ -30,7 +30,7 @@ public partial class WireView : UserControl
     {
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
 
-        if (!Simulation.GetInstance().Running)
+        if (!Simulation.Get().Running)
             (DataContext as WireViewModel)!.PointerEntered();
     }
 
@@ -39,7 +39,7 @@ public partial class WireView : UserControl
     {
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
 
-        if (!Simulation.GetInstance().Running)
+        if (!Simulation.Get().Running)
             (DataContext as WireViewModel)?.PointerExited();
     }
 }

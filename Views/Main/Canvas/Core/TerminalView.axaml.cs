@@ -21,7 +21,7 @@ public partial class TerminalView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (!Simulation.GetInstance().Running)
+        if (!Simulation.Get().Running)
             (DataContext as TerminalViewModel)!.PointerPressed();
     }
 
@@ -31,7 +31,7 @@ public partial class TerminalView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (!Simulation.GetInstance().Running)
+        if (!Simulation.Get().Running)
             (DataContext as TerminalViewModel)!.PointerEntered();
     }
 
@@ -41,7 +41,7 @@ public partial class TerminalView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (!Simulation.GetInstance().Running)
+        if (!Simulation.Get().Running)
             (DataContext as TerminalViewModel)!.PointerExited();
     }
 }

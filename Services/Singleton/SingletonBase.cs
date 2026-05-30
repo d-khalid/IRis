@@ -14,7 +14,7 @@ public abstract partial class SingletonBase<T> : ObservableObject
     where T : SingletonBase<T>, new()
 {
     private static T? _instance = null;
-    public static T GetInstance() => _instance ??= new();
+    public static T Get() => _instance ??= new();
 
 
     public SingletonBase()

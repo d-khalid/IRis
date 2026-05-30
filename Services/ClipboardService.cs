@@ -41,8 +41,8 @@ public static class ClipboardService
         var pasted = SerializationService.Deserialize(json);
         if (pasted is null) return;
 
-        var prev = Preview.GetInstance();
+        var prev = Preview.Get();
         prev.Pick(pasted);
-        prev.UpdatePositionTo(AppState.GetInstance().MousePosition);
+        prev.UpdatePositionTo(AppState.Get().MousePosition);
     }
 }

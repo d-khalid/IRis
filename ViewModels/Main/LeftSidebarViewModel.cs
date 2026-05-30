@@ -15,42 +15,42 @@ public partial class LeftSidebarViewModel : ViewModelBase
     [RelayCommand]
     private static void AddAnd()
     {
-        Selection.GetInstance().UnHighlightAll();
+        Selection.Get().UnHighlightAll();
 
         AndGateViewModel gate = new() { Output = new() };
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        Preview.GetInstance().Pick(gate);
+        Preview.Get().Pick(gate);
     }
 
 
     [RelayCommand]
     private static void AddNot()
     {
-        Selection.GetInstance().UnHighlightAll();
+        Selection.Get().UnHighlightAll();
 
         NotGateViewModel gate = new() { Input = new(), Output = new() };
-        Preview.GetInstance().Pick(gate);
+        Preview.Get().Pick(gate);
     }
 
 
     [RelayCommand]
     private static void AddToggle()
     {
-        Selection.GetInstance().UnHighlightAll();
+        Selection.Get().UnHighlightAll();
 
         ToggleViewModel toggle = new() { Output = new() };
-        Preview.GetInstance().Pick(toggle);
+        Preview.Get().Pick(toggle);
     }
 
 
     [RelayCommand]
     private static void AddProbe()
     {
-        Selection.GetInstance().UnHighlightAll();
+        Selection.Get().UnHighlightAll();
 
         ProbeViewModel probe = new() { Input = new() };
-        Preview.GetInstance().Pick(probe);
+        Preview.Get().Pick(probe);
     }
 }

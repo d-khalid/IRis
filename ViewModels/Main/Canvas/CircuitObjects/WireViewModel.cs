@@ -74,20 +74,20 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 
     public void PointerPressed()
     {
-        if (!IsSelected) Selection.GetInstance().Highlight(this);
+        if (!IsSelected) Selection.Get().Highlight(this);
     }
 
 
     public void PointerEntered()
     {
-        if (!Preview.GetInstance().IsEmpty() || DragService.IsRunning()) return;
+        if (!Preview.Get().IsEmpty() || DragService.IsRunning()) return;
         if (!IsSelected) HoverEffectService.On(this);
     }
 
 
     public void PointerExited()
     {
-        if (!Preview.GetInstance().IsEmpty() || DragService.IsRunning()) return;
+        if (!Preview.Get().IsEmpty() || DragService.IsRunning()) return;
         if (!IsSelected && HoverEffectService.IsRunning()) HoverEffectService.Stop();
     }
 }

@@ -13,6 +13,7 @@
     xmlns:main="using:IRis.Views.Main"
     x:DataType="vm:MainWindowViewModel"
     x:Class="IRis.Views.MainWindowView"
+    FontSize="12"
 >
     <DockPanel>
         <main:TopMenuView DockPanel.Dock="Top" />
@@ -20,8 +21,13 @@
         <main:TopToolbarView DockPanel.Dock="Top" />
         <Border Background="DarkSlateGray" Height="25" DockPanel.Dock="Bottom">
             <Grid>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <TextBlock Margin="10,0" FontSize="12">
+                <StackPanel 
+                    Orientation="Horizontal" 
+                    Margin="10,2,0,0" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center"
+                >
+                    <TextBlock>
                         <TextBlock.Text>
                             <MultiBinding StringFormat="Cursor: ({0}, {1})">
                                 <Binding Path="AppState.MousePosition.X" />
@@ -29,6 +35,8 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
+                    <TextBlock Text="|" Margin="6,0" />
+                    <TextBlock Text="{Binding AppState.CurrentFilePath}" />
                 </StackPanel>
             </Grid>
         </Border>

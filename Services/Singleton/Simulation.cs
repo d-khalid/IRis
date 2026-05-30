@@ -40,8 +40,8 @@ public partial class Simulation : SingletonCollection<Simulation>
 
     public void Start()
     {
-        Selection.GetInstance().UnHighlightAll();
-        Preview.GetInstance().Drop();
+        Selection.Get().UnHighlightAll();
+        Preview.Get().Drop();
         Running = true;
         _timer.Start();
     }

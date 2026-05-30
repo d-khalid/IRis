@@ -12,10 +12,12 @@ public partial class AppState : SingletonBase<AppState>
     [ObservableProperty] private bool _terminalColorChangeAllowed = true;
     partial void OnTerminalColorChangeAllowedChanged(bool value)
     {
-        if (Simulation.GetInstance().Running)
+        if (Simulation.Get().Running)
         {
-            Simulation.GetInstance().Stop();
-            Simulation.GetInstance().Start();
+            Simulation.Get().Stop();
+            Simulation.Get().Start();
         }
     }
+
+    [ObservableProperty] private string _currentFilePath = "(unsaved)";
 }

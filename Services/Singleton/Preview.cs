@@ -36,6 +36,7 @@ public partial class Preview : SingletonCollection<Preview>
         Objects.AddRange(collection);
 
         if (!IsVisible) IsVisible = true;
+        foreach (var co in collection) co.Opacity = 0.5;
 
         Point min = SimulationService.GetMinPointInCollection(collection);
         Point max = SimulationService.GetMaxPointInCollection(collection);
@@ -57,6 +58,7 @@ public partial class Preview : SingletonCollection<Preview>
         else if (t.Type is TerminalType.Input) wire.MainOutput = t;
         else return;
 
+        wire.Opacity = 0.5;
         Objects.Add(wire);
     }
 
@@ -71,14 +73,13 @@ public partial class Preview : SingletonCollection<Preview>
         else return;
 
         wire.Opacity = 1.0;
-        Simulation.GetInstance().Add(wire);
+        Simulation.Get().Add(wire);
         Objects.Clear();
     }
 
 
     public void Commit()
     {
-        Simulation sim = Simulation.GetInstance();
         var cloned = CloningService.Clone(Objects);
 
         foreach (var co in cloned)
@@ -86,8 +87,7 @@ public partial class Preview : SingletonCollection<Preview>
             if (co is WireViewModel w)
                 w.Redraw();    // force wire redraw
 
-            co.Opacity = 1.0;
-            sim.Add(co);
+            Simulation.Get().Add(co);
         }
     }
 

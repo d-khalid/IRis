@@ -20,7 +20,7 @@ public static class DragService
 
     public static void StartAt(Point position)
     {
-        var collection = Selection.GetInstance().Objects;
+        var collection = Selection.Get().Objects;
         Objects.AddRange(collection);
 
         Point min = SimulationService.GetMinPointInCollection(collection);
@@ -33,7 +33,7 @@ public static class DragService
         if (!Used)
         {
             Used = true;
-            Selection.GetInstance().UnHighlightAll();
+            Selection.Get().UnHighlightAll();
         }
 
         SimulationService.SnapCollectionToPosition(Objects, position, SavedMouseOffset);
@@ -45,7 +45,7 @@ public static class DragService
         if (Used)
         {
             Used = false;
-            Selection.GetInstance().Highlight(Objects);
+            Selection.Get().Highlight(Objects);
         }
 
         Objects.Clear();

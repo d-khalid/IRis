@@ -54,13 +54,13 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
     {
         if (!IsSelected)
         {
-            if (!Selection.GetInstance().IsEmpty()) 
-                Selection.GetInstance().UnHighlightAll();
+            if (!Selection.Get().IsEmpty()) 
+                Selection.Get().UnHighlightAll();
 
-            Selection.GetInstance().Highlight(this);
+            Selection.Get().Highlight(this);
         }
 
-        DragService.StartAt(AppState.GetInstance().MousePosition);
+        DragService.StartAt(AppState.Get().MousePosition);
     }
 
 
@@ -73,14 +73,14 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
 
     public void PointerEntered()
     {
-        if (!Preview.GetInstance().IsEmpty() || DragService.IsRunning()) return;
+        if (!Preview.Get().IsEmpty() || DragService.IsRunning()) return;
         if (!IsSelected) HoverEffectService.On(this);
     }
 
 
     public void PointerExited()
     {
-        if (!Preview.GetInstance().IsEmpty() || DragService.IsRunning()) return;
+        if (!Preview.Get().IsEmpty() || DragService.IsRunning()) return;
         if (!IsSelected && HoverEffectService.IsRunning()) HoverEffectService.Stop();
     }
 

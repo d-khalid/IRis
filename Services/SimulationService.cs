@@ -137,4 +137,14 @@ public static class SimulationService
 
         return new Point(rotatedX, rotatedY);
     }
+
+
+    public static void RedrawWires(AvaloniaList<CircuitObjectViewModel> collection)
+    {
+        foreach (var co in collection)
+        {
+            if (co is WireViewModel w) 
+                w.Redraw();
+        }
+    }
 }

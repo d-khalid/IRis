@@ -1,3 +1,6 @@
+using Avalonia.Collections;
+using IRis.Models;
+using IRis.ViewModels.Main.Canvas;
 using Newtonsoft.Json;
 
 
@@ -8,14 +11,9 @@ public static class CloningService
 {
     public static T Clone<T>(T source)
     {
-        JsonSerializerSettings settings = new()
-        {
-            TypeNameHandling = TypeNameHandling.All,
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects
-        };
-
-        return JsonConvert.DeserializeObject<T>(
-            JsonConvert.SerializeObject(source, settings), settings
+        return (T)JsonConvert.DeserializeObject(
+            JsonConvert.SerializeObject(source, SerializationService.Settings()), 
+            SerializationService.Settings()
         )!;
     }
 }

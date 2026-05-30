@@ -17,38 +17,38 @@ namespace IRis.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    [ObservableProperty] private AppState _appState = AppState.GetInstance();
+    [ObservableProperty] private AppState _appState = AppState.Get();
 
 
     [RelayCommand]
     private static void DeleteKey()
     {
-        Simulation.GetInstance().Remove(Selection.GetInstance().Objects);
-        Selection.GetInstance().UnHighlightAll();
+        Simulation.Get().Remove(Selection.Get().Objects);
+        Selection.Get().UnHighlightAll();
     }
 
 
     [RelayCommand]
     private static void EscapeKey()
     {
-        if (!Preview.GetInstance().IsEmpty())
-            Preview.GetInstance().Nuke();
+        if (!Preview.Get().IsEmpty())
+            Preview.Get().Nuke();
     }
 
 
     [RelayCommand]
     private static void CopyKey()
     {
-        if (!Preview.GetInstance().IsEmpty())
+        if (!Preview.Get().IsEmpty())
         {
-            ClipboardService.Copy(Preview.GetInstance().Objects);
-            Preview.GetInstance().Nuke();
+            ClipboardService.Copy(Preview.Get().Objects);
+            Preview.Get().Nuke();
         }
 
-        else if (!Selection.GetInstance().IsEmpty())
+        else if (!Selection.Get().IsEmpty())
         {
-            ClipboardService.Copy(Selection.GetInstance().Objects);
-            Selection.GetInstance().UnHighlightAll();
+            ClipboardService.Copy(Selection.Get().Objects);
+            Selection.Get().UnHighlightAll();
         }
 
         else if (DragService.IsRunning())
@@ -68,11 +68,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static void RotateKey()
     {
-        if (!Preview.GetInstance().IsEmpty())
-            RotateCollection(Preview.GetInstance().Objects);
+        if (!Preview.Get().IsEmpty())
+            RotateCollection(Preview.Get().Objects);
 
-        else if (!Selection.GetInstance().IsEmpty())
-            RotateCollection(Selection.GetInstance().Objects);
+        else if (!Selection.Get().IsEmpty())
+            RotateCollection(Selection.Get().Objects);
 
         else if (DragService.IsRunning())
             RotateCollection(DragService.Objects);
@@ -112,11 +112,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static void AddInputKey()
     {
-        if (!Preview.GetInstance().IsEmpty()) 
-            AddInput(Preview.GetInstance().Objects);
+        if (!Preview.Get().IsEmpty()) 
+            AddInput(Preview.Get().Objects);
 
-        else if (!Selection.GetInstance().IsEmpty()) 
-            AddInput(Selection.GetInstance().Objects);
+        else if (!Selection.Get().IsEmpty()) 
+            AddInput(Selection.Get().Objects);
 
         else if (DragService.IsRunning()) 
             AddInput(DragService.Objects);
@@ -136,11 +136,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static void RemoveInputKey()
     {
-        if (!Preview.GetInstance().IsEmpty()) 
-            RemoveInput(Preview.GetInstance().Objects);
+        if (!Preview.Get().IsEmpty()) 
+            RemoveInput(Preview.Get().Objects);
 
-        else if (!Selection.GetInstance().IsEmpty()) 
-            RemoveInput(Selection.GetInstance().Objects);
+        else if (!Selection.Get().IsEmpty()) 
+            RemoveInput(Selection.Get().Objects);
 
         else if (DragService.IsRunning()) 
             RemoveInput(DragService.Objects);

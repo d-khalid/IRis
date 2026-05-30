@@ -23,10 +23,10 @@ public partial class ComponentView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (Simulation.GetInstance().Running && DataContext is ToggleViewModel t)
+        if (Simulation.Get().Running && DataContext is ToggleViewModel t)
             t.Toggle();
 
-        else if (!Simulation.GetInstance().Running)
+        else if (!Simulation.Get().Running)
             (DataContext as ComponentViewModel)?.PointerPressed();
     }
 
@@ -36,7 +36,7 @@ public partial class ComponentView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (!Simulation.GetInstance().Running)
+        if (!Simulation.Get().Running)
             ComponentViewModel.PointerReleased();
     }
 
@@ -45,7 +45,7 @@ public partial class ComponentView : UserControl
     {
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
 
-        if (!Simulation.GetInstance().Running)
+        if (!Simulation.Get().Running)
             (DataContext as ComponentViewModel)?.PointerEntered();
     }
 
@@ -54,7 +54,7 @@ public partial class ComponentView : UserControl
     {
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
 
-        if (!Simulation.GetInstance().Running)
+        if (!Simulation.Get().Running)
             (DataContext as ComponentViewModel)?.PointerExited();
     }
 }

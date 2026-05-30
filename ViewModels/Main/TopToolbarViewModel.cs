@@ -19,18 +19,18 @@ public partial class TopToolbarViewModel : ViewModelBase
     [RelayCommand]
     private void SimulationToggle()
     {
-        if (!Simulation.GetInstance().Running)
+        if (!Simulation.Get().Running)
         {
             SimulationToggleContent = "Simulation: ON";
             SimulationToggleBackground = new SolidColorBrush(Colors.DarkGreen);
-            Simulation.GetInstance().Start();
+            Simulation.Get().Start();
         }
 
         else
         {
             SimulationToggleContent = "Simulation: OFF";
             SimulationToggleBackground = new SolidColorBrush(Colors.DarkRed);
-            Simulation.GetInstance().Stop();
+            Simulation.Get().Stop();
         }
     }
 }
