@@ -20,7 +20,7 @@
                 HorizontalAlignment="Right"
                 Command="{Binding SimulationToggleCommand}"
                 Background="{Binding SimulationToggleBackground}"
-                Content="Simulate"
+                Content="{Binding SimulationToggleContent}"
                 FontSize="12"
             />
         </StackPanel>

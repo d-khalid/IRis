@@ -2,8 +2,9 @@ using System;
 using IRis.Models.Main.Canvas.CircuitObjects;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
-using IRis.Models.Core;
 using Newtonsoft.Json;
+using IRis.Services.Singleton;
+using IRis.Services;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
@@ -51,53 +52,36 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
 
     public void PointerPressed()
     {
-        var sel = Selection.GetInstance();
-        var drag = Drag.GetInstance();
-        sel.DitchPartial();
-
-        if (IsSelected)
-            drag.StartWith(sel.Objects);
-        else
+        if (!IsSelected)
         {
-            sel.Focus(this);
-            drag.StartWith(this);
+            if (!Selection.GetInstance().IsEmpty()) 
+                Selection.GetInstance().UnHighlightAll();
+
+            Selection.GetInstance().Highlight(this);
         }
+
+        DragService.StartAt(AppState.GetInstance().MousePosition);
     }
 
 
-    public void PointerReleased()
+    public static void PointerReleased()
     {
-        var drag = Drag.GetInstance();
-        var sel = Selection.GetInstance();
-
-        if (drag.HasObjects())
-        {
-            if (drag.Used)
-                sel.AddCollection(drag.Objects);
-            else
-                sel.Focus(this);
-
-            drag.End();
-        }
+        if (DragService.IsRunning())
+            DragService.Stop();
     }
 
 
     public void PointerEntered()
     {
-        var drag = Drag.GetInstance();
-        var sel = Selection.GetInstance();
-        var prev = Preview.GetInstance();
-
-        if (prev.HasObjects() || drag.HasObjects()) return;
-        if (!sel.Objects.Contains(this))
-            sel.AddPartial(this);
+        if (!Preview.GetInstance().IsEmpty() || DragService.IsRunning()) return;
+        if (!IsSelected) HoverEffectService.On(this);
     }
 
 
     public void PointerExited()
     {
-        var sel = Selection.GetInstance();
-        sel.DitchPartial();
+        if (!Preview.GetInstance().IsEmpty() || DragService.IsRunning()) return;
+        if (!IsSelected && HoverEffectService.IsRunning()) HoverEffectService.Stop();
     }
 
 

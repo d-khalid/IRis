@@ -22,7 +22,6 @@
         <Rectangle
             Stroke="DodgerBlue"
             StrokeThickness="1"
-            IsVisible="{Binding IsSelected}" 
             Margin="-20,-5"
             IsHitTestVisible="False"
             Opacity="{Binding SelectionOpacity}"

@@ -15,7 +15,7 @@
             Width="10" 
             Height="10"
             Fill="{Binding Color}"
-            Cursor="Cross"
+            Cursor="{Binding Cursor}"
         />
     </Grid>
 </UserControl>

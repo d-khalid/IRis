@@ -34,7 +34,6 @@
             StrokeThickness="10"
             StrokeJoin="Round"
             StrokeLineCap="Round"
-            IsVisible="{Binding IsSelected}"
             Opacity="{Binding SelectionOpacity}"
             IsHitTestVisible="False"
         />

@@ -1,5 +1,4 @@
 using Avalonia;
-using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Main.Canvas.CircuitObjects.Components;
 using IRis.Models.Main.Canvas.Core;
 using IRis.Services;

@@ -1,18 +1,17 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.Generic;
 using Avalonia;
-using IRis.Base;
 using Avalonia.Threading;
 using System;
+using IRis.ViewModels.Main.Canvas;
+using Avalonia.Collections;
 
 
-namespace IRis.Models.Core;
+namespace IRis.Services.Singleton;
 
 
-public partial class Simulation : ManagerBase<Simulation>
+public partial class Simulation : SingletonCollection<Simulation>
 {
     public bool Running = false;
-    [ObservableProperty] private Point _currentMousePos = new(0, 0);
     private readonly HashSet<Point> _forbiddenMatrix = [];
     private readonly DispatcherTimer _timer;
 
@@ -41,18 +40,24 @@ public partial class Simulation : ManagerBase<Simulation>
 
     public void Start()
     {
-        Selection.GetInstance().Ditch();
-        Preview.GetInstance().Ditch();
-
+        Selection.GetInstance().UnHighlightAll();
+        Preview.GetInstance().Drop();
         Running = true;
         _timer.Start();
     }
 
 
-    public void End()
+    public void Stop()
     {
         _timer.Stop();
         Running = false;
         foreach (var co in Objects) co.Reset();
     }
+
+
+    public void Add(CircuitObjectViewModel co) => Objects.Add(co);
+    public void Add(AvaloniaList<CircuitObjectViewModel> coll) => Objects.AddRange(coll);
+    public void Remove(CircuitObjectViewModel co) => Objects.Remove(co);
+    public void Remove(AvaloniaList<CircuitObjectViewModel> coll) => Objects.RemoveAll(coll);
+    public void Nuke() => Objects.Clear();
 }

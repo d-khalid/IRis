@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using IRis.Models.Core;
+using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 
@@ -21,9 +21,7 @@ public partial class WireView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
+        if (!Simulation.GetInstance().Running)
             (DataContext as WireViewModel)!.PointerPressed();
     }
 
@@ -32,9 +30,7 @@ public partial class WireView : UserControl
     {
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
 
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
+        if (!Simulation.GetInstance().Running)
             (DataContext as WireViewModel)!.PointerEntered();
     }
 
@@ -43,9 +39,7 @@ public partial class WireView : UserControl
     {
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
 
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
+        if (!Simulation.GetInstance().Running)
             (DataContext as WireViewModel)?.PointerExited();
     }
 }

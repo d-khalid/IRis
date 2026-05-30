@@ -113,3 +113,10 @@ Wire cloning is too tricky to be messed with. One IMPORTANT thing if you are wor
 ### Cloning Service
 
 Currently it relies on JsonSerialization. One thing to note is that the entire app's functionality depend on cloning, and cloning depends on serialization. If serialization/deserialization breaks, nothing will behave as expected.
+
+
+### Why did we use Singleton Patterns all over?
+
+Using singleton pattern is our copium considering we need Static classes to share states between different parts of IRis, but neither can static classes inherit from `ObservableObject` (considering we need those static classes to have observable properties) nor can they implement `INotifyPropertyChanged` which forces us to find a workaround (copium).
+
+We have chosen this copium to be the singleton pattern.

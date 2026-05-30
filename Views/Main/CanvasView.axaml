@@ -65,9 +65,9 @@
                 </MenuFlyout>
             </Canvas.ContextFlyout>
 
-            <!-- rendering objects -->
+            <!-- rendering simulation -->
             <ItemsControl 
-                ItemsSource="{Binding Simulation.Objects}"
+                ItemsSource="{Binding Circuit}"
                 ClipToBounds="False" 
                 x:CompileBindings="False"
             >
@@ -129,11 +129,11 @@
             <Rectangle
                 Stroke="DodgerBlue"
                 StrokeThickness="1.5"
-                Canvas.Left="{Binding Selection.X}"
-                Canvas.Top="{Binding Selection.Y}"
-                Width="{Binding Selection.Width}"
-                Height="{Binding Selection.Height}"
-                IsVisible="{Binding Selection.IsVisible}"
+                Canvas.Left="{Binding SelectionBox.X}"
+                Canvas.Top="{Binding SelectionBox.Y}"
+                Width="{Binding SelectionBox.Width}"
+                Height="{Binding SelectionBox.Height}"
+                IsVisible="{Binding SelectionBox.IsVisible}"
                 IsHitTestVisible="False"
             >
                 <Rectangle.Fill>

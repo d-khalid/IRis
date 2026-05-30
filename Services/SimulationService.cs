@@ -1,18 +1,16 @@
 using Avalonia;
 using System;
-using Newtonsoft.Json;
 using IRis.ViewModels.Main.Canvas;
-using System.Collections.ObjectModel;
-using Avalonia.Controls;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
-using IRis.Models.Core;
-using System.Collections.Generic;
+using Avalonia.Collections;
+using IRis.Services.Singleton;
 
 
 namespace IRis.Services;
 
 
-public static class SimulationService {
+public static class SimulationService
+{
     public static Point SnapPointToGrid(Point pt)
     {
         double gridSpacing = 10.0;
@@ -40,7 +38,7 @@ public static class SimulationService {
     }
 
 
-    public static Point GetMaxPointInCollection(ObservableCollection<CircuitObjectViewModel> collection)
+    public static Point GetMaxPointInCollection(AvaloniaList<CircuitObjectViewModel> collection)
     {
         double maxX = 0.0;
         double maxY = 0.0;
@@ -58,7 +56,7 @@ public static class SimulationService {
     }
 
 
-    public static Point GetMinPointInCollection(ObservableCollection<CircuitObjectViewModel> collection)
+    public static Point GetMinPointInCollection(AvaloniaList<CircuitObjectViewModel> collection)
     {
         double minX = double.MaxValue;
         double minY = double.MaxValue;
@@ -77,8 +75,8 @@ public static class SimulationService {
 
 
     public static void SnapCollectionToPosition(
-        ObservableCollection<CircuitObjectViewModel> collection, 
-        Point Position, Point PositionMouseOffset) 
+        AvaloniaList<CircuitObjectViewModel> collection,
+        Point Position, Point PositionMouseOffset)
     {
         PositionMouseOffset = SnapPointToGrid(PositionMouseOffset);
         Position = SnapPointToGrid(Position);
@@ -113,7 +111,7 @@ public static class SimulationService {
     }
 
 
-    public static Point RotateTerminalPosition(double unrotatedX, double unrotatedY, 
+    public static Point RotateTerminalPosition(double unrotatedX, double unrotatedY,
         double rotation, double width, double height, double x, double y)
     {
         if (rotation == 0) return new Point(unrotatedX, unrotatedY);
@@ -124,7 +122,7 @@ public static class SimulationService {
         double centerX = x + (width / 2.0);
         double centerY = y + (height / 2.0);
         double radians = rotation * Math.PI / 180.0;
-        
+
         double cos = Math.Round(Math.Cos(radians));
         double sin = Math.Round(Math.Sin(radians));
 

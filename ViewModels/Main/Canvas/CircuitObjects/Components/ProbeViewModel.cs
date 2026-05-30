@@ -14,29 +14,23 @@ namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
 public partial class ProbeViewModel : ComponentViewModel
 {
-    private TerminalViewModel _input = null!;
-    public TerminalViewModel Input
+    [ObservableProperty] private TerminalViewModel _input = null!;
+    partial void OnInputChanged(TerminalViewModel value)
     {
-        get => _input;
-        set
+        (Model as Probe)!.Input = value.GetModel();
+        (Model as Probe)!.Input.PropertyChanged += (_, e) =>
         {
-            value.Type = TerminalType.Input;
-            SetProperty(ref _input, value);
-            (Model as Probe)!.Input = value.GetModel();
-            (Model as Probe)!.Input.PropertyChanged += (_, e) =>
-            {
-                if (e.PropertyName == nameof(Terminal.State))
-                    Update();
-            };
-        }
+            if (e.PropertyName == nameof(Terminal.State)) UpdateVisual();
+        };
     }
+
 
     [ObservableProperty] [property: JsonIgnore]
     private ImmutableSolidColorBrush _background = new(Colors.DarkGray);
     [ObservableProperty] [property: JsonIgnore] private string _label = "?";
 
 
-    public ProbeViewModel() : this(new Probe()) {}
+    public ProbeViewModel() : this(new Probe()) { }
     private ProbeViewModel(Probe model) : base(model)
     {
         Width = Height = 20;
@@ -58,11 +52,9 @@ public partial class ProbeViewModel : ComponentViewModel
     }
 
 
-    public void Update()
+    public void UpdateVisual()
     {
-        var p = (Model as Probe)!;
-
-        switch (p.Input.State)
+        switch ((Model as Probe)!.Input.State)
         {
             case LogicState.High:
                 Background = new(Colors.DarkGreen);

@@ -1,11 +1,13 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
-using IRis.Models.Core;
 using Avalonia.Input;
 using Avalonia.Controls;
 using IRis.Services;
+using IRis.Services.Singleton;
 using Avalonia;
 using System;
+using Avalonia.Collections;
+using IRis.ViewModels.Main.Canvas;
 
 
 namespace IRis.ViewModels.Main;
@@ -13,48 +15,50 @@ namespace IRis.ViewModels.Main;
 
 public partial class CanvasViewModel : ViewModelBase
 {
-    [ObservableProperty] private Simulation _simulation = Simulation.GetInstance();
+    [ObservableProperty] private AvaloniaList<CircuitObjectViewModel> _circuit = 
+        Simulation.GetInstance().Objects;
     [ObservableProperty] private Preview _preview = Preview.GetInstance();
-    [ObservableProperty] private Selection _selection = Selection.GetInstance();
-    [ObservableProperty] private Drag _drag = Drag.GetInstance();
-    public ClipboardManager Clipboard { get; } = ClipboardManager.GetInstance();
+    [ObservableProperty] private SelectionBox _selectionBox = SelectionBox.GetInstance();
 
 
     [RelayCommand]
-    private void Copy()
+    private static void Copy()
     {
-        if (Preview.HasObjects())
+        if (!Preview.GetInstance().IsEmpty())
         {
-            Clipboard.Copy(Preview.Objects);
-            Preview.Ditch();
+            ClipboardService.Copy(Preview.GetInstance().Objects);
+            Preview.GetInstance().Nuke();
         }
-        else if (Selection.HasObjects())
+
+        else if (!Selection.GetInstance().IsEmpty())
         {
-            Clipboard.Copy(Selection.Objects);
-            Selection.Ditch();
+            ClipboardService.Copy(Selection.GetInstance().Objects);
+            Selection.GetInstance().UnHighlightAll();
         }
     }
 
 
     public void PointerEntered()
     {
-        Preview.Show();
+        if (!Preview.GetInstance().IsEmpty())
+            Preview.GetInstance().Show();
     }
 
 
     public void PointerExited()
     {
-        Preview.Hide();
+        if (!Preview.GetInstance().IsEmpty())
+            Preview.GetInstance().Hide();
     }
 
 
-    public void PointerPressed(Control sender, PointerPressedEventArgs e)
+    public static void PointerPressed(Control sender, PointerPressedEventArgs e)
     {
-        if (Preview.HasObjects() && !Preview.HasNewWire()) 
-            Preview.CommitAll();
+        if (!Preview.GetInstance().IsEmpty() && !Preview.GetInstance().HasNewWire())
+            Preview.GetInstance().Commit();
         else
         {
-            Selection.StartBox();
+            SelectionBox.GetInstance().StartAt(AppState.GetInstance().MousePosition);
             e.Pointer.Capture(sender);   // keeps focus till released
         }
     }
@@ -62,28 +66,25 @@ public partial class CanvasViewModel : ViewModelBase
 
     public void PointerMoved(object? sender, PointerEventArgs e)
     {
-        Simulation.CurrentMousePos = SimulationService.SnapPointToGrid(
-            e.GetPosition((Visual)sender!));
+        AppState.GetInstance().MousePosition = 
+            SimulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
 
-        if (Selection.IsVisible)
-            Selection.UpdateBox(selectables: Simulation.Objects);
-        else if (Preview.HasObjects())
-            Preview.UpdatePosition(current: Simulation.CurrentMousePos);
-        else if (Drag.HasObjects())
-        {
-            if (Selection.HasObjects()) 
-                Selection.Ditch();
+        if (SelectionBox.GetInstance().Exists())
+            SelectionBox.GetInstance().UpdateTo(AppState.GetInstance().MousePosition);
 
-            Drag.UpdatePosition(current: Simulation.CurrentMousePos);
-        }
+        else if (!Preview.GetInstance().IsEmpty())
+            Preview.GetInstance().UpdatePositionTo(AppState.GetInstance().MousePosition);
+
+        else if (DragService.IsRunning())
+            DragService.UpdatePositionTo(AppState.GetInstance().MousePosition);
     }
 
 
-    public void PointerReleased(PointerReleasedEventArgs e)
+    public static void PointerReleased(PointerReleasedEventArgs e)
     {
-        if (Selection.IsVisible)
+        if (SelectionBox.GetInstance().Exists())
         {
-            Selection.EndBox();
+            SelectionBox.GetInstance().Nuke();
             e.Pointer.Capture(null);
         }
     }

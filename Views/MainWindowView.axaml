@@ -24,8 +24,8 @@
                     <TextBlock Margin="10,0" FontSize="12">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="Cursor: ({0}, {1})">
-                                <Binding Path="Simulation.CurrentMousePos.X" />
-                                <Binding Path="Simulation.CurrentMousePos.Y" />
+                                <Binding Path="AppState.MousePosition.X" />
+                                <Binding Path="AppState.MousePosition.Y" />
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>

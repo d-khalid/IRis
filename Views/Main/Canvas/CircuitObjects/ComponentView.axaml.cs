@@ -1,7 +1,7 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Input;
-using IRis.Models.Core;
+using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
@@ -23,12 +23,11 @@ public partial class ComponentView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        var sim = Simulation.GetInstance();
-
-        if (sim.Running && DataContext is ToggleViewModel t)
+        if (Simulation.GetInstance().Running && DataContext is ToggleViewModel t)
             t.Toggle();
-        else if (!sim.Running)
-            (DataContext as ComponentViewModel)!.PointerPressed();
+
+        else if (!Simulation.GetInstance().Running)
+            (DataContext as ComponentViewModel)?.PointerPressed();
     }
 
 
@@ -37,10 +36,8 @@ public partial class ComponentView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
-            (DataContext as ComponentViewModel)!.PointerReleased();
+        if (!Simulation.GetInstance().Running)
+            ComponentViewModel.PointerReleased();
     }
 
 
@@ -48,10 +45,8 @@ public partial class ComponentView : UserControl
     {
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
 
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
-            (DataContext as ComponentViewModel)!.PointerEntered();
+        if (!Simulation.GetInstance().Running)
+            (DataContext as ComponentViewModel)?.PointerEntered();
     }
 
 
@@ -59,9 +54,7 @@ public partial class ComponentView : UserControl
     {
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
 
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
+        if (!Simulation.GetInstance().Running)
             (DataContext as ComponentViewModel)?.PointerExited();
     }
 }

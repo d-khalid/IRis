@@ -4,9 +4,11 @@ using IRis.ViewModels.Main.Canvas.Core;
 using System.ComponentModel;
 using IRis.Models.Main.Canvas.CircuitObjects;
 using IRis.Models.Main.Canvas.Core;
-using IRis.Models.Core;
+using IRis.Services;
+using IRis.Services.Singleton;
 using Newtonsoft.Json;
 using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
@@ -16,26 +18,22 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 {
     [JsonIgnore] public ObservableCollection<Point> Points { get; } = [];
 
-    private TerminalViewModel _mainInput = null!;
-    public TerminalViewModel MainInput { 
-        get => _mainInput;
-        set {
-            value.Type = TerminalType.Input;
-            _mainInput = value;
-            (Model as Wire)!.MainInput = value.GetModel();
-            _mainInput.PropertyChanged += OnTerminalPropertyChanged;
-        }
+
+    [ObservableProperty] private TerminalViewModel _mainInput = null!;
+    partial void OnMainInputChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Input;
+        (Model as Wire)!.MainInput = value.GetModel();
+        value.PropertyChanged += OnTerminalPropertyChanged;
     }
 
-    private TerminalViewModel _mainOutput = null!;
-    public TerminalViewModel MainOutput { 
-        get => _mainOutput;
-        set {
-            value.Type = TerminalType.Output;
-            _mainOutput = value;
-            (Model as Wire)!.MainOutput = value.GetModel();
-            _mainOutput.PropertyChanged += OnTerminalPropertyChanged;
-        }
+
+    [ObservableProperty] private TerminalViewModel _mainOutput = null!;
+    partial void OnMainOutputChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Output;
+        (Model as Wire)!.MainOutput = value.GetModel();
+        value.PropertyChanged += OnTerminalPropertyChanged;
     }
 
 
@@ -78,26 +76,20 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 
     public void PointerPressed()
     {
-        var sel = Selection.GetInstance();
-        sel.DitchPartial();
-        sel.Focus(this);
+        if (!IsSelected) Selection.GetInstance().Highlight(this);
     }
 
 
     public void PointerEntered()
     {
-        var drag = Drag.GetInstance();
-        var sel = Selection.GetInstance();
-        var prev = Preview.GetInstance();
-
-        if (prev.HasObjects() || drag.HasObjects()) return;
-        if (!sel.Objects.Contains(this))
-            sel.AddPartial(this);
+        if (!Preview.GetInstance().IsEmpty() || DragService.IsRunning()) return;
+        if (!IsSelected) HoverEffectService.On(this);
     }
 
 
     public void PointerExited()
     {
-        Selection.GetInstance().DitchPartial();
+        if (!Preview.GetInstance().IsEmpty() || DragService.IsRunning()) return;
+        if (!IsSelected && HoverEffectService.IsRunning()) HoverEffectService.Stop();
     }
 }

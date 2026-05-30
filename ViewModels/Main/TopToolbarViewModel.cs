@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using IRis.Models.Core;
+using IRis.Services.Singleton;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
@@ -19,20 +19,18 @@ public partial class TopToolbarViewModel : ViewModelBase
     [RelayCommand]
     private void SimulationToggle()
     {
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
+        if (!Simulation.GetInstance().Running)
         {
             SimulationToggleContent = "Simulation: ON";
             SimulationToggleBackground = new SolidColorBrush(Colors.DarkGreen);
-            sim.Start();
+            Simulation.GetInstance().Start();
         }
 
         else
         {
             SimulationToggleContent = "Simulation: OFF";
             SimulationToggleBackground = new SolidColorBrush(Colors.DarkRed);
-            sim.End();
+            Simulation.GetInstance().Stop();
         }
     }
 }

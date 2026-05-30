@@ -7,5 +7,4 @@ namespace IRis.ViewModels;
 
 public abstract partial class ViewModelBase : ObservableObject
 {
-    [ObservableProperty] private Point _MousePosition = new(0, 0);
 }

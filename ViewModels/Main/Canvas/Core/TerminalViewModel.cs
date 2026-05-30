@@ -1,7 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using IRis.Models.Core;
+using IRis.Services;
+using IRis.Services.Singleton;
 using IRis.Models.Main.Canvas.Core;
 using Newtonsoft.Json;
+using Avalonia.Input;
 
 
 namespace IRis.ViewModels.Main.Canvas.Core;
@@ -15,17 +17,17 @@ public partial class TerminalViewModel : ObservableObject
     public TerminalType Type;
     [JsonIgnore] public bool IsOrphan = false;
 
-    [ObservableProperty] [property: JsonIgnore] private double _x;
-    [ObservableProperty] [property: JsonIgnore] private double _y;
+    [ObservableProperty] [property: JsonIgnore] private double _x = 0;
+    [ObservableProperty] [property: JsonIgnore] private double _y = 0;
     [ObservableProperty] [property: JsonIgnore] private string _color = "DarkGray";
+    [ObservableProperty] [property: JsonIgnore] private Cursor _cursor = new(StandardCursorType.Arrow);
 
 
     public TerminalViewModel()
     {
         Model.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName is nameof(Terminal.State))
-                UpdateColor();
+            if (e.PropertyName is nameof(Terminal.State)) UpdateColor();
         };
     }
 
@@ -44,29 +46,32 @@ public partial class TerminalViewModel : ObservableObject
 
     public void PointerPressed()
     {
-        var sel = Selection.GetInstance();
-        var prev = Preview.GetInstance();
+        if (!Selection.GetInstance().IsEmpty()) 
+            Selection.GetInstance().UnHighlightAll();
 
-        sel.DitchPartial();
-        sel.Ditch();
+        HoverEffectService.Stop();
 
-        if (prev.HasNewWire())
-            prev.EndWireAt(this);
+        if (Preview.GetInstance().HasNewWire())
+            Preview.GetInstance().EndWireAt(this);
         else
-            prev.StartWireAt(this);
+            Preview.GetInstance().StartWireAt(this);
     }
 
 
     public void PointerEntered()
     {
-        var sel = Selection.GetInstance();
-        sel.HidePartial();
+        Cursor = new(StandardCursorType.Cross);
+
+        if (HoverEffectService.IsRunning())
+            HoverEffectService.Hide();
     }
 
 
     public void PointerExited()
     {
-        var sel = Selection.GetInstance();
-        sel.ShowPartial();
+        Cursor = new(StandardCursorType.Arrow);
+
+        if (HoverEffectService.IsRunning())
+            HoverEffectService.Show();
     }
 }

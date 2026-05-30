@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using IRis.Models.Core;
+using IRis.Services.Singleton;
 using IRis.ViewModels.Main;
 
 
@@ -21,10 +21,8 @@ public partial class CanvasView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
-            (DataContext as CanvasViewModel)!.PointerEntered();
+        if (!Simulation.GetInstance().Running)
+            (DataContext as CanvasViewModel)?.PointerEntered();
     }
 
 
@@ -33,10 +31,8 @@ public partial class CanvasView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
-            (DataContext as CanvasViewModel)!.PointerExited();
+        if (!Simulation.GetInstance().Running)
+            (DataContext as CanvasViewModel)?.PointerExited();
     }
 
 
@@ -48,10 +44,8 @@ public partial class CanvasView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
-            (DataContext as CanvasViewModel)!.PointerPressed(ctrl, e);
+        if (!Simulation.GetInstance().Running)
+            CanvasViewModel.PointerPressed(ctrl, e);
     }
 
 
@@ -60,10 +54,8 @@ public partial class CanvasView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
-            (DataContext as CanvasViewModel)!.PointerMoved(sender, e);
+        if (!Simulation.GetInstance().Running)
+            (DataContext as CanvasViewModel)?.PointerMoved(sender, e);
     }
 
 
@@ -72,9 +64,7 @@ public partial class CanvasView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        var sim = Simulation.GetInstance();
-
-        if (!sim.Running)
-            (DataContext as CanvasViewModel)!.PointerReleased(e);
+        if (!Simulation.GetInstance().Running)
+            CanvasViewModel.PointerReleased(e);
     }
 }

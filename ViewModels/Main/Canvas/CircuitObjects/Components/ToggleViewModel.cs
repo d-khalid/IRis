@@ -16,24 +16,20 @@ namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
 public partial class ToggleViewModel : ComponentViewModel
 {
-    private TerminalViewModel _output = null!;
-    public TerminalViewModel Output
+    [ObservableProperty] private TerminalViewModel _output = null!;
+    partial void OnOutputChanged(TerminalViewModel value)
     {
-        get => _output;
-        set
-        {
-            value.Type = TerminalType.Output;
-            SetProperty(ref _output, value);
-            (Model as Toggle)!.Output = value.GetModel();
-        }
+        value.Type = TerminalType.Output;
+        (Model as Toggle)!.Output = value.GetModel();
     }
-    
-    [ObservableProperty] [property: JsonIgnore] 
+
+
+    [ObservableProperty] [property: JsonIgnore]
     private ImmutableSolidColorBrush _background = new(Colors.DarkRed);
     [ObservableProperty] [property: JsonIgnore] private string _label = "0";
 
 
-    public ToggleViewModel() : this(new Toggle()) {}
+    public ToggleViewModel() : this(new Toggle()) { }
     private ToggleViewModel(Toggle model) : base(model)
     {
         Width = Height = 20;
@@ -43,7 +39,7 @@ public partial class ToggleViewModel : ComponentViewModel
     public LogicState State
     {
         get => (Model as Toggle)!.State;
-        set 
+        set
         {
             (Model as Toggle)!.State = value;
             if (value is LogicState.High)
@@ -80,7 +76,7 @@ public partial class ToggleViewModel : ComponentViewModel
             Background = new(Colors.DarkRed);
             Label = "0";
         }
-        
+
         else if (t.State == LogicState.Low)
         {
             t.State = LogicState.High;

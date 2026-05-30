@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Newtonsoft.Json;
-using IRis.Models;
-using System.Collections.ObjectModel;
 using IRis.ViewModels.Main.Canvas;
+using Avalonia.Collections;
 
 
 namespace IRis.Services;
@@ -19,21 +15,22 @@ public static class SerializationService
         Formatting = Formatting.Indented
     };
 
-    public static string Serialize(ObservableCollection<CircuitObjectViewModel> collection)
+
+    public static string Serialize(AvaloniaList<CircuitObjectViewModel> collection)
     {
         if (collection is null) return "";
-
         return JsonConvert.SerializeObject(collection, Settings());
     }
 
 
-    public static ObservableCollection<CircuitObjectViewModel>? Deserialize(string json)
+    public static AvaloniaList<CircuitObjectViewModel>? Deserialize(string json)
     {
         try
         {
-            return (ObservableCollection<CircuitObjectViewModel>?)
+            return (AvaloniaList<CircuitObjectViewModel>?)
                 JsonConvert.DeserializeObject(json, Settings());
         }
+
         catch (JsonException)
         {
             return null;
