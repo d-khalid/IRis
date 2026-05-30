@@ -27,6 +27,8 @@
                     HorizontalAlignment="Left" 
                     VerticalAlignment="Center"
                 >
+                    <TextBlock Text="{Binding AppState.CurrentFilePath}" />
+                    <TextBlock Text="|" Margin="8,0" />
                     <TextBlock>
                         <TextBlock.Text>
                             <MultiBinding StringFormat="Cursor: ({0}, {1})">
@@ -35,8 +37,6 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
-                    <TextBlock Text="|" Margin="6,0" />
-                    <TextBlock Text="{Binding AppState.CurrentFilePath}" />
                 </StackPanel>
             </Grid>
         </Border>

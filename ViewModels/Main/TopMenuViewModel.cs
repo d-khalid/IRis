@@ -15,6 +15,16 @@ namespace IRis.ViewModels.Main;
 public partial class TopMenuViewModel : ViewModelBase
 {
     [RelayCommand]
+    private static void New()
+    {
+        Selection.Get().UnHighlightAll();
+        Simulation.Get().Nuke();
+        Preview.Get().Nuke();
+        AppState.Get().CurrentFilePath = "(unsaved)";
+    }
+
+
+    [RelayCommand]
     private static async Task OpenAsync()
     {
         if (Application.Current?.ApplicationLifetime is not 
@@ -81,6 +91,16 @@ public partial class TopMenuViewModel : ViewModelBase
         {
             AppState.Get().CurrentFilePath = file.Path.LocalPath;
             await SaveAsync();
+        }
+    }
+
+
+    [RelayCommand]
+    private static void Exit()
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime app)
+        {
+            app.Shutdown();
         }
     }
 }

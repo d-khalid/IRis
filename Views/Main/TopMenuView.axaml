@@ -9,7 +9,7 @@
 >
     <Menu>
         <MenuItem Header="File">
-            <MenuItem Header="New">
+            <MenuItem Header="New" Command="{Binding NewCommand}">
                 <MenuItem.Icon><PathIcon Data="{StaticResource new_regular}" /></MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="Open..." Command="{Binding OpenCommand}">
@@ -22,7 +22,7 @@
                 <MenuItem.Icon><PathIcon Data="{StaticResource save_edit}" /></MenuItem.Icon>
             </MenuItem>
             <Separator />
-            <MenuItem Header="Exit">
+            <MenuItem Header="Exit" Command="{Binding ExitCommand}">
                 <MenuItem.Icon><PathIcon Data="{StaticResource arrow_left_regular}" /></MenuItem.Icon>
             </MenuItem>
         </MenuItem>
