@@ -1,5 +1,5 @@
 using System;
-using IRis.Models.Main.Canvas.CircuitObjects;
+using IRis.Models.CircuitObjects;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;

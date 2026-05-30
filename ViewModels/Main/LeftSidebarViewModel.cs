@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
 using IRis.Services;
 using IRis.Services.Singleton;
-using IRis.Models.Main.Canvas.Core;
+using IRis.Models.Core;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 using IRis.ViewModels.Main.Canvas.Core;
@@ -21,6 +21,16 @@ public partial class LeftSidebarViewModel : ViewModelBase
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
+        Preview.GetInstance().Pick(gate);
+    }
+
+
+    [RelayCommand]
+    private static void AddNot()
+    {
+        Selection.GetInstance().UnHighlightAll();
+
+        NotGateViewModel gate = new() { Input = new(), Output = new() };
         Preview.GetInstance().Pick(gate);
     }
 

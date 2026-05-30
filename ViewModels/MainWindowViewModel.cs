@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using IRis.Services;
 using IRis.ViewModels.Main.Canvas;
-using IRis.Models.Main.Canvas.Core;
+using IRis.Models.Core;
 using Avalonia;
 using System.Collections.ObjectModel;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
@@ -151,7 +151,9 @@ public partial class MainWindowViewModel : ViewModelBase
             foreach (CircuitObjectViewModel co in collection)
             {
                 if (co is MultiInputGateViewModel mig)
+                {
                     mig.Inputs.Remove(mig.Inputs[^1]);
+                }
             }
         }
     }

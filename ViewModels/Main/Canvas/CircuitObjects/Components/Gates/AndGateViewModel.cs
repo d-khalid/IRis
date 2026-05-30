@@ -1,4 +1,4 @@
-using IRis.Models.Main.Canvas.CircuitObjects.Components.Gates;
+using IRis.Models.CircuitObjects.Components.Gates;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;

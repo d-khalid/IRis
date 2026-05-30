@@ -1,4 +1,4 @@
-namespace IRis.Models.Base;
+namespace IRis.Models;
 
 
 public interface ISimulatable

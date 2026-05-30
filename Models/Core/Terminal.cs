@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
 
-namespace IRis.Models.Main.Canvas.Core;
+namespace IRis.Models.Core;
 
 
 public partial class Terminal : ObservableObject

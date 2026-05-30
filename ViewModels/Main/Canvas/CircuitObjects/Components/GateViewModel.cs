@@ -1,6 +1,7 @@
 using Avalonia;
-using IRis.Models.Main.Canvas.CircuitObjects.Components;
-using IRis.Models.Main.Canvas.Core;
+using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.Models.CircuitObjects.Components;
+using IRis.Models.Core;
 using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 
@@ -10,16 +11,11 @@ namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
 public abstract partial class GateViewModel(Gate model) : ComponentViewModel(model)
 {
-    private TerminalViewModel _output = null!;
-    public TerminalViewModel Output
+    [ObservableProperty] private TerminalViewModel _output = null!;
+    partial void OnOutputChanged(TerminalViewModel value)
     {
-        get => _output;
-        set
-        {
-            value.Type = TerminalType.Output;
-            SetProperty(ref _output, value);
-            (Model as Gate)!.Output = value.GetModel();
-        }
+        value.Type = TerminalType.Output;
+        (Model as Gate)!.Output = value.GetModel();
     }
 
 

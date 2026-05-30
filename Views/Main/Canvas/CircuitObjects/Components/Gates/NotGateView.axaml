@@ -1,0 +1,68 @@
+<UserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+    xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates"
+    x:DataType="vm:NotGateViewModel"
+    x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.Gates.NotGateView"
+
+    xmlns:core="using:IRis.Views.Main.Canvas.Core"
+    ClipToBounds="False"
+>
+    <Grid ClipToBounds="False">
+        <Rectangle Margin="-20,-5" Fill="Transparent" />
+
+        <Line 
+            StartPoint="0,0" 
+            EndPoint="10,0" 
+            Stroke="Black" 
+            StrokeThickness="2" 
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Margin="-10,0,0,0"
+        />
+        <core:TerminalView 
+            DataContext="{Binding Input}" 
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Center" 
+            Margin="-20,0,0,0"
+        />
+
+        <Path
+            Fill="White" 
+            Stroke="Black" 
+            StrokeThickness="2"
+            Stretch="Fill"
+            Data="M 0,0 L 0,100 L 100,50 Z" 
+            Margin="0,0,8,0" 
+        />
+
+        <Ellipse 
+            Width="8" 
+            Height="8" 
+            Stroke="Black" 
+            StrokeThickness="2" 
+            Fill="White" 
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Center" 
+        />
+
+        <Grid ClipToBounds="False">
+            <Line 
+                StartPoint="0,0" 
+                EndPoint="10,0" 
+                Stroke="Black" 
+                StrokeThickness="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Margin="0,0,-10,0"
+            />
+            <core:TerminalView 
+                DataContext="{Binding Output}" 
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Center" 
+                Margin="0,0,-18,0"
+            />
+        </Grid>
+    </Grid>
+</UserControl>

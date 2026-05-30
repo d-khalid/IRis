@@ -1,7 +1,7 @@
-using IRis.Models.Main.Canvas.Core;
+using IRis.Models.Core;
 
 
-namespace IRis.Models.Main.Canvas.CircuitObjects.Components;
+namespace IRis.Models.CircuitObjects.Components;
 
 
 public abstract class Gate : Component

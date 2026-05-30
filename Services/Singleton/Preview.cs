@@ -1,7 +1,7 @@
 using Avalonia;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using IRis.ViewModels.Main.Canvas.Core;
-using IRis.Models.Main.Canvas.Core;
+using IRis.Models.Core;
 using Avalonia.Collections;
 using IRis.ViewModels.Main.Canvas;
 using CommunityToolkit.Mvvm.ComponentModel;

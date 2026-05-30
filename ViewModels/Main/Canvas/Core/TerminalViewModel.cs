@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Services;
 using IRis.Services.Singleton;
-using IRis.Models.Main.Canvas.Core;
+using IRis.Models.Core;
 using Newtonsoft.Json;
 using Avalonia.Input;
 
@@ -61,17 +61,13 @@ public partial class TerminalViewModel : ObservableObject
     public void PointerEntered()
     {
         Cursor = new(StandardCursorType.Cross);
-
-        if (HoverEffectService.IsRunning())
-            HoverEffectService.Hide();
+        HoverEffectService.Hide();
     }
 
 
     public void PointerExited()
     {
         Cursor = new(StandardCursorType.Arrow);
-
-        if (HoverEffectService.IsRunning())
-            HoverEffectService.Show();
+        HoverEffectService.Show();
     }
 }

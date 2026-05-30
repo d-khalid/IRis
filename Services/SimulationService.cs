@@ -4,6 +4,9 @@ using IRis.ViewModels.Main.Canvas;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using Avalonia.Collections;
 using IRis.Services.Singleton;
+using IRis.ViewModels.Main.Canvas.Core;
+using IRis.Models.CircuitObjects.Components.Gates;
+using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 
 
 namespace IRis.Services;

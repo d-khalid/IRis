@@ -1,18 +1,43 @@
-// using System.Collections.ObjectModel;
-// using IRis.ViewModels.Main.Canvas.Core;
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.Models.CircuitObjects.Components.Gates;
+using IRis.Models.Core;
+using IRis.ViewModels.Main.Canvas.Core;
+using Avalonia;
+using IRis.Services;
 
 
-// namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
+namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 
 
-// public abstract partial class NotGateViewModel : GateViewModel
-// {
-//     public TerminalViewModel Input { get; }
+public partial class NotGateViewModel : GateViewModel
+{
+    [ObservableProperty] private TerminalViewModel _input = null!;
+    partial void OnInputChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Input;
+        (Model as NotGate)!.Input = value.GetModel();
+    }
 
 
-//     public NotGateViewModel(TerminalViewModel input)
-//     {
-//         Input = input;
-//         Width = Height = 40;
-//     }
-// }
+    public NotGateViewModel() : base(new NotGate())
+    {
+        Width = Height = 40;
+    }
+
+
+    protected override void UpdateInputTerminals()
+    {
+        if (Input is null) return;
+
+        double unrotatedX = X - 10;
+        double unrotatedY = Y + (Height / 2);
+
+        Point rotatedPos = SimulationService.RotateTerminalPosition(
+            unrotatedX, unrotatedY, Rotation, Width, Height, X, Y
+        );
+
+        Input.X = rotatedPos.X;
+        Input.Y = rotatedPos.Y;
+    }
+}

@@ -1,7 +1,4 @@
-using IRis.Models.Base;
-
-
-namespace IRis.Models.Main.Canvas;
+namespace IRis.Models;
 
 
 public abstract class CircuitObject : ISimulatable

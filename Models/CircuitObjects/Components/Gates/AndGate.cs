@@ -1,8 +1,8 @@
 using System;
-using IRis.Models.Main.Canvas.Core;
+using IRis.Models.Core;
 
 
-namespace IRis.Models.Main.Canvas.CircuitObjects.Components.Gates;
+namespace IRis.Models.CircuitObjects.Components.Gates;
 
 
 public class AndGate : MultiInputGate

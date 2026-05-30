@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Avalonia;
-using IRis.Models.Main.Canvas.CircuitObjects.Components.Gates;
-using IRis.Models.Main.Canvas.Core;
+using IRis.Models.CircuitObjects.Components.Gates;
+using IRis.Models.Core;
 using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 

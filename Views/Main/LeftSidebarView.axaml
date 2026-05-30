@@ -17,6 +17,7 @@
         <components:ToggleViewModel x:Key="SampleToggle" />
         <components:ProbeViewModel x:Key="SampleProbe" />
         <gates:AndGateViewModel x:Key="SampleAnd" />
+        <gates:NotGateViewModel x:Key="SampleNot" />
     </UserControl.Resources>
 
     <ScrollViewer Width="200" BorderThickness="0">
@@ -52,7 +53,14 @@
                         </StackPanel>
                     </Button>
                     <Button Content="OR Gate" />
-                    <!-- <Button Content="NOT Gate" /> -->
+                    <Button Command="{Binding AddNotCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Viewbox Height="18">
+                                <vgates:NotGateView DataContext="{StaticResource SampleNot}" />
+                            </Viewbox>
+                            <TextBlock Text="NOT Gate" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
                     <Button Content="NAND Gate" />
                     <Button Content="NOR Gate" />
                     <Button Content="XOR Gate" />

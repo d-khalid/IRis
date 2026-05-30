@@ -1,7 +1,6 @@
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
-using IRis.Models.Base;
-using IRis.Models.Main.Canvas;
+using IRis.Models;
 using Newtonsoft.Json;
 
 
