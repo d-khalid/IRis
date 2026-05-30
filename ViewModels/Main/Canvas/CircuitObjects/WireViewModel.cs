@@ -22,7 +22,6 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
     [ObservableProperty] private TerminalViewModel _mainInput = null!;
     partial void OnMainInputChanged(TerminalViewModel value)
     {
-        value.Type = TerminalType.Input;
         (Model as Wire)!.MainInput = value.GetModel();
         value.PropertyChanged += OnTerminalPropertyChanged;
     }
@@ -31,7 +30,6 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
     [ObservableProperty] private TerminalViewModel _mainOutput = null!;
     partial void OnMainOutputChanged(TerminalViewModel value)
     {
-        value.Type = TerminalType.Output;
         (Model as Wire)!.MainOutput = value.GetModel();
         value.PropertyChanged += OnTerminalPropertyChanged;
     }

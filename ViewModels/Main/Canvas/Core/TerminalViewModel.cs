@@ -34,6 +34,12 @@ public partial class TerminalViewModel : ObservableObject
 
     private void UpdateColor()
     {
+        if (!AppState.GetInstance().TerminalColorChangeAllowed)
+        {
+            Color = "DarkGray";
+            return;
+        }
+
         Color = Model.State switch
         {
             LogicState.High => "DarkGreen",

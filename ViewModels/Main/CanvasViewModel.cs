@@ -19,6 +19,7 @@ public partial class CanvasViewModel : ViewModelBase
         Simulation.GetInstance().Objects;
     [ObservableProperty] private Preview _preview = Preview.GetInstance();
     [ObservableProperty] private SelectionBox _selectionBox = SelectionBox.GetInstance();
+    [ObservableProperty] private AppState _appState = AppState.GetInstance();
 
 
     [RelayCommand]
