@@ -28,10 +28,10 @@
         </MenuItem>
 
         <MenuItem Header="Edit">
-            <MenuItem Header="Undo">
+            <MenuItem Header="Undo" Command="{Binding UndoCommand}">
                 <MenuItem.Icon><PathIcon Data="{StaticResource arrow_undo_regular}" /></MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Redo">
+            <MenuItem Header="Redo" Command="{Binding RedoCommand}">
                 <MenuItem.Icon><PathIcon Data="{StaticResource arrow_redo_regular}"/></MenuItem.Icon>
             </MenuItem>
             <Separator />

@@ -79,9 +79,11 @@ public static class SimulationService
 
     public static void SnapCollectionToPosition(
         AvaloniaList<CircuitObjectViewModel> collection,
-        Point Position, Point PositionMouseOffset)
+        Point Position, Point? offset = null)
     {
-        PositionMouseOffset = SnapPointToGrid(PositionMouseOffset);
+        offset ??= new(0, 0);
+        offset = SnapPointToGrid((Point)offset);
+
         Position = SnapPointToGrid(Position);
         Point min = GetMinPointInCollection(collection);
 
@@ -92,8 +94,8 @@ public static class SimulationService
         {
             if (co is ComponentViewModel c)
             {
-                c.X -= offsetX + PositionMouseOffset.X;
-                c.Y -= offsetY + PositionMouseOffset.Y;
+                c.X -= offsetX + ((Point)offset).X;
+                c.Y -= offsetY + ((Point)offset).Y;
             }
 
             else if (co is WireViewModel w)

@@ -17,9 +17,14 @@ public partial class TopMenuViewModel : ViewModelBase
     [RelayCommand]
     private static void New()
     {
+        if (Simulation.Get().Running) 
+            Simulation.Get().Stop();
+
         Selection.Get().UnHighlightAll();
         Simulation.Get().Nuke();
         Preview.Get().Nuke();
+
+        CommandService.Reset();
         AppState.Get().CurrentFilePath = "(unsaved)";
     }
 
@@ -103,4 +108,8 @@ public partial class TopMenuViewModel : ViewModelBase
             app.Shutdown();
         }
     }
+
+
+    [RelayCommand] private static void Undo() => CommandService.Undo();
+    [RelayCommand] private static void Redo() => CommandService.Redo();
 }

@@ -20,4 +20,5 @@ public partial class AppState : SingletonBase<AppState>
     }
 
     [ObservableProperty] private string _currentFilePath = "(unsaved)";
+    [ObservableProperty] private string _lastCommand = "(none)";
 }

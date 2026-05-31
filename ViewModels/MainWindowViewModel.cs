@@ -36,6 +36,10 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
 
+    [RelayCommand] private static void UndoKey() => CommandService.Undo();
+    [RelayCommand] private static void RedoKey() => CommandService.Redo();
+
+
     [RelayCommand]
     private static void CopyKey()
     {

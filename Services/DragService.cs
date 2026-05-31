@@ -2,6 +2,7 @@ using IRis.Services.Singleton;
 using Avalonia;
 using Avalonia.Collections;
 using IRis.ViewModels.Main.Canvas;
+using IRis.Services.Commands;
 
 
 namespace IRis.Services;
@@ -14,8 +15,11 @@ namespace IRis.Services;
 public static class DragService
 {
     public static AvaloniaList<CircuitObjectViewModel> Objects { get; } = [];
-    private static Point SavedMouseOffset { get; set; } = new(0, 0);
     public static bool Used { get; set; } = false;
+
+    private static Point InitialPosition { get; set; } = new(0, 0);
+    private static Point FinalPosition { get; set; } = new(0, 0);
+    private static Point MouseOffset { get; set; } = new(0, 0);
 
 
     public static void StartAt(Point position)
@@ -23,8 +27,9 @@ public static class DragService
         var collection = Selection.Get().Objects;
         Objects.AddRange(collection);
 
-        Point min = SimulationService.GetMinPointInCollection(collection);
-        SavedMouseOffset = SimulationService.Difference(position, min);
+        InitialPosition = SimulationService.GetMinPointInCollection(collection);
+        MouseOffset = SimulationService.Difference(position, InitialPosition);
+
     }
 
 
@@ -36,7 +41,8 @@ public static class DragService
             Selection.Get().UnHighlightAll();
         }
 
-        SimulationService.SnapCollectionToPosition(Objects, position, SavedMouseOffset);
+        FinalPosition = SimulationService.Difference(position, MouseOffset);
+        SimulationService.SnapCollectionToPosition(Objects, FinalPosition, null);
     }
 
 
@@ -46,6 +52,10 @@ public static class DragService
         {
             Used = false;
             Selection.Get().Highlight(Objects);
+
+            CommandService.Execute(
+                new MoveCommand(InitialPosition, FinalPosition, [..Objects])
+            );
         }
 
         Objects.Clear();
