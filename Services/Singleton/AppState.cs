@@ -4,6 +4,7 @@ using IRis.ViewModels.Main.Canvas;
 using System.IO;
 using System;
 using Newtonsoft.Json;
+using Avalonia.Styling;
 
 
 namespace IRis.Services.Singleton;
@@ -16,8 +17,11 @@ public partial class AppState : SingletonBase<AppState>
         "IRis", "settings.json"
     );
 
-    [ObservableProperty] 
+    [ObservableProperty]
     private bool _terminalColorChangeAllowed = true;
+
+    [ObservableProperty]
+    private ThemeVariant _theme = ThemeVariant.Dark;
 
     [ObservableProperty] [property: JsonIgnore] 
     private Point _mousePosition = new(0, 0);
@@ -34,8 +38,8 @@ public partial class AppState : SingletonBase<AppState>
         Load();
         PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName is nameof(MousePosition) or nameof(LastCommand) or
-                nameof(CurrentFilePath))
+            if (e.PropertyName is nameof(MousePosition) or nameof(LastCommand)
+                or nameof(CurrentFilePath))
                 return;
 
             Save();

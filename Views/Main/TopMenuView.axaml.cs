@@ -10,6 +10,5 @@ public partial class TopMenuView : UserControl
     public TopMenuView()
     {
         InitializeComponent();
-        DataContext = new TopMenuViewModel();
     }
 }

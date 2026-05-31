@@ -10,6 +10,10 @@ using IRis.ViewModels.Main.Canvas.Core;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Avalonia.Collections;
+using Avalonia.Controls.ApplicationLifetimes;
+using System.Threading.Tasks;
+using Avalonia.Platform.Storage;
+using System.IO;
 
 
 namespace IRis.ViewModels;
@@ -21,7 +25,123 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void DeleteKey()
+    private static void New()
+    {
+        if (Simulation.Get().Running) 
+            Simulation.Get().Stop();
+
+        Selection.Get().UnHighlightAll();
+        Simulation.Get().Nuke();
+        Preview.Get().Nuke();
+
+        CommandService.Reset();
+        AppState.Get().CurrentFilePath = "(unsaved)";
+    }
+
+
+    [RelayCommand]
+    private static async Task OpenAsync(string param)
+    {
+        if (Simulation.Get().Running) Simulation.Get().Stop();
+
+        if (Application.Current?.ApplicationLifetime is not 
+            IClassicDesktopStyleApplicationLifetime time || time.MainWindow is null)
+            return;
+
+        var files = await time.MainWindow.StorageProvider.OpenFilePickerAsync(
+            new FilePickerOpenOptions
+            {
+                Title = "Open Simulation",
+                AllowMultiple = false,
+                FileTypeFilter = [new FilePickerFileType("IRis Simulatable") { Patterns = ["*.iris"] }]
+            }
+        );
+
+        if (files.Count > 0)
+        {
+            string path = files[0].Path.LocalPath;
+            var json = await File.ReadAllTextAsync(path);
+            var collection = SerializationService.Deserialize(json);
+
+            if (collection is not null)
+            {
+                if (param != "merge")
+                {
+                    AppState.Get().CurrentFilePath = path;
+                    Simulation.Get().Nuke();
+                }
+
+                SimulationService.RedrawWires(collection);
+                Selection.Get().Highlight(collection);
+                Simulation.Get().Add(collection);
+            }
+        }
+    }
+
+
+    [RelayCommand]
+    private static async Task SaveAsync()
+    {
+        if (Simulation.Get().Running) Simulation.Get().Stop();
+
+        if (AppState.Get().CurrentFilePath == "(unsaved)")
+        {
+            await SaveAsAsync();
+            return;
+        }
+
+        var json = SerializationService.Serialize(Simulation.Get().Objects);
+        await File.WriteAllTextAsync(AppState.Get().CurrentFilePath, json);
+    }
+
+
+    [RelayCommand]
+    private static async Task SaveAsAsync()
+    {
+        if (Application.Current?.ApplicationLifetime is not 
+            IClassicDesktopStyleApplicationLifetime time || time.MainWindow is null)
+            return;
+
+        var file = await time.MainWindow.StorageProvider.SaveFilePickerAsync(
+            new FilePickerSaveOptions
+            {
+                Title = "Save Simulation",
+                DefaultExtension = "iris",
+                FileTypeChoices = [new FilePickerFileType("IRis Simulatable") { Patterns = ["*.iris"] }]
+            }
+        );
+
+        if (file is not null)
+        {
+            AppState.Get().CurrentFilePath = file.Path.LocalPath;
+            await SaveAsync();
+        }
+    }
+
+
+    [RelayCommand]
+    private static void Preferences()
+    {
+        
+    }
+
+
+    [RelayCommand]
+    private static void Exit()
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime app)
+        {
+            app.Shutdown();
+        }
+    }
+
+
+    [RelayCommand] private static void Undo() => CommandService.Undo();
+    [RelayCommand] private static void Redo() => CommandService.Redo();
+
+
+    [RelayCommand]
+    private static void Delete()
     {
         Simulation.Get().Remove(Selection.Get().Objects);
         Selection.Get().UnHighlightAll();
@@ -29,7 +149,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void EscapeKey()
+    private static void Escape()
     {
         if (!Preview.Get().IsEmpty())
             Preview.Get().Nuke();
@@ -41,7 +161,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void CopyKey()
+    private static void Copy()
     {
         if (!Preview.Get().IsEmpty())
         {
@@ -63,14 +183,14 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void PasteKey()
+    private static void Paste()
     {
         ClipboardService.Paste();
     }
 
 
     [RelayCommand]
-    private static void RotateKey()
+    private static void Rotate()
     {
         if (!Preview.Get().IsEmpty())
             RotateCollection(Preview.Get().Objects);
@@ -114,7 +234,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void AddInputKey()
+    private static void AddInput()
     {
         if (!Preview.Get().IsEmpty()) 
             AddInput(Preview.Get().Objects);
@@ -138,7 +258,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void RemoveInputKey()
+    private static void RemoveInput()
     {
         if (!Preview.Get().IsEmpty()) 
             RemoveInput(Preview.Get().Objects);
@@ -160,5 +280,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 }
             }
         }
+    }
+
+
+    [RelayCommand]
+    private static void SetTheme(string variant)
+    {
+        
     }
 }

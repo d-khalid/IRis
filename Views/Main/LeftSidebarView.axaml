@@ -21,7 +21,7 @@
     </UserControl.Resources>
 
     <ScrollViewer Width="200" BorderThickness="0">
-        <StackPanel Margin="5,5" Spacing="5">
+        <StackPanel Margin="5,4,5,5" Spacing="5">
             <Expander Header="I/O" IsExpanded="True" Padding="5,5">
                 <StackPanel Margin="0,0" Spacing="5">
                     <Button Command="{Binding AddToggleCommand}">

@@ -21,7 +21,7 @@
         Name="ZoomBorder" 
         Stretch="None" 
         ZoomSpeed="1.2"
-        Background="SlateBlue" 
+        Background="Transparent" 
         ClipToBounds="True" 
         Focusable="True"
         VerticalAlignment="Stretch" 
@@ -40,9 +40,23 @@
             <Canvas.Background>
                 <VisualBrush TileMode="Tile" SourceRect="0,0,10,10" DestinationRect="0,0,10,10">
                     <VisualBrush.Visual>
-                        <Canvas Width="10" Height="10" Background="#F0F0F0">
-                            <Line StartPoint="0,10" EndPoint="10,10" Stroke="#D3D3D3" StrokeThickness="1"/>
-                            <Line StartPoint="10,0" EndPoint="10,10" Stroke="#D3D3D3" StrokeThickness="1"/>
+                        <Canvas 
+                            Width="10" 
+                            Height="10" 
+                            Background="#fff"
+                        >
+                            <Line 
+                                StartPoint="0,10" 
+                                EndPoint="10,10" 
+                                Stroke="#D3D3D3" 
+                                StrokeThickness="1"
+                            />
+                            <Line 
+                                StartPoint="10,0" 
+                                EndPoint="10,10" 
+                                Stroke="#D3D3D3" 
+                                StrokeThickness="1"
+                            />
                         </Canvas>
                     </VisualBrush.Visual>
                 </VisualBrush>

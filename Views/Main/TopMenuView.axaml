@@ -3,28 +3,36 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="IRis.Views.Main.TopMenuView"
 
-    xmlns:vm="using:IRis.ViewModels.Main"
-    x:DataType="vm:TopMenuViewModel"
-    FontSize="12"
+    xmlns:vm="using:IRis.ViewModels"
+    x:DataType="vm:MainWindowViewModel"
+    FontSize="14"
 >
-    <Menu>
+    <Menu Background="{DynamicResource Background}">
         <MenuItem Header="File">
-            <MenuItem Header="New" Command="{Binding NewCommand}">
-                <MenuItem.Icon><PathIcon Data="{StaticResource new_regular}" /></MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="Open..." Command="{Binding OpenCommand}">
-                <MenuItem.Icon><PathIcon Data="{StaticResource open_regular}" /></MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="Save" Command="{Binding SaveCommand}">
-                <MenuItem.Icon><PathIcon Data="{StaticResource save_regular}" /></MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}">
-                <MenuItem.Icon><PathIcon Data="{StaticResource save_edit}" /></MenuItem.Icon>
-            </MenuItem>
+            <MenuItem 
+                Header="New" 
+                Command="{Binding NewCommand}" 
+                InputGesture="Ctrl+N" 
+            />
+            <MenuItem 
+                Header="Merge..." 
+                Command="{Binding OpenCommand}" 
+                CommandParameter="merge" 
+                InputGesture="Ctrl+M"
+            />
+            <MenuItem 
+                Header="Open..." 
+                Command="{Binding OpenCommand}" 
+                CommandParameter="open"
+                InputGesture="Ctrl+O"
+            />
             <Separator />
-            <MenuItem Header="Exit" Command="{Binding ExitCommand}">
-                <MenuItem.Icon><PathIcon Data="{StaticResource arrow_left_regular}" /></MenuItem.Icon>
-            </MenuItem>
+            <MenuItem Header="Save" Command="{Binding SaveCommand}" InputGesture="Ctrl+S" />
+            <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}" />
+            <Separator />
+            <MenuItem Header="Preferences..." Command="{Binding PreferencesCommand}" />
+            <Separator />
+            <MenuItem Header="Exit" Command="{Binding ExitCommand}" InputGesture="Alt+f4" />
         </MenuItem>
 
         <MenuItem Header="Edit">
