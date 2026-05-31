@@ -15,16 +15,11 @@ public class CommitCommand(AvaloniaList<CircuitObjectViewModel> collection) : Co
     public override void Execute()
     {
         foreach (var co in _collection)
-        {
             if (co is WireViewModel w) w.Redraw();
-            Simulation.Get().Add(co);
-        }
+
+        Simulation.Get().Add(_collection);
     }
 
 
-    public override void Undo()
-    {
-        foreach (var co in _collection)
-            Simulation.Get().Remove(co);
-    }
+    public override void Undo() => Simulation.Get().Remove(_collection);
 }
