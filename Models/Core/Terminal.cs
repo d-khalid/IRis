@@ -16,6 +16,7 @@ public enum TerminalType
     Output
 }
 
+
 public enum LogicState
 {
     Low,
