@@ -5,6 +5,7 @@ using IRis.Models.Core;
 using Avalonia.Collections;
 using IRis.ViewModels.Main.Canvas;
 using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.Services.Commands;
 
 
 namespace IRis.Services.Singleton;
@@ -73,7 +74,7 @@ public partial class Preview : SingletonCollection<Preview>
         else return;
 
         wire.Opacity = 1.0;
-        Simulation.Get().Add(wire);
+        CommandService.Execute(new CommitCommand([wire]) { Name = "Commit Wire" });
         Objects.Clear();
     }
 
@@ -81,14 +82,9 @@ public partial class Preview : SingletonCollection<Preview>
     public void Commit()
     {
         var cloned = CloningService.Clone(Objects);
+        string name = cloned.Count == 1 ? "Commit Object" : "Commit Objects";
 
-        foreach (var co in cloned)
-        {
-            if (co is WireViewModel w)
-                w.Redraw();    // force wire redraw
-
-            Simulation.Get().Add(co);
-        }
+        CommandService.Execute(new CommitCommand(cloned) { Name = name }); 
     }
 
 

@@ -53,8 +53,9 @@ public static class DragService
             Used = false;
             Selection.Get().Highlight(Objects);
 
+            string name = Objects.Count == 1 ? "Move Object" : "Move Objects";
             CommandService.Execute(
-                new MoveCommand(InitialPosition, FinalPosition, [..Objects])
+                new MoveCommand(InitialPosition, FinalPosition, [..Objects]) { Name = name }
             );
         }
 

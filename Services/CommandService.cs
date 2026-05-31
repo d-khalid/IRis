@@ -7,15 +7,16 @@ namespace IRis.Services;
 
 public static class CommandService
 {
-    private static readonly Stack<ICommand> _undoStack = new();
-    private static readonly Stack<ICommand> _redoStack = new();
+    private static readonly Stack<CommandBase> _undoStack = new();
+    private static readonly Stack<CommandBase> _redoStack = new();
 
 
-    public static void Execute(ICommand command)
+    public static void Execute(CommandBase command)
     {
         command.Execute();
         _undoStack.Push(command);
-        AppState.Get().LastCommand = command.ToString()!.Split(".")[^1];
+
+        AppState.Get().LastCommand = command.Name;
     }
 
 
@@ -26,6 +27,8 @@ public static class CommandService
         var command = _undoStack.Pop();
         command.Undo();
         _redoStack.Push(command);
+        
+        AppState.Get().LastCommand = "Undo: " + command.Name;
     }
 
 
@@ -36,6 +39,8 @@ public static class CommandService
         var command = _redoStack.Pop();
         command.Execute();
         _undoStack.Push(command);
+        
+        AppState.Get().LastCommand = "Redo: " + command.Name;
     }
 
 
@@ -43,6 +48,6 @@ public static class CommandService
     {
         _undoStack.Clear();
         _redoStack.Clear();
-        AppState.Get().LastCommand = "none";
+        AppState.Get().LastCommand = "(no action yet)";
     }
 }

@@ -29,7 +29,6 @@
                 >
                     <TextBlock Text="{Binding AppState.CurrentFilePath}" />
                     <TextBlock Text="|" Margin="8,0" />
-                    <TextBlock Text="Last Command: " />
                     <TextBlock Text="{Binding AppState.LastCommand}" />
                     <TextBlock Text="|" Margin="8,0" />
                     <TextBlock>
