@@ -20,6 +20,7 @@ public partial class App : Application
         DataContext = new AppViewModel();
     }
 
+
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

@@ -77,7 +77,10 @@
             >
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
                     <Viewbox Height="24">
-                        <CheckBox IsChecked="{Binding AppState.TerminalColorChangeAllowed, Mode=TwoWay}">
+                        <CheckBox 
+                            IsChecked="{Binding AppState.TerminalColorChangeAllowed, Mode=TwoWay}" 
+                            Focusable="False"
+                        >
                             <CheckBox.Resources>
                                 <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="DodgerBlue"/>
                                 <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="DodgerBlue"/>
@@ -88,7 +91,7 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
                     <Viewbox Height="24">
-                        <CheckBox IsChecked="{Binding AppState.EditingAllowed, Mode=TwoWay}">
+                        <CheckBox IsChecked="{Binding AppState.EditingAllowed, Mode=TwoWay}" Focusable="False">
                             <CheckBox.Resources>
                                 <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="DodgerBlue"/>
                                 <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="DodgerBlue"/>

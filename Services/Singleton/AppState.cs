@@ -5,6 +5,7 @@ using System.IO;
 using System;
 using Newtonsoft.Json;
 using Avalonia.Styling;
+using Avalonia.Threading;
 
 
 namespace IRis.Services.Singleton;
@@ -17,23 +18,30 @@ public partial class AppState : SingletonBase<AppState>
         "IRis", "AppState.json"
     );
 
+    public static readonly string AutoSavePath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "IRis", "autosave.iris"
+    );
+
+    private readonly DispatcherTimer _timer;
+
     [ObservableProperty]
     private bool _designTabActive = true;
 
     [ObservableProperty]
     private bool _terminalColorChangeAllowed = true;
 
-    [ObservableProperty] [property: JsonIgnore]
-    private bool _editingAllowed = true;
-
     [ObservableProperty]
     private ThemeVariant _theme = ThemeVariant.Dark;
 
-    [ObservableProperty] [property: JsonIgnore] 
-    private Point _mousePosition = new(0, 0);
+    [ObservableProperty]
+    private string _currentFilePath = "(unsaved)";
 
     [ObservableProperty] [property: JsonIgnore]
-    private string _currentFilePath = "(unsaved)";
+    private bool _editingAllowed = true;
+
+    [ObservableProperty] [property: JsonIgnore] 
+    private Point _mousePosition = new(0, 0);
 
     [ObservableProperty] [property: JsonIgnore]
     private string _lastCommand = "(no action yet)";
@@ -45,11 +53,18 @@ public partial class AppState : SingletonBase<AppState>
         PropertyChanged += (_, e) =>
         {
             if (e.PropertyName is nameof(MousePosition) or nameof(LastCommand)
-                or nameof(CurrentFilePath) or nameof(EditingAllowed))
+                or nameof(EditingAllowed))
                 return;
 
             Save();
         };
+
+        _timer = new() { Interval = TimeSpan.FromMinutes(1) };
+        _timer.Tick += (_, _) =>
+        {
+            AutoSaveCurrentSession();
+        };
+        _timer.Start();
     }
 
 
@@ -69,6 +84,29 @@ public partial class AppState : SingletonBase<AppState>
         {
             Simulation.Get().Stop();
             Simulation.Get().Start();
+        }
+    }
+
+
+    private async void AutoSaveCurrentSession()
+    {
+        string path = CurrentFilePath;
+        if (path == "(unsaved)")
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(AutoSavePath)!);
+            path = AutoSavePath;
+        }
+
+        try
+        {
+            var circuit = Simulation.Get().Objects;
+            await File.WriteAllTextAsync(
+                path, SerializationService.Serialize(circuit)
+            );
+        }
+        catch (IOException)
+        {
+            Console.WriteLine("AutoSaveCurrentSession(): failed to write to file.");
         }
     }
 

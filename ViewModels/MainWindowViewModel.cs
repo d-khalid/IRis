@@ -29,6 +29,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static void New()
     {
+        AppState.Get().CurrentFilePath = "(unsaved)";
+
         if (Simulation.Get().Running) 
             Simulation.Get().Stop();
 
@@ -38,7 +40,6 @@ public partial class MainWindowViewModel : ViewModelBase
         WirePreview.Get().Nuke();
 
         CommandService.Reset();
-        AppState.Get().CurrentFilePath = "(unsaved)";
     }
 
 
