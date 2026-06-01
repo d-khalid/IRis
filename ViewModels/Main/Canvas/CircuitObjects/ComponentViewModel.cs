@@ -73,15 +73,22 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
 
     public void PointerEntered()
     {
-        if (!Preview.Get().IsEmpty() || DragService.IsRunning()) return;
+        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || 
+            DragService.IsRunning()) 
+            return;
+
         if (!IsSelected) HoverEffectService.On(this);
     }
 
 
     public void PointerExited()
     {
-        if (!Preview.Get().IsEmpty() || DragService.IsRunning()) return;
-        if (!IsSelected && HoverEffectService.IsRunning()) HoverEffectService.Stop();
+        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || 
+            DragService.IsRunning()) 
+            return;
+
+        if (!IsSelected && HoverEffectService.IsRunning()) 
+            HoverEffectService.Stop();
     }
 
 

@@ -57,10 +57,10 @@ public partial class TerminalViewModel : ObservableObject
 
         HoverEffectService.Stop();
 
-        if (Preview.Get().HasNewWire())
-            Preview.Get().EndWireAt(this);
+        if (WirePreview.Get().IsEmpty())
+            WirePreview.Get().StartAt(this);
         else
-            Preview.Get().StartWireAt(this);
+            WirePreview.Get().EndAt(this);
     }
 
 

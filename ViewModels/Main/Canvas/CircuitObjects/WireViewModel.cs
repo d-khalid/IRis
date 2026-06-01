@@ -9,6 +9,7 @@ using IRis.Services.Singleton;
 using Newtonsoft.Json;
 using System;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Avalonia.Collections;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
@@ -16,7 +17,7 @@ namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 {
-    [JsonIgnore] public ObservableCollection<Point> Points { get; } = [];
+    public AvaloniaList<Point> Points { get; } = [];
 
 
     [ObservableProperty] private TerminalViewModel _mainInput = null!;
@@ -38,7 +39,7 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
     private void OnTerminalPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(TerminalViewModel.X) or nameof(TerminalViewModel.Y))
-            Redraw();
+            Fix();
     }
 
 
@@ -49,6 +50,20 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         Points.Clear();
         Points.Add(new Point((int)MainInput.X, (int)MainInput.Y));
         Points.Add(new Point((int)MainOutput.X, (int)MainOutput.Y));
+    }
+
+
+    public void Fix()
+    {
+        
+    }
+
+
+    public void SetOrphanTo(TerminalViewModel target)
+    {
+        if (MainInput.IsOrphan) MainInput = target;
+        else if (MainOutput.IsOrphan) MainOutput = target;
+        else Console.WriteLine("SetOrphanTo(): could not find any orphan in wire.");
     }
 
 
@@ -80,14 +95,21 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 
     public void PointerEntered()
     {
-        if (!Preview.Get().IsEmpty() || DragService.IsRunning()) return;
+        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || 
+            DragService.IsRunning()) 
+            return;
+
         if (!IsSelected) HoverEffectService.On(this);
     }
 
 
     public void PointerExited()
     {
-        if (!Preview.Get().IsEmpty() || DragService.IsRunning()) return;
-        if (!IsSelected && HoverEffectService.IsRunning()) HoverEffectService.Stop();
+        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || 
+            DragService.IsRunning()) 
+            return;
+
+        if (!IsSelected && HoverEffectService.IsRunning()) 
+            HoverEffectService.Stop();
     }
 }

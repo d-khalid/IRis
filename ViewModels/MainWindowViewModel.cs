@@ -14,6 +14,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using System.IO;
+using System;
 
 
 namespace IRis.ViewModels;
@@ -33,6 +34,7 @@ public partial class MainWindowViewModel : ViewModelBase
         Selection.Get().UnHighlightAll();
         Simulation.Get().Nuke();
         Preview.Get().Nuke();
+        WirePreview.Get().Nuke();
 
         CommandService.Reset();
         AppState.Get().CurrentFilePath = "(unsaved)";
@@ -71,7 +73,7 @@ public partial class MainWindowViewModel : ViewModelBase
                     Simulation.Get().Nuke();
                 }
 
-                SimulationService.RedrawWires(collection);
+                SimulationService.RedrawEmptyWires(collection);
                 Selection.Get().Highlight(collection);
                 Simulation.Get().Add(collection);
             }
@@ -153,6 +155,9 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (!Preview.Get().IsEmpty())
             Preview.Get().Nuke();
+
+        if (!WirePreview.Get().IsEmpty())
+            WirePreview.Get().Leave();
     }
 
 

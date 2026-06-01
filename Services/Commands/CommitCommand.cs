@@ -15,7 +15,12 @@ public class CommitCommand(AvaloniaList<CircuitObjectViewModel> collection) : Co
     public override void Execute()
     {
         foreach (var co in _collection)
-            if (co is WireViewModel w) w.Redraw();
+        {
+            co.Opacity = 1.0;
+
+            if (co is WireViewModel w && w.Points.Count == 0) 
+                w.Redraw();
+        }
 
         Simulation.Get().Add(_collection);
     }

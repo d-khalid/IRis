@@ -20,6 +20,7 @@ public partial class CanvasViewModel : ViewModelBase
     [ObservableProperty] private Preview _preview = Preview.Get();
     [ObservableProperty] private SelectionBox _selectionBox = SelectionBox.Get();
     [ObservableProperty] private AppState _appState = AppState.Get();
+    [ObservableProperty] private WirePreview _wirePreview = WirePreview.Get();
 
 
     [RelayCommand]
@@ -43,6 +44,9 @@ public partial class CanvasViewModel : ViewModelBase
     {
         if (!Preview.Get().IsEmpty())
             Preview.Get().Show();
+
+        if (!WirePreview.Get().IsEmpty())
+            WirePreview.Get().Show();
     }
 
 
@@ -50,13 +54,20 @@ public partial class CanvasViewModel : ViewModelBase
     {
         if (!Preview.Get().IsEmpty())
             Preview.Get().Hide();
+
+        if (!WirePreview.Get().IsEmpty())
+            WirePreview.Get().Hide();
     }
 
 
     public static void PointerPressed(Control sender, PointerPressedEventArgs e)
     {
-        if (!Preview.Get().IsEmpty() && !Preview.Get().HasNewWire())
+        if (!WirePreview.Get().IsEmpty())
+            WirePreview.Get().CheckpointAt(AppState.Get().MousePosition);
+
+        else if (!Preview.Get().IsEmpty())
             Preview.Get().Commit();
+
         else
         {
             SelectionBox.Get().StartAt(AppState.Get().MousePosition);
@@ -75,6 +86,9 @@ public partial class CanvasViewModel : ViewModelBase
 
         else if (!Preview.Get().IsEmpty())
             Preview.Get().UpdatePositionTo(AppState.Get().MousePosition);
+
+        else if (!WirePreview.Get().IsEmpty())
+            WirePreview.Get().UpdateTo(AppState.Get().MousePosition);
 
         else if (DragService.IsRunning())
             DragService.UpdatePositionTo(AppState.Get().MousePosition);

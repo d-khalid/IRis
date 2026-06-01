@@ -44,6 +44,8 @@ public partial class Simulation : SingletonCollection<Simulation>
     {
         Selection.Get().UnHighlightAll();
         Preview.Get().Drop();
+        WirePreview.Get().Nuke();
+
         Running = true;
         _timer.Start();
     }

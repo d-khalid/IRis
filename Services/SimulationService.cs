@@ -141,11 +141,11 @@ public static class SimulationService
     }
 
 
-    public static void RedrawWires(AvaloniaList<CircuitObjectViewModel> collection)
+    public static void RedrawEmptyWires(AvaloniaList<CircuitObjectViewModel> collection)
     {
         foreach (var co in collection)
         {
-            if (co is WireViewModel w) 
+            if (co is WireViewModel w && w.Points.Count == 0) 
                 w.Redraw();
         }
     }

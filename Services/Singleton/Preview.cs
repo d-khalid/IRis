@@ -12,8 +12,8 @@ namespace IRis.Services.Singleton;
 
 
 /// <summary>
-/// Handles previewing components through Pick(), Commit() and wires through 
-/// StartWireAt(), EndWireAt(). Commit() also handles entire circuit previews.
+/// Handles previewing components through Pick(), Commit(). 
+/// Commit() also handles entire circuit previews.
 /// Starting position for a preview is none, use the UpdatePositionTo() method.
 /// </summary>
 public partial class Preview : SingletonCollection<Preview>
@@ -26,7 +26,6 @@ public partial class Preview : SingletonCollection<Preview>
         SimulationService.SnapCollectionToPosition(Objects, position, SavedMouseOffset);
 
 
-    public bool HasNewWire() => Objects.Count == 1 && Objects[0] is WireViewModel;
     public void Drop() => Objects.Clear();
     public void Pick(ComponentViewModel c) => Pick([c]);
 
@@ -44,38 +43,6 @@ public partial class Preview : SingletonCollection<Preview>
         Point center = SimulationService.Average(min, max);
 
         SavedMouseOffset = SimulationService.Difference(center, min);
-    }
-
-
-    public void StartWireAt(TerminalViewModel t)
-    {
-        WireViewModel wire = new()
-        {
-            MainInput = new() { IsOrphan = true },
-            MainOutput = new() { IsOrphan = true }
-        };
-
-        if (t.Type is TerminalType.Output) wire.MainInput = t;
-        else if (t.Type is TerminalType.Input) wire.MainOutput = t;
-        else return;
-
-        wire.Opacity = 0.5;
-        Objects.Add(wire);
-    }
-
-
-    public void EndWireAt(TerminalViewModel t)
-    {
-        if (!HasNewWire()) return;
-        var wire = (Objects[0] as WireViewModel)!;
-
-        if (wire.MainInput.IsOrphan) wire.MainInput = t;
-        else if (wire.MainOutput.IsOrphan) wire.MainOutput = t;
-        else return;
-
-        wire.Opacity = 1.0;
-        CommandService.Execute(new CommitCommand([wire]) { Name = "Commit Wire" });
-        Objects.Clear();
     }
 
 

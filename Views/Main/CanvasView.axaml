@@ -131,6 +131,14 @@
                     </Style>
                 </ItemsControl.Styles>
             </ItemsControl>
+
+            <!-- rendering previews -->
+            <ContentControl 
+                Content="{Binding WirePreview.Wire}"
+                ClipToBounds="False"
+                IsVisible="{Binding WirePreview.IsVisible}"
+                IsHitTestVisible="False"
+            />
             
             <!-- rendering selection box -->
             <Rectangle
