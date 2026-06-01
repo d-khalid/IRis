@@ -1,0 +1,74 @@
+<UserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="IRis.Views.Main.LeftSidebarContent"
+
+    xmlns:vm="using:IRis.ViewModels.Main"
+    x:DataType="vm:LeftSidebarViewModel"
+    FontSize="12"
+>
+    <ScrollViewer Width="200" BorderThickness="0">
+        <StackPanel Margin="5,8,5,5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,0">
+                <Button 
+                    Classes="tab" 
+                    Content="Design" 
+                    Classes.active="{Binding AppState.DesignTabActive}"
+                    Command="{Binding ShowDesignTabCommand}"
+                />
+                <Button
+                    Classes="tab" 
+                    Content="Simulate"
+                    Classes.active="{Binding AppState.DesignTabActive, Converter={x:Static BoolConverters.Not}}"
+                    Command="{Binding ShowSimulateTabCommand}"
+                />
+            </StackPanel>
+            <Border Height="1" Background="#3A3A3A" Margin="0,0,0,5"/>
+            <StackPanel IsVisible="{Binding AppState.DesignTabActive}" Spacing="5">
+                <ToggleButton Classes="section" x:Name="IoToggle" IsChecked="True" Content="I/O" />
+                <StackPanel IsVisible="{Binding #IoToggle.IsChecked}">
+                    <StackPanel>
+                        <Button Classes="item" Command="{Binding AddToggleCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="16" Child="{StaticResource SampleToggle}" />
+                                <TextBlock Text="Toggle Switch" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="item" Command="{Binding AddProbeCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="16" Child="{StaticResource SampleProbe}" />
+                                <TextBlock Text="Logic Probe" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+
+                <ToggleButton Classes="section" x:Name="GatesToggle" IsChecked="False" Content="Gates" />
+                <StackPanel IsVisible="{Binding #GatesToggle.IsChecked}">
+                    <StackPanel>
+                        <Button Classes="item" Command="{Binding AddAndCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="14" Child="{StaticResource SampleAnd}" />
+                                <TextBlock Text="AND Gate" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="item" Command="{Binding AddNotCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="14" Child="{StaticResource SampleNot}" />
+                                <TextBlock Text="NOT Gate" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+
+                <ToggleButton Classes="section" x:Name="AdvancedToggle" IsChecked="False" Content="Advanced" />
+                <StackPanel IsVisible="{Binding #AdvancedToggle.IsChecked}">
+                    <StackPanel Margin="0,0" Spacing="5">
+                        <Button Classes="item" Content="MUX" />
+                        <Button Classes="item" Content="DEMUX" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

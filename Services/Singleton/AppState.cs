@@ -14,8 +14,11 @@ public partial class AppState : SingletonBase<AppState>
 {
     private static readonly string SettingsPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "IRis", "settings.json"
+        "IRis", "AppState.json"
     );
+
+    [ObservableProperty]
+    private bool _designTabActive = true;
 
     [ObservableProperty]
     private bool _terminalColorChangeAllowed = true;

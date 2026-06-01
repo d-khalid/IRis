@@ -5,12 +5,7 @@
 
     xmlns:vm="using:IRis.ViewModels.Main"
     x:DataType="vm:LeftSidebarViewModel"
-
-    xmlns:vcomponents="using:IRis.Views.Main.Canvas.CircuitObjects.Components"
-    xmlns:vgates="using:IRis.Views.Main.Canvas.CircuitObjects.Components.Gates"
-
-    xmlns:components="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
-    xmlns:gates="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates"
+    xmlns:views="using:IRis.Views.Main"
     FontSize="12"
 >
     <UserControl.Resources>
@@ -140,60 +135,31 @@
         <Style Selector="Button.item:pressed /template/ Border">
             <Setter Property="Background" Value="#37373D"/>
         </Style>
+        <Style Selector="Button.tab">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,6"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}" 
+                            Padding="{TemplateBinding Padding}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}">
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                        HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.tab.active /template/ Border">
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="Padding" Value="15,6,15,4"/>
+            <Setter Property="BorderBrush" Value="DodgerBlue"/>
+        </Style>
+        <Style Selector="Button.tab:pointerover /template/ Border">
+            <Setter Property="Background" Value="#2A2D2E"/>
+        </Style>
     </UserControl.Styles>
 
-    <ScrollViewer Width="200" BorderThickness="0">
-        <StackPanel Margin="5,8,5,5">
-            <TextBlock 
-                Text="Design" 
-                FontSize="14" 
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Center" 
-                Margin="0,0,0,5" 
-            />
-            <ToggleButton Classes="section" x:Name="IoToggle" IsChecked="True" Content="I/O" />
-            <StackPanel IsVisible="{Binding #IoToggle.IsChecked}" Margin="0,5">
-                <StackPanel>
-                    <Button Classes="item" Command="{Binding AddToggleCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <Viewbox Height="16" Child="{StaticResource SampleToggle}" />
-                            <TextBlock Text="Toggle Switch" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="item" Command="{Binding AddProbeCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <Viewbox Height="16" Child="{StaticResource SampleProbe}" />
-                            <TextBlock Text="Logic Probe" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
-            </StackPanel>
-
-            <ToggleButton Classes="section" x:Name="GatesToggle" IsChecked="False" Content="Gates" />
-            <StackPanel IsVisible="{Binding #GatesToggle.IsChecked}" Margin="0,5">
-                <StackPanel>
-                    <Button Classes="item" Command="{Binding AddAndCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <Viewbox Height="14" Child="{StaticResource SampleAnd}" />
-                            <TextBlock Text="AND Gate" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="item" Command="{Binding AddNotCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <Viewbox Height="14" Child="{StaticResource SampleNot}" />
-                            <TextBlock Text="NOT Gate" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
-            </StackPanel>
-
-            <ToggleButton Classes="section" x:Name="AdvancedToggle" IsChecked="False" Content="Advanced" />
-            <StackPanel IsVisible="{Binding #AdvancedToggle.IsChecked}" Margin="0,5">
-                <StackPanel Margin="0,0" Spacing="5">
-                    <Button Classes="item" Content="MUX" />
-                    <Button Classes="item" Content="DEMUX" />
-                </StackPanel>
-            </StackPanel>
-        </StackPanel>
-    </ScrollViewer>
+    <views:LeftSidebarContent />
 </UserControl>

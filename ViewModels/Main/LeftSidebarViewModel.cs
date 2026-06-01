@@ -5,6 +5,7 @@ using IRis.Models.Core;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 using IRis.ViewModels.Main.Canvas.Core;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 
 namespace IRis.ViewModels.Main;
@@ -12,6 +13,17 @@ namespace IRis.ViewModels.Main;
 
 public partial class LeftSidebarViewModel : ViewModelBase
 {
+    [ObservableProperty] private AppState _appState = AppState.Get();
+
+
+    [RelayCommand]
+    private static void ShowDesignTab() => AppState.Get().DesignTabActive = true;
+
+
+    [RelayCommand]
+    private static void ShowSimulateTab() => AppState.Get().DesignTabActive = false;
+
+
     [RelayCommand]
     private static void AddAnd()
     {
