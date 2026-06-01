@@ -21,7 +21,7 @@ public partial class CanvasView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (!Simulation.Get().Running)
+        if (AppState.Get().EditingAllowed)
             (DataContext as CanvasViewModel)?.PointerEntered();
     }
 
@@ -31,7 +31,7 @@ public partial class CanvasView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (!Simulation.Get().Running)
+        if (AppState.Get().EditingAllowed)
             (DataContext as CanvasViewModel)?.PointerExited();
     }
 
@@ -44,7 +44,7 @@ public partial class CanvasView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (!Simulation.Get().Running)
+        if (AppState.Get().EditingAllowed)
             CanvasViewModel.PointerPressed(ctrl, e);
     }
 
@@ -54,7 +54,7 @@ public partial class CanvasView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (!Simulation.Get().Running)
+        if (AppState.Get().EditingAllowed)
             (DataContext as CanvasViewModel)?.PointerMoved(sender, e);
     }
 
@@ -64,7 +64,7 @@ public partial class CanvasView : UserControl
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         e.Handled = true;
 
-        if (!Simulation.Get().Running)
+        if (AppState.Get().EditingAllowed)
             CanvasViewModel.PointerReleased(e);
     }
 }

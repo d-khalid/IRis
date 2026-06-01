@@ -87,5 +87,6 @@
         <KeyBinding Gesture="R" Command="{Binding RotateCommand}" />
         <KeyBinding Gesture="A" Command="{Binding AddInputCommand}" />
         <KeyBinding Gesture="S" Command="{Binding RemoveInputCommand}" />
+        <KeyBinding Gesture="Space" Command="{Binding ToggleCommand}" />
     </Window.KeyBindings>
 </Window>

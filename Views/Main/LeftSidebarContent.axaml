@@ -86,12 +86,24 @@
                     </Viewbox>
                     <TextBlock Text="Terminal Coloring" VerticalAlignment="Center" />
                 </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
+                    <Viewbox Height="24">
+                        <CheckBox IsChecked="{Binding AppState.EditingAllowed, Mode=TwoWay}">
+                            <CheckBox.Resources>
+                                <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="DodgerBlue"/>
+                                <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="DodgerBlue"/>
+                            </CheckBox.Resources>
+                        </CheckBox>
+                    </Viewbox>
+                    <TextBlock Text="Circuit Editing" VerticalAlignment="Center" />
+                </StackPanel>
                 <Button
                     Command="{Binding SimulationToggleCommand}"
                     Background="{Binding SimulationToggleBrush}"
                     Content="{Binding SimulationToggleContent}"
                     Margin="0,20"
                     BorderThickness="0"
+                    Focusable="False"
                 />
             </StackPanel>
         </StackPanel>

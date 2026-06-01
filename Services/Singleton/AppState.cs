@@ -24,6 +24,9 @@ public partial class AppState : SingletonBase<AppState>
     private bool _terminalColorChangeAllowed = true;
 
     [ObservableProperty]
+    private bool _editingAllowed = true;
+
+    [ObservableProperty]
     private ThemeVariant _theme = ThemeVariant.Dark;
 
     [ObservableProperty] [property: JsonIgnore] 

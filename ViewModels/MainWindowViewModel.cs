@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using System.IO;
 using System;
+using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
 
 namespace IRis.ViewModels;
@@ -285,6 +286,14 @@ public partial class MainWindowViewModel : ViewModelBase
                 }
             }
         }
+    }
+
+
+    [RelayCommand]
+    private static void Toggle()
+    {
+        if (HoverEffectService.HasToggle())
+            (HoverEffectService.GetObject() as ToggleViewModel)!.Toggle();
     }
 
 

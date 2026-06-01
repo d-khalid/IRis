@@ -1,5 +1,6 @@
 using IRis.ViewModels.Main.Canvas;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
+using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
 
 namespace IRis.Services;
@@ -47,4 +48,6 @@ public static class HoverEffectService
 
 
     public static bool IsRunning() => Object is not null;
+    public static bool HasToggle() => Object is ToggleViewModel;
+    public static CircuitObjectViewModel? GetObject() => Object;
 }
