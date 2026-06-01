@@ -7,6 +7,7 @@ using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.Core;
 using IRis.Models.CircuitObjects.Components.Gates;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
+using IRis.Views.Main.Canvas.CircuitObjects;
 
 
 namespace IRis.Services;
@@ -90,6 +91,9 @@ public static class SimulationService
         double offsetX = min.X - Position.X;
         double offsetY = min.Y - Position.Y;
 
+        foreach (var obj in collection)
+            if (obj is WireViewModel w) w.AllowFixing = false; 
+
         foreach (CircuitObjectViewModel co in collection)
         {
             if (co is ComponentViewModel c)
@@ -100,19 +104,21 @@ public static class SimulationService
 
             else if (co is WireViewModel w)
             {
-                if (w.MainInput.IsOrphan)
+                AvaloniaList<Point> snapped = [];
+                foreach (Point pt in w.Points)
                 {
-                    w.MainInput.X = Position.X;
-                    w.MainInput.Y = Position.Y;
+                    double x = pt.X - (offsetX + ((Point)offset).X);
+                    double y = pt.Y - (offsetY + ((Point)offset).Y);
+                    
+                    snapped.Add(new(x, y));
                 }
 
-                else if (w.MainOutput.IsOrphan)
-                {
-                    w.MainOutput.X = Position.X;
-                    w.MainOutput.Y = Position.Y;
-                }
+                w.Points = snapped;
             }
         }
+
+        foreach (var obj in collection)
+            if (obj is WireViewModel w) w.AllowFixing = true;
     }
 
 
@@ -148,5 +154,13 @@ public static class SimulationService
             if (co is WireViewModel w && w.Points.Count == 0) 
                 w.Redraw();
         }
+    }
+
+
+    public static double Distance(Point p1, Point p2)
+    {
+        double deltaX = p2.X - p1.X;
+        double deltaY = p2.Y - p1.Y;
+        return Math.Sqrt((deltaX * deltaX) + (deltaY * deltaY));
     }
 }

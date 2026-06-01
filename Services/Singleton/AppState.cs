@@ -23,7 +23,7 @@ public partial class AppState : SingletonBase<AppState>
     [ObservableProperty]
     private bool _terminalColorChangeAllowed = true;
 
-    [ObservableProperty]
+    [ObservableProperty] [property: JsonIgnore]
     private bool _editingAllowed = true;
 
     [ObservableProperty]

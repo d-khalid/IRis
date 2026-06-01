@@ -17,7 +17,10 @@ namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 {
-    public AvaloniaList<Point> Points { get; } = [];
+    [ObservableProperty] 
+    private AvaloniaList<Point> _points = [];
+
+    public bool AllowFixing { get; set; } = true;
 
 
     [ObservableProperty] private TerminalViewModel _mainInput = null!;
@@ -38,7 +41,8 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 
     private void OnTerminalPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(TerminalViewModel.X) or nameof(TerminalViewModel.Y))
+        if (e.PropertyName is nameof(TerminalViewModel.X) or nameof(TerminalViewModel.Y)
+            && AllowFixing)
             Fix();
     }
 
@@ -53,9 +57,99 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
     }
 
 
+    public static AvaloniaList<Point> DrawWire(Point p1, Point p2)
+    {
+        // TODO: we implement this function later to work
+        // with Simulation.ForbiddenMatrix
+
+        AvaloniaList<Point> points = [];
+
+        points.Add(p1);
+        points.Add(new(p1.X, p2.Y));
+        points.Add(p2);
+
+        return points;
+    }
+
+
     public void Fix()
     {
-        
+        // this math bellow was done by SHAHZAIB
+
+        int inputIdx = Points.IndexOf(new(MainInput.X, MainInput.Y));
+        int outputIdx = Points.IndexOf(new(MainOutput.X, MainOutput.Y));
+
+        if (inputIdx == -1 && outputIdx > -1)
+        {               // MainInput has moved out of position
+            inputIdx = Points.Count - 1 - outputIdx;    // this is invalidPointtIndex
+            int validPointIndex = ValidPointIndex(inputIdx);
+            bool startsFromZero = inputIdx == 0;
+
+            AvaloniaList<Point> points;
+            points = startsFromZero 
+                ? DrawWire(new(MainInput.X, MainInput.Y), Points[validPointIndex]) 
+                : DrawWire(Points[validPointIndex], new(MainInput.X, MainInput.Y));
+
+            if (startsFromZero)
+            {
+                Points.RemoveRange(0, validPointIndex + 1);
+                Points.InsertRange(0, points);
+            }
+
+            else
+            {
+                Points.RemoveRange(validPointIndex, inputIdx - validPointIndex + 1);
+                Points.AddRange(points);
+            }
+        }
+
+        else if (inputIdx > -1 && outputIdx == -1)
+        {
+            outputIdx = Points.Count - 1 - inputIdx;    // this is invalidPointtIndex
+            int validPointIndex = ValidPointIndex(outputIdx);
+            bool startsFromZero = outputIdx == 0;
+
+            AvaloniaList<Point> points;
+            points = startsFromZero 
+                ? DrawWire(new(MainOutput.X, MainOutput.Y), Points[validPointIndex]) 
+                : DrawWire(Points[validPointIndex], new(MainOutput.X, MainOutput.Y));
+
+            if (startsFromZero)
+            {
+                Points.RemoveRange(0, validPointIndex + 1);
+                Points.InsertRange(0, points);
+            }
+
+            else
+            {
+                Points.RemoveRange(validPointIndex, outputIdx - validPointIndex + 1);
+                Points.AddRange(points);
+            }
+        }
+
+        else
+        {
+            // handled by SnapCollectionToPosition
+        }
+
+        int ValidPointIndex(int invalidPointIndex)
+        {
+            int idx1 = invalidPointIndex, idx2 = invalidPointIndex;
+            int validPointIndex = Points.Count - 1 - invalidPointIndex;
+
+            while (true)
+            {
+                idx2 = invalidPointIndex == 0 ? idx1 + 1 : idx1 - 1;
+
+                if (idx2 > Points.Count - 1 || idx2 < 0) return validPointIndex;
+                if (SimulationService.Distance(Points[idx2], Points[idx1]) > 30)
+                {
+                    return idx2;
+                }
+
+                idx1 = idx2;
+            }
+        }
     }
 
 
