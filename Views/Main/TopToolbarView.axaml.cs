@@ -10,6 +10,5 @@ public partial class TopToolbarView : UserControl
     public TopToolbarView()
     {
         InitializeComponent();
-        DataContext = new TopToolbarViewModel();
     }
 }

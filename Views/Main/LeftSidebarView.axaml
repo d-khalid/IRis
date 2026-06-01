@@ -132,7 +132,7 @@
         <Style Selector="Button.item:pointerover /template/ Border">
             <Setter Property="Background" Value="#2A2D2E"/>
         </Style>
-        <Style Selector="Button.item:pressed /template/ Border">
+        <Style Selector="Button.item:focus /template/ Border">
             <Setter Property="Background" Value="#37373D"/>
         </Style>
         <Style Selector="Button.tab">

@@ -89,8 +89,16 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
             return;
         }
 
-        int inputIdx = Points.IndexOf(new(MainInput.X, MainInput.Y));
-        int outputIdx = Points.IndexOf(new(MainOutput.X, MainOutput.Y));
+        // ROUGH PATCH: gemini generated
+        bool inputMatchesStart = Points[0] == new Point(MainInput.X, MainInput.Y);
+        bool inputMatchesEnd = Points[^1] == new Point(MainInput.X, MainInput.Y);
+
+        bool outputMatchesStart = Points[0] == new Point(MainOutput.X, MainOutput.Y);
+        bool outputMatchesEnd = Points[^1] == new Point(MainOutput.X, MainOutput.Y);
+
+        int inputIdx = inputMatchesStart ? 0 : (inputMatchesEnd ? Points.Count - 1 : -1);
+        int outputIdx = outputMatchesStart ? 0 : (outputMatchesEnd ? Points.Count - 1 : -1);
+
 
         if (inputIdx == -1 && outputIdx > -1)   // mainInput is the issue
         {

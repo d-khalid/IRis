@@ -21,6 +21,7 @@ temp.txt
 global.json
 temp.json
 .editorconfig
+.vscode
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

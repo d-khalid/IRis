@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using IRis.Services.Commands;
 using IRis.Services.Singleton;
@@ -22,7 +23,7 @@ public static class CommandService
 
     public static void Undo()
     {
-        if (_undoStack.Count == 0 || AppState.Get().EditingAllowed) return;
+        if (_undoStack.Count == 0 || !AppState.Get().EditingAllowed) return;
 
         var command = _undoStack.Pop();
         command.Undo();
@@ -34,7 +35,7 @@ public static class CommandService
 
     public static void Redo()
     {
-        if (_redoStack.Count == 0 || AppState.Get().EditingAllowed) return;
+        if (_redoStack.Count == 0 || !AppState.Get().EditingAllowed) return;
 
         var command = _redoStack.Pop();
         command.Execute();
