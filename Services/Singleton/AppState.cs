@@ -45,7 +45,7 @@ public partial class AppState : SingletonBase<AppState>
         PropertyChanged += (_, e) =>
         {
             if (e.PropertyName is nameof(MousePosition) or nameof(LastCommand)
-                or nameof(CurrentFilePath))
+                or nameof(CurrentFilePath) or nameof(EditingAllowed))
                 return;
 
             Save();
@@ -56,6 +56,16 @@ public partial class AppState : SingletonBase<AppState>
     partial void OnTerminalColorChangeAllowedChanged(bool value)
     {
         if (Simulation.Get().Running)
+        {
+            Simulation.Get().Stop();
+            Simulation.Get().Start();
+        }
+    }
+
+
+    partial void OnEditingAllowedChanged(bool value)
+    {
+        if (value is false && Simulation.Get().Running)
         {
             Simulation.Get().Stop();
             Simulation.Get().Start();

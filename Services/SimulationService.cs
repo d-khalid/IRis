@@ -91,9 +91,6 @@ public static class SimulationService
         double offsetX = min.X - Position.X;
         double offsetY = min.Y - Position.Y;
 
-        foreach (var obj in collection)
-            if (obj is WireViewModel w) w.AllowFixing = false; 
-
         foreach (CircuitObjectViewModel co in collection)
         {
             if (co is ComponentViewModel c)
@@ -102,23 +99,8 @@ public static class SimulationService
                 c.Y -= offsetY + ((Point)offset).Y;
             }
 
-            else if (co is WireViewModel w)
-            {
-                AvaloniaList<Point> snapped = [];
-                foreach (Point pt in w.Points)
-                {
-                    double x = pt.X - (offsetX + ((Point)offset).X);
-                    double y = pt.Y - (offsetY + ((Point)offset).Y);
-                    
-                    snapped.Add(new(x, y));
-                }
-
-                w.Points = snapped;
-            }
+            // wires will auto-snap
         }
-
-        foreach (var obj in collection)
-            if (obj is WireViewModel w) w.AllowFixing = true;
     }
 
 
