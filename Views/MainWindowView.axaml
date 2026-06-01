@@ -20,7 +20,7 @@
     FontSize="12"
 >
     <DockPanel Margin="{Binding $parent[Window].OffScreenMargin}">
-        <Grid DockPanel.Dock="Top" Height="32">
+        <Grid DockPanel.Dock="Top" Height="32" Margin="0,0,0,5">
             <Rectangle Fill="Transparent" PointerPressed="OnTitleBarPressed" />
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
@@ -42,7 +42,7 @@
                     FontSize="14"
                 />
                 <TextBlock
-                    Text=" - IRis"
+                    Text=" - IRis v0.1.0"
                     Opacity="0.65"
                     IsHitTestVisible="False"
                     FontSize="14"

@@ -8,7 +8,7 @@
     FontSize="12"
 >
     <ScrollViewer Width="200" BorderThickness="0">
-        <StackPanel Margin="5,8,5,5">
+        <StackPanel Margin="0,0,0,5">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,0">
                 <Button 
                     Classes="tab" 
@@ -68,6 +68,31 @@
                         <Button Classes="item" Content="DEMUX" />
                     </StackPanel>
                 </StackPanel>
+            </StackPanel>
+
+            <StackPanel 
+                IsVisible="{Binding AppState.DesignTabActive, Converter={x:Static BoolConverters.Not}}"
+                Margin="20,10"
+                Spacing="5"
+            >
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
+                    <Viewbox Height="24">
+                        <CheckBox IsChecked="{Binding AppState.TerminalColorChangeAllowed, Mode=TwoWay}">
+                            <CheckBox.Resources>
+                                <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="DodgerBlue"/>
+                                <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="DodgerBlue"/>
+                            </CheckBox.Resources>
+                        </CheckBox>
+                    </Viewbox>
+                    <TextBlock Text="Terminal Coloring" VerticalAlignment="Center" />
+                </StackPanel>
+                <Button
+                    Command="{Binding SimulationToggleCommand}"
+                    Background="{Binding SimulationToggleBrush}"
+                    Content="{Binding SimulationToggleContent}"
+                    Margin="0,20"
+                    BorderThickness="0"
+                />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

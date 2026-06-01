@@ -6,6 +6,7 @@ using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 using IRis.ViewModels.Main.Canvas.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Avalonia.Media;
 
 
 namespace IRis.ViewModels.Main;
@@ -13,7 +14,39 @@ namespace IRis.ViewModels.Main;
 
 public partial class LeftSidebarViewModel : ViewModelBase
 {
-    [ObservableProperty] private AppState _appState = AppState.Get();
+    [ObservableProperty] 
+    private AppState _appState = AppState.Get();
+
+    [ObservableProperty] 
+    private string _simulationToggleContent = "Simulation: OFF";
+
+    [ObservableProperty] 
+    private Brush _simulationToggleBrush = new SolidColorBrush(Colors.DarkRed);
+
+
+    public LeftSidebarViewModel()
+    {
+        Simulation.Get().PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName is nameof(Simulation.Running))
+            {
+                SimulationToggleContent = Simulation.Get().Running ? 
+                    "Simulation: ON" : "Simulation: OFF";
+
+                SimulationToggleBrush = new SolidColorBrush(
+                    Simulation.Get().Running ? Colors.DarkGreen : Colors.DarkRed
+                );
+            }
+        };
+    }
+
+
+    [RelayCommand]
+    private static void SimulationToggle()
+    {
+        if (!Simulation.Get().Running) Simulation.Get().Start();
+        else Simulation.Get().Stop();
+    }
 
 
     [RelayCommand]

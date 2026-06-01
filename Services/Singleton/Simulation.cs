@@ -5,6 +5,7 @@ using System;
 using IRis.ViewModels.Main.Canvas;
 using Avalonia.Collections;
 using IRis.Services.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 
 namespace IRis.Services.Singleton;
@@ -12,7 +13,7 @@ namespace IRis.Services.Singleton;
 
 public partial class Simulation : SingletonCollection<Simulation>
 {
-    public bool Running = false;
+    [ObservableProperty] private bool _running = false;
     private readonly HashSet<Point> _forbiddenMatrix = [];
     private readonly DispatcherTimer _timer;
 

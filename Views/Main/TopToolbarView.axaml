@@ -6,24 +6,14 @@
     xmlns:vm="using:IRis.ViewModels.Main"
     x:DataType="vm:TopToolbarViewModel"
 >
-    <DockPanel Margin="5,5">
+    <DockPanel Margin="3,4,3,5">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
-            <Button MaxWidth="28" MaxHeight="32">
-                <PathIcon Data="{StaticResource arrow_undo_regular}" Width="9" Height="9" />
+            <Button MaxWidth="24" MaxHeight="24">
+                <PathIcon Data="{StaticResource arrow_undo_regular}" Width="8" Height="8" />
             </Button>
-            <Button MaxWidth="28" MaxHeight="32">
-                <PathIcon Data="{StaticResource arrow_redo_regular}" Width="9" Height="9" />
+            <Button MaxWidth="24" MaxHeight="24">
+                <PathIcon Data="{StaticResource arrow_redo_regular}" Width="8" Height="8" />
             </Button>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
-            <Button
-                HorizontalAlignment="Right"
-                Command="{Binding SimulationToggleCommand}"
-                Background="{Binding SimulationToggleBackground}"
-                Content="{Binding SimulationToggleContent}"
-                FontSize="12"
-                BorderThickness="0"
-            />
         </StackPanel>
     </DockPanel>
 </UserControl>

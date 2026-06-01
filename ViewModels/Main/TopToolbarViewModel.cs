@@ -12,25 +12,4 @@ namespace IRis.ViewModels.Main;
 
 public partial class TopToolbarViewModel : ViewModelBase
 {
-    [ObservableProperty] private string _simulationToggleContent = "Simulation: OFF";
-    [ObservableProperty] private Brush _simulationToggleBackground = new SolidColorBrush(Colors.DarkRed);
-
-
-    [RelayCommand]
-    private void SimulationToggle()
-    {
-        if (!Simulation.Get().Running)
-        {
-            SimulationToggleContent = "Simulation: ON";
-            SimulationToggleBackground = new SolidColorBrush(Colors.DarkGreen);
-            Simulation.Get().Start();
-        }
-
-        else
-        {
-            SimulationToggleContent = "Simulation: OFF";
-            SimulationToggleBackground = new SolidColorBrush(Colors.DarkRed);
-            Simulation.Get().Stop();
-        }
-    }
 }
