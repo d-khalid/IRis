@@ -49,17 +49,29 @@ public static class SerializationService
     {
         private static readonly Assembly _asm = typeof(TypeNameBinder).Assembly;
 
+
         public override void BindToName(Type serializedType, out string? assemblyName, out string? typeName)
         {
             if (serializedType.Assembly == _asm && !serializedType.IsGenericType)
-                { assemblyName = null; typeName = serializedType.Name; return; }
+            { 
+                assemblyName = null; 
+                typeName = serializedType.Name[..^9]; 
+                return; 
+            }
+
             base.BindToName(serializedType, out assemblyName, out typeName);
         }
 
-        public override Type BindToType(string? assemblyName, string typeName) =>
-            assemblyName is null
-                ? _asm.GetTypes().FirstOrDefault(t => t.Name == typeName)
-                ?? base.BindToType(assemblyName, typeName)
-                : base.BindToType(assemblyName, typeName);
+
+        public override Type BindToType(string? assemblyName, string typeName)
+        {
+            if (assemblyName is null)
+            {
+                var type = _asm.GetTypes().FirstOrDefault(t => t.Name == typeName + "ViewModel");
+                if (type != null) return type;
+            }
+
+            return base.BindToType(assemblyName, typeName);
+        }
     }
 }

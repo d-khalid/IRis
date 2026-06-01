@@ -16,6 +16,7 @@ using Avalonia.Platform.Storage;
 using System.IO;
 using System;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
+using FluentAvalonia.UI.Controls;
 
 
 namespace IRis.ViewModels;
@@ -26,9 +27,40 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private AppState _appState = AppState.Get();
 
 
-    [RelayCommand]
-    private static void New()
+    private static async Task<bool> AskNukeChangesAsync()
     {
+        var dialog = new ContentDialog
+        {
+            Title = "Unsaved Changes",
+            Content = "You seem to have unsaved changes in this file. Should I save them?",
+            PrimaryButtonText = "Save",
+            SecondaryButtonText = "Don't Save",
+            CloseButtonText = "Cancel",
+            DefaultButton = ContentDialogButton.Primary
+        };
+
+        var result = await dialog.ShowAsync();
+
+        if (result is ContentDialogResult.Primary)
+        {
+            await SaveAsync();
+            return true;
+        }
+        else if (result is ContentDialogResult.Secondary)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    [RelayCommand]
+    private static async Task New()
+    {
+        if (!await AskNukeChangesAsync()) return;
         AppState.Get().CurrentFilePath = "(unsaved)";
 
         if (Simulation.Get().Running) 
@@ -46,6 +78,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static async Task OpenAsync(string param)
     {
+        if (param == "open" && !await AskNukeChangesAsync()) return;
         if (Simulation.Get().Running) Simulation.Get().Stop();
 
         if (Application.Current?.ApplicationLifetime is not 
@@ -96,6 +129,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
         var json = SerializationService.Serialize(Simulation.Get().Objects);
         await File.WriteAllTextAsync(AppState.Get().CurrentFilePath, json);
+
+        AppState.NeedsSaving = false;
     }
 
 

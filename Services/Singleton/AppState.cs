@@ -23,6 +23,7 @@ public partial class AppState : SingletonBase<AppState>
         "IRis", "autosave.iris"
     );
 
+    public static bool NeedsSaving { get; set; } = false;
     private readonly DispatcherTimer _timer;
 
     [ObservableProperty]
@@ -52,9 +53,15 @@ public partial class AppState : SingletonBase<AppState>
         Load();
         PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName is nameof(MousePosition) or nameof(LastCommand)
-                or nameof(EditingAllowed))
+            if (e.PropertyName is nameof(MousePosition) or nameof(EditingAllowed))
+            {
                 return;
+            }
+            else if (e.PropertyName is nameof(LastCommand))
+            {
+                NeedsSaving = true;
+                return;
+            }
 
             Save();
         };
@@ -103,6 +110,8 @@ public partial class AppState : SingletonBase<AppState>
             await File.WriteAllTextAsync(
                 path, SerializationService.Serialize(circuit)
             );
+
+            NeedsSaving = false;
         }
         catch (IOException)
         {

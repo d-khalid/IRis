@@ -84,6 +84,11 @@
         <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}" />
         <KeyBinding Gesture="Ctrl+Y" Command="{Binding RedoCommand}" />
 
+        <KeyBinding Gesture="Ctrl+N" Command="{Binding NewCommand}" />
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenCommand}" CommandParameter="open" />
+        <KeyBinding Gesture="Ctrl+M" Command="{Binding OpenCommand}" CommandParameter="merge" />
+        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveCommand}" />
+
         <KeyBinding Gesture="R" Command="{Binding RotateCommand}" />
         <KeyBinding Gesture="A" Command="{Binding AddInputCommand}" />
         <KeyBinding Gesture="S" Command="{Binding RemoveInputCommand}" />
