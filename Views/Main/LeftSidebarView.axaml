@@ -14,71 +14,186 @@
     FontSize="12"
 >
     <UserControl.Resources>
-        <components:ToggleViewModel x:Key="SampleToggle" />
-        <components:ProbeViewModel x:Key="SampleProbe" />
-        <gates:AndGateViewModel x:Key="SampleAnd" />
-        <gates:NotGateViewModel x:Key="SampleNot" />
+        <Border 
+            x:Key="SampleToggle" 
+            Width="20" 
+            Height="20"
+            Background="DarkRed"
+            BorderBrush="Black"
+            BorderThickness="2"
+            CornerRadius="1"
+        >
+            <TextBlock 
+                Text="0"
+                Foreground="White"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="0,0,0,1"
+                FontSize="14"
+                FontWeight="ExtraBold"
+            />
+        </Border>
+        <Border
+            x:Key="SampleProbe"
+            Width="20" 
+            Height="20"
+            Background="DarkGray"
+            BorderBrush="Black"
+            BorderThickness="2"
+            CornerRadius="10"
+        >
+            <TextBlock
+                Text="?"
+                Foreground="White"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="14"
+                FontWeight="ExtraBold"
+                Margin="0,0,0,1"
+            />
+        </Border>
+        <Grid x:Key="SampleAnd" Width="20" Height="20">
+            <Path
+                Fill="White" 
+                Stroke="Black" 
+                StrokeThickness="2"
+                Stretch="Fill"
+                Data="M 0,100 L 60,100 A 40,40 0 0 0 60,0 L 0,0 Z"
+            />
+        </Grid>
+        <Grid x:Key="SampleNot" Width="20" Height="20">
+            <Path
+                Fill="White"
+                Stroke="Black"
+                StrokeThickness="2"
+                Stretch="Fill"
+                Data="M 0,0 L 0,100 L 100,50 Z"
+                Margin="0,0,6,0"
+            />
+            <Ellipse
+                Width="8" Height="8"
+                Stroke="Black"
+                StrokeThickness="2"
+                Fill="White"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+            />
+        </Grid>
     </UserControl.Resources>
 
+    <UserControl.Styles>
+        <Style Selector="ToggleButton.section">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="8,2"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}"
+                    >
+                        <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                            <TextBlock
+                                Text="▾"
+                                FontSize="16"
+                                IsVisible="{TemplateBinding IsChecked}"
+                                VerticalAlignment="Center"
+                            />
+                            <TextBlock
+                                Text="▸"
+                                FontSize="16"
+                                IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
+                                VerticalAlignment="Center"
+                            />
+                            <ContentPresenter
+                                Content="{TemplateBinding Content}"
+                                VerticalAlignment="Center"
+                            />
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="ToggleButton.section:pointerover /template/ Border">
+            <Setter Property="Background" Value="#2A2D2E"/>
+        </Style>
+
+        <Style Selector="Button.item">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="24,0,8,0"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.item:pointerover /template/ Border">
+            <Setter Property="Background" Value="#2A2D2E"/>
+        </Style>
+        <Style Selector="Button.item:pressed /template/ Border">
+            <Setter Property="Background" Value="#37373D"/>
+        </Style>
+    </UserControl.Styles>
+
     <ScrollViewer Width="200" BorderThickness="0">
-        <StackPanel Margin="5,4,5,5" Spacing="5">
-            <Expander Header="I/O" IsExpanded="True" Padding="5,5">
-                <StackPanel Margin="0,0" Spacing="5">
-                    <Button Command="{Binding AddToggleCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Viewbox Height="18">
-                                <vcomponents:ToggleView DataContext="{StaticResource SampleToggle}" />
-                            </Viewbox>
+        <StackPanel Margin="5,8,5,5">
+            <TextBlock 
+                Text="Design" 
+                FontSize="14" 
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Center" 
+                Margin="0,0,0,5" 
+            />
+            <ToggleButton Classes="section" x:Name="IoToggle" IsChecked="True" Content="I/O" />
+            <StackPanel IsVisible="{Binding #IoToggle.IsChecked}" Margin="0,5">
+                <StackPanel>
+                    <Button Classes="item" Command="{Binding AddToggleCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <Viewbox Height="16" Child="{StaticResource SampleToggle}" />
                             <TextBlock Text="Toggle Switch" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
-                    <Button Command="{Binding AddProbeCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Viewbox Height="18">
-                                <vcomponents:ProbeView DataContext="{StaticResource SampleProbe}" />
-                            </Viewbox>
+                    <Button Classes="item" Command="{Binding AddProbeCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <Viewbox Height="16" Child="{StaticResource SampleProbe}" />
                             <TextBlock Text="Logic Probe" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
                 </StackPanel>
-            </Expander>
-            <Expander Header="Gates" IsExpanded="False" Padding="5,5">
-                <StackPanel Margin="0,0" Spacing="5">
-                    <Button Command="{Binding AddAndCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Viewbox Height="18">
-                                <vgates:AndGateView DataContext="{StaticResource SampleAnd}" />
-                            </Viewbox>
+            </StackPanel>
+
+            <ToggleButton Classes="section" x:Name="GatesToggle" IsChecked="False" Content="Gates" />
+            <StackPanel IsVisible="{Binding #GatesToggle.IsChecked}" Margin="0,5">
+                <StackPanel>
+                    <Button Classes="item" Command="{Binding AddAndCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <Viewbox Height="14" Child="{StaticResource SampleAnd}" />
                             <TextBlock Text="AND Gate" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
-                    <Button Content="OR Gate" />
-                    <Button Command="{Binding AddNotCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Viewbox Height="18">
-                                <vgates:NotGateView DataContext="{StaticResource SampleNot}" />
-                            </Viewbox>
+                    <Button Classes="item" Command="{Binding AddNotCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <Viewbox Height="14" Child="{StaticResource SampleNot}" />
                             <TextBlock Text="NOT Gate" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
-                    <Button Content="NAND Gate" />
-                    <Button Content="NOR Gate" />
-                    <Button Content="XOR Gate" />
-                    <Button Content="XNOR Gate" />
                 </StackPanel>
-            </Expander>
-            <Expander Header="Advanced" IsExpanded="False" Padding="5,5">
+            </StackPanel>
+
+            <ToggleButton Classes="section" x:Name="AdvancedToggle" IsChecked="False" Content="Advanced" />
+            <StackPanel IsVisible="{Binding #AdvancedToggle.IsChecked}" Margin="0,5">
                 <StackPanel Margin="0,0" Spacing="5">
-                    <Button Content="MUX" />
-                    <Button Content="DEMUX" />
+                    <Button Classes="item" Content="MUX" />
+                    <Button Classes="item" Content="DEMUX" />
                 </StackPanel>
-            </Expander>
-            <Expander Header="Clock" IsExpanded="False" Padding="5,5">
-                <StackPanel Margin="0,0" Spacing="5">
-                    <Button Content="Latch" />
-                    <Button Content="FlipFlop" />
-                </StackPanel>
-            </Expander>
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

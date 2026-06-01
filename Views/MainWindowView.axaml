@@ -17,7 +17,7 @@
     ExtendClientAreaToDecorationsHint="True"
     ExtendClientAreaChromeHints="Default"
     ExtendClientAreaTitleBarHeightHint="36"
-    FontSize="14"
+    FontSize="12"
 >
     <DockPanel Margin="{Binding $parent[Window].OffScreenMargin}">
         <Grid DockPanel.Dock="Top" Height="32">
@@ -39,11 +39,13 @@
                     Text="{Binding AppState.CurrentFilePath}"
                     Opacity="0.65"
                     IsHitTestVisible="False"
+                    FontSize="14"
                 />
                 <TextBlock
                     Text=" - IRis"
                     Opacity="0.65"
                     IsHitTestVisible="False"
+                    FontSize="14"
                 />
             </StackPanel>
         </Grid>
