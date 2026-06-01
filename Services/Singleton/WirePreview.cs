@@ -45,6 +45,11 @@ public partial class WirePreview : SingletonBase<WirePreview>
     public void UpdateTo(Point position)
     {
         TemporaryPoints.Clear();
+
+        // the math bellow for L-shaped wire routing was done by SHAHZAIB
+
+        var lastPt = CommittedPoints[^1];
+        TemporaryPoints.Add(new(lastPt.X, position.Y));
         TemporaryPoints.Add(position);
 
         Wire!.Points.Clear();
@@ -53,9 +58,9 @@ public partial class WirePreview : SingletonBase<WirePreview>
     }
 
 
-    public void CheckpointAt(Point position)
+    public void Checkpoint()
     {
-        CommittedPoints.Add(position);
+        CommittedPoints.AddRange(TemporaryPoints);
         TemporaryPoints.Clear();
 
         Wire!.Points.Clear();

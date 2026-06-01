@@ -63,7 +63,7 @@ public partial class CanvasViewModel : ViewModelBase
     public static void PointerPressed(Control sender, PointerPressedEventArgs e)
     {
         if (!WirePreview.Get().IsEmpty())
-            WirePreview.Get().CheckpointAt(AppState.Get().MousePosition);
+            WirePreview.Get().Checkpoint();
 
         else if (!Preview.Get().IsEmpty())
             Preview.Get().Commit();
