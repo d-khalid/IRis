@@ -4,6 +4,9 @@ using IRis.Services.Singleton;
 using IRis.Models.Core;
 using Newtonsoft.Json;
 using Avalonia.Input;
+using Avalonia.Media;
+using Avalonia;
+using Avalonia.Controls;
 
 
 namespace IRis.ViewModels.Main.Canvas.Core;
@@ -19,34 +22,56 @@ public partial class TerminalViewModel : ObservableObject
 
     [ObservableProperty] [property: JsonIgnore] private double _x = 0;
     [ObservableProperty] [property: JsonIgnore] private double _y = 0;
-    [ObservableProperty] [property: JsonIgnore] private string _color = "DarkGray";
-    [ObservableProperty] [property: JsonIgnore] private Cursor _cursor = new(StandardCursorType.Arrow);
+
+    [ObservableProperty] [property: JsonIgnore] 
+    private IBrush _color = null!;
+
+    [ObservableProperty] [property: JsonIgnore] 
+    private Cursor _cursor = new(StandardCursorType.Arrow);
 
 
     public TerminalViewModel()
     {
         Model.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName is nameof(Terminal.State)) UpdateColor();
+            if (AppState.Get().TerminalColorChangeAllowed && e.PropertyName is nameof(Terminal.State)) 
+                UpdateColor();
         };
+
+        AppState.Get().PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName is nameof(AppState.TerminalColorChangeAllowed))
+            {
+                UpdateColor();
+            }
+        };
+
+        UpdateColor();
     }
 
 
     private void UpdateColor()
     {
-        if (!AppState.Get().TerminalColorChangeAllowed)
+        string resource;
+
+        if (AppState.Get().TerminalColorChangeAllowed)
         {
-            Color = "DarkGray";
-            return;
+            resource = Model.State switch
+            {
+                LogicState.High => "HighStateBrush",
+                LogicState.Low => "LowStateBrush",
+                LogicState.Unknown => "UnknownStateBrush",
+                _ => "UnknownStateBrush"
+            };
         }
 
-        Color = Model.State switch
+        else
         {
-            LogicState.High => "DarkGreen",
-            LogicState.Low => "DarkRed",
-            LogicState.Unknown => "DarkGray",
-            _ => "DarkGray"
-        };
+            resource = "UnknownStateBrush";
+        }
+
+        Application.Current!.TryGetResource(resource, AppState.Get().Theme, out var res);
+        Color = (IBrush)res!;
     }
 
 

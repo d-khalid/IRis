@@ -13,7 +13,9 @@ namespace IRis.Services.Singleton;
 
 public partial class Simulation : SingletonCollection<Simulation>
 {
-    [ObservableProperty] private bool _running = false;
+    [ObservableProperty] 
+    private bool _running = false;
+
     private readonly HashSet<Point> _forbiddenMatrix = [];
     private readonly DispatcherTimer _timer;
 
@@ -28,35 +30,33 @@ public partial class Simulation : SingletonCollection<Simulation>
     }
 
 
+    partial void OnRunningChanged(bool value)
+    {
+        if (value)
+        {
+            Selection.Get().UnHighlightAll();
+            Preview.Get().Drop();
+            WirePreview.Get().Nuke();
+
+            _timer.Start();
+        }
+
+        else
+        {
+            _timer.Stop();
+
+            foreach (var co in Objects) co.Reset();
+        }
+    }
+
+
     public void UpdateForbiddenMatrix()
     {
         _forbiddenMatrix.Clear();
     }
 
 
-    public bool IsForbidden(Point pt)
-    {
-        return _forbiddenMatrix.Contains(pt);
-    }
-
-
-    public void Start()
-    {
-        Selection.Get().UnHighlightAll();
-        Preview.Get().Drop();
-        WirePreview.Get().Nuke();
-
-        Running = true;
-        _timer.Start();
-    }
-
-
-    public void Stop()
-    {
-        _timer.Stop();
-        Running = false;
-        foreach (var co in Objects) co.Reset();
-    }
+    public bool IsForbidden(Point pt) => _forbiddenMatrix.Contains(pt);
 
 
     public void Add(CircuitObjectViewModel co) => Objects.Add(co);

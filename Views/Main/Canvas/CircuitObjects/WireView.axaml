@@ -21,7 +21,7 @@
 
         <Polyline 
             Points="{Binding Points}" 
-            Stroke="Black" 
+            Stroke="{DynamicResource WireBrush}" 
             StrokeThickness="2"
             StrokeJoin="Round"
             StrokeLineCap="Round"

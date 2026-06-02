@@ -64,7 +64,7 @@ public partial class MainWindowViewModel : ViewModelBase
         AppState.Get().CurrentFilePath = "(unsaved)";
 
         if (Simulation.Get().Running) 
-            Simulation.Get().Stop();
+            Simulation.Get().Running = false;
 
         Selection.Get().UnHighlightAll();
         Simulation.Get().Nuke();
@@ -79,7 +79,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private static async Task OpenAsync(string param)
     {
         if (param == "open" && !await AskNukeChangesAsync()) return;
-        if (Simulation.Get().Running) Simulation.Get().Stop();
+        if (Simulation.Get().Running) Simulation.Get().Running = false;
 
         if (Application.Current?.ApplicationLifetime is not 
             IClassicDesktopStyleApplicationLifetime time || time.MainWindow is null)
@@ -119,7 +119,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static async Task SaveAsync()
     {
-        if (Simulation.Get().Running) Simulation.Get().Stop();
+        if (Simulation.Get().Running) Simulation.Get().Running = false;
 
         if (AppState.Get().CurrentFilePath == "(unsaved)")
         {

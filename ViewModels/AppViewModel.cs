@@ -20,7 +20,7 @@ public partial class AppViewModel : ViewModelBase
     {
         AppState.Get();
         LoadLastSessionFile();
-        Simulation.Get().Start();
+        Simulation.Get().Running = true;
     }
 
 

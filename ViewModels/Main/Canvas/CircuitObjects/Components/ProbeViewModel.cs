@@ -7,6 +7,8 @@ using IRis.ViewModels.Main.Canvas.Core;
 using Avalonia;
 using Newtonsoft.Json;
 using IRis.Services;
+using Avalonia.Controls;
+using IRis.Services.Singleton;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
@@ -15,6 +17,26 @@ namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 public partial class ProbeViewModel : ComponentViewModel
 {
     [ObservableProperty] private TerminalViewModel _input = null!;
+
+    [ObservableProperty] [property: JsonIgnore]
+    private IBrush _background;
+
+    [ObservableProperty] [property: JsonIgnore] 
+    private string _label = "?";
+
+
+    public ProbeViewModel() : this(new Probe()) { }
+    private ProbeViewModel(Probe model) : base(model)
+    {
+        Width = Height = 20;
+
+        Application.Current!.TryGetResource("UnknownStateBrush", AppState.Get().Theme, out var res);
+
+        if (res is IBrush brush) _background = brush;
+        else _background = new SolidColorBrush(Colors.DarkGray);
+    }
+
+
     partial void OnInputChanged(TerminalViewModel value)
     {
         (Model as Probe)!.Input = value.GetModel();
@@ -22,18 +44,6 @@ public partial class ProbeViewModel : ComponentViewModel
         {
             if (e.PropertyName == nameof(Terminal.State)) UpdateVisual();
         };
-    }
-
-
-    [ObservableProperty] [property: JsonIgnore]
-    private ImmutableSolidColorBrush _background = new(Colors.DarkGray);
-    [ObservableProperty] [property: JsonIgnore] private string _label = "?";
-
-
-    public ProbeViewModel() : this(new Probe()) { }
-    private ProbeViewModel(Probe model) : base(model)
-    {
-        Width = Height = 20;
     }
 
 
@@ -54,20 +64,27 @@ public partial class ProbeViewModel : ComponentViewModel
 
     public void UpdateVisual()
     {
+        string resource;
+
         switch ((Model as Probe)!.Input.State)
         {
             case LogicState.High:
-                Background = new(Colors.DarkGreen);
+                resource = "HighStateBrush";
                 Label = "1";
                 break;
             case LogicState.Low:
-                Background = new(Colors.DarkRed);
+                resource = "LowStateBrush";
                 Label = "0";
                 break;
             case LogicState.Unknown:
-                Background = new(Colors.DarkGray);
+                resource = "UnknownStateBrush";
                 Label = "?";
                 break;
+            default:
+                return;
         }
+
+        Application.Current!.TryGetResource(resource, AppState.Get().Theme, out var res);
+        Background = (IBrush)res!;
     }
 }

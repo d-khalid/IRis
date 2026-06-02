@@ -9,6 +9,8 @@ using IRis.ViewModels.Main.Canvas.Core;
 using Avalonia;
 using IRis.Services;
 using Newtonsoft.Json;
+using Avalonia.Controls;
+using IRis.Services.Singleton;
 
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
@@ -25,14 +27,21 @@ public partial class ToggleViewModel : ComponentViewModel
 
 
     [ObservableProperty] [property: JsonIgnore]
-    private ImmutableSolidColorBrush _background = new(Colors.DarkRed);
-    [ObservableProperty] [property: JsonIgnore] private string _label = "0";
+    private IBrush _background;
+
+    [ObservableProperty] [property: JsonIgnore] 
+    private string _label = "0";
 
 
     public ToggleViewModel() : this(new Toggle()) { }
     private ToggleViewModel(Toggle model) : base(model)
     {
         Width = Height = 20;
+
+        Application.Current!.TryGetResource("LowStateBrush", AppState.Get().Theme, out var res);
+
+        if (res is IBrush brush) _background = brush;
+        else _background = new SolidColorBrush(Colors.DarkGray);
     }
 
 
@@ -42,11 +51,12 @@ public partial class ToggleViewModel : ComponentViewModel
         set
         {
             (Model as Toggle)!.State = value;
-            if (value is LogicState.High)
-            {
-                Background = new(Colors.DarkGreen);
-                Label = "1";
-            }
+
+            Label = value == LogicState.High ? "1" : "0";
+
+            var resource = value == LogicState.High ? "HighStateBrush" : "LowStateBrush";
+            Application.Current!.TryGetResource(resource, AppState.Get().Theme, out var res);
+            Background = (IBrush)res!;
         }
     }
 
@@ -68,20 +78,10 @@ public partial class ToggleViewModel : ComponentViewModel
 
     public void Toggle()
     {
-        var t = (Model as Toggle)!;
+        if (State == LogicState.High)
+            State = LogicState.Low;
 
-        if (t.State == LogicState.High)
-        {
-            t.State = LogicState.Low;
-            Background = new(Colors.DarkRed);
-            Label = "0";
-        }
-
-        else if (t.State == LogicState.Low)
-        {
-            t.State = LogicState.High;
-            Background = new(Colors.DarkGreen);
-            Label = "1";
-        }
+        else if (State == LogicState.Low)
+            State = LogicState.High;
     }
 }

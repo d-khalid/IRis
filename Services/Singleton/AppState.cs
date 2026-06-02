@@ -78,22 +78,13 @@ public partial class AppState : SingletonBase<AppState>
     }
 
 
-    partial void OnTerminalColorChangeAllowedChanged(bool value)
-    {
-        if (Simulation.Get().Running)
-        {
-            Simulation.Get().Stop();
-            Simulation.Get().Start();
-        }
-    }
-
-
     partial void OnEditingAllowedChanged(bool value)
     {
         if (value is false && Simulation.Get().Running)
         {
-            Simulation.Get().Stop();
-            Simulation.Get().Start();
+            Selection.Get().UnHighlightAll();
+            Preview.Get().Drop();
+            WirePreview.Get().Nuke();
         }
     }
 

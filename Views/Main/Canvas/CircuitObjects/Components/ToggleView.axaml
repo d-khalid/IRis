@@ -15,8 +15,8 @@
         <Border
             Width="{Binding Width}"
             Height="{Binding Height}"
-            Background="{Binding Background}"
-            BorderBrush="Black"
+            Background="{DynamicResource ComponentFillBrush}"
+            BorderBrush="{DynamicResource ComponentBorderBrush}"
             BorderThickness="2"
             CornerRadius="1"
         >
@@ -40,7 +40,7 @@
         <Line
             StartPoint="0,0"
             EndPoint="10,0"
-            Stroke="Black"
+            Stroke="{DynamicResource ComponentBorderBrush}"
             StrokeThickness="2"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"

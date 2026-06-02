@@ -21,7 +21,7 @@
         Name="ZoomBorder" 
         Stretch="None" 
         ZoomSpeed="1.2"
-        Background="Transparent" 
+        Background="{DynamicResource ZoomBorderBackground}" 
         ClipToBounds="True" 
         Focusable="True"
         VerticalAlignment="Stretch" 

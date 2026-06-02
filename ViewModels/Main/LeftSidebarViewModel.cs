@@ -47,8 +47,8 @@ public partial class LeftSidebarViewModel : ViewModelBase
     [RelayCommand]
     private static void SimulationToggle()
     {
-        if (!Simulation.Get().Running) Simulation.Get().Start();
-        else Simulation.Get().Stop();
+        if (!Simulation.Get().Running) Simulation.Get().Running = true;
+        else Simulation.Get().Running = false;
     }
 
 
