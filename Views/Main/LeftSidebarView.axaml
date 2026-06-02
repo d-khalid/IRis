@@ -13,14 +13,14 @@
             x:Key="SampleToggle" 
             Width="20" 
             Height="20"
-            Background="DarkRed"
-            BorderBrush="Black"
+            Background="{DynamicResource ComponentFillBrush}"
+            BorderBrush="{DynamicResource ComponentBorderBrush}"
             BorderThickness="2"
             CornerRadius="1"
         >
             <TextBlock 
                 Text="0"
-                Foreground="White"
+                Foreground="{DynamicResource ComponentBorderBrush}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Margin="0,0,0,1"
@@ -32,14 +32,14 @@
             x:Key="SampleProbe"
             Width="20" 
             Height="20"
-            Background="DarkGray"
-            BorderBrush="Black"
+            Background="{DynamicResource ComponentFillBrush}"
+            BorderBrush="{DynamicResource ComponentBorderBrush}"
             BorderThickness="2"
             CornerRadius="10"
         >
             <TextBlock
                 Text="?"
-                Foreground="White"
+                Foreground="{DynamicResource ComponentBorderBrush}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -49,8 +49,8 @@
         </Border>
         <Grid x:Key="SampleAnd" Width="20" Height="20">
             <Path
-                Fill="White" 
-                Stroke="Black" 
+                Fill="{DynamicResource ComponentFillBrush}" 
+                Stroke="{DynamicResource ComponentBorderBrush}" 
                 StrokeThickness="2"
                 Stretch="Fill"
                 Data="M 0,100 L 60,100 A 40,40 0 0 0 60,0 L 0,0 Z"
@@ -58,8 +58,8 @@
         </Grid>
         <Grid x:Key="SampleNot" Width="20" Height="20">
             <Path
-                Fill="White"
-                Stroke="Black"
+                Fill="{DynamicResource ComponentFillBrush}"
+                Stroke="{DynamicResource ComponentBorderBrush}"
                 StrokeThickness="2"
                 Stretch="Fill"
                 Data="M 0,0 L 0,100 L 100,50 Z"
@@ -67,9 +67,9 @@
             />
             <Ellipse
                 Width="8" Height="8"
-                Stroke="Black"
+                Fill="{DynamicResource ComponentFillBrush}"
+                Stroke="{DynamicResource ComponentBorderBrush}"
                 StrokeThickness="2"
-                Fill="White"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
             />

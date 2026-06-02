@@ -22,6 +22,9 @@ public partial class CanvasViewModel : ViewModelBase
     [ObservableProperty] private AppState _appState = AppState.Get();
     [ObservableProperty] private WirePreview _wirePreview = WirePreview.Get();
 
+    [ObservableProperty]
+    private Simulation _simulation = Simulation.Get();
+
 
     [RelayCommand]
     private static void Copy()

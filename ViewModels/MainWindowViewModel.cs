@@ -130,7 +130,7 @@ public partial class MainWindowViewModel : ViewModelBase
         var json = SerializationService.Serialize(Simulation.Get().Objects);
         await File.WriteAllTextAsync(AppState.Get().CurrentFilePath, json);
 
-        AppState.NeedsSaving = false;
+        AppState.FileNeedsSaving = false;
     }
 
 

@@ -51,6 +51,11 @@
                         ToggleType="CheckBox" 
                         IsChecked="{Binding AppState.TerminalColorChangeAllowed, Mode=TwoWay}" 
                     />
+                    <MenuItem 
+                        Header="Simulation" 
+                        ToggleType="CheckBox" 
+                        IsChecked="{Binding Simulation.Running, Mode=TwoWay}" 
+                    />
                 </MenuFlyout>
             </Canvas.ContextFlyout>
 

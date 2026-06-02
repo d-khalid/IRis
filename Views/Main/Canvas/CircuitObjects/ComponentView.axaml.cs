@@ -45,8 +45,7 @@ public partial class ComponentView : UserControl
     {
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
 
-        if (AppState.Get().EditingAllowed)
-            (DataContext as ComponentViewModel)?.PointerEntered();
+        (DataContext as ComponentViewModel)?.PointerEntered();
     }
 
 
@@ -54,7 +53,6 @@ public partial class ComponentView : UserControl
     {
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
 
-        if (AppState.Get().EditingAllowed)
-            (DataContext as ComponentViewModel)?.PointerExited();
+        (DataContext as ComponentViewModel)?.PointerExited();
     }
 }

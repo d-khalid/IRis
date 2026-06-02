@@ -23,7 +23,7 @@ public partial class AppState : SingletonBase<AppState>
         "IRis", "autosave.iris"
     );
 
-    public static bool NeedsSaving { get; set; } = false;
+    public static bool FileNeedsSaving { get; set; } = false;
     private readonly DispatcherTimer _timer;
 
     [ObservableProperty]
@@ -62,7 +62,7 @@ public partial class AppState : SingletonBase<AppState>
             }
             else if (e.PropertyName is nameof(LastCommand))
             {
-                NeedsSaving = true;
+                FileNeedsSaving = true;
                 return;
             }
 
@@ -105,7 +105,7 @@ public partial class AppState : SingletonBase<AppState>
                 path, SerializationService.Serialize(circuit)
             );
 
-            NeedsSaving = false;
+            FileNeedsSaving = false;
         }
         catch (IOException)
         {
