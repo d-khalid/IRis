@@ -56,9 +56,25 @@
             <SolidColorBrush x:Key="SelectionHighlightFillBrush" Color="#469adf" Opacity="0.2" />
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
+                    <VisualBrush x:Key="CanvasGridTileBrush" TileMode="Tile" SourceRect="0,0,10,10" DestinationRect="0,0,10,10">
+                        <VisualBrush.Visual>
+                            <Canvas Width="10" Height="10" Background="White">
+                                <Line StartPoint="0,10" EndPoint="10,10" Stroke="#D3D3D3" StrokeThickness="1"/>
+                                <Line StartPoint="10,0" EndPoint="10,10" Stroke="#D3D3D3" StrokeThickness="1"/>
+                            </Canvas>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
                 </ResourceDictionary>
                 
                 <ResourceDictionary x:Key="Dark">
+                    <VisualBrush x:Key="CanvasGridTileBrush" TileMode="Tile" SourceRect="0,0,10,10" DestinationRect="0,0,10,10">
+                        <VisualBrush.Visual>
+                            <Canvas Width="10" Height="10" Background="#121212">
+                                <Line StartPoint="0,10" EndPoint="10,10" Stroke="#222222" StrokeThickness="1"/>
+                                <Line StartPoint="10,0" EndPoint="10,10" Stroke="#222222" StrokeThickness="1"/>
+                            </Canvas>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>

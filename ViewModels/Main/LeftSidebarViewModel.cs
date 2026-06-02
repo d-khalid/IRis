@@ -18,10 +18,13 @@ public partial class LeftSidebarViewModel : ViewModelBase
     private AppState _appState = AppState.Get();
 
     [ObservableProperty] 
-    private string _simulationToggleContent = "Simulation: OFF";
+    private string _simulationToggleContent = Simulation.Get().Running ? 
+        "Simulation: ON" : "Simulation: OFF";
 
     [ObservableProperty] 
-    private Brush _simulationToggleBrush = new SolidColorBrush(Colors.DarkRed);
+    private Brush _simulationToggleBrush = new SolidColorBrush(
+        Simulation.Get().Running ? Colors.DarkGreen : Colors.DarkRed
+    );
 
 
     public LeftSidebarViewModel()

@@ -27,45 +27,27 @@
         VerticalAlignment="Stretch" 
         HorizontalAlignment="Stretch"
         PanButton="Left"
+        KeyDown="OnKeyDown"
     >
         <Canvas
             MinWidth="2000" 
             MinHeight="2000"
+            Background="{DynamicResource CanvasGridTileBrush}"
             PointerPressed="OnPointerPressed"
             PointerMoved="OnPointerMoved"
             PointerReleased="OnPointerReleased"
             PointerEntered="OnPointerEntered"
             PointerExited="OnPointerExited"
         >
-            <Canvas.Background>
-                <VisualBrush TileMode="Tile" SourceRect="0,0,10,10" DestinationRect="0,0,10,10">
-                    <VisualBrush.Visual>
-                        <Canvas 
-                            Width="10" 
-                            Height="10" 
-                            Background="#fff"
-                        >
-                            <Line 
-                                StartPoint="0,10" 
-                                EndPoint="10,10" 
-                                Stroke="#D3D3D3" 
-                                StrokeThickness="1"
-                            />
-                            <Line 
-                                StartPoint="10,0" 
-                                EndPoint="10,10" 
-                                Stroke="#D3D3D3" 
-                                StrokeThickness="1"
-                            />
-                        </Canvas>
-                    </VisualBrush.Visual>
-                </VisualBrush>
-            </Canvas.Background>
-
             <Canvas.ContextFlyout>
                 <MenuFlyout>
                     <MenuItem 
-                        Header="Allow Terminal Color Change" 
+                        Header="Allow Circuit Editing" 
+                        ToggleType="CheckBox" 
+                        IsChecked="{Binding AppState.EditingAllowed, Mode=TwoWay}" 
+                    />
+                    <MenuItem 
+                        Header="Allow Terminal Colors" 
                         ToggleType="CheckBox" 
                         IsChecked="{Binding AppState.TerminalColorChangeAllowed, Mode=TwoWay}" 
                     />

@@ -30,6 +30,9 @@ public partial class AppState : SingletonBase<AppState>
     private bool _designTabActive = true;
 
     [ObservableProperty]
+    private double _panSensistivity = 4;
+
+    [ObservableProperty]
     private bool _terminalColorChangeAllowed = true;
 
     [ObservableProperty]
