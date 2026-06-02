@@ -12,6 +12,7 @@ public class Wire : CircuitObject
 
     public override void Simulate()
     {
+        if (MainOutput is null || MainInput is null) return;
         MainOutput.State = MainInput.State;
     }
 
