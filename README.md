@@ -4,9 +4,9 @@ IRis is an AI-powered circuit simulation software made with **Avalonia** and **C
 
 It supports both light and dark modes. (rarely found in any circuit simulation software)
 
-<br>
-
-<img src="https://drive.google.com/uc?export=view&id=1NguAusaeMhvOUsnOimggUou8rtfbO2aD" alt="Image">
+![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
+![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![Avalonia](https://img.shields.io/badge/Avalonia-8B45BF?style=for-the-badge&logo=avalonia&logoColor=white)
 
 ---
 
@@ -117,10 +117,10 @@ Now refer to it as a Static Resource in MenuIcon:
 
 ## Developer Setup
 
-1- Install .NET SDK 9.0 from [here](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
+- Install .NET SDK 9.0 from [here](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
 
-2- Make sure it is installed properly by running `dotnet --version` in a terminal.  
+- Make sure it is installed properly by running `dotnet --version` in a terminal.  
 
-3- Download the source code from here into a folder, open that folder in a terminal and execute `dotnet build`.
+- Download the source code from here into a folder, open that folder in a terminal and execute `dotnet build`.
 
-4- .NET automatically resolves the dependencies, so it should build with no issues. Execute `dotnet run` to run the program.
+- .NET automatically resolves the dependencies, so it should build with no issues. Execute `dotnet run` to run the program.
