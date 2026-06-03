@@ -114,6 +114,7 @@ Now refer to it as a Static Resource in MenuIcon:
 <MenuItem.Icon><PathIcon Data="{StaticResource save_edit}" /></MenuItem.Icon>
 ```
 
+---
 
 ## Developer Setup
 
