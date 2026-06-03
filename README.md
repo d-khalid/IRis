@@ -13,15 +13,15 @@ It supports both light and dark modes. (rarely found in any circuit simulation s
 ## Screenshots
 
 1-Bit ALU Circuit (CPU building block, Dark Mode)
-<img src="https://drive.google.com/uc?export=view&id=1pkvi00Fpmv32cjTA6U9OcgyqKNS2zSjh" width="600" />
+<img src="https://drive.google.com/uc?export=view&id=1pkvi00Fpmv32cjTA6U9OcgyqKNS2zSjh" />
 <br />
 
 Random Gates Circuit (Dark Mode)
-<img src="https://drive.google.com/uc?export=view&id=1C_UxjVpJlKwKJSdUri0kGmrvNbBh35_v" width="600" />
+<img src="https://drive.google.com/uc?export=view&id=1C_UxjVpJlKwKJSdUri0kGmrvNbBh35_v" />
 <br />
 
 Random Circuit with Full Adder (Light Mode)
-<img src="https://drive.google.com/uc?export=view&id=1z1H4kNk4xxtsChLyng6yxccopv0e16HM" width="600" />
+<img src="https://drive.google.com/uc?export=view&id=1z1H4kNk4xxtsChLyng6yxccopv0e16HM" />
 
 ---
 
