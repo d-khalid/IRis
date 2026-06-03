@@ -16,6 +16,7 @@
             StrokeLineCap="Round"
             PointerEntered="OnPointerEntered"
             PointerExited="OnPointerExited"
+            PointerPressed="OnPointerPressed"
         />
 
         <Polyline 

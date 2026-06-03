@@ -15,15 +15,15 @@ public partial class WireView : UserControl
     }
 
 
-    // private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
-    // {
-    //     if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed) return;
-    //     if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
-    //     e.Handled = true;
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed) return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+        e.Handled = true;
 
-    //     if (AppState.Get().EditingAllowed)
-    //         (DataContext as WireViewModel)!.PointerPressed();
-    // }
+        if (AppState.Get().EditingAllowed)
+            (DataContext as WireViewModel)!.PointerPressed();
+    }
 
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)

@@ -1,8 +1,6 @@
 # IRis - Circuit Simulator
 
-IRis is an AI-powered circuit simulation software made with **Avalonia** and **C#**. It is currently developed enough to be able to Simulate a Mini-CPU.
-
-It supports both light and dark modes. (rarely found in any circuit simulation software)
+IRis is an AI-powered circuit simulation software made with **Avalonia** and **C#**. It is currently under continuous development. It uses a vibe-coded YOLO model to generate simulations from sketches.
 
 <br>
 
@@ -12,28 +10,19 @@ It supports both light and dark modes. (rarely found in any circuit simulation s
 
 ## Screenshots
 
-1-Bit ALU Circuit (CPU building block, Dark Mode)
-<img src="https://drive.google.com/uc?export=view&id=1pkvi00Fpmv32cjTA6U9OcgyqKNS2zSjh" width="600" />
-<br />
 
-Random Gates Circuit (Dark Mode)
-<img src="https://drive.google.com/uc?export=view&id=1C_UxjVpJlKwKJSdUri0kGmrvNbBh35_v" width="600" />
-<br />
-
-Random Circuit with Full Adder (Light Mode)
-<img src="https://drive.google.com/uc?export=view&id=1z1H4kNk4xxtsChLyng6yxccopv0e16HM" width="600" />
 
 ---
 
 ## Platform Compatibility
 
-Supports Windows, Linux, and MacOS.
+
 
 ---
 
 ## Try it
 
-Please refer to the developer setup section and compile it on your system to run. This project is currently available for demo but not for everyday use. Bugs may appear.
+
 
 ---
 

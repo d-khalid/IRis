@@ -39,7 +39,7 @@
                     >
                         <Line 
                             StartPoint="0,0" 
-                            EndPoint="12,0" 
+                            EndPoint="10,0" 
                             Stroke="{DynamicResource ComponentBorderBrush}" 
                             StrokeThickness="2" 
                             HorizontalAlignment="Left"

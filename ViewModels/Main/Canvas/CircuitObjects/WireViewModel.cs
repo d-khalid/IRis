@@ -189,7 +189,7 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 
     public void PointerPressed()
     {
-        // STUB: may be used later
+        if (!IsSelected) Selection.Get().Highlight(this);
     }
 
 
