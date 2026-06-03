@@ -34,7 +34,7 @@
                         <Line 
                             StartPoint="0,0" 
                             EndPoint="10,0" 
-                            Stroke="Black" 
+                            Stroke="{DynamicResource ComponentBorderBrush}" 
                             StrokeThickness="2" 
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
@@ -54,7 +54,7 @@
             <Line 
                 StartPoint="0,0" 
                 EndPoint="10,0" 
-                Stroke="Black" 
+                Stroke="{DynamicResource ComponentBorderBrush}" 
                 StrokeThickness="2"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
