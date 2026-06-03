@@ -294,6 +294,9 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 if (co is MultiInputGateViewModel mig)
                     mig.Inputs.Add(new TerminalViewModel());
+
+                else if (co is MultiplexerViewModel mux)
+                    mux.AddSelectLine();
             }
         }
     }
@@ -319,6 +322,11 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (co is MultiInputGateViewModel mig)
                 {
                     mig.Inputs.Remove(mig.Inputs[^1]);
+                }
+
+                else if (co is MultiplexerViewModel mux)
+                {
+                    mux.RemoveSelectLine();
                 }
             }
         }

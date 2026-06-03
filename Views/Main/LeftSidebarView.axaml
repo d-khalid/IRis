@@ -74,6 +74,61 @@
                 VerticalAlignment="Center"
             />
         </Grid>
+        <Grid x:Key="SampleOr" Width="20" Height="20">
+            <Path
+                Fill="{DynamicResource ComponentFillBrush}" 
+                Stroke="{DynamicResource ComponentBorderBrush}" 
+                StrokeThickness="2"
+                Stretch="Fill"
+                Data="M 0,0 Q 14,50 0,100 Q 60,95 100,50 Q 60,5 0,0 Z"
+            />
+        </Grid>
+        <Grid x:Key="SampleXor" Width="20" Height="20">
+            <Path
+                Stroke="{DynamicResource ComponentBorderBrush}"
+                StrokeThickness="2"
+                Stretch="Fill"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                Width="6"
+                Margin="-3,0,0,0"
+                Data="M 14,0 Q 0,50 14,100"
+            />
+            <Path
+                Fill="{DynamicResource ComponentFillBrush}" 
+                Stroke="{DynamicResource ComponentBorderBrush}" 
+                StrokeThickness="2"
+                Stretch="Fill"
+                Data="M 0,0 Q 14,50 0,100 Q 60,95 100,50 Q 60,5 0,0 Z"
+            />
+        </Grid>
+        <Border
+            x:Key="SampleFullAdder"
+            Width="16" 
+            Height="20"
+            Background="{DynamicResource ComponentFillBrush}"
+            BorderBrush="{DynamicResource ComponentBorderBrush}"
+            BorderThickness="2"
+            CornerRadius="2"
+        >
+            <TextBlock
+                Text="FA"
+                Foreground="{DynamicResource ComponentBorderBrush}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="9"
+                FontWeight="ExtraBold"
+            />
+        </Border>
+        <Border
+            x:Key="SampleMux"
+            Width="16" 
+            Height="20"
+            Background="{DynamicResource ComponentFillBrush}"
+            BorderBrush="{DynamicResource ComponentBorderBrush}"
+            BorderThickness="2"
+            CornerRadius="2"
+        />
     </UserControl.Resources>
 
     <UserControl.Styles>

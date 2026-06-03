@@ -84,6 +84,63 @@ public partial class LeftSidebarViewModel : ViewModelBase
 
 
     [RelayCommand]
+    private static void AddOr()
+    {
+        Selection.Get().UnHighlightAll();
+
+        OrGateViewModel gate = new() { Output = new() };
+        gate.Inputs.Add(new());
+        gate.Inputs.Add(new());
+
+        Preview.Get().Pick(gate);
+    }
+
+
+    [RelayCommand]
+    private static void AddXor()
+    {
+        Selection.Get().UnHighlightAll();
+
+        XorGateViewModel gate = new() { Output = new() };
+        gate.Inputs.Add(new());
+        gate.Inputs.Add(new());
+
+        Preview.Get().Pick(gate);
+    }
+
+
+    [RelayCommand]
+    private static void AddFullAdder()
+    {
+        Selection.Get().UnHighlightAll();
+
+        FullAdderViewModel adder = new()
+        {
+            A = new(),
+            B = new(),
+            Cin = new(),
+            Sum = new(),
+            Cout = new()
+        };
+
+        Preview.Get().Pick(adder);
+    }
+
+
+    [RelayCommand]
+    private static void AddMultiplexer()
+    {
+        Selection.Get().UnHighlightAll();
+
+        MultiplexerViewModel mux = new() { Output = new() };
+        mux.AddSelectLine();
+        mux.AddSelectLine();
+
+        Preview.Get().Pick(mux);
+    }
+
+
+    [RelayCommand]
     private static void AddToggle()
     {
         Selection.Get().UnHighlightAll();

@@ -20,6 +20,12 @@
         <DataTemplate DataType="components:ProbeViewModel">
             <views:ProbeView />
         </DataTemplate>
+        <DataTemplate DataType="components:FullAdderViewModel">
+            <views:FullAdderView />
+        </DataTemplate>
+        <DataTemplate DataType="components:MultiplexerViewModel">
+            <views:MultiplexerView />
+        </DataTemplate>
     </UserControl.DataTemplates>
 
     <ContentControl

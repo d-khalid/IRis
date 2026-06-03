@@ -43,7 +43,7 @@
                     </StackPanel>
                 </StackPanel>
 
-                <ToggleButton Classes="section" x:Name="GatesToggle" IsChecked="False" Content="Gates" />
+                <ToggleButton Classes="section" x:Name="GatesToggle" IsChecked="True" Content="Gates" />
                 <StackPanel IsVisible="{Binding #GatesToggle.IsChecked}">
                     <StackPanel>
                         <Button Classes="item" Command="{Binding AddAndCommand}">
@@ -58,14 +58,36 @@
                                 <TextBlock Text="NOT Gate" VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
+                        <Button Classes="item" Command="{Binding AddOrCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="14" Child="{StaticResource SampleOr}" />
+                                <TextBlock Text="OR Gate" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="item" Command="{Binding AddXorCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="14" Child="{StaticResource SampleXor}" />
+                                <TextBlock Text="XOR Gate" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </StackPanel>
 
-                <ToggleButton Classes="section" x:Name="AdvancedToggle" IsChecked="False" Content="Advanced" />
+                <ToggleButton Classes="section" x:Name="AdvancedToggle" IsChecked="True" Content="Advanced" />
                 <StackPanel IsVisible="{Binding #AdvancedToggle.IsChecked}">
-                    <StackPanel Margin="0,0" Spacing="5">
-                        <Button Classes="item" Content="MUX" />
-                        <Button Classes="item" Content="DEMUX" />
+                    <StackPanel>
+                        <Button Classes="item" Command="{Binding AddFullAdderCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="16" Child="{StaticResource SampleFullAdder}" />
+                                <TextBlock Text="Full Adder" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="item" Command="{Binding AddMultiplexerCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="16" Child="{StaticResource SampleMux}" />
+                                <TextBlock Text="Multiplexer" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

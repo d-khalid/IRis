@@ -15,6 +15,12 @@
         <DataTemplate DataType="multiinputgates:AndGateViewModel">
             <views:AndGateView />
         </DataTemplate>
+        <DataTemplate DataType="multiinputgates:OrGateViewModel">
+            <views:OrGateView />
+        </DataTemplate>
+        <DataTemplate DataType="multiinputgates:XorGateViewModel">
+            <views:XorGateView />
+        </DataTemplate>
     </UserControl.DataTemplates>
 
     <Grid ClipToBounds="False">
