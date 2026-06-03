@@ -8,21 +8,34 @@ IRis is an AI-powered circuit simulation software made with **Avalonia** and **C
 
 ---
 
-## Documentation
+## Screenshots
 
-This is some rough work. We'll rearrange it when we finish this project.
 
-### Models
 
-#### ManagerBase:
+---
 
-BaseManager class can be used to access and view a list of CircuitObjects. It implements Singleton pattern in itself so a lot of code repetition is saved. Any child class must provide its name as argument when inheriting:
+## Platform Compatibility
+
+
+
+---
+
+## Try it
+
+
+
+---
+
+## Architectural Notes
+
+
+### SingletonCollection Class
+
+`SingletonCollection` class can be used to access and view a list of CircuitObjects. It implements Singleton pattern in itself so a lot of code repetition is saved. Any child class must provide its name as argument when inheriting:
 
 ```csharp
-public partial class Simulation : ManagerBase<Simulation> { ... }
+public partial class Simulation : SingletonCollection<Simulation> { ... }
 ```
-
-The Show() and Hide() functions of the BaseManager can work differently for each child class, based on how it is wired in the frontend. For instance, in Selection class, the methods are being used to show/hide the SelectionBox. Some child class may not use these methods at all, but they are completely relatable and handy for each.
 
 For getting an instance of a Child class, just call the GetInstance method. For example:
 
@@ -30,15 +43,51 @@ For getting an instance of a Child class, just call the GetInstance method. For 
 var instance = Simulation.Get();
 ```
 
-### Views
 
-#### Usage of Views
+### Usage of Views
 
-Most of the interactive functionality is dealt with in views, except where either the code file becomes too long/messy or where framework limitations come in our way, then we have to use ViewModels.
+Most of the UI features are dealt with in Views, except where either the code file becomes too long/messy or where framework limitations come in our way, then we have to use ViewModels.
 
-This might be lowkey a bad design choice. But I don't plan in changing it soon, so be it.
 
-#### Adding Icons to Menu
+### ViewModels have Models
+
+Every object in a circuit (except for Terminals) inherits from CircuitObjectViewModel and stores an instance of it's model privately just in case it is ever needed.
+
+The `TerminalViewModel` for wires and gates can change on runtime (i.e. when a wire is attached to a gate), which is covered by allowing a method `TerminalViewModel.GetModel()` that allows access to the underlying terminal.
+
+For each component, taking an example of a gate, lets say, we have X input terminals and 1 output terminal. We would need to store the terminal memory references, which `Newtonsoft.Json` currently does with id numbers. This helps mapping them back to connections during deserialization.
+
+Furthermore, the component needs it's X,Y coordinates to be mapped back to it's position properly. It would also be necessary to keep the Rotation as that is also important during deserialization. Rest of the component's visual properties can be created on runtime.
+
+One important thing here is that for `ToggleViewModel`, the State has to be kept in the json because it would be annoying to have to set the state of each of the toggles of our circuit each time we load it from a file. But the State is stored in the model which we are not serializing right? That's exactly the reason we have this wrapper for it in the `ToggleViewModel`:
+
+```csharp
+public LogicState State
+{
+    get => (Model as Toggle)!.State;
+    set => (Model as Toggle)!.State = value;
+}
+```
+
+
+### Wire Cloning/Copying
+
+Wire cloning is too tricky to be messed with. One IMPORTANT thing if you are working on this codebase would be to always clone a collection of objects together. NEVER EVER think of cloning each object separately. Otherwise their memory references would break, and you would end up with disconnected weird-behaving circuit objects.
+
+
+### Cloning Service
+
+Currently it relies on JsonSerialization. One thing to note is that the entire app's functionality depend on cloning, and cloning depends on serialization. If serialization/deserialization breaks, nothing will behave as expected.
+
+
+### Why did we use Singleton Pattern in Services?
+
+We need Static classes to share states between different parts of IRis, but neither can static classes inherit from `ObservableObject` (considering we need those static classes to have observable properties) nor can they implement `INotifyPropertyChanged` which forces us to find a workaround.
+
+We have chosen this workaround to be the singleton pattern.
+
+
+### Adding Icons to Any Context Menu (globally)
 
 Grab a Path geometry from [fluenticons](https://fluenticons.co/). Add it in a StreamGeometry tag in `app.axaml` as follows:
 
@@ -55,68 +104,12 @@ Now refer to it as a Static Resource in MenuIcon:
 ```
 
 
-### ViewModels
+## Developer Setup
 
-#### CircuitObjects Structure
+1- Install .NET SDK 9.0 from [here](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
 
-Every object in a circuit inherits from CircuitObjectViewModel and stores an instance of it's model privately just in case it is ever needed.
+2- Make sure it is installed properly by running `dotnet --version` in a terminal.  
 
-#### Creating a Wire
+3- Download the source code from here into a folder, open that folder in a terminal and execute `dotnet build`.
 
-For instantiating a WireViewModel, we have to create 2X `Terminal`, 1X `Wire` with those terminals, and 2X `TerminalViewModel` with those terminals. Simple, right?
-
-#### Creating a Component
-
-Let's take an example of `AndGateViewModel` for simplicity. We create a new instance, put in the Output terminal using an object initializer, and then add two inputs to make it look sane:
-
-```csharp
-AndGateViewModel gate = new() { Output = new() };
-gate.Inputs.Add(new());
-gate.Inputs.Add(new());
-```
-
-Normally the Type field of the `TerminalViewModel` has to be explicitly mentioned, but in this case, the `AndGateViewModel` Inputs list intercept function assigns the type implicitly. Also, the field **IsOrphan** is set to false by default and is only meant to be used for previews.
-
-
-### Models
-
-These are frankly the slaves of the entire app. They are held captive by ViewModels and created and managed privately inside ViewModels. None of the outside logic should be referring to these except for the case of `TerminalViewModel`.
-
-The `TerminalViewModel` for wires and gates can change on runtime (i.e. when a wire is attached to a gate), which is covered by allowing a method `TerminalViewModel.GetModel()` that allows access to the underlying terminal.
-
-
-### Json Serialization
-
-Take a sip of copium please. What you'll read next might be tough to swallow. And small bites are always appreciated.
-
-#### Components
-
-For each component, taking an example of a gate, lets say, we have X input terminals and 1 output terminal. We would need to store the terminal memory references, which `Newtonsoft.Json` currently does with id numbers. This helps mapping them back to connections during deserialization.
-
-Furthermore, the component needs it's X,Y coordinates to be mapped back to it's position properly. It would also be necessary to keep the Rotation as that is also important during deserialization. Rest of the component's visual properties can be created on runtime.
-
-One important thing here is that for `ToggleViewModel`, the State has to be kept in the json because it would be annoying to have to set the state of each of the toggles of our circuit each time we load it from a file. But the State is stored in the model which we are not serializing right? That's exactly the reason we have this wrapper for it in the `ToggleViewModel`:
-
-```csharp
-public LogicState State
-{
-    get => (Model as Toggle)!.State;
-    set => (Model as Toggle)!.State = value;
-}
-```
-
-#### Wires
-
-Wire cloning is too tricky to be messed with. One IMPORTANT thing if you are working on this codebase would be to always clone a collection of objects together. NEVER EVER think of cloning each object separately. Otherwise their memory references would break, and you would end up with disconnected weird-behaving wires.
-
-
-### Cloning Service
-
-Currently it relies on JsonSerialization. One thing to note is that the entire app's functionality depend on cloning, and cloning depends on serialization. If serialization/deserialization breaks, nothing will behave as expected.
-
-
-### Why did we use Singleton Patterns all over?
-
-Using singleton pattern is our copium considering we need Static classes to share states between different parts of IRis, but neither can static classes inherit from `ObservableObject` (considering we need those static classes to have observable properties) nor can they implement `INotifyPropertyChanged` which forces us to find a workaround (copium).
-
-We have chosen this copium to be the singleton pattern.
+4- .NET automatically resolves the dependencies, so it should build with no issues. Execute `dotnet run` to run the program.
