@@ -33,7 +33,7 @@ Supports Windows, Linux, and MacOS.
 
 ## Try it
 
-Please refer to the developer setup section and compile it on your system to run. This project is currently available for demo but not for everyday use. Bugs may appear.
+Please refer to the [Developer Setup](https://github.com/d-khalid/IRis#developer-setup) and compile it on your system to run. This project is currently available for demo but not for everyday use. Bugs may appear.
 
 ---
 
@@ -119,9 +119,6 @@ Now refer to it as a Static Resource in MenuIcon:
 ## Developer Setup
 
 - Install .NET SDK 9.0 from [here](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
-
 - Make sure it is installed properly by running `dotnet --version` in a terminal.  
-
 - Download the source code from here into a folder, open that folder in a terminal and execute `dotnet build`.
-
 - .NET automatically resolves the dependencies, so it should build with no issues. Execute `dotnet run` to run the program.
