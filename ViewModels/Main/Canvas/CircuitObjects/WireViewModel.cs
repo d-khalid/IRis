@@ -50,7 +50,9 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 
         Points.Clear();
         Points.Add(new Point((int)MainInput.X, (int)MainInput.Y));
-        Points.Add(new Point((int)MainOutput.X, (int)MainOutput.Y));
+        Points.Add(new Point((int)MainInput.X, (int)MainInput.Y));
+        Points.Add(new Point((int)MainInput.X, (int)MainInput.Y));
+        Fix();
     }
 
 
@@ -152,9 +154,7 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 
         else if (inputIdx == -1 && outputIdx == -1)
         {
-            // just move points by the offset their terminals did
-            Console.WriteLine("nope");
-            return;
+            Redraw();
         }
     }
 
