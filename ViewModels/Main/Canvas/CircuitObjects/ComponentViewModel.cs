@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Serialization;
 using IRis.Models.CircuitObjects;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,12 +13,24 @@ namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 public abstract partial class ComponentViewModel : CircuitObjectViewModel
 {
-    [ObservableProperty] private double _x;
-    [ObservableProperty] private double _y;
+    [ObservableProperty] [property: JsonIgnore] private double _x;
+    [ObservableProperty] [property: JsonIgnore] private double _y;
     [ObservableProperty] [property: JsonIgnore] private double _width;
     [ObservableProperty] [property: JsonIgnore] private double _height;
     [ObservableProperty] private double _rotation;
     [JsonIgnore] public double TextRotation => -Rotation;
+
+    public double CenterX
+    {
+        get => X + Width / 2.0;
+        set => X = value - Width / 2.0;
+    }
+
+    public double CenterY
+    {
+        get => Y + Height / 2.0;
+        set => Y = value - Height / 2.0;
+    }
 
     partial void OnXChanged(double value) => UpdateTerminals();
     partial void OnYChanged(double value) => UpdateTerminals();
