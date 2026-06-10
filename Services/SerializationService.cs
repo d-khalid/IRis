@@ -38,8 +38,9 @@ public static class SerializationService
                 <AvaloniaList<CircuitObjectViewModel>>(json, Settings());
         }
 
-        catch (JsonException)
+        catch (JsonException e)
         {
+            Console.WriteLine(e.Message);
             return null;
         }
     }
