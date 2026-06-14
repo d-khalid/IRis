@@ -1,0 +1,73 @@
+name: Issue Comment
+on:
+  issue_comment:
+    types: [created]
+permissions:
+  issues: write
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const author = "ShahzaibAhmad05";
+            const maxIssuesPerContributor = 2;
+            const keyLines = [
+              "assign the issue to me", "assign this issue to me",
+              "i want to work on this issue"
+            ];
+
+            const commentText = context.payload.comment.body.toLowerCase();
+            const issueNumber = context.payload.issue.number;
+            const contributor = context.payload.comment.user.login;
+            const assignees = context.payload.issue.assignees;
+
+            if (!keyLines.some(k => commentText.includes(k))) return;
+
+            await github.rest.reactions.createForIssue({
+              ...context.repo,
+              issue_number: issueNumber,
+              content: "eyes"
+            });
+
+            if (assignees.length > 0) {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: issueNumber,
+                body: `@${contributor} sorry but this issue is already assigned to someone else.`
+              });
+
+              return;
+            }
+
+            const { data } = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${context.repo.owner}/${context.repo.repo} is:issue is:open assignee:${contributor}`
+            });
+
+            if (data.total_count >= maxIssuesPerContributor) {
+              const message = 
+                data.total_count == 1 
+                ? `@${contributor} you are already assigned to issue ${data.items[0].number}.\n\nIf you have an open PR for that issue, please wait for it to merge first.` 
+                : `@${contributor} you are already assigned to multiple issues aka ${data.items.map(i => `#${i.number}`)}.\n\n If you have open PRs for those issues, please wait for one of them to merge first.`;
+
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: issueNumber,
+                body: message
+              });
+
+              return;
+            }
+
+            await github.rest.issues.addAssignees({
+              ...context.repo,
+              issue_number: issueNumber,
+              assignees: [contributor]
+            });
+
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: issueNumber,
+              body: `@${contributor} this issue has been assigned to you. If you still have questions, feel free to ask here.`
+            });
