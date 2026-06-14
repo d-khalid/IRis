@@ -22,7 +22,7 @@ public partial class TerminalView : UserControl
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
-            (DataContext as TerminalViewModel)!.PointerPressed();
+            (DataContext as TerminalViewModel)?.PointerPressed();
     }
 
 
@@ -32,7 +32,7 @@ public partial class TerminalView : UserControl
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
-            (DataContext as TerminalViewModel)!.PointerEntered();
+            (DataContext as TerminalViewModel)?.PointerEntered();
     }
 
 
@@ -42,6 +42,6 @@ public partial class TerminalView : UserControl
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
-            (DataContext as TerminalViewModel)!.PointerExited();
+            (DataContext as TerminalViewModel)?.PointerExited();
     }
 }
