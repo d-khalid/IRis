@@ -15,14 +15,13 @@
             StrokeThickness="2"
             Stretch="Fill"
             Data="M 0,0 Q 14,50 0,100 Q 60,95 100,50 Q 60,5 0,0 Z"
-            Margin="0,0,8,0"
+            Margin="0,0,4,0"
         />
         <Ellipse
-            Width="8"
-            Height="8"
+            Width="8" Height="8"
             Fill="{DynamicResource ComponentFillBrush}"
             Stroke="{DynamicResource ComponentBorderBrush}"
-            StrokeThickness="2"
+            StrokeThickness="2" Margin="0,0,-4,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
         />
