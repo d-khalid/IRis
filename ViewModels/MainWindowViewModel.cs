@@ -17,6 +17,8 @@ using System.IO;
 using System;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 using FluentAvalonia.UI.Controls;
+using IRis.Views;
+using Avalonia.Controls;
 
 
 namespace IRis.ViewModels;
@@ -345,5 +347,22 @@ public partial class MainWindowViewModel : ViewModelBase
     private static void SetTheme(string variant)
     {
         
+    }
+
+
+    [RelayCommand]
+    private static void GenerateFromPrompt()
+    {
+        
+    }
+
+
+    [RelayCommand]
+    private static async Task GenerateFromImageAsync()
+    {
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow is null)
+            return;
+
+        await new GenerateFromImageWindowView().ShowDialog(desktop.MainWindow);
     }
 }
