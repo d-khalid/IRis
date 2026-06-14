@@ -2,40 +2,40 @@
 
 IRis is an AI-powered circuit simulation software made with **Avalonia** and **C#**. It is currently developed enough to be able to Simulate a Mini-CPU.
 
-It supports both light and dark modes. (rarely found in any circuit simulation software)
-
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
 ![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![Avalonia](https://img.shields.io/badge/Avalonia-8B45BF?style=for-the-badge&logo=avalonia&logoColor=white)
 
----
-
-## Screenshots
-
-1-Bit ALU Circuit (CPU building block, Dark Mode)
-<img src="https://drive.google.com/uc?export=view&id=1pkvi00Fpmv32cjTA6U9OcgyqKNS2zSjh" />
-<br />
-
-Random Gates Circuit (Dark Mode)
-<img src="https://drive.google.com/uc?export=view&id=1C_UxjVpJlKwKJSdUri0kGmrvNbBh35_v" />
-<br />
-
-Random Circuit with Full Adder (Light Mode)
-<img src="https://drive.google.com/uc?export=view&id=1z1H4kNk4xxtsChLyng6yxccopv0e16HM" />
 
 ---
+
+
+## UI Snapshot
+
+<img width="720" height="409" alt="image" src="https://github.com/user-attachments/assets/e2043afb-a54b-42d8-a70e-7e8f389afaf1" />
+
+
+> this snapshot was taken after designing a 1-Bit ALU Circuit (CPU building block)
+
+
+---
+
 
 ## Platform Compatibility
 
 Supports Windows, Linux, and MacOS.
 
+
 ---
+
 
 ## Try it
 
-Please refer to the [Developer Setup](https://github.com/d-khalid/IRis#developer-setup) and compile it on your system to run. This project is currently available for demo but not for everyday use. Bugs may appear.
+Refer to the Releases section to grab the latest version available.
+
 
 ---
+
 
 ## Architectural Notes
 
