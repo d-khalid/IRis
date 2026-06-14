@@ -24,30 +24,31 @@
                 <Grid.RenderTransform>
                     <RotateTransform Angle="{Binding TextRotation}" />
                 </Grid.RenderTransform>
-                <TextBlock
-                    Text="FA"
-                    Foreground="{DynamicResource ComponentBorderBrush}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="12"
-                    FontWeight="ExtraBold"
-                    IsHitTestVisible="False"
-                />
-                <TextBlock Text="A" Foreground="{DynamicResource ComponentBorderBrush}"
+                <TextBlock 
+                    Text="A" Foreground="{DynamicResource ComponentBorderBrush}"
                     HorizontalAlignment="Left" VerticalAlignment="Top"
-                    FontSize="8" Margin="3,6,0,0" IsHitTestVisible="False" />
-                <TextBlock Text="B" Foreground="{DynamicResource ComponentBorderBrush}"
+                    FontSize="8" Margin="3,3,0,0" IsHitTestVisible="False" 
+                />
+                <TextBlock 
+                    Text="B" Foreground="{DynamicResource ComponentBorderBrush}"
                     HorizontalAlignment="Left" VerticalAlignment="Center"
-                    FontSize="8" Margin="3,0,0,0" IsHitTestVisible="False" />
-                <TextBlock Text="Ci" Foreground="{DynamicResource ComponentBorderBrush}"
+                    FontSize="8" Margin="3,0,0,0" IsHitTestVisible="False" 
+                />
+                <TextBlock 
+                    Text="Cᵢ" Foreground="{DynamicResource ComponentBorderBrush}"
                     HorizontalAlignment="Left" VerticalAlignment="Bottom"
-                    FontSize="8" Margin="3,0,0,6" IsHitTestVisible="False" />
-                <TextBlock Text="S" Foreground="{DynamicResource ComponentBorderBrush}"
+                    FontSize="8" Margin="3,0,0,3" IsHitTestVisible="False" 
+                />
+                <TextBlock 
+                    Text="S" Foreground="{DynamicResource ComponentBorderBrush}"
                     HorizontalAlignment="Right" VerticalAlignment="Top"
-                    FontSize="8" Margin="0,9,4,0" IsHitTestVisible="False" />
-                <TextBlock Text="Co" Foreground="{DynamicResource ComponentBorderBrush}"
+                    FontSize="8" Margin="0,12,3,0" IsHitTestVisible="False" 
+                />
+                <TextBlock 
+                    Text="Cₒ" Foreground="{DynamicResource ComponentBorderBrush}"
                     HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                    FontSize="8" Margin="0,0,4,9" IsHitTestVisible="False" />
+                    FontSize="8" Margin="0,0,3,12" IsHitTestVisible="False" 
+                />
             </Grid>
         </Border>
 
@@ -75,22 +76,36 @@
             </Grid>
         </UniformGrid>
 
-        <UniformGrid Columns="1" ClipToBounds="False">
+        <Grid ClipToBounds="False">
             <Grid ClipToBounds="False">
-                <Line StartPoint="0,0" EndPoint="10,0"
-                    Stroke="{DynamicResource ComponentBorderBrush}" StrokeThickness="2"
-                    HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-10,0" />
-                <core:TerminalView DataContext="{Binding Sum}"
-                    HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-20,0" />
+                <Line 
+                    StartPoint="0,20" EndPoint="10,20"
+                    Stroke="{DynamicResource ComponentBorderBrush}" 
+                    StrokeThickness="2" Margin="0,0,-10,0"
+                    HorizontalAlignment="Right"
+                />
+                <core:TerminalView 
+                    DataContext="{Binding Sum}" 
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="0,15,-20,0"
+                />
             </Grid>
             <Grid ClipToBounds="False">
-                <Line StartPoint="0,0" EndPoint="10,0"
-                    Stroke="{DynamicResource ComponentBorderBrush}" StrokeThickness="2"
-                    HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-10,0" />
-                <core:TerminalView DataContext="{Binding Cout}"
-                    HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-20,0" />
+                <Line 
+                    StartPoint="0,40" EndPoint="10,40"
+                    Stroke="{DynamicResource ComponentBorderBrush}" 
+                    StrokeThickness="2" Margin="0,0,-10,0" 
+                    HorizontalAlignment="Right"
+                />
+                <core:TerminalView 
+                    DataContext="{Binding Cout}"
+                    HorizontalAlignment="Right" 
+                    VerticalAlignment="Bottom" 
+                    Margin="0,0,-20,15" 
+                />
             </Grid>
-        </UniformGrid>
+        </Grid>
 
         <Rectangle
             Stroke="DodgerBlue"

@@ -24,15 +24,6 @@
                 <Grid.RenderTransform>
                     <RotateTransform Angle="{Binding TextRotation}" />
                 </Grid.RenderTransform>
-                <TextBlock
-                    Text="MUX"
-                    Foreground="{DynamicResource ComponentBorderBrush}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="9"
-                    FontWeight="ExtraBold"
-                    IsHitTestVisible="False"
-                />
             </Grid>
         </Border>
 
