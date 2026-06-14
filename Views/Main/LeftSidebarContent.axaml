@@ -70,6 +70,24 @@
                                 <TextBlock Text="XOR Gate" VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
+                        <Button Classes="item" Command="{Binding AddNandCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="14" Child="{StaticResource SampleNand}" />
+                                <TextBlock Text="NAND Gate" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="item" Command="{Binding AddNorCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="14" Child="{StaticResource SampleNor}" />
+                                <TextBlock Text="NOR Gate" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="item" Command="{Binding AddXnorCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="14" Child="{StaticResource SampleXnor}" />
+                                <TextBlock Text="XNOR Gate" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </StackPanel>
 
