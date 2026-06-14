@@ -110,6 +110,45 @@ public partial class LeftSidebarViewModel : ViewModelBase
 
 
     [RelayCommand]
+    private static void AddNand()
+    {
+        Selection.Get().UnHighlightAll();
+
+        NandGateViewModel gate = new() { Output = new() };
+        gate.Inputs.Add(new());
+        gate.Inputs.Add(new());
+
+        Preview.Get().Pick(gate);
+    }
+
+
+    [RelayCommand]
+    private static void AddNor()
+    {
+        Selection.Get().UnHighlightAll();
+
+        NorGateViewModel gate = new() { Output = new() };
+        gate.Inputs.Add(new());
+        gate.Inputs.Add(new());
+
+        Preview.Get().Pick(gate);
+    }
+
+
+    [RelayCommand]
+    private static void AddXnor()
+    {
+        Selection.Get().UnHighlightAll();
+
+        XnorGateViewModel gate = new() { Output = new() };
+        gate.Inputs.Add(new());
+        gate.Inputs.Add(new());
+
+        Preview.Get().Pick(gate);
+    }
+
+
+    [RelayCommand]
     private static void AddFullAdder()
     {
         Selection.Get().UnHighlightAll();
