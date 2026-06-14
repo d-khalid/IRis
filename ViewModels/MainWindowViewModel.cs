@@ -346,4 +346,21 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         
     }
+
+
+    [RelayCommand]
+    private static void GenerateFromPrompt()
+    {
+        
+    }
+
+
+    [RelayCommand]
+    private static async Task GenerateFromImageAsync()
+    {
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow is null)
+            return;
+
+        await desktop.MainWindow.ShowDialogAsync(new GenerateFromImageWindowView());
+    }
 }
