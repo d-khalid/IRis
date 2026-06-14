@@ -1,6 +1,6 @@
 # IRis - Circuit Simulator
 
-IRis is an AI-powered circuit simulation software made with **Avalonia** and **C#**. It is currently developed enough to be able to Simulate a Mini-CPU.
+IRis is an AI-powered circuit simulation software made with **Avalonia** and **C#**. It is currently developed enough to be able to Simulate a Mini-CPU. It supports using [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic) for sketch to simulation conversions.
 
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
 ![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
@@ -12,10 +12,10 @@ IRis is an AI-powered circuit simulation software made with **Avalonia** and **C
 
 ## UI Snapshot
 
-<img width="720" height="409" alt="image" src="https://github.com/user-attachments/assets/e2043afb-a54b-42d8-a70e-7e8f389afaf1" />
+<img height="380" alt="snapshot of a 1-Bit ALU circuit designed in IRis" src="https://github.com/user-attachments/assets/e2043afb-a54b-42d8-a70e-7e8f389afaf1" />
 
 
-> this snapshot was taken after designing a 1-Bit ALU Circuit (CPU building block)
+> snapshot of a 1-Bit ALU circuit designed in IRis
 
 
 ---
@@ -31,7 +31,9 @@ Supports Windows, Linux, and MacOS.
 
 ## Try it
 
-Refer to the Releases section to grab the latest version available.
+There are no compiled packages/installers yet, but the setup is arguably simple. If you want to run it on your PC, refer to the [Developer Setup](#developer-setup) section for instructions. After following those you will have the simulator running on your system.
+
+However, for Sketch to Simulation Conversion feature, you would have to download the latest `.exe` release from [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic/releases). Just put the `.exe` file in the project root and the simulator will pick it up.
 
 
 ---
