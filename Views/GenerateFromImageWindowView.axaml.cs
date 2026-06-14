@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Input;
 using IRis.ViewModels;
 
 
@@ -11,6 +10,6 @@ public partial class GenerateFromImageWindowView : Window
     public GenerateFromImageWindowView()
     {
         InitializeComponent();
-        DataContext = new GenerateFromImageWindowViewModel();
+        DataContext = new GenerateFromImageWindowViewModel(this);
     }
 }

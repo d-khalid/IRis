@@ -17,6 +17,8 @@ using System.IO;
 using System;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 using FluentAvalonia.UI.Controls;
+using IRis.Views;
+using Avalonia.Controls;
 
 
 namespace IRis.ViewModels;
@@ -361,6 +363,6 @@ public partial class MainWindowViewModel : ViewModelBase
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow is null)
             return;
 
-        await desktop.MainWindow.ShowDialogAsync(new GenerateFromImageWindowView());
+        await new GenerateFromImageWindowView().ShowDialog(desktop.MainWindow);
     }
 }
