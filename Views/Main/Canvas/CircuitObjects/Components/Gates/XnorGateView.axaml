@@ -1,0 +1,35 @@
+<UserControl 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+    xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates"
+    x:DataType="vm:XnorGateViewModel"
+    x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.Gates.XnorGateView"
+
+    ClipToBounds="False"
+>
+    <Viewbox Stretch="Fill" ClipToBounds="False">
+        <Canvas Width="122" Height="100" ClipToBounds="False">
+            <Path
+                Stroke="{DynamicResource ComponentBorderBrush}"
+                StrokeThickness="5"
+                Data="M 0,0 Q 14,50 0,100"
+            />
+            <Path
+                Fill="{DynamicResource ComponentFillBrush}" 
+                Stroke="{DynamicResource ComponentBorderBrush}" 
+                StrokeThickness="5"
+                Data="M 14,0 Q 28,50 14,100 Q 74,95 114,50 Q 74,5 14,0 Z"
+            />
+            <Ellipse
+                Canvas.Left="114"
+                Canvas.Top="46"
+                Width="8"
+                Height="8"
+                Fill="{DynamicResource ComponentFillBrush}"
+                Stroke="{DynamicResource ComponentBorderBrush}"
+                StrokeThickness="2"
+            />
+        </Canvas>
+    </Viewbox>
+</UserControl>
