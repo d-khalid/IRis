@@ -1,6 +1,6 @@
 # IRis - Circuit Simulator
 
-IRis is an AI-powered circuit simulation software made with **Avalonia** and **C#**. It is currently developed enough to be able to Simulate a Mini-CPU. It supports using [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic) for sketch to simulation conversions.
+IRis is an AI-powered circuit simulation software made with **Avalonia** and **C#**. It is currently developed enough to be able to Simulate a Mini-CPU. It uses [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic) internally for sketch to simulation conversions.
 
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
 ![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
