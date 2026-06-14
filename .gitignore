@@ -23,7 +23,7 @@ temp.json
 .editorconfig
 .vscode
 *.exe
-*temp*
+temp.iris
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
