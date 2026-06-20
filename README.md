@@ -7,6 +7,9 @@ IRis is an AI-powered circuit simulation software made with **Avalonia** and **C
 ![Avalonia](https://img.shields.io/badge/Avalonia-8B45BF?style=for-the-badge&logo=avalonia&logoColor=white)
 
 
+https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08
+
+
 ---
 
 
