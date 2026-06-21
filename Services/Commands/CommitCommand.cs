@@ -18,7 +18,7 @@ public class CommitCommand(AvaloniaList<CircuitObjectViewModel> collection) : Co
         {
             co.Opacity = 1.0;
 
-            if (co is WireViewModel w && w.Points.Count == 0) 
+            if (co is WireViewModel w && w.Points.Count == 0)
                 w.Redraw();
         }
 

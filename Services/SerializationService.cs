@@ -54,10 +54,10 @@ public static class SerializationService
         public override void BindToName(Type serializedType, out string? assemblyName, out string? typeName)
         {
             if (serializedType.Assembly == _asm && !serializedType.IsGenericType)
-            { 
-                assemblyName = null; 
-                typeName = serializedType.Name[..^9]; 
-                return; 
+            {
+                assemblyName = null;
+                typeName = serializedType.Name[..^9];
+                return;
             }
 
             base.BindToName(serializedType, out assemblyName, out typeName);

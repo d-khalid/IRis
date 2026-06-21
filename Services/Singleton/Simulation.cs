@@ -13,7 +13,7 @@ namespace IRis.Services.Singleton;
 
 public partial class Simulation : SingletonCollection<Simulation>
 {
-    [ObservableProperty] 
+    [ObservableProperty]
     private bool _running = false;
 
     private readonly HashSet<Point> _forbiddenMatrix = [];

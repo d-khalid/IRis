@@ -55,7 +55,7 @@ public static class DragService
 
             string name = Objects.Count == 1 ? "Move Object" : "Move Objects";
             CommandService.Execute(
-                new MoveCommand(InitialPosition, FinalPosition, [..Objects]) { Name = name }
+                new MoveCommand(InitialPosition, FinalPosition, [.. Objects]) { Name = name }
             );
         }
 

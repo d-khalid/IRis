@@ -65,7 +65,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (!await AskNukeChangesAsync()) return;
         AppState.Get().CurrentFilePath = "(unsaved)";
 
-        if (Simulation.Get().Running) 
+        if (Simulation.Get().Running)
             Simulation.Get().Running = false;
 
         Selection.Get().UnHighlightAll();
@@ -83,7 +83,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (param == "open" && !await AskNukeChangesAsync()) return;
         if (Simulation.Get().Running) Simulation.Get().Running = false;
 
-        if (Application.Current?.ApplicationLifetime is not 
+        if (Application.Current?.ApplicationLifetime is not
             IClassicDesktopStyleApplicationLifetime time || time.MainWindow is null)
             return;
 
@@ -139,7 +139,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static async Task SaveAsAsync()
     {
-        if (Application.Current?.ApplicationLifetime is not 
+        if (Application.Current?.ApplicationLifetime is not
             IClassicDesktopStyleApplicationLifetime time || time.MainWindow is null)
             return;
 
@@ -163,7 +163,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static void Preferences()
     {
-        
+
     }
 
 
@@ -280,13 +280,13 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static void AddInput()
     {
-        if (!Preview.Get().IsEmpty()) 
+        if (!Preview.Get().IsEmpty())
             AddInput(Preview.Get().Objects);
 
-        else if (!Selection.Get().IsEmpty()) 
+        else if (!Selection.Get().IsEmpty())
             AddInput(Selection.Get().Objects);
 
-        else if (DragService.IsRunning()) 
+        else if (DragService.IsRunning())
             AddInput(DragService.Objects);
 
 
@@ -307,13 +307,13 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static void RemoveInput()
     {
-        if (!Preview.Get().IsEmpty()) 
+        if (!Preview.Get().IsEmpty())
             RemoveInput(Preview.Get().Objects);
 
-        else if (!Selection.Get().IsEmpty()) 
+        else if (!Selection.Get().IsEmpty())
             RemoveInput(Selection.Get().Objects);
 
-        else if (DragService.IsRunning()) 
+        else if (DragService.IsRunning())
             RemoveInput(DragService.Objects);
 
 
@@ -346,14 +346,14 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static void SetTheme(string variant)
     {
-        
+
     }
 
 
     [RelayCommand]
     private static void GenerateFromPrompt()
     {
-        
+
     }
 
 

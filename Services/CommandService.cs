@@ -28,7 +28,7 @@ public static class CommandService
         var command = _undoStack.Pop();
         command.Undo();
         _redoStack.Push(command);
-        
+
         AppState.Get().LastCommand = "Undo: " + command.Name;
     }
 
@@ -40,7 +40,7 @@ public static class CommandService
         var command = _redoStack.Pop();
         command.Execute();
         _undoStack.Push(command);
-        
+
         AppState.Get().LastCommand = "Redo: " + command.Name;
     }
 

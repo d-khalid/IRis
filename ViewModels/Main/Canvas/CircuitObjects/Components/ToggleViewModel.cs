@@ -26,10 +26,12 @@ public partial class ToggleViewModel : ComponentViewModel
     }
 
 
-    [ObservableProperty] [property: JsonIgnore]
+    [ObservableProperty]
+    [property: JsonIgnore]
     private IBrush _background;
 
-    [ObservableProperty] [property: JsonIgnore] 
+    [ObservableProperty]
+    [property: JsonIgnore]
     private string _label = "0";
 
 

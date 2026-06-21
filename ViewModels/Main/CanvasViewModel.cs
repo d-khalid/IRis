@@ -15,7 +15,8 @@ namespace IRis.ViewModels.Main;
 
 public partial class CanvasViewModel : ViewModelBase
 {
-    [ObservableProperty] private AvaloniaList<CircuitObjectViewModel> _circuit = 
+    [ObservableProperty]
+    private AvaloniaList<CircuitObjectViewModel> _circuit =
         Simulation.Get().Objects;
     [ObservableProperty] private Preview _preview = Preview.Get();
     [ObservableProperty] private SelectionBox _selectionBox = SelectionBox.Get();
@@ -81,7 +82,7 @@ public partial class CanvasViewModel : ViewModelBase
 
     public void PointerMoved(object? sender, PointerEventArgs e)
     {
-        AppState.Get().MousePosition = 
+        AppState.Get().MousePosition =
             SimulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
 
         if (SelectionBox.Get().Exists())
