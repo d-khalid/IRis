@@ -13,12 +13,12 @@ using IRis.Services.Singleton;
 namespace IRis.ViewModels;
 
 
-public partial class GenerateFromImageWindowViewModel : ViewModelBase
+public partial class GenerateFromImageWindowViewModel(Window owner) : ViewModelBase
 {
     private const string ExePath = @"sketchlogic.exe";
     private const string OutputIrisPath = @"temp.iris";
     private string? _selectedFilePath;
-    private readonly Window _owner;
+    private readonly Window _owner = owner;
     private bool _hasImage;
     private bool _isGenerating;
 
@@ -26,10 +26,6 @@ public partial class GenerateFromImageWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private Bitmap? _previewImage;
-
-
-    public GenerateFromImageWindowViewModel(Window owner) => _owner = owner;
-
 
     [RelayCommand]
     private async Task PickImageAsync()

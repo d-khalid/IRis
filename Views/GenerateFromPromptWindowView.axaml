@@ -1,0 +1,29 @@
+<Window 
+    Title="Generate From Prompt"
+    Icon="/Assets/avalonia-logo.ico"
+    Width="520"
+    Height="320"
+
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+    xmlns:vm="using:IRis.ViewModels"
+    x:DataType="vm:GenerateFromPromptWindowViewModel"
+    x:Class="IRis.Views.GenerateFromPromptWindowView"
+>
+    <StackPanel Margin="20" Spacing="12">
+        <TextBox
+            Text="{Binding Prompt}"
+            AcceptsReturn="True"
+            TextWrapping="Wrap"
+            Height="220"
+            Watermark="Generate a mini-cpu..."
+            VerticalContentAlignment="Top"
+        />
+        <Button
+            Content="Generate"
+            Command="{Binding GenerateCommand}"
+            HorizontalAlignment="Right"
+        />
+    </StackPanel>
+</Window>

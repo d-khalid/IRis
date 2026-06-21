@@ -351,9 +351,12 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void GenerateFromPrompt()
+    private static async Task GenerateFromPrompt()
     {
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow is null)
+            return;
 
+        await new GenerateFromPromptWindowView().ShowDialog(desktop.MainWindow);
     }
 
 
