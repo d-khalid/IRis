@@ -133,7 +133,7 @@ public static class SimulationService
     {
         foreach (var co in collection)
         {
-            if (co is WireViewModel w && w.Points.Count == 0) 
+            if (co is WireViewModel w && w.Points.Count == 0)
                 w.Redraw();
         }
     }

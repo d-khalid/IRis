@@ -14,14 +14,14 @@ namespace IRis.ViewModels.Main;
 
 public partial class LeftSidebarViewModel : ViewModelBase
 {
-    [ObservableProperty] 
+    [ObservableProperty]
     private AppState _appState = AppState.Get();
 
-    [ObservableProperty] 
-    private string _simulationToggleContent = Simulation.Get().Running ? 
+    [ObservableProperty]
+    private string _simulationToggleContent = Simulation.Get().Running ?
         "Simulation: ON" : "Simulation: OFF";
 
-    [ObservableProperty] 
+    [ObservableProperty]
     private Brush _simulationToggleBrush = new SolidColorBrush(
         Simulation.Get().Running ? Colors.DarkGreen : Colors.DarkRed
     );
@@ -33,7 +33,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         {
             if (e.PropertyName is nameof(Simulation.Running))
             {
-                SimulationToggleContent = Simulation.Get().Running ? 
+                SimulationToggleContent = Simulation.Get().Running ?
                     "Simulation: ON" : "Simulation: OFF";
 
                 SimulationToggleBrush = new SolidColorBrush(

@@ -14,8 +14,8 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
 {
     [ObservableProperty] private double _x;
     [ObservableProperty] private double _y;
-    [ObservableProperty] [property: JsonIgnore] private double _width;
-    [ObservableProperty] [property: JsonIgnore] private double _height;
+    [ObservableProperty][property: JsonIgnore] private double _width;
+    [ObservableProperty][property: JsonIgnore] private double _height;
     [ObservableProperty] private double _rotation;
     [JsonIgnore] public double TextRotation => -Rotation;
 
@@ -54,7 +54,7 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
     {
         if (!IsSelected)
         {
-            if (!Selection.Get().IsEmpty()) 
+            if (!Selection.Get().IsEmpty())
                 Selection.Get().UnHighlightAll();
 
             Selection.Get().Highlight(this);
@@ -73,8 +73,8 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
 
     public void PointerEntered()
     {
-        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || 
-            DragService.IsRunning()) 
+        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() ||
+            DragService.IsRunning())
             return;
 
         if (!IsSelected) HoverEffectService.On(this);
@@ -83,11 +83,11 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
 
     public void PointerExited()
     {
-        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || 
-            DragService.IsRunning()) 
+        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() ||
+            DragService.IsRunning())
             return;
 
-        if (!IsSelected && HoverEffectService.IsRunning()) 
+        if (!IsSelected && HoverEffectService.IsRunning())
             HoverEffectService.Stop();
     }
 

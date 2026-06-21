@@ -51,7 +51,7 @@ public partial class Preview : SingletonCollection<Preview>
         var cloned = CloningService.Clone(Objects);
         string name = cloned.Count == 1 ? "Commit Object" : "Commit Objects";
 
-        CommandService.Execute(new CommitCommand(cloned) { Name = name }); 
+        CommandService.Execute(new CommitCommand(cloned) { Name = name });
     }
 
 

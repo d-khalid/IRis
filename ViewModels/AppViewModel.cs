@@ -30,9 +30,17 @@ public partial class AppViewModel : ViewModelBase
         if (lastOpenedFile == "(unsaved)")
         {
             if (!File.Exists(AppState.AutoSavePath))
+            {
                 return;
+            }
 
             lastOpenedFile = AppState.AutoSavePath;
+        }
+
+        else if (!File.Exists(lastOpenedFile))
+        {
+            AppState.Get().CurrentFilePath = "(unsaved)";
+            return;
         }
 
         var json = await File.ReadAllTextAsync(lastOpenedFile);

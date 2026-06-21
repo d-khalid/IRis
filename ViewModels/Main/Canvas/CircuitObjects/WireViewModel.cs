@@ -17,7 +17,7 @@ namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 {
-    [ObservableProperty] 
+    [ObservableProperty]
     private AvaloniaList<Point> _points = [];
 
 
@@ -81,7 +81,7 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         if (Points.Count == 2)
         {
             Points.Clear();
-            
+
             var points = DrawWire(
                 new(MainInput.X, MainInput.Y), new(MainOutput.X, MainOutput.Y)
             );
@@ -195,8 +195,8 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 
     public void PointerEntered()
     {
-        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || 
-            DragService.IsRunning()) 
+        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() ||
+            DragService.IsRunning())
             return;
 
         if (!IsSelected) HoverEffectService.On(this);
@@ -205,11 +205,11 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 
     public void PointerExited()
     {
-        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || 
-            DragService.IsRunning()) 
+        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() ||
+            DragService.IsRunning())
             return;
 
-        if (!IsSelected && HoverEffectService.IsRunning()) 
+        if (!IsSelected && HoverEffectService.IsRunning())
             HoverEffectService.Stop();
     }
 }

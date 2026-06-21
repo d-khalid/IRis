@@ -20,13 +20,15 @@ public partial class TerminalViewModel : ObservableObject
     public TerminalType Type;
     [JsonIgnore] public bool IsOrphan = false;
 
-    [ObservableProperty] [property: JsonIgnore] private double _x = 0;
-    [ObservableProperty] [property: JsonIgnore] private double _y = 0;
+    [ObservableProperty][property: JsonIgnore] private double _x = 0;
+    [ObservableProperty][property: JsonIgnore] private double _y = 0;
 
-    [ObservableProperty] [property: JsonIgnore] 
+    [ObservableProperty]
+    [property: JsonIgnore]
     private IBrush _color = null!;
 
-    [ObservableProperty] [property: JsonIgnore] 
+    [ObservableProperty]
+    [property: JsonIgnore]
     private Cursor _cursor = new(StandardCursorType.Arrow);
 
 
@@ -34,7 +36,7 @@ public partial class TerminalViewModel : ObservableObject
     {
         Model.PropertyChanged += (_, e) =>
         {
-            if (AppState.Get().TerminalColorChangeAllowed && e.PropertyName is nameof(Terminal.State)) 
+            if (AppState.Get().TerminalColorChangeAllowed && e.PropertyName is nameof(Terminal.State))
                 UpdateColor();
         };
 
@@ -77,7 +79,7 @@ public partial class TerminalViewModel : ObservableObject
 
     public void PointerPressed()
     {
-        if (!Selection.Get().IsEmpty()) 
+        if (!Selection.Get().IsEmpty())
             Selection.Get().UnHighlightAll();
 
         HoverEffectService.Stop();

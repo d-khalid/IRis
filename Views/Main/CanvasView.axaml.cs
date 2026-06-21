@@ -81,24 +81,24 @@ public partial class CanvasView : UserControl
 
         switch (e.Key)
         {
-            case Key.Left:  
-                ZoomBorder.SetMatrix(new Matrix(m.M11, m.M12, m.M21, m.M22, m.M31 + step, m.M32)); 
-                mousePosition = new(mousePosition.X - delta, mousePosition.Y); 
+            case Key.Left:
+                ZoomBorder.SetMatrix(new Matrix(m.M11, m.M12, m.M21, m.M22, m.M31 + step, m.M32));
+                mousePosition = new(mousePosition.X - delta, mousePosition.Y);
                 break;
 
-            case Key.Right: 
-                ZoomBorder.SetMatrix(new Matrix(m.M11, m.M12, m.M21, m.M22, m.M31 - step, m.M32)); 
-                mousePosition = new(mousePosition.X + delta, mousePosition.Y); 
+            case Key.Right:
+                ZoomBorder.SetMatrix(new Matrix(m.M11, m.M12, m.M21, m.M22, m.M31 - step, m.M32));
+                mousePosition = new(mousePosition.X + delta, mousePosition.Y);
                 break;
 
             case Key.Up:
-                ZoomBorder.SetMatrix(new Matrix(m.M11, m.M12, m.M21, m.M22, m.M31, m.M32 + step)); 
+                ZoomBorder.SetMatrix(new Matrix(m.M11, m.M12, m.M21, m.M22, m.M31, m.M32 + step));
                 mousePosition = new(mousePosition.X, mousePosition.Y - delta);
                 break;
 
             case Key.Down:
-                ZoomBorder.SetMatrix(new Matrix(m.M11, m.M12, m.M21, m.M22, m.M31, m.M32 - step)); 
-                mousePosition = new(mousePosition.X, mousePosition.Y + delta); 
+                ZoomBorder.SetMatrix(new Matrix(m.M11, m.M12, m.M21, m.M22, m.M31, m.M32 - step));
+                mousePosition = new(mousePosition.X, mousePosition.Y + delta);
                 break;
 
             default:

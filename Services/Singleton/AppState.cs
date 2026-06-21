@@ -41,13 +41,16 @@ public partial class AppState : SingletonBase<AppState>
     [ObservableProperty]
     private string _currentFilePath = "(unsaved)";
 
-    [ObservableProperty] [property: JsonIgnore]
+    [ObservableProperty]
+    [property: JsonIgnore]
     private bool _editingAllowed = true;
 
-    [ObservableProperty] [property: JsonIgnore] 
+    [ObservableProperty]
+    [property: JsonIgnore]
     private Point _mousePosition = new(0, 0);
 
-    [ObservableProperty] [property: JsonIgnore]
+    [ObservableProperty]
+    [property: JsonIgnore]
     private string _lastCommand = "(no action yet)";
 
 
