@@ -21,9 +21,13 @@
 >
     <DockPanel Margin="{Binding $parent[Window].OffScreenMargin}">
         <Grid DockPanel.Dock="Top" Height="32" Margin="0,0,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
             <Rectangle Fill="Transparent" PointerPressed="OnTitleBarPressed" />
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
                 <Image
                     Source="/Assets/avalonia-logo.ico"
                     Width="14"
@@ -33,8 +37,7 @@
                 />
                 <main:TopMenuView />
             </StackPanel>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Grid.Column="2" VerticalAlignment="Center">
                 <TextBlock
                     Text="{Binding AppState.CurrentFilePath}"
                     Opacity="0.65"
@@ -42,7 +45,7 @@
                     FontSize="14"
                 />
                 <TextBlock
-                    Text=" - IRis v0.1.0"
+                    Text=" - IRis v0.1"
                     Opacity="0.65"
                     IsHitTestVisible="False"
                     FontSize="14"
@@ -93,5 +96,6 @@
         <KeyBinding Gesture="A" Command="{Binding AddInputCommand}" />
         <KeyBinding Gesture="S" Command="{Binding RemoveInputCommand}" />
         <KeyBinding Gesture="Space" Command="{Binding ToggleCommand}" />
+        <KeyBinding Gesture="Ctrl+A" Command="{Binding SelectAllCommand}" />
     </Window.KeyBindings>
 </Window>
