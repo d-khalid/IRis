@@ -93,5 +93,6 @@
         <KeyBinding Gesture="A" Command="{Binding AddInputCommand}" />
         <KeyBinding Gesture="S" Command="{Binding RemoveInputCommand}" />
         <KeyBinding Gesture="Space" Command="{Binding ToggleCommand}" />
+        <KeyBinding Gesture="Ctrl+A" Command="{Binding SelectAllCommand}" />
     </Window.KeyBindings>
 </Window>

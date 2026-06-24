@@ -59,7 +59,6 @@
                 InputGesture="Alt+f4" 
             />
         </MenuItem>
-
         <MenuItem Header="Edit">
             <MenuItem 
                 Header="Undo" 
@@ -87,9 +86,12 @@
                 InputGesture="Ctrl+V" 
             />
         </MenuItem>
-
         <MenuItem Header="Selection">
-            <MenuItem Header="Select All" InputGesture="Ctrl+A" />
+            <MenuItem 
+                Header="Select All" 
+                Command="{Binding SelectAllCommand}"
+                InputGesture="Ctrl+A"
+            />
             <MenuItem 
                 Header="Delete Selection" 
                 Command="{Binding DeleteCommand}"
@@ -112,7 +114,6 @@
                 InputGesture="S" 
             />
         </MenuItem>
-
         <MenuItem Header="Help">
             <MenuItem Header="Open Documentation" />
             <Separator />

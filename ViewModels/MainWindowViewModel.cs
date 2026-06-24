@@ -365,4 +365,10 @@ public partial class MainWindowViewModel : ViewModelBase
 
         await new GenerateFromImageWindowView().ShowDialog(desktop.MainWindow);
     }
+
+    [RelayCommand]
+    private static void SelectAll()
+    {
+        Selection.Get().Highlight(Simulation.Get().Objects);
+    }
 }
