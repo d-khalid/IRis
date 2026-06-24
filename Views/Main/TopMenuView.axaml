@@ -5,14 +5,14 @@
 
     xmlns:vm="using:IRis.ViewModels"
     x:DataType="vm:MainWindowViewModel"
-    FontSize="14"
+    FontSize="13"
 >
     <Menu Background="{DynamicResource Background}">
         <MenuItem Header="File">
             <MenuItem 
                 Header="New" 
                 Command="{Binding NewCommand}" 
-                InputGesture="Ctrl+N" 
+                InputGesture="Ctrl+N"
             />
             <MenuItem 
                 Header="Merge..." 
@@ -27,51 +27,96 @@
                 InputGesture="Ctrl+O"
             />
             <Separator />
-            <MenuItem Header="Save" Command="{Binding SaveCommand}" InputGesture="Ctrl+S" />
-            <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}" />
+            <MenuItem 
+                Header="Save" 
+                Command="{Binding SaveCommand}"
+                InputGesture="Ctrl+S" 
+            />
+            <MenuItem 
+                Header="Save As..." 
+                Command="{Binding SaveAsCommand}" 
+            />
             <Separator />
-            <MenuItem Header="Preferences..." Command="{Binding PreferencesCommand}" />
+            <MenuItem 
+                Header="Generate Circuits From Prompt"
+                Command="{Binding GenerateFromPromptCommand}" 
+                InputGesture="Ctrl+P"
+            />
+            <MenuItem 
+                Header="Generate Circuits From Image" 
+                Command="{Binding GenerateFromImageCommand}"
+                InputGesture="Ctrl+G"
+            />
             <Separator />
-            <MenuItem Header="Exit" Command="{Binding ExitCommand}" InputGesture="Alt+f4" />
+            <MenuItem 
+                Header="Preferences..." 
+                Command="{Binding PreferencesCommand}"
+            />
+            <Separator />
+            <MenuItem 
+                Header="Exit" 
+                Command="{Binding ExitCommand}" 
+                InputGesture="Alt+f4" 
+            />
         </MenuItem>
 
         <MenuItem Header="Edit">
-            <MenuItem Header="Undo" Command="{Binding UndoCommand}">
-                <MenuItem.Icon><PathIcon Data="{StaticResource arrow_undo_regular}" /></MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="Redo" Command="{Binding RedoCommand}">
-                <MenuItem.Icon><PathIcon Data="{StaticResource arrow_redo_regular}"/></MenuItem.Icon>
-            </MenuItem>
-            <Separator />
-            <MenuItem Header="Cut">
-                <MenuItem.Icon><PathIcon Data="{StaticResource cut_regular}" /></MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="Copy">
-                <MenuItem.Icon><PathIcon Data="{StaticResource copy_regular}" /></MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="Paste">
-                <MenuItem.Icon><PathIcon Data="{StaticResource clipboard_paste_regular}" /></MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="Delete">
-                <MenuItem.Icon><PathIcon Data="{StaticResource delete_regular}" /></MenuItem.Icon>
-            </MenuItem>
-        </MenuItem>
-
-        <MenuItem Header="AI">
             <MenuItem 
-                Header="Generate From Prompt"
-                Command="{Binding GenerateFromPromptCommand}" 
+                Header="Undo" 
+                Command="{Binding UndoCommand}" 
+                InputGesture="Ctrl+Z" 
             />
             <MenuItem 
-                Header="Generate From Image" 
-                Command="{Binding GenerateFromImageCommand}"
+                Header="Redo" 
+                Command="{Binding RedoCommand}" 
+                InputGesture="Ctrl+Y" 
+            />
+            <Separator />
+            <MenuItem 
+                Header="Cut" 
+                InputGesture="Ctrl+X" 
+            />
+            <MenuItem 
+                Header="Copy" 
+                Command="{Binding CopyCommand}"
+                InputGesture="Ctrl+C" 
+            />
+            <MenuItem 
+                Header="Paste" 
+                Command="{Binding PasteCommand}"
+                InputGesture="Ctrl+V" 
+            />
+        </MenuItem>
+
+        <MenuItem Header="Selection">
+            <MenuItem Header="Select All" InputGesture="Ctrl+A" />
+            <MenuItem 
+                Header="Delete Selection" 
+                Command="{Binding DeleteCommand}"
+                InputGesture="Delete" 
+            />
+            <MenuItem 
+                Header="Rotate Selection" 
+                Command="{Binding RotateCommand}"
+                InputGesture="R" 
+            />
+            <Separator />
+            <MenuItem 
+                Header="Add Input to Selection" 
+                Command="{Binding AddInputCommand}"
+                InputGesture="A" 
+            />
+            <MenuItem 
+                Header="Remove Input from Selection" 
+                Command="{Binding RemoveInputCommand}"
+                InputGesture="S" 
             />
         </MenuItem>
 
         <MenuItem Header="Help">
-            <MenuItem Header="About">
-                <MenuItem.Icon><PathIcon Data="{StaticResource question_regular}" /></MenuItem.Icon>
-            </MenuItem>
+            <MenuItem Header="Open Documentation" />
+            <Separator />
+            <MenuItem Header="About" />
         </MenuItem>
     </Menu>
 </UserControl>
