@@ -114,6 +114,37 @@
                 InputGesture="S" 
             />
         </MenuItem>
+        <MenuItem Header="Preview">
+            <MenuItem 
+                Header="Grab All" 
+                Command="{Binding GrabAllCommand}"
+            />
+            <MenuItem 
+                Header="Grab Selected" 
+                Command="{Binding GrabSelectedCommand}"
+            />
+            <MenuItem 
+                Header="Delete Preview" 
+                Command="{Binding DeleteCommand}"
+                InputGesture="Delete" 
+            />
+            <MenuItem 
+                Header="Rotate Preview" 
+                Command="{Binding RotateCommand}"
+                InputGesture="R" 
+            />
+            <Separator />
+            <MenuItem 
+                Header="Add Input to Preview" 
+                Command="{Binding AddInputCommand}"
+                InputGesture="A" 
+            />
+            <MenuItem 
+                Header="Remove Input from Preview" 
+                Command="{Binding RemoveInputCommand}"
+                InputGesture="S" 
+            />
+        </MenuItem>
         <MenuItem Header="Help">
             <MenuItem Header="Open Documentation" />
             <Separator />

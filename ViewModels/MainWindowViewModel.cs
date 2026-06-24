@@ -371,4 +371,19 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         Selection.Get().Highlight(Simulation.Get().Objects);
     }
+
+    [RelayCommand]
+    private static void GrabAll()
+    {
+        Preview.Get().Pick(Simulation.Get().Objects);
+        Simulation.Get().Nuke();
+    }
+
+    [RelayCommand]
+    private static void GrabSelected()
+    {
+        Preview.Get().Pick(Selection.Get().Objects);
+        Simulation.Get().Remove(Selection.Get().Objects);
+        Selection.Get().UnHighlightAll();
+    }
 }
