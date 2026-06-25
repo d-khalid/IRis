@@ -26,6 +26,9 @@
         <DataTemplate DataType="components:MultiplexerViewModel">
             <views:MultiplexerView />
         </DataTemplate>
+        <DataTemplate DataType="components:DemultiplexerViewModel">
+            <views:DemultiplexerView />
+        </DataTemplate>
     </UserControl.DataTemplates>
 
     <ContentControl

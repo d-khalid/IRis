@@ -91,19 +91,31 @@
                     </StackPanel>
                 </StackPanel>
 
-                <ToggleButton Classes="section" x:Name="AdvancedToggle" IsChecked="True" Content="Advanced" />
-                <StackPanel IsVisible="{Binding #AdvancedToggle.IsChecked}">
+                <ToggleButton Classes="section" x:Name="PlexersToggle" IsChecked="False" Content="Plexers" />
+                <StackPanel IsVisible="{Binding #PlexersToggle.IsChecked}">
+                    <StackPanel>
+                        <Button Classes="item" Command="{Binding AddMultiplexerCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="16" Child="{StaticResource SampleMux}" />
+                                <TextBlock Text="Multiplexer" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="item" Command="{Binding AddDemultiplexerCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="16" Child="{StaticResource SampleDemux}" />
+                                <TextBlock Text="Demultiplexer" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+
+                <ToggleButton Classes="section" x:Name="ArithmeticToggle" IsChecked="False" Content="Arithmetic" />
+                <StackPanel IsVisible="{Binding #ArithmeticToggle.IsChecked}">
                     <StackPanel>
                         <Button Classes="item" Command="{Binding AddFullAdderCommand}">
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <Viewbox Height="16" Child="{StaticResource SampleFullAdder}" />
                                 <TextBlock Text="Full Adder" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </Button>
-                        <Button Classes="item" Command="{Binding AddMultiplexerCommand}">
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <Viewbox Height="16" Child="{StaticResource SampleMux}" />
-                                <TextBlock Text="Multiplexer" VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
                     </StackPanel>

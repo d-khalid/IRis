@@ -299,6 +299,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
                 else if (co is MultiplexerViewModel mux)
                     mux.AddSelectLine();
+
+                else if (co is DemultiplexerViewModel demux)
+                    demux.AddSelectLine();
             }
         }
     }
@@ -329,6 +332,11 @@ public partial class MainWindowViewModel : ViewModelBase
                 else if (co is MultiplexerViewModel mux)
                 {
                     mux.RemoveSelectLine();
+                }
+
+                else if (co is DemultiplexerViewModel demux)
+                {
+                    demux.RemoveSelectLine();
                 }
             }
         }
