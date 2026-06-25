@@ -106,6 +106,12 @@
                                 <TextBlock Text="Multiplexer" VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
+                        <Button Classes="item" Command="{Binding AddDemultiplexerCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Viewbox Height="16" Child="{StaticResource SampleDemux}" />
+                                <TextBlock Text="Demultiplexer" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

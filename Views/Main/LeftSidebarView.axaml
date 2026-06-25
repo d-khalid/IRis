@@ -185,6 +185,24 @@
             BorderThickness="2"
             CornerRadius="2"
         />
+        <Border
+            x:Key="SampleDemux"
+            Width="16" 
+            Height="20"
+            Background="{DynamicResource ComponentFillBrush}"
+            BorderBrush="{DynamicResource ComponentBorderBrush}"
+            BorderThickness="2"
+            CornerRadius="2"
+        >
+            <TextBlock
+                Text="D"
+                Foreground="{DynamicResource ComponentBorderBrush}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="9"
+                FontWeight="ExtraBold"
+            />
+        </Border>
     </UserControl.Resources>
 
     <UserControl.Styles>
