@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Services;
 using IRis.Services.Singleton;
+using System;
 
 
 namespace IRis.ViewModels;
@@ -10,23 +11,22 @@ namespace IRis.ViewModels;
 
 public partial class AppViewModel : ViewModelBase
 {
-    [ObservableProperty] private AppState _appState = AppState.Get();
+    [ObservableProperty]
+    private AppState _appState;
+    private readonly Simulation Simulation;
 
 
-    public AppViewModel() => OnStartup();
-
-
-    public static void OnStartup()
+    public AppViewModel(AppState appState, Simulation simulation)
     {
-        AppState.Get();
+        AppState = appState;
+        Simulation = simulation;
         LoadLastSessionFile();
-        Simulation.Get().Running = true;
     }
 
 
-    private static async void LoadLastSessionFile()
+    private void LoadLastSessionFile()
     {
-        string lastOpenedFile = AppState.Get().CurrentFilePath;
+        string lastOpenedFile = AppState.CurrentFilePath;
         if (lastOpenedFile == "(unsaved)")
         {
             if (!File.Exists(AppState.AutoSavePath))
@@ -39,17 +39,17 @@ public partial class AppViewModel : ViewModelBase
 
         else if (!File.Exists(lastOpenedFile))
         {
-            AppState.Get().CurrentFilePath = "(unsaved)";
+            AppState.CurrentFilePath = "(unsaved)";
             return;
         }
 
-        var json = await File.ReadAllTextAsync(lastOpenedFile);
+        var json = File.ReadAllText(lastOpenedFile);
         var collection = SerializationService.Deserialize(json);
 
         if (collection is not null)
         {
             SimulationService.RedrawEmptyWires(collection);
-            Simulation.Get().Add(collection);
+            Simulation.Add(collection);
         }
     }
 }

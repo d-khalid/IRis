@@ -21,5 +21,7 @@ public abstract partial class SingletonBase<T> : ObservableObject
     {
         if (_instance != null)
             throw new Exception("use GetInstance() instead pls.");
+
+        _instance = (T)this;
     }
 }
