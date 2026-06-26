@@ -19,6 +19,8 @@ namespace IRis;
 public partial class App : Application
 {
     public IServiceProvider Services { get; }
+    public new static App Current => (App)Application.Current!;
+    public new static IClassicDesktopStyleApplicationLifetime ApplicationLifetime => (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
 
 
     public App()

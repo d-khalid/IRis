@@ -26,10 +26,30 @@ namespace IRis.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    [ObservableProperty] private AppState _appState = AppState.Get();
+    [ObservableProperty]
+    private AppState _appState;
+
+    private readonly Simulation _simulation;
+    private readonly Selection _selection;
+    private readonly Preview _preview;
+    private readonly WirePreview _wirePreview;
+    private readonly SelectionBox _selectionBox;
 
 
-    private static async Task<bool> AskNukeChangesAsync()
+    public MainWindowViewModel(
+        AppState appState, Simulation simulation, Selection selection,
+        Preview preview, WirePreview wirePreview, SelectionBox selectionBox)
+    {
+        AppState = appState;
+        _simulation = simulation;
+        _selection = selection;
+        _preview = preview;
+        _wirePreview = wirePreview;
+        _selectionBox = selectionBox;
+    }
+
+
+    private async Task<bool> AskNukeChangesAsync()
     {
         var dialog = new ContentDialog
         {
@@ -60,34 +80,30 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static async Task New()
+    private async Task New()
     {
         if (!await AskNukeChangesAsync()) return;
-        AppState.Get().CurrentFilePath = "(unsaved)";
+        AppState.CurrentFilePath = "(unsaved)";
 
-        if (Simulation.Get().Running)
-            Simulation.Get().Running = false;
+        if (_simulation.Running)
+            _simulation.Running = false;
 
-        Selection.Get().UnHighlightAll();
-        Simulation.Get().Nuke();
-        Preview.Get().Nuke();
-        WirePreview.Get().Nuke();
+        _selection.UnHighlightAll();
+        _simulation.Nuke();
+        _preview.Nuke();
+        _wirePreview.Nuke();
 
         CommandService.Reset();
     }
 
 
     [RelayCommand]
-    private static async Task OpenAsync(string param)
+    private async Task OpenAsync(string param)
     {
         if (param == "open" && !await AskNukeChangesAsync()) return;
-        if (Simulation.Get().Running) Simulation.Get().Running = false;
+        if (_simulation.Running) _simulation.Running = false;
 
-        if (Application.Current?.ApplicationLifetime is not
-            IClassicDesktopStyleApplicationLifetime time || time.MainWindow is null)
-            return;
-
-        var files = await time.MainWindow.StorageProvider.OpenFilePickerAsync(
+        var files = await App.ApplicationLifetime.MainWindow!.StorageProvider.OpenFilePickerAsync(
             new FilePickerOpenOptions
             {
                 Title = "Open Simulation",
@@ -106,44 +122,39 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 if (param != "merge")
                 {
-                    AppState.Get().CurrentFilePath = path;
-                    Simulation.Get().Nuke();
+                    AppState.CurrentFilePath = path;
+                    _simulation.Nuke();
                 }
 
                 SimulationService.RedrawEmptyWires(collection);
-                Selection.Get().Highlight(collection);
-                Simulation.Get().Add(collection);
+                _selection.Highlight(collection);
+                _simulation.Add(collection);
             }
         }
     }
 
 
     [RelayCommand]
-    private static async Task SaveAsync()
+    private async Task SaveAsync()
     {
-        if (Simulation.Get().Running) Simulation.Get().Running = false;
-
-        if (AppState.Get().CurrentFilePath == "(unsaved)")
+        if (_simulation.Running) _simulation.Running = false;
+        if (AppState.CurrentFilePath == "(unsaved)")
         {
             await SaveAsAsync();
             return;
         }
 
-        var json = SerializationService.Serialize(Simulation.Get().Objects);
-        await File.WriteAllTextAsync(AppState.Get().CurrentFilePath, json);
+        var json = SerializationService.Serialize(_simulation.Objects);
+        await File.WriteAllTextAsync(AppState.CurrentFilePath, json);
 
         AppState.FileNeedsSaving = false;
     }
 
 
     [RelayCommand]
-    private static async Task SaveAsAsync()
+    private async Task SaveAsAsync()
     {
-        if (Application.Current?.ApplicationLifetime is not
-            IClassicDesktopStyleApplicationLifetime time || time.MainWindow is null)
-            return;
-
-        var file = await time.MainWindow.StorageProvider.SaveFilePickerAsync(
+        var file = await App.ApplicationLifetime.MainWindow!.StorageProvider.SaveFilePickerAsync(
             new FilePickerSaveOptions
             {
                 Title = "Save Simulation",
@@ -154,7 +165,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         if (file is not null)
         {
-            AppState.Get().CurrentFilePath = file.Path.LocalPath;
+            AppState.CurrentFilePath = file.Path.LocalPath;
             await SaveAsync();
         }
     }
@@ -170,10 +181,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private static void Exit()
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime app)
-        {
-            app.Shutdown();
-        }
+        App.ApplicationLifetime.Shutdown();
     }
 
 
@@ -182,21 +190,21 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void Delete()
+    private void Delete()
     {
-        Simulation.Get().Remove(Selection.Get().Objects);
-        Selection.Get().UnHighlightAll();
+        _simulation.Remove(_selection.Objects);
+        _selection.UnHighlightAll();
     }
 
 
     [RelayCommand]
-    private static void Escape()
+    private void Escape()
     {
-        if (!Preview.Get().IsEmpty())
-            Preview.Get().Nuke();
+        if (!_preview.IsEmpty())
+            _preview.Nuke();
 
-        if (!WirePreview.Get().IsEmpty())
-            WirePreview.Get().Leave();
+        if (!_wirePreview.IsEmpty())
+            _wirePreview.Leave();
     }
 
 
@@ -205,18 +213,18 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void Copy()
+    private void Copy()
     {
-        if (!Preview.Get().IsEmpty())
+        if (!_preview.IsEmpty())
         {
-            ClipboardService.Copy(Preview.Get().Objects);
-            Preview.Get().Nuke();
+            ClipboardService.Copy(_preview.Objects);
+            _preview.Nuke();
         }
 
-        else if (!Selection.Get().IsEmpty())
+        else if (!_selection.IsEmpty())
         {
-            ClipboardService.Copy(Selection.Get().Objects);
-            Selection.Get().UnHighlightAll();
+            ClipboardService.Copy(_selection.Objects);
+            _selection.UnHighlightAll();
         }
 
         else if (DragService.IsRunning())
@@ -234,13 +242,13 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void Rotate()
+    private void Rotate()
     {
-        if (!Preview.Get().IsEmpty())
-            RotateCollection(Preview.Get().Objects);
+        if (!_preview.IsEmpty())
+            RotateCollection(_preview.Objects);
 
-        else if (!Selection.Get().IsEmpty())
-            RotateCollection(Selection.Get().Objects);
+        else if (!_selection.IsEmpty())
+            RotateCollection(_selection.Objects);
 
         else if (DragService.IsRunning())
             RotateCollection(DragService.Objects);
@@ -278,13 +286,13 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void AddInput()
+    private void AddInput()
     {
-        if (!Preview.Get().IsEmpty())
-            AddInput(Preview.Get().Objects);
+        if (!_preview.IsEmpty())
+            AddInput(_preview.Objects);
 
-        else if (!Selection.Get().IsEmpty())
-            AddInput(Selection.Get().Objects);
+        else if (!_selection.IsEmpty())
+            AddInput(_selection.Objects);
 
         else if (DragService.IsRunning())
             AddInput(DragService.Objects);
@@ -308,13 +316,13 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void RemoveInput()
+    private void RemoveInput()
     {
-        if (!Preview.Get().IsEmpty())
-            RemoveInput(Preview.Get().Objects);
+        if (!_preview.IsEmpty())
+            RemoveInput(_preview.Objects);
 
-        else if (!Selection.Get().IsEmpty())
-            RemoveInput(Selection.Get().Objects);
+        else if (!_selection.IsEmpty())
+            RemoveInput(_selection.Objects);
 
         else if (DragService.IsRunning())
             RemoveInput(DragService.Objects);
@@ -344,7 +352,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void Toggle()
+    private void Toggle()
     {
         if (HoverEffectService.HasToggle())
             (HoverEffectService.GetObject() as ToggleViewModel)!.Toggle();
@@ -366,32 +374,34 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static async Task GenerateFromImageAsync()
+    private async Task GenerateFromImageAsync()
     {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow is null)
-            return;
-
-        await new GenerateFromImageWindowView().ShowDialog(desktop.MainWindow);
+        await new GenerateFromImageWindowView().ShowDialog(
+            App.ApplicationLifetime.MainWindow!
+        );
     }
 
-    [RelayCommand]
-    private static void SelectAll()
-    {
-        Selection.Get().Highlight(Simulation.Get().Objects);
-    }
 
     [RelayCommand]
-    private static void GrabAll()
+    private void SelectAll()
     {
-        Preview.Get().Pick(Simulation.Get().Objects);
-        Simulation.Get().Nuke();
+        _selection.Highlight(_simulation.Objects);
     }
 
+
     [RelayCommand]
-    private static void GrabSelected()
+    private void GrabAll()
     {
-        Preview.Get().Pick(Selection.Get().Objects);
-        Simulation.Get().Remove(Selection.Get().Objects);
-        Selection.Get().UnHighlightAll();
+        _preview.Pick(_simulation.Objects);
+        _simulation.Nuke();
+    }
+
+
+    [RelayCommand]
+    private void GrabSelected()
+    {
+        _preview.Pick(_selection.Objects);
+        _simulation.Remove(_selection.Objects);
+        _selection.UnHighlightAll();
     }
 }

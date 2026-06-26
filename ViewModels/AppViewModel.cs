@@ -13,13 +13,13 @@ public partial class AppViewModel : ViewModelBase
 {
     [ObservableProperty]
     private AppState _appState;
-    private readonly Simulation Simulation;
+    private readonly Simulation _simulation;
 
 
     public AppViewModel(AppState appState, Simulation simulation)
     {
         AppState = appState;
-        Simulation = simulation;
+        _simulation = simulation;
         LoadLastSessionFile();
     }
 
@@ -49,7 +49,7 @@ public partial class AppViewModel : ViewModelBase
         if (collection is not null)
         {
             SimulationService.RedrawEmptyWires(collection);
-            Simulation.Add(collection);
+            _simulation.Add(collection);
         }
     }
 }
