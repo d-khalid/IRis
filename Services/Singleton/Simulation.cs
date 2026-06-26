@@ -14,7 +14,7 @@ namespace IRis.Services.Singleton;
 public partial class Simulation : SingletonCollection<Simulation>
 {
     [ObservableProperty]
-    private bool _running = false;
+    private bool _running = true;
 
     private readonly HashSet<Point> _forbiddenMatrix = [];
     private readonly DispatcherTimer _timer;
