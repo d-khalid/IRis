@@ -42,7 +42,7 @@
             <Canvas.ContextFlyout>
                 <MenuFlyout>
                     <MenuItem 
-                        Header="Allow Circuit Editing" 
+                        Header="Allow Circuit Editing"
                         ToggleType="CheckBox" 
                         IsChecked="{Binding AppState.EditingAllowed, Mode=TwoWay}" 
                     />
@@ -61,7 +61,7 @@
 
             <!-- rendering simulation -->
             <ItemsControl 
-                ItemsSource="{Binding Circuit}"
+                ItemsSource="{Binding Simulation.Objects}"
                 ClipToBounds="False" 
                 x:CompileBindings="False"
             >

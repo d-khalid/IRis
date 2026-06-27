@@ -4,6 +4,7 @@ using Avalonia.Input;
 using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main;
+using Microsoft.Extensions.DependencyInjection;
 
 
 namespace IRis.Views.Main;
@@ -14,7 +15,7 @@ public partial class CanvasView : UserControl
     public CanvasView()
     {
         InitializeComponent();
-        DataContext = new CanvasViewModel();
+        DataContext = App.Current.Services.GetRequiredService<CanvasViewModel>();
     }
 
 
@@ -47,7 +48,7 @@ public partial class CanvasView : UserControl
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
-            CanvasViewModel.PointerPressed(ctrl, e);
+            (DataContext as CanvasViewModel)?.PointerPressed(ctrl, e);
     }
 
 
@@ -67,7 +68,7 @@ public partial class CanvasView : UserControl
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
-            CanvasViewModel.PointerReleased(e);
+            (DataContext as CanvasViewModel)?.PointerReleased(e);
     }
 
 
