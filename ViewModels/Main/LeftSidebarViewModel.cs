@@ -208,20 +208,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void AddDemultiplexer()
-    {
-        Selection.Get().UnHighlightAll();
-
-        DemultiplexerViewModel demux = new() { Input = new() };
-        demux.AddSelectLine();
-        demux.AddSelectLine();
-
-        Preview.Get().Pick(demux);
-    }
-
-
-    [RelayCommand]
-    private static void AddToggle()
+    private void AddToggle()
     {
         _selection.UnHighlightAll();
 
