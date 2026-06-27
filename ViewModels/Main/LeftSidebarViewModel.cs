@@ -17,141 +17,156 @@ public partial class LeftSidebarViewModel : ViewModelBase
     [ObservableProperty]
     private AppState _appState = AppState.Get();
 
-    [ObservableProperty]
-    private string _simulationToggleContent = Simulation.Get().Running ?
-        "Simulation: ON" : "Simulation: OFF";
+    private readonly Simulation _simulation;
+    private readonly Selection _selection;
+    private readonly Preview _preview;
 
     [ObservableProperty]
-    private Brush _simulationToggleBrush = new SolidColorBrush(
-        Simulation.Get().Running ? Colors.DarkGreen : Colors.DarkRed
-    );
+    private string _simulationToggleContent;
+
+    [ObservableProperty]
+    private Brush _simulationToggleBrush;
 
 
-    public LeftSidebarViewModel()
+    public LeftSidebarViewModel(
+        AppState appState, Simulation simulation,
+        Selection selection, Preview preview)
     {
-        Simulation.Get().PropertyChanged += (_, e) =>
+        AppState = appState;
+        _simulation = simulation;
+        _selection = selection;
+        _preview = preview;
+
+        _simulation.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName is nameof(Simulation.Running))
             {
-                SimulationToggleContent = Simulation.Get().Running ?
+                SimulationToggleContent = _simulation.Running ?
                     "Simulation: ON" : "Simulation: OFF";
 
                 SimulationToggleBrush = new SolidColorBrush(
-                    Simulation.Get().Running ? Colors.DarkGreen : Colors.DarkRed
+                    _simulation.Running ? Colors.DarkGreen : Colors.DarkRed
                 );
             }
         };
+
+        _simulationToggleContent = _simulation.Running ?
+            "Simulation: ON" : "Simulation: OFF";
+
+        _simulationToggleBrush = new SolidColorBrush(
+            _simulation.Running ? Colors.DarkGreen : Colors.DarkRed
+        );
     }
 
 
     [RelayCommand]
-    private static void SimulationToggle()
+    private void SimulationToggle()
     {
-        if (!Simulation.Get().Running) Simulation.Get().Running = true;
-        else Simulation.Get().Running = false;
+        if (!_simulation.Running) _simulation.Running = true;
+        else _simulation.Running = false;
     }
 
 
     [RelayCommand]
-    private static void ShowDesignTab() => AppState.Get().DesignTabActive = true;
+    private void ShowDesignTab() => AppState.DesignTabActive = true;
 
 
     [RelayCommand]
-    private static void ShowSimulateTab() => AppState.Get().DesignTabActive = false;
+    private void ShowSimulateTab() => AppState.DesignTabActive = false;
 
 
     [RelayCommand]
-    private static void AddAnd()
+    private void AddAnd()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         AndGateViewModel gate = new() { Output = new() };
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        Preview.Get().Pick(gate);
+        _preview.Pick(gate);
     }
 
 
     [RelayCommand]
-    private static void AddNot()
+    private void AddNot()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         NotGateViewModel gate = new() { Input = new(), Output = new() };
-        Preview.Get().Pick(gate);
+        _preview.Pick(gate);
     }
 
 
     [RelayCommand]
-    private static void AddOr()
+    private void AddOr()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         OrGateViewModel gate = new() { Output = new() };
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        Preview.Get().Pick(gate);
+        _preview.Pick(gate);
     }
 
 
     [RelayCommand]
-    private static void AddXor()
+    private void AddXor()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         XorGateViewModel gate = new() { Output = new() };
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        Preview.Get().Pick(gate);
+        _preview.Pick(gate);
     }
 
 
     [RelayCommand]
-    private static void AddNand()
+    private void AddNand()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         NandGateViewModel gate = new() { Output = new() };
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        Preview.Get().Pick(gate);
+        _preview.Pick(gate);
     }
 
 
     [RelayCommand]
-    private static void AddNor()
+    private void AddNor()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         NorGateViewModel gate = new() { Output = new() };
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        Preview.Get().Pick(gate);
+        _preview.Pick(gate);
     }
 
 
     [RelayCommand]
-    private static void AddXnor()
+    private void AddXnor()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         XnorGateViewModel gate = new() { Output = new() };
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        Preview.Get().Pick(gate);
+        _preview.Pick(gate);
     }
 
 
     [RelayCommand]
-    private static void AddFullAdder()
+    private void AddFullAdder()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         FullAdderViewModel adder = new()
         {
@@ -162,52 +177,52 @@ public partial class LeftSidebarViewModel : ViewModelBase
             Cout = new()
         };
 
-        Preview.Get().Pick(adder);
+        _preview.Pick(adder);
     }
 
 
     [RelayCommand]
-    private static void AddMultiplexer()
+    private void AddMultiplexer()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         MultiplexerViewModel mux = new() { Output = new() };
         mux.AddSelectLine();
         mux.AddSelectLine();
 
-        Preview.Get().Pick(mux);
+        _preview.Pick(mux);
     }
 
 
     [RelayCommand]
-    private static void AddDemultiplexer()
+    private void AddDemultiplexer()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         DemultiplexerViewModel demux = new() { Input = new() };
         demux.AddSelectLine();
         demux.AddSelectLine();
 
-        Preview.Get().Pick(demux);
+        _preview.Pick(demux);
     }
 
 
     [RelayCommand]
-    private static void AddToggle()
+    private void AddToggle()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         ToggleViewModel toggle = new() { Output = new() };
-        Preview.Get().Pick(toggle);
+        _preview.Pick(toggle);
     }
 
 
     [RelayCommand]
-    private static void AddProbe()
+    private void AddProbe()
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
 
         ProbeViewModel probe = new() { Input = new() };
-        Preview.Get().Pick(probe);
+        _preview.Pick(probe);
     }
 }

@@ -57,7 +57,12 @@ public partial class App : Application
         services.AddSingleton<Preview>();
         services.AddSingleton<WirePreview>();
         services.AddSingleton<SelectionBox>();
+
         services.AddSingleton<AppViewModel>();
+        services.AddSingleton<MainWindowViewModel>();
+        services.AddSingleton<CanvasViewModel>();
+        services.AddSingleton<GenerateFromImageWindowViewModel>();
+        services.AddSingleton<LeftSidebarViewModel>();
 
         return services.BuildServiceProvider();
     }

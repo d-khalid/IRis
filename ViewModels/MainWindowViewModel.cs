@@ -33,19 +33,17 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly Selection _selection;
     private readonly Preview _preview;
     private readonly WirePreview _wirePreview;
-    private readonly SelectionBox _selectionBox;
 
 
     public MainWindowViewModel(
         AppState appState, Simulation simulation, Selection selection,
-        Preview preview, WirePreview wirePreview, SelectionBox selectionBox)
+        Preview preview, WirePreview wirePreview)
     {
         AppState = appState;
         _simulation = simulation;
         _selection = selection;
         _preview = preview;
         _wirePreview = wirePreview;
-        _selectionBox = selectionBox;
     }
 
 

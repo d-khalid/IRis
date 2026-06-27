@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IRis.Services;
 using IRis.Services.Singleton;
+using IRis.Views;
 
 
 namespace IRis.ViewModels;
@@ -15,20 +16,33 @@ namespace IRis.ViewModels;
 
 public partial class GenerateFromImageWindowViewModel : ViewModelBase
 {
+    private readonly GenerateFromImageWindowView _owner;
+
     private const string ExePath = @"sketchlogic.exe";
     private const string OutputIrisPath = @"temp.iris";
     private string? _selectedFilePath;
-    private readonly Window _owner;
+
     private bool _hasImage;
     private bool _isGenerating;
-
     private bool CanGenerate => _hasImage && !_isGenerating;
+
+    private readonly Simulation _simulation;
+    private readonly Selection _selection;
+    private readonly AppState _appState;
 
     [ObservableProperty]
     private Bitmap? _previewImage;
 
 
-    public GenerateFromImageWindowViewModel(Window owner) => _owner = owner;
+    public GenerateFromImageWindowViewModel(
+        GenerateFromImageWindowView owner, Simulation simulation,
+        Selection selection, AppState appState)
+    {
+        _owner = owner;
+        _simulation = simulation;
+        _selection = selection;
+        _appState = appState;
+    }
 
 
     [RelayCommand]
@@ -63,6 +77,7 @@ public partial class GenerateFromImageWindowViewModel : ViewModelBase
 
         _isGenerating = true;
         GenerateCommand.NotifyCanExecuteChanged();
+        
         try
         {
             using var process = Process.Start(new ProcessStartInfo
@@ -77,20 +92,21 @@ public partial class GenerateFromImageWindowViewModel : ViewModelBase
             await process.WaitForExitAsync();
 
             if (process.ExitCode != 0 || !File.Exists(OutputIrisPath)) return;
-            if (Simulation.Get().Running)
-                Simulation.Get().Running = false;
+            if (_simulation.Running)
+                _simulation.Running = false;
 
             var json = await File.ReadAllTextAsync(OutputIrisPath);
             var collection = SerializationService.Deserialize(json);
             if (collection is null) return;
 
-            AppState.Get().CurrentFilePath = OutputIrisPath;
+            _appState.CurrentFilePath = OutputIrisPath;
             SimulationService.RedrawEmptyWires(collection);
-            Selection.Get().Highlight(collection);
-            Simulation.Get().Add(collection);
+            _selection.Highlight(collection);
+            _simulation.Add(collection);
 
             _owner.Close();
         }
+
         finally
         {
             _isGenerating = false;

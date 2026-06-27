@@ -16,65 +16,84 @@ namespace IRis.ViewModels.Main;
 public partial class CanvasViewModel : ViewModelBase
 {
     [ObservableProperty]
-    private AvaloniaList<CircuitObjectViewModel> _circuit =
-        Simulation.Get().Objects;
-    [ObservableProperty] private Preview _preview = Preview.Get();
-    [ObservableProperty] private SelectionBox _selectionBox = SelectionBox.Get();
-    [ObservableProperty] private AppState _appState = AppState.Get();
-    [ObservableProperty] private WirePreview _wirePreview = WirePreview.Get();
+    private Preview _preview;
 
     [ObservableProperty]
-    private Simulation _simulation = Simulation.Get();
+    private SelectionBox _selectionBox;
+
+    [ObservableProperty]
+    private AppState _appState;
+
+    [ObservableProperty]
+    private WirePreview _wirePreview;
+
+    [ObservableProperty]
+    private Simulation _simulation;
+
+    private Selection _selection;
+
+
+    public CanvasViewModel(
+        Simulation simulation, Preview preview, SelectionBox selectionBox,
+        WirePreview wirePreview, AppState appState, Selection selection)
+    {
+        Simulation = simulation;
+        Preview = preview;
+        SelectionBox = selectionBox;
+        WirePreview = wirePreview;
+        AppState = appState;
+        _selection = selection;
+    }
 
 
     [RelayCommand]
-    private static void Copy()
+    private void Copy()
     {
-        if (!Preview.Get().IsEmpty())
+        if (!Preview.IsEmpty())
         {
-            ClipboardService.Copy(Preview.Get().Objects);
-            Preview.Get().Nuke();
+            ClipboardService.Copy(Preview.Objects);
+            Preview.Nuke();
         }
 
-        else if (!Selection.Get().IsEmpty())
+        else if (!_selection.IsEmpty())
         {
-            ClipboardService.Copy(Selection.Get().Objects);
-            Selection.Get().UnHighlightAll();
+            ClipboardService.Copy(_selection.Objects);
+            _selection.UnHighlightAll();
         }
     }
 
 
     public void PointerEntered()
     {
-        if (!Preview.Get().IsEmpty())
-            Preview.Get().Show();
+        if (!Preview.IsEmpty())
+            Preview.Show();
 
-        if (!WirePreview.Get().IsEmpty())
-            WirePreview.Get().Show();
+        if (!WirePreview.IsEmpty())
+            WirePreview.Show();
     }
 
 
     public void PointerExited()
     {
-        if (!Preview.Get().IsEmpty())
-            Preview.Get().Hide();
+        if (!Preview.IsEmpty())
+            Preview.Hide();
 
-        if (!WirePreview.Get().IsEmpty())
-            WirePreview.Get().Hide();
+        if (!WirePreview.IsEmpty())
+            WirePreview.Hide();
     }
 
 
-    public static void PointerPressed(Control sender, PointerPressedEventArgs e)
+    public void PointerPressed(Control sender, PointerPressedEventArgs e)
     {
-        if (!WirePreview.Get().IsEmpty())
-            WirePreview.Get().Checkpoint();
+        if (!WirePreview.IsEmpty())
+            WirePreview.Checkpoint();
 
-        else if (!Preview.Get().IsEmpty())
-            Preview.Get().Commit();
+        else if (!Preview.IsEmpty())
+            Preview.Commit();
 
         else
         {
-            SelectionBox.Get().StartAt(AppState.Get().MousePosition);
+            SelectionBox.StartAt(AppState.MousePosition);
             e.Pointer.Capture(sender);   // keeps focus till released
         }
     }
@@ -82,28 +101,28 @@ public partial class CanvasViewModel : ViewModelBase
 
     public void PointerMoved(object? sender, PointerEventArgs e)
     {
-        AppState.Get().MousePosition =
+        AppState.MousePosition =
             SimulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
 
-        if (SelectionBox.Get().Exists())
-            SelectionBox.Get().UpdateTo(AppState.Get().MousePosition);
+        if (SelectionBox.Exists())
+            SelectionBox.UpdateTo(AppState.MousePosition);
 
-        else if (!Preview.Get().IsEmpty())
-            Preview.Get().UpdatePositionTo(AppState.Get().MousePosition);
+        else if (!Preview.IsEmpty())
+            Preview.UpdatePositionTo(AppState.MousePosition);
 
-        else if (!WirePreview.Get().IsEmpty())
-            WirePreview.Get().UpdateTo(AppState.Get().MousePosition);
+        else if (!WirePreview.IsEmpty())
+            WirePreview.UpdateTo(AppState.MousePosition);
 
         else if (DragService.IsRunning())
-            DragService.UpdatePositionTo(AppState.Get().MousePosition);
+            DragService.UpdatePositionTo(AppState.MousePosition);
     }
 
 
-    public static void PointerReleased(PointerReleasedEventArgs e)
+    public void PointerReleased(PointerReleasedEventArgs e)
     {
-        if (SelectionBox.Get().Exists())
+        if (SelectionBox.Exists())
         {
-            SelectionBox.Get().Nuke();
+            SelectionBox.Nuke();
             e.Pointer.Capture(null);
         }
     }
