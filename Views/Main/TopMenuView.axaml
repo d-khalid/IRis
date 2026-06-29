@@ -70,21 +70,6 @@
                 Command="{Binding RedoCommand}" 
                 InputGesture="Ctrl+Y" 
             />
-            <Separator />
-            <MenuItem 
-                Header="Cut" 
-                InputGesture="Ctrl+X" 
-            />
-            <MenuItem 
-                Header="Copy" 
-                Command="{Binding CopyCommand}"
-                InputGesture="Ctrl+C" 
-            />
-            <MenuItem 
-                Header="Paste" 
-                Command="{Binding PasteCommand}"
-                InputGesture="Ctrl+V" 
-            />
         </MenuItem>
         <MenuItem Header="Selection">
             <MenuItem 
@@ -101,6 +86,22 @@
                 Header="Rotate Selection" 
                 Command="{Binding RotateCommand}"
                 InputGesture="R" 
+            />
+            <Separator />
+            <MenuItem 
+                Header="Cut Selection" 
+                Command="{Binding CutCommand}"
+                InputGesture="Ctrl+X" 
+            />
+            <MenuItem 
+                Header="Copy Selection" 
+                Command="{Binding CopyCommand}"
+                InputGesture="Ctrl+C" 
+            />
+            <MenuItem 
+                Header="Paste Selection" 
+                Command="{Binding PasteCommand}"
+                InputGesture="Ctrl+V" 
             />
             <Separator />
             <MenuItem 
@@ -132,6 +133,22 @@
                 Header="Rotate Preview" 
                 Command="{Binding RotateCommand}"
                 InputGesture="R" 
+            />
+            <Separator />
+            <MenuItem 
+                Header="Cut Preview" 
+                Command="{Binding CutCommand}"
+                InputGesture="Ctrl+X" 
+            />
+            <MenuItem 
+                Header="Copy Preview" 
+                Command="{Binding CopyCommand}"
+                InputGesture="Ctrl+C" 
+            />
+            <MenuItem 
+                Header="Paste Preview" 
+                Command="{Binding PasteCommand}"
+                InputGesture="Ctrl+V" 
             />
             <Separator />
             <MenuItem 

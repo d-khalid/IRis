@@ -86,6 +86,7 @@
         <KeyBinding Gesture="Ctrl+V" Command="{Binding PasteCommand}" />
         <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}" />
         <KeyBinding Gesture="Ctrl+Y" Command="{Binding RedoCommand}" />
+        <KeyBinding Gesture="Ctrl+X" Command="{Binding CutCommand}" />
 
         <KeyBinding Gesture="Ctrl+N" Command="{Binding NewCommand}" />
         <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenCommand}" CommandParameter="open" />

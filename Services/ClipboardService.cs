@@ -43,6 +43,5 @@ public static class ClipboardService
 
         var prev = Preview.Get();
         prev.Pick(pasted);
-        prev.UpdatePositionTo(AppState.Get().MousePosition);
     }
 }

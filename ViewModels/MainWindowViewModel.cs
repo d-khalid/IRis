@@ -218,13 +218,11 @@ public partial class MainWindowViewModel : ViewModelBase
         if (!_preview.IsEmpty())
         {
             ClipboardService.Copy(_preview.Objects);
-            _preview.Nuke();
         }
 
         else if (!_selection.IsEmpty())
         {
             ClipboardService.Copy(_selection.Objects);
-            _selection.UnHighlightAll();
         }
 
         else if (DragService.IsRunning())
@@ -235,9 +233,40 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private static void Paste()
+    private void Cut()
     {
+        if (!_preview.IsEmpty())
+        {
+            ClipboardService.Copy(_preview.Objects);
+            _preview.Nuke();
+        }
+
+        else if (!_selection.IsEmpty())
+        {
+            ClipboardService.Copy(_selection.Objects);
+            _simulation.Remove(_selection.Objects);
+            _selection.UnHighlightAll();
+        }
+
+        else if (DragService.IsRunning())
+        {
+            ClipboardService.Copy(DragService.Objects);
+            _simulation.Remove(DragService.Objects);
+            DragService.Stop();
+        }
+    }
+
+
+    [RelayCommand]
+    private void Paste()
+    {
+        _selection.UnHighlightAll();
+        _preview.Nuke();
+        _wirePreview.Nuke();
+        DragService.Stop();
+
         ClipboardService.Paste();
+        _preview.UpdatePositionTo(AppState.MousePosition);
     }
 
 
