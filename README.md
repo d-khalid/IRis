@@ -2,35 +2,27 @@
 
 IRis is an AI-powered circuit simulation software made with **Avalonia** and **C#**. It is currently developed enough to be able to Simulate a Mini-CPU. It uses [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic) internally for sketch to simulation conversions.
 
-![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
-![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
-![Avalonia](https://img.shields.io/badge/Avalonia-8B45BF?style=for-the-badge&logo=avalonia&logoColor=white)
-
+![C#](https://img.shields.io/badge/C%23-333333?style=for-the-badge&logo=csharp&logoColor=white)
+![.NET](https://img.shields.io/badge/.NET-333333?style=for-the-badge&logo=dotnet&logoColor=white)
+![Avalonia](https://img.shields.io/badge/Avalonia-333333?style=for-the-badge&logo=avalonia&logoColor=white)
 
 https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08
 
-
 ---
-
 
 ## UI Snapshot
 
 <img height="380" alt="snapshot of a 1-Bit ALU circuit designed in IRis" src="https://github.com/user-attachments/assets/e2043afb-a54b-42d8-a70e-7e8f389afaf1" />
 
-
 > snapshot of a 1-Bit ALU circuit designed in IRis
 
-
 ---
-
 
 ## Platform Compatibility
 
 Supports Windows, Linux, and MacOS.
 
-
 ---
-
 
 ## Try it
 
@@ -38,12 +30,17 @@ There are no compiled packages/installers yet, but the setup is arguably simple.
 
 However, for Sketch to Simulation Conversion feature, you would have to download the latest `.exe` release from [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic/releases). Just put the `.exe` file in the project root and the simulator will pick it up.
 
-
 ---
-
 
 ## Architectural Notes
 
+### Dependency Injection
+
+Inspired by the [official documentation: IoC](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/ioc) for `CommunityToolkit.Mvvm` and a few thoughts we had in mind, we implemented **Dependency Injection** for better code structure, maintainability, flexibility, etc.
+
+This involves registering the static and instance-dependent services in `app.axaml.cs` and then calling `App.Current.Services.GetRequiredService<RequesterClass>() assuming we declare an instance of the _RequesterClass_. This approach will be the default in the future.
+
+Services can also use other services in their constructors, but circular dependencies (if they occur) would certainly cause errors and crashes.
 
 ### SingletonCollection Class
 
@@ -59,11 +56,9 @@ For getting an instance of a Child class, just call the GetInstance method. For 
 var instance = Simulation.Get();
 ```
 
-
 ### Usage of Views
 
 Most of the UI features are dealt with in Views, except where either the code file becomes too long/messy or where framework limitations come in our way, then we have to use ViewModels.
-
 
 ### ViewModels have Models
 
@@ -85,23 +80,19 @@ public LogicState State
 }
 ```
 
-
 ### Wire Cloning/Copying
 
 Wire cloning is too tricky to be messed with. One IMPORTANT thing if you are working on this codebase would be to always clone a collection of objects together. NEVER EVER think of cloning each object separately. Otherwise their memory references would break, and you would end up with disconnected weird-behaving circuit objects.
 
-
 ### Cloning Service
 
 Currently it relies on JsonSerialization. One thing to note is that the entire app's functionality depend on cloning, and cloning depends on serialization. If serialization/deserialization breaks, nothing will behave as expected.
-
 
 ### Why did we use Singleton Pattern in Services?
 
 We need Static classes to share states between different parts of IRis, but neither can static classes inherit from `ObservableObject` (considering we need those static classes to have observable properties) nor can they implement `INotifyPropertyChanged` which forces us to find a workaround.
 
 We have chosen this workaround to be the singleton pattern.
-
 
 ### Adding Icons to Any Context Menu (globally)
 
@@ -124,6 +115,6 @@ Now refer to it as a Static Resource in MenuIcon:
 ## Developer Setup
 
 - Install .NET SDK 9.0 from [here](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
-- Make sure it is installed properly by running `dotnet --version` in a terminal.  
+- Make sure it is installed properly by running `dotnet --version` in a terminal.
 - Download the source code from here into a folder, open that folder in a terminal and execute `dotnet build`.
 - .NET automatically resolves the dependencies, so it should build with no issues. Execute `dotnet run` to run the program.
