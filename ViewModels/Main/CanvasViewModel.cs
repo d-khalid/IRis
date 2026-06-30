@@ -1,48 +1,27 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IRis.Services;
 using IRis.Services.Singleton;
 
 namespace IRis.ViewModels.Main;
 
-public partial class CanvasViewModel : ViewModelBase
+public partial class CanvasViewModel(
+    Simulation simulation,
+    Preview preview,
+    SelectionBox selectionBox,
+    WirePreview wirePreview,
+    AppState appState,
+    Selection selection
+) : ViewModelBase
 {
-    [ObservableProperty]
-    private Preview _preview;
-
-    [ObservableProperty]
-    private SelectionBox _selectionBox;
-
-    [ObservableProperty]
-    private AppState _appState;
-
-    [ObservableProperty]
-    private WirePreview _wirePreview;
-
-    [ObservableProperty]
-    private Simulation _simulation;
-
-    private readonly Selection _selection;
-
-    public CanvasViewModel(
-        Simulation simulation,
-        Preview preview,
-        SelectionBox selectionBox,
-        WirePreview wirePreview,
-        AppState appState,
-        Selection selection
-    )
-    {
-        Simulation = simulation;
-        Preview = preview;
-        SelectionBox = selectionBox;
-        WirePreview = wirePreview;
-        AppState = appState;
-        _selection = selection;
-    }
+    public Preview Preview { get; } = preview;
+    public SelectionBox SelectionBox { get; } = selectionBox;
+    public AppState AppState { get; } = appState;
+    public WirePreview WirePreview { get; } = wirePreview;
+    public Simulation Simulation { get; } = simulation;
+    private readonly Selection _selection = selection;
 
     [RelayCommand]
     private void Copy()
