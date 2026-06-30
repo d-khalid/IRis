@@ -1,16 +1,11 @@
+using Avalonia.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using IRis.Services;
 using IRis.Services.Singleton;
-using IRis.Models.Core;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
-using IRis.ViewModels.Main.Canvas.Core;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Avalonia.Media;
-
 
 namespace IRis.ViewModels.Main;
-
 
 public partial class LeftSidebarViewModel : ViewModelBase
 {
@@ -27,10 +22,12 @@ public partial class LeftSidebarViewModel : ViewModelBase
     [ObservableProperty]
     private Brush _simulationToggleBrush;
 
-
     public LeftSidebarViewModel(
-        AppState appState, Simulation simulation,
-        Selection selection, Preview preview)
+        AppState appState,
+        Simulation simulation,
+        Selection selection,
+        Preview preview
+    )
     {
         AppState = appState;
         _simulation = simulation;
@@ -41,8 +38,9 @@ public partial class LeftSidebarViewModel : ViewModelBase
         {
             if (e.PropertyName is nameof(Simulation.Running))
             {
-                SimulationToggleContent = _simulation.Running ?
-                    "Simulation: ON" : "Simulation: OFF";
+                SimulationToggleContent = _simulation.Running
+                    ? "Simulation: ON"
+                    : "Simulation: OFF";
 
                 SimulationToggleBrush = new SolidColorBrush(
                     _simulation.Running ? Colors.DarkGreen : Colors.DarkRed
@@ -50,30 +48,27 @@ public partial class LeftSidebarViewModel : ViewModelBase
             }
         };
 
-        _simulationToggleContent = _simulation.Running ?
-            "Simulation: ON" : "Simulation: OFF";
+        _simulationToggleContent = _simulation.Running ? "Simulation: ON" : "Simulation: OFF";
 
         _simulationToggleBrush = new SolidColorBrush(
             _simulation.Running ? Colors.DarkGreen : Colors.DarkRed
         );
     }
 
-
     [RelayCommand]
     private void SimulationToggle()
     {
-        if (!_simulation.Running) _simulation.Running = true;
-        else _simulation.Running = false;
+        if (!_simulation.Running)
+            _simulation.Running = true;
+        else
+            _simulation.Running = false;
     }
-
 
     [RelayCommand]
     private void ShowDesignTab() => AppState.DesignTabActive = true;
 
-
     [RelayCommand]
     private void ShowSimulateTab() => AppState.DesignTabActive = false;
-
 
     [RelayCommand]
     private void AddAnd()
@@ -87,7 +82,6 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _preview.Pick(gate);
     }
 
-
     [RelayCommand]
     private void AddNot()
     {
@@ -96,7 +90,6 @@ public partial class LeftSidebarViewModel : ViewModelBase
         NotGateViewModel gate = new() { Input = new(), Output = new() };
         _preview.Pick(gate);
     }
-
 
     [RelayCommand]
     private void AddOr()
@@ -110,7 +103,6 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _preview.Pick(gate);
     }
 
-
     [RelayCommand]
     private void AddXor()
     {
@@ -122,7 +114,6 @@ public partial class LeftSidebarViewModel : ViewModelBase
 
         _preview.Pick(gate);
     }
-
 
     [RelayCommand]
     private void AddNand()
@@ -136,7 +127,6 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _preview.Pick(gate);
     }
 
-
     [RelayCommand]
     private void AddNor()
     {
@@ -148,7 +138,6 @@ public partial class LeftSidebarViewModel : ViewModelBase
 
         _preview.Pick(gate);
     }
-
 
     [RelayCommand]
     private void AddXnor()
@@ -162,7 +151,6 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _preview.Pick(gate);
     }
 
-
     [RelayCommand]
     private void AddFullAdder()
     {
@@ -174,12 +162,11 @@ public partial class LeftSidebarViewModel : ViewModelBase
             B = new(),
             Cin = new(),
             Sum = new(),
-            Cout = new()
+            Cout = new(),
         };
 
         _preview.Pick(adder);
     }
-
 
     [RelayCommand]
     private void AddMultiplexer()
@@ -193,7 +180,6 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _preview.Pick(mux);
     }
 
-
     [RelayCommand]
     private void AddDemultiplexer()
     {
@@ -206,7 +192,6 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _preview.Pick(demux);
     }
 
-
     [RelayCommand]
     private void AddToggle()
     {
@@ -215,7 +200,6 @@ public partial class LeftSidebarViewModel : ViewModelBase
         ToggleViewModel toggle = new() { Output = new() };
         _preview.Pick(toggle);
     }
-
 
     [RelayCommand]
     private void AddProbe()

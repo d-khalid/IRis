@@ -1,171 +1,94 @@
-<UserControl 
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="IRis.Views.Main.TopMenuView"
-
-    xmlns:vm="using:IRis.ViewModels"
-    x:DataType="vm:MainWindowViewModel"
-    FontSize="13"
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  x:Class="IRis.Views.Main.TopMenuView"
+  xmlns:vm="using:IRis.ViewModels"
+  x:DataType="vm:MainWindowViewModel"
+  FontSize="13"
 >
-    <Menu Background="{DynamicResource Background}">
-        <MenuItem Header="File">
-            <MenuItem 
-                Header="New" 
-                Command="{Binding NewCommand}" 
-                InputGesture="Ctrl+N"
-            />
-            <MenuItem 
-                Header="Merge..." 
-                Command="{Binding OpenCommand}" 
-                CommandParameter="merge" 
-                InputGesture="Ctrl+M"
-            />
-            <MenuItem 
-                Header="Open..." 
-                Command="{Binding OpenCommand}" 
-                CommandParameter="open"
-                InputGesture="Ctrl+O"
-            />
-            <Separator />
-            <MenuItem 
-                Header="Save" 
-                Command="{Binding SaveCommand}"
-                InputGesture="Ctrl+S" 
-            />
-            <MenuItem 
-                Header="Save As..." 
-                Command="{Binding SaveAsCommand}" 
-            />
-            <Separator />
-            <MenuItem 
-                Header="Generate Circuits From Prompt"
-                Command="{Binding GenerateFromPromptCommand}" 
-                InputGesture="Ctrl+P"
-            />
-            <MenuItem 
-                Header="Generate Circuits From Image" 
-                Command="{Binding GenerateFromImageCommand}"
-                InputGesture="Ctrl+G"
-            />
-            <Separator />
-            <MenuItem 
-                Header="Preferences..." 
-                Command="{Binding PreferencesCommand}"
-            />
-            <Separator />
-            <MenuItem 
-                Header="Exit" 
-                Command="{Binding ExitCommand}" 
-                InputGesture="Alt+f4" 
-            />
-        </MenuItem>
-        <MenuItem Header="Edit">
-            <MenuItem 
-                Header="Undo" 
-                Command="{Binding UndoCommand}" 
-                InputGesture="Ctrl+Z" 
-            />
-            <MenuItem 
-                Header="Redo" 
-                Command="{Binding RedoCommand}" 
-                InputGesture="Ctrl+Y" 
-            />
-        </MenuItem>
-        <MenuItem Header="Selection">
-            <MenuItem 
-                Header="Select All" 
-                Command="{Binding SelectAllCommand}"
-                InputGesture="Ctrl+A"
-            />
-            <MenuItem 
-                Header="Delete Selection" 
-                Command="{Binding DeleteCommand}"
-                InputGesture="Delete" 
-            />
-            <MenuItem 
-                Header="Rotate Selection" 
-                Command="{Binding RotateCommand}"
-                InputGesture="R" 
-            />
-            <Separator />
-            <MenuItem 
-                Header="Cut Selection" 
-                Command="{Binding CutCommand}"
-                InputGesture="Ctrl+X" 
-            />
-            <MenuItem 
-                Header="Copy Selection" 
-                Command="{Binding CopyCommand}"
-                InputGesture="Ctrl+C" 
-            />
-            <MenuItem 
-                Header="Paste Selection" 
-                Command="{Binding PasteCommand}"
-                InputGesture="Ctrl+V" 
-            />
-            <Separator />
-            <MenuItem 
-                Header="Add Input to Selection" 
-                Command="{Binding AddInputCommand}"
-                InputGesture="A" 
-            />
-            <MenuItem 
-                Header="Remove Input from Selection" 
-                Command="{Binding RemoveInputCommand}"
-                InputGesture="S" 
-            />
-        </MenuItem>
-        <MenuItem Header="Preview">
-            <MenuItem 
-                Header="Grab All" 
-                Command="{Binding GrabAllCommand}"
-            />
-            <MenuItem 
-                Header="Grab Selected" 
-                Command="{Binding GrabSelectedCommand}"
-            />
-            <MenuItem 
-                Header="Delete Preview" 
-                Command="{Binding DeleteCommand}"
-                InputGesture="Delete" 
-            />
-            <MenuItem 
-                Header="Rotate Preview" 
-                Command="{Binding RotateCommand}"
-                InputGesture="R" 
-            />
-            <Separator />
-            <MenuItem 
-                Header="Cut Preview" 
-                Command="{Binding CutCommand}"
-                InputGesture="Ctrl+X" 
-            />
-            <MenuItem 
-                Header="Copy Preview" 
-                Command="{Binding CopyCommand}"
-                InputGesture="Ctrl+C" 
-            />
-            <MenuItem 
-                Header="Paste Preview" 
-                Command="{Binding PasteCommand}"
-                InputGesture="Ctrl+V" 
-            />
-            <Separator />
-            <MenuItem 
-                Header="Add Input to Preview" 
-                Command="{Binding AddInputCommand}"
-                InputGesture="A" 
-            />
-            <MenuItem 
-                Header="Remove Input from Preview" 
-                Command="{Binding RemoveInputCommand}"
-                InputGesture="S" 
-            />
-        </MenuItem>
-        <MenuItem Header="Help">
-            <MenuItem Header="Open Documentation" />
-            <Separator />
-            <MenuItem Header="About" />
-        </MenuItem>
-    </Menu>
+  <Menu Background="{DynamicResource Background}">
+    <MenuItem Header="File">
+      <MenuItem Header="New" Command="{Binding NewCommand}" InputGesture="Ctrl+N" />
+      <MenuItem
+        Header="Merge..."
+        Command="{Binding OpenCommand}"
+        CommandParameter="merge"
+        InputGesture="Ctrl+M"
+      />
+      <MenuItem
+        Header="Open..."
+        Command="{Binding OpenCommand}"
+        CommandParameter="open"
+        InputGesture="Ctrl+O"
+      />
+      <Separator />
+      <MenuItem Header="Save" Command="{Binding SaveCommand}" InputGesture="Ctrl+S" />
+      <MenuItem Header="Save As..." Command="{Binding SaveAsCommand}" />
+      <Separator />
+      <MenuItem
+        Header="Generate Circuits From Prompt"
+        Command="{Binding GenerateFromPromptCommand}"
+        InputGesture="Ctrl+P"
+      />
+      <MenuItem
+        Header="Generate Circuits From Image"
+        Command="{Binding GenerateFromImageCommand}"
+        InputGesture="Ctrl+G"
+      />
+      <Separator />
+      <MenuItem Header="Preferences..." Command="{Binding PreferencesCommand}" />
+      <Separator />
+      <MenuItem Header="Exit" Command="{Binding ExitCommand}" InputGesture="Alt+f4" />
+    </MenuItem>
+    <MenuItem Header="Edit">
+      <MenuItem Header="Undo" Command="{Binding UndoCommand}" InputGesture="Ctrl+Z" />
+      <MenuItem Header="Redo" Command="{Binding RedoCommand}" InputGesture="Ctrl+Y" />
+    </MenuItem>
+    <MenuItem Header="Selection">
+      <MenuItem Header="Select All" Command="{Binding SelectAllCommand}" InputGesture="Ctrl+A" />
+      <MenuItem Header="Delete Selection" Command="{Binding DeleteCommand}" InputGesture="Delete" />
+      <MenuItem Header="Rotate Selection" Command="{Binding RotateCommand}" InputGesture="R" />
+      <Separator />
+      <MenuItem Header="Cut Selection" Command="{Binding CutCommand}" InputGesture="Ctrl+X" />
+      <MenuItem Header="Copy Selection" Command="{Binding CopyCommand}" InputGesture="Ctrl+C" />
+      <MenuItem Header="Paste Selection" Command="{Binding PasteCommand}" InputGesture="Ctrl+V" />
+      <Separator />
+      <MenuItem
+        Header="Add Input to Selection"
+        Command="{Binding AddInputCommand}"
+        InputGesture="A"
+      />
+      <MenuItem
+        Header="Remove Input from Selection"
+        Command="{Binding RemoveInputCommand}"
+        InputGesture="S"
+      />
+    </MenuItem>
+    <MenuItem Header="Preview">
+      <MenuItem Header="Grab All" Command="{Binding GrabAllCommand}" />
+      <MenuItem Header="Grab Selected" Command="{Binding GrabSelectedCommand}" />
+      <MenuItem Header="Delete Preview" Command="{Binding DeleteCommand}" InputGesture="Delete" />
+      <MenuItem Header="Rotate Preview" Command="{Binding RotateCommand}" InputGesture="R" />
+      <Separator />
+      <MenuItem Header="Cut Preview" Command="{Binding CutCommand}" InputGesture="Ctrl+X" />
+      <MenuItem Header="Copy Preview" Command="{Binding CopyCommand}" InputGesture="Ctrl+C" />
+      <MenuItem Header="Paste Preview" Command="{Binding PasteCommand}" InputGesture="Ctrl+V" />
+      <Separator />
+      <MenuItem
+        Header="Add Input to Preview"
+        Command="{Binding AddInputCommand}"
+        InputGesture="A"
+      />
+      <MenuItem
+        Header="Remove Input from Preview"
+        Command="{Binding RemoveInputCommand}"
+        InputGesture="S"
+      />
+    </MenuItem>
+    <MenuItem Header="Help">
+      <MenuItem Header="Open Documentation" />
+      <Separator />
+      <MenuItem Header="About" />
+    </MenuItem>
+  </Menu>
 </UserControl>

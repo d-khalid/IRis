@@ -1,9 +1,7 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using System;
-
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace IRis.Services.Singleton;
-
 
 /// <summary>
 /// This can be used to create a singleton class. Just inherit from it and pass the name of
@@ -14,8 +12,8 @@ public abstract partial class SingletonBase<T> : ObservableObject
     where T : SingletonBase<T>, new()
 {
     private static T? _instance = null;
-    public static T Get() => _instance ??= new();
 
+    public static T Get() => _instance ??= new();
 
     public SingletonBase()
     {

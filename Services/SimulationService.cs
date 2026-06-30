@@ -1,17 +1,10 @@
-using Avalonia;
 using System;
+using Avalonia;
+using Avalonia.Collections;
 using IRis.ViewModels.Main.Canvas;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
-using Avalonia.Collections;
-using IRis.Services.Singleton;
-using IRis.ViewModels.Main.Canvas.Core;
-using IRis.Models.CircuitObjects.Components.Gates;
-using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
-using IRis.Views.Main.Canvas.CircuitObjects;
-
 
 namespace IRis.Services;
-
 
 public static class SimulationService
 {
@@ -23,24 +16,20 @@ public static class SimulationService
         return new Point(snapX, snapY);
     }
 
-
     public static Point Sum(Point p1, Point p2)
     {
         return new Point(p1.X + p2.X, p1.Y + p2.Y);
     }
-
 
     public static Point Difference(Point p1, Point p2)
     {
         return new Point(p1.X - p2.X, p1.Y - p2.Y);
     }
 
-
     public static Point Average(Point p1, Point p2)
     {
         return new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
     }
-
 
     public static Point GetMaxPointInCollection(AvaloniaList<CircuitObjectViewModel> collection)
     {
@@ -51,14 +40,15 @@ public static class SimulationService
         {
             if (co is ComponentViewModel c)
             {
-                if (c.X + c.Width > maxX) maxX = c.X + c.Width;
-                if (c.Y + c.Height > maxY) maxY = c.Y + c.Height;
+                if (c.X + c.Width > maxX)
+                    maxX = c.X + c.Width;
+                if (c.Y + c.Height > maxY)
+                    maxY = c.Y + c.Height;
             }
         }
 
         return new Point(maxX, maxY);
     }
-
 
     public static Point GetMinPointInCollection(AvaloniaList<CircuitObjectViewModel> collection)
     {
@@ -69,18 +59,21 @@ public static class SimulationService
         {
             if (co is ComponentViewModel c)
             {
-                if (c.X < minX) minX = c.X;
-                if (c.Y < minY) minY = c.Y;
+                if (c.X < minX)
+                    minX = c.X;
+                if (c.Y < minY)
+                    minY = c.Y;
             }
         }
 
         return new Point(minX, minY);
     }
 
-
     public static void SnapCollectionToPosition(
         AvaloniaList<CircuitObjectViewModel> collection,
-        Point Position, Point? offset = null)
+        Point Position,
+        Point? offset = null
+    )
     {
         offset ??= new(0, 0);
         offset = SnapPointToGrid((Point)offset);
@@ -103,11 +96,18 @@ public static class SimulationService
         }
     }
 
-
-    public static Point RotateTerminalPosition(double unrotatedX, double unrotatedY,
-        double rotation, double width, double height, double x, double y)
+    public static Point RotateTerminalPosition(
+        double unrotatedX,
+        double unrotatedY,
+        double rotation,
+        double width,
+        double height,
+        double x,
+        double y
+    )
     {
-        if (rotation == 0) return new Point(unrotatedX, unrotatedY);
+        if (rotation == 0)
+            return new Point(unrotatedX, unrotatedY);
 
         // do I look like a MATHEMATICIAN?! NO, and
         // this was written by gemini 3.1 pro. It works
@@ -128,7 +128,6 @@ public static class SimulationService
         return new Point(rotatedX, rotatedY);
     }
 
-
     public static void RedrawEmptyWires(AvaloniaList<CircuitObjectViewModel> collection)
     {
         foreach (var co in collection)
@@ -137,7 +136,6 @@ public static class SimulationService
                 w.Redraw();
         }
     }
-
 
     public static double Distance(Point p1, Point p2)
     {

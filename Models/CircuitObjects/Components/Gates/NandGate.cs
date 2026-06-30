@@ -1,8 +1,6 @@
 using IRis.Models.Core;
 
-
 namespace IRis.Models.CircuitObjects.Components.Gates;
-
 
 public class NandGate : MultiInputGate
 {
@@ -28,7 +26,6 @@ public class NandGate : MultiInputGate
 
         Output.State = LogicState.Low;
     }
-
 
     public override void Reset()
     {

@@ -1,6 +1,5 @@
 namespace IRis.Models;
 
-
 public interface ISimulatable
 {
     public void Simulate();

@@ -3,34 +3,35 @@ using Avalonia.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Core;
 using IRis.Services.Commands;
-using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using IRis.ViewModels.Main.Canvas.Core;
 
-
 namespace IRis.Services.Singleton;
-
 
 public partial class WirePreview : SingletonBase<WirePreview>
 {
-    [ObservableProperty] private WireViewModel? _wire = null;
+    [ObservableProperty]
+    private WireViewModel? _wire = null;
     public AvaloniaList<Point> CommittedPoints { get; set; } = [];
     public AvaloniaList<Point> TemporaryPoints { get; set; } = [];
 
-    [ObservableProperty] private bool _isVisible = false;
-
+    [ObservableProperty]
+    private bool _isVisible = false;
 
     public void StartAt(TerminalViewModel target)
     {
         WireViewModel wire = new()
         {
             MainInput = new() { IsOrphan = true },
-            MainOutput = new() { IsOrphan = true }
+            MainOutput = new() { IsOrphan = true },
         };
 
-        if (target.Type is TerminalType.Output) wire.MainInput = target;
-        else if (target.Type is TerminalType.Input) wire.MainOutput = target;
-        else return;
+        if (target.Type is TerminalType.Output)
+            wire.MainInput = target;
+        else if (target.Type is TerminalType.Input)
+            wire.MainOutput = target;
+        else
+            return;
 
         wire.Opacity = 0.5;
         Wire = wire;
@@ -40,7 +41,6 @@ public partial class WirePreview : SingletonBase<WirePreview>
 
         Show();
     }
-
 
     public void UpdateTo(Point position)
     {
@@ -57,7 +57,6 @@ public partial class WirePreview : SingletonBase<WirePreview>
         Wire.Points.AddRange(TemporaryPoints);
     }
 
-
     public void Checkpoint()
     {
         CommittedPoints.AddRange(TemporaryPoints);
@@ -67,19 +66,15 @@ public partial class WirePreview : SingletonBase<WirePreview>
         Wire.Points.AddRange(CommittedPoints);
     }
 
-
     public void Leave()
     {
         Wire!.Points.Clear();
         Wire.Points.AddRange(CommittedPoints);
 
-        CommandService.Execute(
-            new CommitCommand([Wire]) { Name = "Leave Wire" }
-        );
+        CommandService.Execute(new CommitCommand([Wire]) { Name = "Leave Wire" });
 
         Nuke();
     }
-
 
     public void Pick(WireViewModel wire)
     {
@@ -87,23 +82,20 @@ public partial class WirePreview : SingletonBase<WirePreview>
         CommittedPoints = Wire.Points;
     }
 
-
     public void EndAt(TerminalViewModel target)
     {
-        if (Wire is null) return;
+        if (Wire is null)
+            return;
         Wire.Points.Clear();
         Wire.SetOrphanTo(target);
 
         CommittedPoints.AddRange(TemporaryPoints);
         Wire.Points.AddRange(CommittedPoints);
 
-        CommandService.Execute(
-            new CommitCommand([Wire]) { Name = "Commit Wire" }
-        );
+        CommandService.Execute(new CommitCommand([Wire]) { Name = "Commit Wire" });
 
         Nuke();
     }
-
 
     public void Nuke()
     {
@@ -114,9 +106,11 @@ public partial class WirePreview : SingletonBase<WirePreview>
         CommittedPoints.Clear();
     }
 
-
     public bool IsEmpty() => Wire is null;
+
     public bool WireValidForCommit() => Wire is not null && Wire.Points.Count > 1;
+
     public void Show() => IsVisible = true;
+
     public void Hide() => IsVisible = false;
 }

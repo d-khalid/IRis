@@ -1,21 +1,28 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using Avalonia;
-using IRis.ViewModels.Main.Canvas;
 using System;
-
+using Avalonia;
+using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.ViewModels.Main.Canvas;
 
 namespace IRis.Services.Singleton;
-
 
 public partial class SelectionBox : SingletonBase<SelectionBox>
 {
     private Point SelectionBoxStartPt { get; set; } = new(0, 0);
-    [ObservableProperty] private bool _isVisible = false;
-    [ObservableProperty] private double _x = 0;
-    [ObservableProperty] private double _y = 0;
-    [ObservableProperty] private double _width = 0;
-    [ObservableProperty] private double _height = 0;
 
+    [ObservableProperty]
+    private bool _isVisible = false;
+
+    [ObservableProperty]
+    private double _x = 0;
+
+    [ObservableProperty]
+    private double _y = 0;
+
+    [ObservableProperty]
+    private double _width = 0;
+
+    [ObservableProperty]
+    private double _height = 0;
 
     public void StartAt(Point position)
     {
@@ -23,7 +30,6 @@ public partial class SelectionBox : SingletonBase<SelectionBox>
         SelectionBoxStartPt = position;
         IsVisible = true;
     }
-
 
     public void UpdateTo(Point position)
     {
@@ -41,7 +47,6 @@ public partial class SelectionBox : SingletonBase<SelectionBox>
             {
                 sel.Highlight(co);
             }
-
             else if (co.IsSelected && !co.Intersects(selectionBounds))
             {
                 sel.UnHighlight(co);
@@ -49,13 +54,11 @@ public partial class SelectionBox : SingletonBase<SelectionBox>
         }
     }
 
-
     public void Nuke()
     {
         X = Y = Width = Height = 0;
         IsVisible = false;
     }
-
 
     public bool Exists() => IsVisible;
 }

@@ -3,14 +3,11 @@ using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 
-
 namespace IRis.Services.Commands;
-
 
 public class CommitCommand(AvaloniaList<CircuitObjectViewModel> collection) : CommandBase
 {
     private readonly AvaloniaList<CircuitObjectViewModel> _collection = collection;
-
 
     public override void Execute()
     {
@@ -24,7 +21,6 @@ public class CommitCommand(AvaloniaList<CircuitObjectViewModel> collection) : Co
 
         Simulation.Get().Add(_collection);
     }
-
 
     public override void Undo() => Simulation.Get().Remove(_collection);
 }

@@ -1,26 +1,25 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using Avalonia;
-using IRis.ViewModels.Main.Canvas;
-using System.IO;
 using System;
-using Newtonsoft.Json;
+using System.IO;
+using Avalonia;
 using Avalonia.Styling;
 using Avalonia.Threading;
-
+using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 
 namespace IRis.Services.Singleton;
-
 
 public partial class AppState : SingletonBase<AppState>
 {
     private static readonly string SettingsPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "IRis", "AppState.json"
+        "IRis",
+        "AppState.json"
     );
 
     public static readonly string AutoSavePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "IRis", "autosave.iris"
+        "IRis",
+        "autosave.iris"
     );
 
     public static bool FileNeedsSaving { get; set; } = false;
@@ -53,7 +52,6 @@ public partial class AppState : SingletonBase<AppState>
     [property: JsonIgnore]
     private string _lastCommand = "(no action yet)";
 
-
     public AppState()
     {
         Load();
@@ -80,7 +78,6 @@ public partial class AppState : SingletonBase<AppState>
         _timer.Start();
     }
 
-
     partial void OnEditingAllowedChanged(bool value)
     {
         if (value is false && Simulation.Get().Running)
@@ -90,7 +87,6 @@ public partial class AppState : SingletonBase<AppState>
             WirePreview.Get().Nuke();
         }
     }
-
 
     private async void AutoSaveCurrentSession()
     {
@@ -104,9 +100,7 @@ public partial class AppState : SingletonBase<AppState>
         try
         {
             var circuit = Simulation.Get().Objects;
-            await File.WriteAllTextAsync(
-                path, SerializationService.Serialize(circuit)
-            );
+            await File.WriteAllTextAsync(path, SerializationService.Serialize(circuit));
 
             FileNeedsSaving = false;
         }
@@ -116,24 +110,18 @@ public partial class AppState : SingletonBase<AppState>
         }
     }
 
-
     private void Save()
     {
         Directory.CreateDirectory(Path.GetDirectoryName(SettingsPath)!);
 
-        File.WriteAllText(
-            SettingsPath, JsonConvert.SerializeObject(this, Formatting.Indented)
-        );
+        File.WriteAllText(SettingsPath, JsonConvert.SerializeObject(this, Formatting.Indented));
     }
-
 
     private void Load()
     {
         if (File.Exists(SettingsPath))
         {
-            JsonConvert.PopulateObject(
-                File.ReadAllText(SettingsPath), this
-            );
+            JsonConvert.PopulateObject(File.ReadAllText(SettingsPath), this);
         }
     }
 }

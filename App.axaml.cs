@@ -1,40 +1,36 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
-using System.Linq;
 using Avalonia.Markup.Xaml;
-using IRis.ViewModels.Main;
-using IRis.Views.Main;
-using IRis.Views;
-using IRis.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 using IRis.Services.Singleton;
-using IRis.Services;
-
+using IRis.ViewModels;
+using IRis.ViewModels.Main;
+using IRis.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IRis;
-
 
 public partial class App : Application
 {
     public IServiceProvider Services { get; }
-    public new static App Current => (App)Application.Current!;
-    public new static IClassicDesktopStyleApplicationLifetime ApplicationLifetime => (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
+    public static new App Current => (App)Application.Current!;
 
+    public static new IClassicDesktopStyleApplicationLifetime ApplicationLifetime =>
+        (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
+
+    public static MainWindowViewModel MainWindow =>
+        (MainWindowViewModel)ApplicationLifetime.MainWindow!.DataContext!;
 
     public App()
     {
         Services = ConfigureServices();
     }
 
-
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
         DataContext = Services.GetRequiredService<AppViewModel>();
     }
-
 
     public override void OnFrameworkInitializationCompleted()
     {
@@ -45,7 +41,6 @@ public partial class App : Application
 
         base.OnFrameworkInitializationCompleted();
     }
-
 
     public static IServiceProvider ConfigureServices()
     {

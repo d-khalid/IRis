@@ -1,102 +1,98 @@
-<Window 
-    Title="IRis"
-    Icon="/Assets/avalonia-logo.ico"
-    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
-
-    xmlns:vm="using:IRis.ViewModels"
-    xmlns:main="using:IRis.Views.Main"
-    x:DataType="vm:MainWindowViewModel"
-    x:Class="IRis.Views.MainWindowView"
-
-    ExtendClientAreaToDecorationsHint="True"
-    ExtendClientAreaChromeHints="Default"
-    ExtendClientAreaTitleBarHeightHint="36"
-    FontSize="12"
+<Window
+  Title="IRis"
+  Icon="/Assets/avalonia-logo.ico"
+  mc:Ignorable="d"
+  d:DesignWidth="800"
+  d:DesignHeight="450"
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:ui="using:FluentAvalonia.UI.Controls"
+  xmlns:vm="using:IRis.ViewModels"
+  xmlns:main="using:IRis.Views.Main"
+  x:DataType="vm:MainWindowViewModel"
+  x:Class="IRis.Views.MainWindowView"
+  ExtendClientAreaToDecorationsHint="True"
+  ExtendClientAreaChromeHints="Default"
+  ExtendClientAreaTitleBarHeightHint="36"
+  FontSize="12"
 >
-    <DockPanel Margin="{Binding $parent[Window].OffScreenMargin}">
-        <Grid DockPanel.Dock="Top" Height="32" Margin="0,0,0,5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Rectangle Fill="Transparent" PointerPressed="OnTitleBarPressed" />
-            <StackPanel Orientation="Horizontal" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                <Image
-                    Source="/Assets/avalonia-logo.ico"
-                    Width="14"
-                    Height="14"
-                    Margin="8,0,4,0"
-                    IsHitTestVisible="False"
-                />
-                <main:TopMenuView />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Column="2" VerticalAlignment="Center">
-                <TextBlock
-                    Text="{Binding AppState.CurrentFilePath}"
-                    Opacity="0.65"
-                    IsHitTestVisible="False"
-                    FontSize="14"
-                />
-                <TextBlock
-                    Text=" - IRis v0.1"
-                    Opacity="0.65"
-                    IsHitTestVisible="False"
-                    FontSize="14"
-                />
-            </StackPanel>
-        </Grid>
-        <main:LeftSidebarView DockPanel.Dock="Left" />
-        <main:TopToolbarView DockPanel.Dock="Top" />
-        <Border Height="25" DockPanel.Dock="Bottom">
-            <Grid>
-                <StackPanel 
-                    Orientation="Horizontal" 
-                    HorizontalAlignment="Left" 
-                    VerticalAlignment="Center"
-                    Margin="10,0,0,2" 
-                >
-                    <TextBlock Text="{Binding AppState.LastCommand}" />
-                    <TextBlock Text="|" Margin="8,0" />
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="Cursor: ({0}, {1})">
-                                <Binding Path="AppState.MousePosition.X" />
-                                <Binding Path="AppState.MousePosition.Y" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                </StackPanel>
-            </Grid>
-        </Border>
-        <main:CanvasView />
-    </DockPanel>
+  <DockPanel Margin="{Binding $parent[Window].OffScreenMargin}">
+    <Grid DockPanel.Dock="Top" Height="32" Margin="0,0,0,5">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Rectangle Fill="Transparent" PointerPressed="OnTitleBarPressed" />
+      <StackPanel
+        Orientation="Horizontal"
+        Grid.Column="0"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+      >
+        <Image
+          Source="/Assets/avalonia-logo.ico"
+          Width="14"
+          Height="14"
+          Margin="8,0,4,0"
+          IsHitTestVisible="False"
+        />
+        <main:TopMenuView />
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" Grid.Column="2" VerticalAlignment="Center">
+        <TextBlock
+          Text="{Binding AppState.CurrentFilePath}"
+          Opacity="0.65"
+          IsHitTestVisible="False"
+          FontSize="14"
+        />
+        <TextBlock Text=" - IRis v0.1" Opacity="0.65" IsHitTestVisible="False" FontSize="14" />
+      </StackPanel>
+    </Grid>
+    <main:LeftSidebarView DockPanel.Dock="Left" />
+    <main:TopToolbarView DockPanel.Dock="Top" />
+    <Border Height="25" DockPanel.Dock="Bottom">
+      <Grid>
+        <StackPanel
+          Orientation="Horizontal"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="10,0,0,2"
+        >
+          <TextBlock Text="{Binding AppState.LastCommand}" />
+          <TextBlock Text="|" Margin="8,0" />
+          <TextBlock>
+            <TextBlock.Text>
+              <MultiBinding StringFormat="Cursor: ({0}, {1})">
+                <Binding Path="AppState.MousePosition.X" />
+                <Binding Path="AppState.MousePosition.Y" />
+              </MultiBinding>
+            </TextBlock.Text>
+          </TextBlock>
+        </StackPanel>
+      </Grid>
+    </Border>
+    <main:CanvasView />
+  </DockPanel>
 
-    <Window.KeyBindings>
-        <KeyBinding Gesture="Delete" Command="{Binding DeleteCommand}" />
-        <KeyBinding Gesture="Escape" Command="{Binding EscapeCommand}" />
-
-        <KeyBinding Gesture="Ctrl+C" Command="{Binding CopyCommand}" />
-        <KeyBinding Gesture="Ctrl+V" Command="{Binding PasteCommand}" />
-        <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}" />
-        <KeyBinding Gesture="Ctrl+Y" Command="{Binding RedoCommand}" />
-        <KeyBinding Gesture="Ctrl+X" Command="{Binding CutCommand}" />
-
-        <KeyBinding Gesture="Ctrl+N" Command="{Binding NewCommand}" />
-        <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenCommand}" CommandParameter="open" />
-        <KeyBinding Gesture="Ctrl+M" Command="{Binding OpenCommand}" CommandParameter="merge" />
-        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveCommand}" />
-
-        <KeyBinding Gesture="R" Command="{Binding RotateCommand}" />
-        <KeyBinding Gesture="A" Command="{Binding AddInputCommand}" />
-        <KeyBinding Gesture="S" Command="{Binding RemoveInputCommand}" />
-        <KeyBinding Gesture="Space" Command="{Binding ToggleCommand}" />
-        <KeyBinding Gesture="Ctrl+A" Command="{Binding SelectAllCommand}" />
-    </Window.KeyBindings>
+  <Window.KeyBindings>
+    <KeyBinding Gesture="Delete" Command="{Binding DeleteCommand}" />
+    <KeyBinding Gesture="Escape" Command="{Binding EscapeCommand}" />
+    <KeyBinding Gesture="Ctrl+C" Command="{Binding CopyCommand}" />
+    <KeyBinding Gesture="Ctrl+V" Command="{Binding PasteCommand}" />
+    <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}" />
+    <KeyBinding Gesture="Ctrl+Y" Command="{Binding RedoCommand}" />
+    <KeyBinding Gesture="Ctrl+X" Command="{Binding CutCommand}" />
+    <KeyBinding Gesture="Ctrl+N" Command="{Binding NewCommand}" />
+    <KeyBinding Gesture="Ctrl+O" Command="{Binding OpenCommand}" CommandParameter="open" />
+    <KeyBinding Gesture="Ctrl+M" Command="{Binding OpenCommand}" CommandParameter="merge" />
+    <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveCommand}" />
+    <KeyBinding Gesture="R" Command="{Binding RotateCommand}" />
+    <KeyBinding Gesture="A" Command="{Binding AddInputCommand}" />
+    <KeyBinding Gesture="S" Command="{Binding RemoveInputCommand}" />
+    <KeyBinding Gesture="Space" Command="{Binding ToggleCommand}" />
+    <KeyBinding Gesture="Ctrl+A" Command="{Binding SelectAllCommand}" />
+  </Window.KeyBindings>
 </Window>

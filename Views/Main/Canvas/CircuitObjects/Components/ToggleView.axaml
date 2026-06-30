@@ -1,68 +1,66 @@
-<UserControl 
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-
-    xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
-    x:DataType="vm:ToggleViewModel"
-    x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.ToggleView"
-
-    xmlns:core="using:IRis.Views.Main.Canvas.Core"
-    ClipToBounds="False"
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
+  x:DataType="vm:ToggleViewModel"
+  x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.ToggleView"
+  xmlns:core="using:IRis.Views.Main.Canvas.Core"
+  ClipToBounds="False"
 >
-    <Grid ClipToBounds="False">
-        <Rectangle Margin="-5,-5,-20,-5" Fill="Transparent" />
+  <Grid ClipToBounds="False">
+    <Rectangle Margin="-5,-5,-20,-5" Fill="Transparent" />
 
-        <Border
-            Width="{Binding Width}"
-            Height="{Binding Height}"
-            Background="{DynamicResource ComponentFillBrush}"
-            BorderBrush="{DynamicResource ComponentBorderBrush}"
-            BorderThickness="2"
-            CornerRadius="1"
-        >
-            <Grid>
-                <Grid.RenderTransform>
-                    <RotateTransform Angle="{Binding TextRotation}" />
-                </Grid.RenderTransform>
-                <TextBlock
-                    Text="{Binding Label}"
-                    Foreground="{DynamicResource ComponentBorderBrush}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="14"
-                    FontWeight="ExtraBold"
-                    IsHitTestVisible="False"
-                    Margin="0,-1,0,0"
-                />
-            </Grid>
-        </Border>
-
-        <Line
-            StartPoint="0,0"
-            EndPoint="10,0"
-            Stroke="{DynamicResource ComponentBorderBrush}"
-            StrokeThickness="2"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center"
-            Margin="0,0,-10,0"
+    <Border
+      Width="{Binding Width}"
+      Height="{Binding Height}"
+      Background="{DynamicResource ComponentFillBrush}"
+      BorderBrush="{DynamicResource ComponentBorderBrush}"
+      BorderThickness="2"
+      CornerRadius="1"
+    >
+      <Grid>
+        <Grid.RenderTransform>
+          <RotateTransform Angle="{Binding TextRotation}" />
+        </Grid.RenderTransform>
+        <TextBlock
+          Text="{Binding Label}"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          FontSize="14"
+          FontWeight="ExtraBold"
+          IsHitTestVisible="False"
+          Margin="0,-1,0,0"
         />
-        <core:TerminalView
-            DataContext="{Binding Output}"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center"
-            Margin="0,0,-20,0"
-        />
+      </Grid>
+    </Border>
 
-        <Rectangle
-            Stroke="DodgerBlue"
-            StrokeThickness="1"
-            Margin="-5,-5,-20,-5"
-            IsHitTestVisible="False"
-            Opacity="{Binding SelectionOpacity}"
-        >
-            <Rectangle.Fill>
-                <SolidColorBrush Color="#469adf" Opacity="0.2" />
-            </Rectangle.Fill>
-        </Rectangle>
-    </Grid>
+    <Line
+      StartPoint="0,0"
+      EndPoint="10,0"
+      Stroke="{DynamicResource ComponentBorderBrush}"
+      StrokeThickness="2"
+      HorizontalAlignment="Right"
+      VerticalAlignment="Center"
+      Margin="0,0,-10,0"
+    />
+    <core:TerminalView
+      DataContext="{Binding Output}"
+      HorizontalAlignment="Right"
+      VerticalAlignment="Center"
+      Margin="0,0,-20,0"
+    />
+
+    <Rectangle
+      Stroke="DodgerBlue"
+      StrokeThickness="1"
+      Margin="-5,-5,-20,-5"
+      IsHitTestVisible="False"
+      Opacity="{Binding SelectionOpacity}"
+    >
+      <Rectangle.Fill>
+        <SolidColorBrush Color="#469adf" Opacity="0.2" />
+      </Rectangle.Fill>
+    </Rectangle>
+  </Grid>
 </UserControl>

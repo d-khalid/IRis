@@ -1,19 +1,18 @@
-<UserControl 
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="IRis.Views.Main.TopToolbarView"
-
-    xmlns:vm="using:IRis.ViewModels"
-    x:DataType="vm:MainWindowViewModel"
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  x:Class="IRis.Views.Main.TopToolbarView"
+  xmlns:vm="using:IRis.ViewModels"
+  x:DataType="vm:MainWindowViewModel"
 >
-    <DockPanel Margin="3,4,3,5">
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
-            <Button MaxWidth="24" MaxHeight="24" Command="{Binding UndoCommand}">
-                <PathIcon Data="{StaticResource arrow_undo_regular}" Width="8" Height="8" />
-            </Button>
-            <Button MaxWidth="24" MaxHeight="24" Command="{Binding RedoCommand}">
-                <PathIcon Data="{StaticResource arrow_redo_regular}" Width="8" Height="8" />
-            </Button>
-        </StackPanel>
-    </DockPanel>
+  <DockPanel Margin="3,4,3,5">
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="5">
+      <Button MaxWidth="24" MaxHeight="24" Command="{Binding UndoCommand}">
+        <PathIcon Data="{StaticResource arrow_undo_regular}" Width="8" Height="8" />
+      </Button>
+      <Button MaxWidth="24" MaxHeight="24" Command="{Binding RedoCommand}">
+        <PathIcon Data="{StaticResource arrow_redo_regular}" Width="8" Height="8" />
+      </Button>
+    </StackPanel>
+  </DockPanel>
 </UserControl>

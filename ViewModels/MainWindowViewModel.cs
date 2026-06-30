@@ -1,28 +1,21 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using IRis.Services;
-using IRis.ViewModels.Main.Canvas;
-using IRis.Models.Core;
-using Avalonia;
-using System.Collections.ObjectModel;
-using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
-using IRis.Services.Singleton;
-using IRis.ViewModels.Main.Canvas.Core;
-using IRis.ViewModels.Main.Canvas.CircuitObjects;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Avalonia.Collections;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using System.IO;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Platform.Storage;
-using System.IO;
-using System;
-using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using IRis.Services;
+using IRis.Services.Singleton;
+using IRis.ViewModels.Main.Canvas;
+using IRis.ViewModels.Main.Canvas.CircuitObjects;
+using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
+using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
+using IRis.ViewModels.Main.Canvas.Core;
 using IRis.Views;
-using Avalonia.Controls;
-
 
 namespace IRis.ViewModels;
-
 
 public partial class MainWindowViewModel : ViewModelBase
 {
@@ -33,21 +26,21 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly Selection _selection;
     private readonly Preview _preview;
     private readonly WirePreview _wirePreview;
-    private readonly SelectionBox _selectionBox;
-
 
     public MainWindowViewModel(
-        AppState appState, Simulation simulation, Selection selection,
-        Preview preview, WirePreview wirePreview, SelectionBox selectionBox)
+        AppState appState,
+        Simulation simulation,
+        Selection selection,
+        Preview preview,
+        WirePreview wirePreview
+    )
     {
         AppState = appState;
         _simulation = simulation;
         _selection = selection;
         _preview = preview;
         _wirePreview = wirePreview;
-        _selectionBox = selectionBox;
     }
-
 
     private async Task<bool> AskNukeChangesAsync()
     {
@@ -58,7 +51,7 @@ public partial class MainWindowViewModel : ViewModelBase
             PrimaryButtonText = "Save",
             SecondaryButtonText = "Don't Save",
             CloseButtonText = "Cancel",
-            DefaultButton = ContentDialogButton.Primary
+            DefaultButton = ContentDialogButton.Primary,
         };
 
         var result = await dialog.ShowAsync();
@@ -78,11 +71,11 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-
     [RelayCommand]
     private async Task New()
     {
-        if (!await AskNukeChangesAsync()) return;
+        if (!await AskNukeChangesAsync())
+            return;
         AppState.CurrentFilePath = "(unsaved)";
 
         if (_simulation.Running)
@@ -96,19 +89,23 @@ public partial class MainWindowViewModel : ViewModelBase
         CommandService.Reset();
     }
 
-
     [RelayCommand]
     private async Task OpenAsync(string param)
     {
-        if (param == "open" && !await AskNukeChangesAsync()) return;
-        if (_simulation.Running) _simulation.Running = false;
+        if (param == "open" && !await AskNukeChangesAsync())
+            return;
+        if (_simulation.Running)
+            _simulation.Running = false;
 
         var files = await App.ApplicationLifetime.MainWindow!.StorageProvider.OpenFilePickerAsync(
             new FilePickerOpenOptions
             {
                 Title = "Open Simulation",
                 AllowMultiple = false,
-                FileTypeFilter = [new FilePickerFileType("IRis Simulatable") { Patterns = ["*.iris"] }]
+                FileTypeFilter =
+                [
+                    new FilePickerFileType("IRis Simulatable") { Patterns = ["*.iris"] },
+                ],
             }
         );
 
@@ -133,11 +130,11 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-
     [RelayCommand]
     private async Task SaveAsync()
     {
-        if (_simulation.Running) _simulation.Running = false;
+        if (_simulation.Running)
+            _simulation.Running = false;
         if (AppState.CurrentFilePath == "(unsaved)")
         {
             await SaveAsAsync();
@@ -150,7 +147,6 @@ public partial class MainWindowViewModel : ViewModelBase
         AppState.FileNeedsSaving = false;
     }
 
-
     [RelayCommand]
     private async Task SaveAsAsync()
     {
@@ -159,7 +155,10 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 Title = "Save Simulation",
                 DefaultExtension = "iris",
-                FileTypeChoices = [new FilePickerFileType("IRis Simulatable") { Patterns = ["*.iris"] }]
+                FileTypeChoices =
+                [
+                    new FilePickerFileType("IRis Simulatable") { Patterns = ["*.iris"] },
+                ],
             }
         );
 
@@ -170,13 +169,8 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-
     [RelayCommand]
-    private static void Preferences()
-    {
-
-    }
-
+    private static void Preferences() { }
 
     [RelayCommand]
     private static void Exit()
@@ -184,10 +178,11 @@ public partial class MainWindowViewModel : ViewModelBase
         App.ApplicationLifetime.Shutdown();
     }
 
+    [RelayCommand]
+    private static void Undo() => CommandService.Undo();
 
-    [RelayCommand] private static void Undo() => CommandService.Undo();
-    [RelayCommand] private static void Redo() => CommandService.Redo();
-
+    [RelayCommand]
+    private static void Redo() => CommandService.Redo();
 
     [RelayCommand]
     private void Delete()
@@ -195,7 +190,6 @@ public partial class MainWindowViewModel : ViewModelBase
         _simulation.Remove(_selection.Objects);
         _selection.UnHighlightAll();
     }
-
 
     [RelayCommand]
     private void Escape()
@@ -207,10 +201,11 @@ public partial class MainWindowViewModel : ViewModelBase
             _wirePreview.Leave();
     }
 
+    [RelayCommand]
+    private static void UndoKey() => CommandService.Undo();
 
-    [RelayCommand] private static void UndoKey() => CommandService.Undo();
-    [RelayCommand] private static void RedoKey() => CommandService.Redo();
-
+    [RelayCommand]
+    private static void RedoKey() => CommandService.Redo();
 
     [RelayCommand]
     private void Copy()
@@ -219,18 +214,15 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             ClipboardService.Copy(_preview.Objects);
         }
-
         else if (!_selection.IsEmpty())
         {
             ClipboardService.Copy(_selection.Objects);
         }
-
         else if (DragService.IsRunning())
         {
             ClipboardService.Copy(DragService.Objects);
         }
     }
-
 
     [RelayCommand]
     private void Cut()
@@ -240,14 +232,12 @@ public partial class MainWindowViewModel : ViewModelBase
             ClipboardService.Copy(_preview.Objects);
             _preview.Nuke();
         }
-
         else if (!_selection.IsEmpty())
         {
             ClipboardService.Copy(_selection.Objects);
             _simulation.Remove(_selection.Objects);
             _selection.UnHighlightAll();
         }
-
         else if (DragService.IsRunning())
         {
             ClipboardService.Copy(DragService.Objects);
@@ -255,7 +245,6 @@ public partial class MainWindowViewModel : ViewModelBase
             DragService.Stop();
         }
     }
-
 
     [RelayCommand]
     private async Task Paste()
@@ -270,19 +259,15 @@ public partial class MainWindowViewModel : ViewModelBase
         _preview.UpdatePositionTo(AppState.MousePosition);
     }
 
-
     [RelayCommand]
     private void Rotate()
     {
         if (!_preview.IsEmpty())
             RotateCollection(_preview.Objects);
-
         else if (!_selection.IsEmpty())
             RotateCollection(_selection.Objects);
-
         else if (DragService.IsRunning())
             RotateCollection(DragService.Objects);
-
 
         static void RotateCollection(AvaloniaList<CircuitObjectViewModel> collection)
         {
@@ -314,19 +299,15 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-
     [RelayCommand]
     private void AddInput()
     {
         if (!_preview.IsEmpty())
             AddInput(_preview.Objects);
-
         else if (!_selection.IsEmpty())
             AddInput(_selection.Objects);
-
         else if (DragService.IsRunning())
             AddInput(DragService.Objects);
-
 
         static void AddInput(AvaloniaList<CircuitObjectViewModel> collection)
         {
@@ -334,29 +315,23 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 if (co is MultiInputGateViewModel mig)
                     mig.Inputs.Add(new TerminalViewModel());
-
                 else if (co is MultiplexerViewModel mux)
                     mux.AddSelectLine();
-
                 else if (co is DemultiplexerViewModel demux)
                     demux.AddSelectLine();
             }
         }
     }
 
-
     [RelayCommand]
     private void RemoveInput()
     {
         if (!_preview.IsEmpty())
             RemoveInput(_preview.Objects);
-
         else if (!_selection.IsEmpty())
             RemoveInput(_selection.Objects);
-
         else if (DragService.IsRunning())
             RemoveInput(DragService.Objects);
-
 
         static void RemoveInput(AvaloniaList<CircuitObjectViewModel> collection)
         {
@@ -366,12 +341,10 @@ public partial class MainWindowViewModel : ViewModelBase
                 {
                     mig.Inputs.Remove(mig.Inputs[^1]);
                 }
-
                 else if (co is MultiplexerViewModel mux)
                 {
                     mux.RemoveSelectLine();
                 }
-
                 else if (co is DemultiplexerViewModel demux)
                 {
                     demux.RemoveSelectLine();
@@ -380,7 +353,6 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-
     [RelayCommand]
     private void Toggle()
     {
@@ -388,29 +360,17 @@ public partial class MainWindowViewModel : ViewModelBase
             (HoverEffectService.GetObject() as ToggleViewModel)!.Toggle();
     }
 
+    [RelayCommand]
+    private static void SetTheme(string variant) { }
 
     [RelayCommand]
-    private static void SetTheme(string variant)
-    {
-
-    }
-
-
-    [RelayCommand]
-    private static void GenerateFromPrompt()
-    {
-
-    }
-
+    private static void GenerateFromPrompt() { }
 
     [RelayCommand]
     private async Task GenerateFromImageAsync()
     {
-        await new GenerateFromImageWindowView().ShowDialog(
-            App.ApplicationLifetime.MainWindow!
-        );
+        await new GenerateFromImageWindowView().ShowDialog(App.ApplicationLifetime.MainWindow!);
     }
-
 
     [RelayCommand]
     private void SelectAll()
@@ -418,14 +378,12 @@ public partial class MainWindowViewModel : ViewModelBase
         _selection.Highlight(_simulation.Objects);
     }
 
-
     [RelayCommand]
     private void GrabAll()
     {
         _preview.Pick(_simulation.Objects);
         _simulation.Nuke();
     }
-
 
     [RelayCommand]
     private void GrabSelected()

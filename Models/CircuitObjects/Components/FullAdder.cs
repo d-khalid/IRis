@@ -1,8 +1,6 @@
 using IRis.Models.Core;
 
-
 namespace IRis.Models.CircuitObjects.Components;
-
 
 public class FullAdder : Component
 {
@@ -12,12 +10,13 @@ public class FullAdder : Component
     public Terminal Sum = null!;
     public Terminal Cout = null!;
 
-
     public override void Simulate()
     {
-        if (A.State == LogicState.Unknown ||
-            B.State == LogicState.Unknown ||
-            Cin.State == LogicState.Unknown)
+        if (
+            A.State == LogicState.Unknown
+            || B.State == LogicState.Unknown
+            || Cin.State == LogicState.Unknown
+        )
         {
             Sum.State = LogicState.Unknown;
             Cout.State = LogicState.Unknown;
@@ -33,7 +32,6 @@ public class FullAdder : Component
         Sum.State = total % 2 == 1 ? LogicState.High : LogicState.Low;
         Cout.State = total >= 2 ? LogicState.High : LogicState.Low;
     }
-
 
     public override void Reset()
     {

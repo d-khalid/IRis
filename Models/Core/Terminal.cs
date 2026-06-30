@@ -1,25 +1,22 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-
 namespace IRis.Models.Core;
-
 
 public partial class Terminal : ObservableObject
 {
-    [ObservableProperty] private LogicState _state = LogicState.Unknown;
+    [ObservableProperty]
+    private LogicState _state = LogicState.Unknown;
 }
-
 
 public enum TerminalType
 {
     Input,
-    Output
+    Output,
 }
-
 
 public enum LogicState
 {
     Low,
     High,
-    Unknown
+    Unknown,
 }

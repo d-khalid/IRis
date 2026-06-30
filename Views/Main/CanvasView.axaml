@@ -1,147 +1,145 @@
-<UserControl 
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:paz="using:Avalonia.Controls.PanAndZoom"
-
-    xmlns:vm="using:IRis.ViewModels.Main"
-    x:DataType="vm:CanvasViewModel"
-    x:Class="IRis.Views.Main.CanvasView"
-
-    xmlns:views="using:IRis.Views.Main.Canvas"
-    xmlns:canvas="using:IRis.ViewModels.Main.Canvas"
-    xmlns:circuitobjects="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:paz="using:Avalonia.Controls.PanAndZoom"
+  xmlns:vm="using:IRis.ViewModels.Main"
+  x:DataType="vm:CanvasViewModel"
+  x:Class="IRis.Views.Main.CanvasView"
+  xmlns:views="using:IRis.Views.Main.Canvas"
+  xmlns:canvas="using:IRis.ViewModels.Main.Canvas"
+  xmlns:circuitobjects="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
 >
-    <UserControl.DataTemplates>
-        <DataTemplate DataType="canvas:CircuitObjectViewModel">
-            <views:CircuitObjectView Opacity="{Binding Opacity}" />
-        </DataTemplate>
-    </UserControl.DataTemplates>
+  <UserControl.DataTemplates>
+    <DataTemplate DataType="canvas:CircuitObjectViewModel">
+      <views:CircuitObjectView Opacity="{Binding Opacity}" />
+    </DataTemplate>
+  </UserControl.DataTemplates>
 
-    <paz:ZoomBorder 
-        Name="ZoomBorder" 
-        Stretch="None" 
-        ZoomSpeed="1.2"
-        Background="{DynamicResource ZoomBorderBackground}" 
-        ClipToBounds="True" 
-        Focusable="True"
-        VerticalAlignment="Stretch" 
-        HorizontalAlignment="Stretch"
-        PanButton="Left"
-        KeyDown="OnKeyDown"
+  <paz:ZoomBorder
+    Name="ZoomBorder"
+    Stretch="None"
+    ZoomSpeed="1.2"
+    Background="{DynamicResource ZoomBorderBackground}"
+    ClipToBounds="True"
+    Focusable="True"
+    VerticalAlignment="Stretch"
+    HorizontalAlignment="Stretch"
+    PanButton="Left"
+    KeyDown="OnKeyDown"
+  >
+    <Canvas
+      MinWidth="2000"
+      MinHeight="2000"
+      Background="{DynamicResource CanvasGridTileBrush}"
+      PointerPressed="OnPointerPressed"
+      PointerMoved="OnPointerMoved"
+      PointerReleased="OnPointerReleased"
+      PointerEntered="OnPointerEntered"
+      PointerExited="OnPointerExited"
     >
-        <Canvas
-            MinWidth="2000" 
-            MinHeight="2000"
-            Background="{DynamicResource CanvasGridTileBrush}"
-            PointerPressed="OnPointerPressed"
-            PointerMoved="OnPointerMoved"
-            PointerReleased="OnPointerReleased"
-            PointerEntered="OnPointerEntered"
-            PointerExited="OnPointerExited"
-        >
-            <Canvas.ContextFlyout>
-                <MenuFlyout>
-                    <MenuItem 
-                        Header="Allow Circuit Editing"
-                        ToggleType="CheckBox" 
-                        IsChecked="{Binding AppState.EditingAllowed, Mode=TwoWay}" 
-                    />
-                    <MenuItem 
-                        Header="Allow Terminal Colors" 
-                        ToggleType="CheckBox" 
-                        IsChecked="{Binding AppState.TerminalColorChangeAllowed, Mode=TwoWay}" 
-                    />
-                    <MenuItem 
-                        Header="Simulation" 
-                        ToggleType="CheckBox" 
-                        IsChecked="{Binding Simulation.Running, Mode=TwoWay}" 
-                    />
-                </MenuFlyout>
-            </Canvas.ContextFlyout>
+      <Canvas.ContextFlyout>
+        <MenuFlyout>
+          <MenuItem
+            Header="Allow Circuit Editing"
+            ToggleType="CheckBox"
+            IsChecked="{Binding AppState.EditingAllowed, Mode=TwoWay}"
+          />
+          <MenuItem
+            Header="Allow Terminal Colors"
+            ToggleType="CheckBox"
+            IsChecked="{Binding AppState.TerminalColorChangeAllowed, Mode=TwoWay}"
+          />
+          <MenuItem
+            Header="Simulation"
+            ToggleType="CheckBox"
+            IsChecked="{Binding Simulation.Running, Mode=TwoWay}"
+          />
+        </MenuFlyout>
+      </Canvas.ContextFlyout>
 
-            <!-- rendering simulation -->
-            <ItemsControl 
-                ItemsSource="{Binding Simulation.Objects}"
-                ClipToBounds="False" 
-                x:CompileBindings="False"
-            >
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.Styles>
-                    <Style
-                        Selector="ItemsControl > ContentPresenter"
-                        x:DataType="canvas:CircuitObjectViewModel"
-                    >
-                        <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}" />
-                    </Style>
-                    <Style
-                        Selector="ItemsControl > ContentPresenter"
-                        x:DataType="circuitobjects:ComponentViewModel"
-                    >
-                        <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
-                        <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
-                        <Setter Property="ClipToBounds" Value="False" />
-                    </Style>
-                </ItemsControl.Styles>
-            </ItemsControl>
+      <!-- rendering simulation -->
+      <ItemsControl
+        ItemsSource="{Binding Simulation.Objects}"
+        ClipToBounds="False"
+        x:CompileBindings="False"
+      >
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <Canvas />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.Styles>
+          <Style
+            Selector="ItemsControl > ContentPresenter"
+            x:DataType="canvas:CircuitObjectViewModel"
+          >
+            <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}" />
+          </Style>
+          <Style
+            Selector="ItemsControl > ContentPresenter"
+            x:DataType="circuitobjects:ComponentViewModel"
+          >
+            <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
+            <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
+            <Setter Property="ClipToBounds" Value="False" />
+          </Style>
+        </ItemsControl.Styles>
+      </ItemsControl>
 
-            <!-- rendering previews -->
-            <ItemsControl 
-                ItemsSource="{Binding Preview.Objects}"
-                ClipToBounds="False"
-                IsVisible="{Binding Preview.IsVisible}"
-                IsHitTestVisible="False"
-                x:CompileBindings="False"
-            >
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.Styles>
-                    <Style
-                        Selector="ItemsControl > ContentPresenter"
-                        x:DataType="canvas:CircuitObjectViewModel"
-                    >
-                        <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}" />
-                    </Style>
-                    <Style 
-                        Selector="ItemsControl > ContentPresenter" 
-                        x:DataType="circuitobjects:ComponentViewModel"
-                    >
-                        <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
-                        <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
-                        <Setter Property="ClipToBounds" Value="False" />
-                    </Style>
-                </ItemsControl.Styles>
-            </ItemsControl>
+      <!-- rendering previews -->
+      <ItemsControl
+        ItemsSource="{Binding Preview.Objects}"
+        ClipToBounds="False"
+        IsVisible="{Binding Preview.IsVisible}"
+        IsHitTestVisible="False"
+        x:CompileBindings="False"
+      >
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <Canvas />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.Styles>
+          <Style
+            Selector="ItemsControl > ContentPresenter"
+            x:DataType="canvas:CircuitObjectViewModel"
+          >
+            <Setter Property="Canvas.ZIndex" Value="{Binding ZIndex}" />
+          </Style>
+          <Style
+            Selector="ItemsControl > ContentPresenter"
+            x:DataType="circuitobjects:ComponentViewModel"
+          >
+            <Setter Property="Canvas.Left" Value="{Binding X, FallbackValue=0}" />
+            <Setter Property="Canvas.Top" Value="{Binding Y, FallbackValue=0}" />
+            <Setter Property="ClipToBounds" Value="False" />
+          </Style>
+        </ItemsControl.Styles>
+      </ItemsControl>
 
-            <!-- rendering previews -->
-            <ContentControl 
-                Content="{Binding WirePreview.Wire}"
-                ClipToBounds="False"
-                IsVisible="{Binding WirePreview.IsVisible}"
-                IsHitTestVisible="False"
-            />
-            
-            <!-- rendering selection box -->
-            <Rectangle
-                Stroke="DodgerBlue"
-                StrokeThickness="1.5"
-                Canvas.Left="{Binding SelectionBox.X}"
-                Canvas.Top="{Binding SelectionBox.Y}"
-                Width="{Binding SelectionBox.Width}"
-                Height="{Binding SelectionBox.Height}"
-                IsVisible="{Binding SelectionBox.IsVisible}"
-                IsHitTestVisible="False"
-            >
-                <Rectangle.Fill>
-                    <SolidColorBrush Color="#2f99ef" Opacity="0.2" />
-                </Rectangle.Fill>
-            </Rectangle>
-        </Canvas>
-    </paz:ZoomBorder>
+      <!-- rendering previews -->
+      <ContentControl
+        Content="{Binding WirePreview.Wire}"
+        ClipToBounds="False"
+        IsVisible="{Binding WirePreview.IsVisible}"
+        IsHitTestVisible="False"
+      />
+
+      <!-- rendering selection box -->
+      <Rectangle
+        Stroke="DodgerBlue"
+        StrokeThickness="1.5"
+        Canvas.Left="{Binding SelectionBox.X}"
+        Canvas.Top="{Binding SelectionBox.Y}"
+        Width="{Binding SelectionBox.Width}"
+        Height="{Binding SelectionBox.Height}"
+        IsVisible="{Binding SelectionBox.IsVisible}"
+        IsHitTestVisible="False"
+      >
+        <Rectangle.Fill>
+          <SolidColorBrush Color="#2f99ef" Opacity="0.2" />
+        </Rectangle.Fill>
+      </Rectangle>
+    </Canvas>
+  </paz:ZoomBorder>
 </UserControl>

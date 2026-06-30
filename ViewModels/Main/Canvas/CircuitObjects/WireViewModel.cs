@@ -1,41 +1,37 @@
-using System.Collections.ObjectModel;
-using Avalonia;
-using IRis.ViewModels.Main.Canvas.Core;
+using System;
 using System.ComponentModel;
+using Avalonia;
+using Avalonia.Collections;
+using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.CircuitObjects;
-using IRis.Models.Core;
 using IRis.Services;
 using IRis.Services.Singleton;
-using Newtonsoft.Json;
-using System;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Avalonia.Collections;
-
+using IRis.ViewModels.Main.Canvas.Core;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
-
 
 public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 {
     [ObservableProperty]
     private AvaloniaList<Point> _points = [];
 
+    [ObservableProperty]
+    private TerminalViewModel _mainInput = null!;
 
-    [ObservableProperty] private TerminalViewModel _mainInput = null!;
     partial void OnMainInputChanged(TerminalViewModel value)
     {
         (Model as Wire)!.MainInput = value.GetModel();
         value.PropertyChanged += OnTerminalPropertyChanged;
     }
 
+    [ObservableProperty]
+    private TerminalViewModel _mainOutput = null!;
 
-    [ObservableProperty] private TerminalViewModel _mainOutput = null!;
     partial void OnMainOutputChanged(TerminalViewModel value)
     {
         (Model as Wire)!.MainOutput = value.GetModel();
         value.PropertyChanged += OnTerminalPropertyChanged;
     }
-
 
     private void OnTerminalPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -43,10 +39,10 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
             Fix();
     }
 
-
     public void Redraw()
     {
-        if (MainInput is null || MainOutput is null) return;
+        if (MainInput is null || MainOutput is null)
+            return;
 
         Points.Clear();
         Points.Add(new Point((int)MainInput.X, (int)MainInput.Y));
@@ -54,7 +50,6 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         Points.Add(new Point((int)MainInput.X, (int)MainInput.Y));
         Fix();
     }
-
 
     private static AvaloniaList<Point> DrawWire(Point p1, Point p2)
     {
@@ -71,7 +66,6 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         return points;
     }
 
-
     public void Fix()
     {
         // summary: invalidate last 2 points of the wire
@@ -82,9 +76,7 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         {
             Points.Clear();
 
-            var points = DrawWire(
-                new(MainInput.X, MainInput.Y), new(MainOutput.X, MainOutput.Y)
-            );
+            var points = DrawWire(new(MainInput.X, MainInput.Y), new(MainOutput.X, MainOutput.Y));
 
             points.Insert(0, new(MainInput.X, MainInput.Y));
             Points.AddRange(points);
@@ -101,14 +93,11 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         int inputIdx = inputMatchesStart ? 0 : (inputMatchesEnd ? Points.Count - 1 : -1);
         int outputIdx = outputMatchesStart ? 0 : (outputMatchesEnd ? Points.Count - 1 : -1);
 
-
-        if (inputIdx == -1 && outputIdx > -1)   // mainInput is the issue
+        if (inputIdx == -1 && outputIdx > -1) // mainInput is the issue
         {
             int invalidPointtIndex = Points.Count - 1 - outputIdx;
             bool invalidIsStart = invalidPointtIndex == 0;
-            int validPointIndex = invalidIsStart
-                ? invalidPointtIndex + 2
-                : invalidPointtIndex - 2;
+            int validPointIndex = invalidIsStart ? invalidPointtIndex + 2 : invalidPointtIndex - 2;
 
             if (invalidIsStart)
             {
@@ -118,7 +107,6 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
                 Points.RemoveRange(0, validPointIndex + 1);
                 Points.InsertRange(0, points);
             }
-
             else
             {
                 var points = DrawWire(Points[validPointIndex], new(MainInput.X, MainInput.Y));
@@ -126,14 +114,11 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
                 Points.AddRange(points);
             }
         }
-
-        else if (inputIdx > -1 && outputIdx == -1)  // mainOutput is the issue
+        else if (inputIdx > -1 && outputIdx == -1) // mainOutput is the issue
         {
             int invalidPointtIndex = Points.Count - 1 - inputIdx;
             bool invalidIsStart = invalidPointtIndex == 0;
-            int validPointIndex = invalidIsStart
-                ? invalidPointtIndex + 2
-                : invalidPointtIndex - 2;
+            int validPointIndex = invalidIsStart ? invalidPointtIndex + 2 : invalidPointtIndex - 2;
 
             if (invalidIsStart)
             {
@@ -143,7 +128,6 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
                 Points.RemoveRange(0, validPointIndex + 1);
                 Points.InsertRange(0, points);
             }
-
             else
             {
                 var points = DrawWire(Points[validPointIndex], new(MainOutput.X, MainOutput.Y));
@@ -151,27 +135,26 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
                 Points.AddRange(points);
             }
         }
-
         else if (inputIdx == -1 && outputIdx == -1)
         {
             Redraw();
         }
     }
 
-
     public void SetOrphanTo(TerminalViewModel target)
     {
-        if (MainInput.IsOrphan) MainInput = target;
-        else if (MainOutput.IsOrphan) MainOutput = target;
-        else Console.WriteLine("SetOrphanTo(): could not find any orphan in wire.");
+        if (MainInput.IsOrphan)
+            MainInput = target;
+        else if (MainOutput.IsOrphan)
+            MainOutput = target;
+        else
+            Console.WriteLine("SetOrphanTo(): could not find any orphan in wire.");
     }
-
 
     public override bool Contains(Point pt)
     {
         return Points.Contains(pt);
     }
-
 
     public override bool Intersects(Rect rect)
     {
@@ -186,27 +169,23 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         return false;
     }
 
-
     public void PointerPressed()
     {
         // STUB: may be used later
     }
 
-
     public void PointerEntered()
     {
-        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() ||
-            DragService.IsRunning())
+        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || DragService.IsRunning())
             return;
 
-        if (!IsSelected) HoverEffectService.On(this);
+        if (!IsSelected)
+            HoverEffectService.On(this);
     }
-
 
     public void PointerExited()
     {
-        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() ||
-            DragService.IsRunning())
+        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || DragService.IsRunning())
             return;
 
         if (!IsSelected && HoverEffectService.IsRunning())

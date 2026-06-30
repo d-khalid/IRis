@@ -1,8 +1,6 @@
 using IRis.Models.Core;
 
-
 namespace IRis.Models.CircuitObjects.Components.Gates;
-
 
 public class XnorGate : MultiInputGate
 {
@@ -27,7 +25,6 @@ public class XnorGate : MultiInputGate
 
         Output.State = highs % 2 == 0 ? LogicState.High : LogicState.Low;
     }
-
 
     public override void Reset()
     {
