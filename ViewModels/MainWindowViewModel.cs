@@ -258,14 +258,15 @@ public partial class MainWindowViewModel : ViewModelBase
 
 
     [RelayCommand]
-    private void Paste()
+    private async Task Paste()
     {
         _selection.UnHighlightAll();
         _preview.Nuke();
         _wirePreview.Nuke();
         DragService.Stop();
 
-        ClipboardService.Paste();
+        var pasted = await ClipboardService.Paste();
+        _preview.Pick(pasted);
         _preview.UpdatePositionTo(AppState.MousePosition);
     }
 

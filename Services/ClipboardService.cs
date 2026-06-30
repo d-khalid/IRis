@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas;
+using System.Threading.Tasks;
 
 
 namespace IRis.Services;
@@ -29,19 +30,18 @@ public static class ClipboardService
     }
 
 
-    public static async void Paste()
+    public static async Task<AvaloniaList<CircuitObjectViewModel>> Paste()
     {
         if (Application.Current?.ApplicationLifetime is not
             IClassicDesktopStyleApplicationLifetime app ||
-            app.MainWindow?.Clipboard is not IClipboard ic) return;
+            app.MainWindow?.Clipboard is not IClipboard ic) return [];
 
         var json = await ic.GetTextAsync();
-        if (json is null) return;
+        if (json is null) return [];
 
         var pasted = SerializationService.Deserialize(json);
-        if (pasted is null) return;
+        if (pasted is null) return [];
 
-        var prev = Preview.Get();
-        prev.Pick(pasted);
+        return pasted;
     }
 }
