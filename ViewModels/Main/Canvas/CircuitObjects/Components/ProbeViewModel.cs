@@ -1,22 +1,19 @@
-using Avalonia.Media.Immutable;
+using Avalonia;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.CircuitObjects.Components;
 using IRis.Models.Core;
-using IRis.ViewModels.Main.Canvas.Core;
-using Avalonia;
-using Newtonsoft.Json;
 using IRis.Services;
-using Avalonia.Controls;
 using IRis.Services.Singleton;
-
+using IRis.ViewModels.Main.Canvas.Core;
+using Newtonsoft.Json;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
-
 public partial class ProbeViewModel : ComponentViewModel
 {
-    [ObservableProperty] private TerminalViewModel _input = null!;
+    [ObservableProperty]
+    private TerminalViewModel _input = null!;
 
     [ObservableProperty]
     [property: JsonIgnore]
@@ -26,43 +23,52 @@ public partial class ProbeViewModel : ComponentViewModel
     [property: JsonIgnore]
     private string _label = "?";
 
+    public ProbeViewModel()
+        : this(new Probe()) { }
 
-    public ProbeViewModel() : this(new Probe()) { }
-    private ProbeViewModel(Probe model) : base(model)
+    private ProbeViewModel(Probe model)
+        : base(model)
     {
         Width = Height = 20;
 
         Application.Current!.TryGetResource("UnknownStateBrush", AppState.Get().Theme, out var res);
 
-        if (res is IBrush brush) _background = brush;
-        else _background = new SolidColorBrush(Colors.DarkGray);
+        if (res is IBrush brush)
+            _background = brush;
+        else
+            _background = new SolidColorBrush(Colors.DarkGray);
     }
-
 
     partial void OnInputChanged(TerminalViewModel value)
     {
         (Model as Probe)!.Input = value.GetModel();
         (Model as Probe)!.Input.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName == nameof(Terminal.State)) UpdateVisual();
+            if (e.PropertyName == nameof(Terminal.State))
+                UpdateVisual();
         };
     }
 
-
     public override void UpdateTerminals()
     {
-        if (Input is null) return;
+        if (Input is null)
+            return;
         double unrotatedX = X - 10;
         double unrotatedY = Y + 10;
 
         Point rotatedPos = SimulationService.RotateTerminalPosition(
-            unrotatedX, unrotatedY, Rotation, Width, Height, X, Y
+            unrotatedX,
+            unrotatedY,
+            Rotation,
+            Width,
+            Height,
+            X,
+            Y
         );
 
         Input.X = rotatedPos.X;
         Input.Y = rotatedPos.Y;
     }
-
 
     public void UpdateVisual()
     {

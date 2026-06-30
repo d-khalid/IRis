@@ -1,40 +1,39 @@
 <UserControl
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-
-    xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
-    x:DataType="vm:WireViewModel"
-    x:Class="IRis.Views.Main.Canvas.CircuitObjects.WireView"
-    ClipToBounds="False"
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
+  x:DataType="vm:WireViewModel"
+  x:Class="IRis.Views.Main.Canvas.CircuitObjects.WireView"
+  ClipToBounds="False"
 >
-    <Grid Canvas.Left="0" Canvas.Top="0" ClipToBounds="False">
-        <Polyline 
-            Points="{Binding Points}" 
-            Stroke="Transparent" 
-            StrokeThickness="12"
-            StrokeJoin="Round"
-            StrokeLineCap="Round"
-            PointerEntered="OnPointerEntered"
-            PointerExited="OnPointerExited"
-        />
+  <Grid Canvas.Left="0" Canvas.Top="0" ClipToBounds="False">
+    <Polyline
+      Points="{Binding Points}"
+      Stroke="Transparent"
+      StrokeThickness="12"
+      StrokeJoin="Round"
+      StrokeLineCap="Round"
+      PointerEntered="OnPointerEntered"
+      PointerExited="OnPointerExited"
+    />
 
-        <Polyline 
-            Points="{Binding Points}" 
-            Stroke="{DynamicResource WireBrush}" 
-            StrokeThickness="2"
-            StrokeJoin="Round"
-            StrokeLineCap="Round"
-            IsHitTestVisible="False"
-        />
+    <Polyline
+      Points="{Binding Points}"
+      Stroke="{DynamicResource WireBrush}"
+      StrokeThickness="2"
+      StrokeJoin="Round"
+      StrokeLineCap="Round"
+      IsHitTestVisible="False"
+    />
 
-        <Polyline 
-            Points="{Binding Points}" 
-            Stroke="DodgerBlue" 
-            StrokeThickness="10"
-            StrokeJoin="Round"
-            StrokeLineCap="Round"
-            Opacity="{Binding SelectionOpacity}"
-            IsHitTestVisible="False"
-        />
-    </Grid>
+    <Polyline
+      Points="{Binding Points}"
+      Stroke="DodgerBlue"
+      StrokeThickness="10"
+      StrokeJoin="Round"
+      StrokeLineCap="Round"
+      Opacity="{Binding SelectionOpacity}"
+      IsHitTestVisible="False"
+    />
+  </Grid>
 </UserControl>

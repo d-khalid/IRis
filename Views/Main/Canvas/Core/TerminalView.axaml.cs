@@ -3,9 +3,7 @@ using Avalonia.Input;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.Core;
 
-
 namespace IRis.Views.Main.Canvas.Core;
-
 
 public partial class TerminalView : UserControl
 {
@@ -14,31 +12,32 @@ public partial class TerminalView : UserControl
         InitializeComponent();
     }
 
-
     public void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed) return;
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed)
+            return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
             (DataContext as TerminalViewModel)?.PointerPressed();
     }
 
-
     public void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
             (DataContext as TerminalViewModel)?.PointerEntered();
     }
 
-
     public void OnPointerExited(object? sender, PointerEventArgs e)
     {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)

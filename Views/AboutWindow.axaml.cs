@@ -1,9 +1,7 @@
 using Avalonia.Controls;
 using IRis.ViewModels;
 
-
 namespace IRis.Views;
-
 
 public partial class AboutWindow : Window
 {

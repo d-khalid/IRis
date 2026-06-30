@@ -6,9 +6,7 @@ using IRis.Services.Singleton;
 using IRis.ViewModels.Main;
 using Microsoft.Extensions.DependencyInjection;
 
-
 namespace IRis.Views.Main;
-
 
 public partial class CanvasView : UserControl
 {
@@ -18,59 +16,59 @@ public partial class CanvasView : UserControl
         DataContext = App.Current.Services.GetRequiredService<CanvasViewModel>();
     }
 
-
     private void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
             (DataContext as CanvasViewModel)?.PointerEntered();
     }
 
-
     private void OnPointerExited(object? sender, PointerEventArgs e)
     {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
             (DataContext as CanvasViewModel)?.PointerExited();
     }
 
-
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var ctrl = (sender as Control)!;
 
-        if (!e.GetCurrentPoint(ctrl).Properties.IsLeftButtonPressed) return;
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+        if (!e.GetCurrentPoint(ctrl).Properties.IsLeftButtonPressed)
+            return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
             (DataContext as CanvasViewModel)?.PointerPressed(ctrl, e);
     }
 
-
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
             (DataContext as CanvasViewModel)?.PointerMoved(sender, e);
     }
 
-
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
         e.Handled = true;
 
         if (AppState.Get().EditingAllowed)
             (DataContext as CanvasViewModel)?.PointerReleased(e);
     }
-
 
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
@@ -78,7 +76,7 @@ public partial class CanvasView : UserControl
         Point mousePosition = AppState.Get().MousePosition;
 
         var m = ZoomBorder.Matrix;
-        double delta = step / m.M11;    // normalize step to zoom scale (for MousePosition)
+        double delta = step / m.M11; // normalize step to zoom scale (for MousePosition)
 
         switch (e.Key)
         {

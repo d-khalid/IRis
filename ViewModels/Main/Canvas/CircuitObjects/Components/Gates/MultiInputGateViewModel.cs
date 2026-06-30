@@ -6,16 +6,14 @@ using IRis.Models.Core;
 using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 
-
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
-
 
 public abstract partial class MultiInputGateViewModel : GateViewModel
 {
     public ObservableCollection<TerminalViewModel> Inputs { get; } = [];
 
-
-    public MultiInputGateViewModel(MultiInputGate model) : base(model)
+    public MultiInputGateViewModel(MultiInputGate model)
+        : base(model)
     {
         Inputs.CollectionChanged += (sender, e) =>
         {
@@ -26,7 +24,6 @@ public abstract partial class MultiInputGateViewModel : GateViewModel
 
                 (Model as MultiInputGate)!.Inputs.Add(vm.GetModel());
             }
-
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 var vm = (e.OldItems![0] as TerminalViewModel)!;
@@ -39,7 +36,6 @@ public abstract partial class MultiInputGateViewModel : GateViewModel
         };
     }
 
-
     protected override void UpdateInputTerminals()
     {
         double unrotatedX = X - 10;
@@ -50,7 +46,13 @@ public abstract partial class MultiInputGateViewModel : GateViewModel
             double unrotatedY = Y + (i * multiplier) + 10;
 
             Point rotatedPos = SimulationService.RotateTerminalPosition(
-                unrotatedX, unrotatedY, Rotation, Width, Height, X, Y
+                unrotatedX,
+                unrotatedY,
+                Rotation,
+                Width,
+                Height,
+                X,
+                Y
             );
 
             Inputs[i].X = rotatedPos.X;

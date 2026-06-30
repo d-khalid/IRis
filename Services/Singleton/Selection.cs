@@ -1,21 +1,20 @@
-using IRis.ViewModels.Main.Canvas;
 using Avalonia.Collections;
+using IRis.ViewModels.Main.Canvas;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 
-
 namespace IRis.Services.Singleton;
-
 
 public partial class Selection : SingletonCollection<Selection>
 {
     public void Highlight(CircuitObjectViewModel co)
     {
         Objects.Add(co);
-        if (co is ComponentViewModel c) c.SelectionOpacity = 1;
-        else if (co is WireViewModel w) w.SelectionOpacity = 0.4;
+        if (co is ComponentViewModel c)
+            c.SelectionOpacity = 1;
+        else if (co is WireViewModel w)
+            w.SelectionOpacity = 0.4;
         co.IsSelected = true;
     }
-
 
     public void UnHighlight(CircuitObjectViewModel co)
     {
@@ -24,18 +23,18 @@ public partial class Selection : SingletonCollection<Selection>
         co.IsSelected = false;
     }
 
-
     public void Highlight(AvaloniaList<CircuitObjectViewModel> collection)
     {
         Objects.AddRange(collection);
         foreach (var co in collection)
         {
-            if (co is ComponentViewModel c) c.SelectionOpacity = 1;
-            else if (co is WireViewModel w) w.SelectionOpacity = 0.4;
+            if (co is ComponentViewModel c)
+                c.SelectionOpacity = 1;
+            else if (co is WireViewModel w)
+                w.SelectionOpacity = 0.4;
             co.IsSelected = true;
         }
     }
-
 
     public void UnHighlight(AvaloniaList<CircuitObjectViewModel> collection)
     {
@@ -47,7 +46,6 @@ public partial class Selection : SingletonCollection<Selection>
         }
     }
 
-
     public void UnHighlightAll()
     {
         foreach (var co in Objects)
@@ -58,7 +56,6 @@ public partial class Selection : SingletonCollection<Selection>
 
         Objects.Clear();
     }
-
 
     public bool IsEmpty() => Objects.Count == 0;
 }

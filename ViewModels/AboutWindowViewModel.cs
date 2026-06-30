@@ -1,6 +1,3 @@
 namespace IRis.ViewModels;
 
-
-public partial class AboutWindowViewModel : ViewModelBase
-{
-}
+public partial class AboutWindowViewModel : ViewModelBase { }

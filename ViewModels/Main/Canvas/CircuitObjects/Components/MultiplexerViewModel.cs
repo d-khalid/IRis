@@ -7,25 +7,27 @@ using IRis.Models.Core;
 using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 
-
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
-
 
 public partial class MultiplexerViewModel : ComponentViewModel
 {
     public ObservableCollection<TerminalViewModel> Inputs { get; } = [];
     public ObservableCollection<TerminalViewModel> Selects { get; } = [];
 
-    [ObservableProperty] private TerminalViewModel _output = null!;
+    [ObservableProperty]
+    private TerminalViewModel _output = null!;
+
     partial void OnOutputChanged(TerminalViewModel value)
     {
         value.Type = TerminalType.Output;
         (Model as Multiplexer)!.Output = value.GetModel();
     }
 
+    public MultiplexerViewModel()
+        : this(new Multiplexer()) { }
 
-    public MultiplexerViewModel() : this(new Multiplexer()) { }
-    private MultiplexerViewModel(Multiplexer model) : base(model)
+    private MultiplexerViewModel(Multiplexer model)
+        : base(model)
     {
         Inputs.CollectionChanged += (sender, e) =>
         {
@@ -36,7 +38,6 @@ public partial class MultiplexerViewModel : ComponentViewModel
 
                 (Model as Multiplexer)!.Inputs.Add(vm.GetModel());
             }
-
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 var vm = (e.OldItems![0] as TerminalViewModel)!;
@@ -57,7 +58,6 @@ public partial class MultiplexerViewModel : ComponentViewModel
 
                 (Model as Multiplexer)!.Selects.Add(vm.GetModel());
             }
-
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 var vm = (e.OldItems![0] as TerminalViewModel)!;
@@ -70,7 +70,6 @@ public partial class MultiplexerViewModel : ComponentViewModel
         };
     }
 
-
     public void AddSelectLine()
     {
         Selects.Add(new TerminalViewModel());
@@ -80,10 +79,10 @@ public partial class MultiplexerViewModel : ComponentViewModel
             Inputs.Add(new TerminalViewModel());
     }
 
-
     public void RemoveSelectLine()
     {
-        if (Selects.Count <= 1) return;
+        if (Selects.Count <= 1)
+            return;
 
         Selects.Remove(Selects[^1]);
 
@@ -91,7 +90,6 @@ public partial class MultiplexerViewModel : ComponentViewModel
         while (Inputs.Count > target)
             Inputs.Remove(Inputs[^1]);
     }
-
 
     private void UpdateDimensions()
     {
@@ -102,13 +100,19 @@ public partial class MultiplexerViewModel : ComponentViewModel
             Width = Selects.Count * 20;
     }
 
-
     public override void UpdateTerminals()
     {
-        if (Output is null) return;
+        if (Output is null)
+            return;
 
         Point outputPos = SimulationService.RotateTerminalPosition(
-            X + (Width + 10), Y + (Height / 2), Rotation, Width, Height, X, Y
+            X + (Width + 10),
+            Y + (Height / 2),
+            Rotation,
+            Width,
+            Height,
+            X,
+            Y
         );
         Output.X = outputPos.X;
         Output.Y = outputPos.Y;
@@ -116,7 +120,13 @@ public partial class MultiplexerViewModel : ComponentViewModel
         for (int i = 0; i < Inputs.Count; i++)
         {
             Point inputPos = SimulationService.RotateTerminalPosition(
-                X - 10, Y + (i * 20) + 10, Rotation, Width, Height, X, Y
+                X - 10,
+                Y + (i * 20) + 10,
+                Rotation,
+                Width,
+                Height,
+                X,
+                Y
             );
             Inputs[i].X = inputPos.X;
             Inputs[i].Y = inputPos.Y;
@@ -128,7 +138,13 @@ public partial class MultiplexerViewModel : ComponentViewModel
             double unrotatedY = Y + Height + 10;
 
             Point selectPos = SimulationService.RotateTerminalPosition(
-                unrotatedX, unrotatedY, Rotation, Width, Height, X, Y
+                unrotatedX,
+                unrotatedY,
+                Rotation,
+                Width,
+                Height,
+                X,
+                Y
             );
             Selects[i].X = selectPos.X;
             Selects[i].Y = selectPos.Y;

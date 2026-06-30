@@ -1,16 +1,13 @@
 using System.Collections.Generic;
 using IRis.Models.Core;
 
-
 namespace IRis.Models.CircuitObjects.Components;
-
 
 public class Demultiplexer : Component
 {
     public Terminal Input = null!;
     public List<Terminal> Selects { get; } = [];
     public List<Terminal> Outputs { get; } = [];
-
 
     public override void Simulate()
     {
@@ -26,13 +23,12 @@ public class Demultiplexer : Component
             }
 
             if (Selects[i].State == LogicState.High)
-                index += 1 << i;    // equivalent to Math.pow(2, i)
+                index += 1 << i; // equivalent to Math.pow(2, i)
         }
 
         for (int i = 0; i < Outputs.Count; i++)
             Outputs[i].State = i == index ? Input.State : LogicState.Low;
     }
-
 
     public override void Reset()
     {

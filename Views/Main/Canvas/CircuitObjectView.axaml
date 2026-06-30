@@ -1,24 +1,22 @@
-<UserControl 
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-
-    xmlns:vm="using:IRis.ViewModels.Main.Canvas"
-    x:DataType="vm:CircuitObjectViewModel"
-    x:Class="IRis.Views.Main.Canvas.CircuitObjectView"
-
-    xmlns:circuitobjects="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
-    xmlns:views="using:IRis.Views.Main.Canvas.CircuitObjects"
-    ClipToBounds="False"
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels.Main.Canvas"
+  x:DataType="vm:CircuitObjectViewModel"
+  x:Class="IRis.Views.Main.Canvas.CircuitObjectView"
+  xmlns:circuitobjects="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
+  xmlns:views="using:IRis.Views.Main.Canvas.CircuitObjects"
+  ClipToBounds="False"
 >
-    <UserControl.DataTemplates>
-        <DataTemplate DataType="circuitobjects:WireViewModel">
-            <views:WireView />
-        </DataTemplate>
+  <UserControl.DataTemplates>
+    <DataTemplate DataType="circuitobjects:WireViewModel">
+      <views:WireView />
+    </DataTemplate>
 
-        <DataTemplate DataType="circuitobjects:ComponentViewModel">
-            <views:ComponentView />
-        </DataTemplate>
-    </UserControl.DataTemplates>
+    <DataTemplate DataType="circuitobjects:ComponentViewModel">
+      <views:ComponentView />
+    </DataTemplate>
+  </UserControl.DataTemplates>
 
-    <ContentControl Content="{Binding}" ClipToBounds="False" />
+  <ContentControl Content="{Binding}" ClipToBounds="False" />
 </UserControl>

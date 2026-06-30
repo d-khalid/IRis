@@ -1,16 +1,13 @@
 using System.Collections.Generic;
 using IRis.Models.Core;
 
-
 namespace IRis.Models.CircuitObjects.Components;
-
 
 public class Multiplexer : Component
 {
     public List<Terminal> Selects { get; } = [];
     public List<Terminal> Inputs { get; } = [];
     public Terminal Output = null!;
-
 
     public override void Simulate()
     {
@@ -36,7 +33,6 @@ public class Multiplexer : Component
 
         Output.State = Inputs[index].State;
     }
-
 
     public override void Reset()
     {

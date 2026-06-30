@@ -1,9 +1,7 @@
-using IRis.ViewModels.Main.Canvas;
 using Avalonia.Collections;
-
+using IRis.ViewModels.Main.Canvas;
 
 namespace IRis.Services.Singleton;
-
 
 /// <summary>
 /// This can be used to create a singleton enumerable class. Just inherit from it and pass the name of

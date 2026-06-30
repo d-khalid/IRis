@@ -1,8 +1,6 @@
 using IRis.Models.Core;
 
-
 namespace IRis.Models.CircuitObjects.Components.Gates;
-
 
 public class OrGate : MultiInputGate
 {
@@ -28,7 +26,6 @@ public class OrGate : MultiInputGate
 
         Output.State = LogicState.Low;
     }
-
 
     public override void Reset()
     {

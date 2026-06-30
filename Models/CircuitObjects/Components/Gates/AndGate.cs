@@ -1,9 +1,6 @@
-using System;
 using IRis.Models.Core;
 
-
 namespace IRis.Models.CircuitObjects.Components.Gates;
-
 
 public class AndGate : MultiInputGate
 {
@@ -29,7 +26,6 @@ public class AndGate : MultiInputGate
 
         Output.State = LogicState.High;
     }
-
 
     public override void Reset()
     {

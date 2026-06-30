@@ -1,13 +1,9 @@
 using System.IO;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Services;
 using IRis.Services.Singleton;
-using System;
-
 
 namespace IRis.ViewModels;
-
 
 public partial class AppViewModel : ViewModelBase
 {
@@ -15,14 +11,12 @@ public partial class AppViewModel : ViewModelBase
     private AppState _appState;
     private readonly Simulation _simulation;
 
-
     public AppViewModel(AppState appState, Simulation simulation)
     {
         AppState = appState;
         _simulation = simulation;
         LoadLastSessionFile();
     }
-
 
     private void LoadLastSessionFile()
     {
@@ -36,7 +30,6 @@ public partial class AppViewModel : ViewModelBase
 
             lastOpenedFile = AppState.AutoSavePath;
         }
-
         else if (!File.Exists(lastOpenedFile))
         {
             AppState.CurrentFilePath = "(unsaved)";

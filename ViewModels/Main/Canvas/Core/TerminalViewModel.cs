@@ -1,27 +1,32 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using IRis.Services;
-using IRis.Services.Singleton;
-using IRis.Models.Core;
-using Newtonsoft.Json;
+using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media;
-using Avalonia;
-using Avalonia.Controls;
-
+using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.Models.Core;
+using IRis.Services;
+using IRis.Services.Singleton;
+using Newtonsoft.Json;
 
 namespace IRis.ViewModels.Main.Canvas.Core;
-
 
 public partial class TerminalViewModel : ObservableObject
 {
     private Terminal Model { get; } = new Terminal();
+
     public Terminal GetModel() => Model;
 
     public TerminalType Type;
-    [JsonIgnore] public bool IsOrphan = false;
 
-    [ObservableProperty][property: JsonIgnore] private double _x = 0;
-    [ObservableProperty][property: JsonIgnore] private double _y = 0;
+    [JsonIgnore]
+    public bool IsOrphan = false;
+
+    [ObservableProperty]
+    [property: JsonIgnore]
+    private double _x = 0;
+
+    [ObservableProperty]
+    [property: JsonIgnore]
+    private double _y = 0;
 
     [ObservableProperty]
     [property: JsonIgnore]
@@ -31,12 +36,14 @@ public partial class TerminalViewModel : ObservableObject
     [property: JsonIgnore]
     private Cursor _cursor = new(StandardCursorType.Arrow);
 
-
     public TerminalViewModel()
     {
         Model.PropertyChanged += (_, e) =>
         {
-            if (AppState.Get().TerminalColorChangeAllowed && e.PropertyName is nameof(Terminal.State))
+            if (
+                AppState.Get().TerminalColorChangeAllowed
+                && e.PropertyName is nameof(Terminal.State)
+            )
                 UpdateColor();
         };
 
@@ -51,7 +58,6 @@ public partial class TerminalViewModel : ObservableObject
         UpdateColor();
     }
 
-
     private void UpdateColor()
     {
         string resource;
@@ -63,10 +69,9 @@ public partial class TerminalViewModel : ObservableObject
                 LogicState.High => "HighStateBrush",
                 LogicState.Low => "LowStateBrush",
                 LogicState.Unknown => "UnknownStateBrush",
-                _ => "UnknownStateBrush"
+                _ => "UnknownStateBrush",
             };
         }
-
         else
         {
             resource = "UnknownStateBrush";
@@ -75,7 +80,6 @@ public partial class TerminalViewModel : ObservableObject
         Application.Current!.TryGetResource(resource, AppState.Get().Theme, out var res);
         Color = (IBrush)res!;
     }
-
 
     public void PointerPressed()
     {
@@ -90,13 +94,11 @@ public partial class TerminalViewModel : ObservableObject
             WirePreview.Get().EndAt(this);
     }
 
-
     public void PointerEntered()
     {
         Cursor = new(StandardCursorType.Cross);
         HoverEffectService.Hide();
     }
-
 
     public void PointerExited()
     {

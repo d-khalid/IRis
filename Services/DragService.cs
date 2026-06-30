@@ -1,15 +1,13 @@
-using IRis.Services.Singleton;
 using Avalonia;
 using Avalonia.Collections;
-using IRis.ViewModels.Main.Canvas;
 using IRis.Services.Commands;
-
+using IRis.Services.Singleton;
+using IRis.ViewModels.Main.Canvas;
 
 namespace IRis.Services;
 
-
 /// <summary>
-/// Gets the objects from selection automatically and adds them to a list to 
+/// Gets the objects from selection automatically and adds them to a list to
 /// drag them with the mouse. Also implicitly throws away any hovers and selections.
 /// </summary>
 public static class DragService
@@ -21,7 +19,6 @@ public static class DragService
     private static Point FinalPosition { get; set; } = new(0, 0);
     private static Point MouseOffset { get; set; } = new(0, 0);
 
-
     public static void StartAt(Point position)
     {
         var collection = Selection.Get().Objects;
@@ -29,9 +26,7 @@ public static class DragService
 
         InitialPosition = SimulationService.GetMinPointInCollection(collection);
         MouseOffset = SimulationService.Difference(position, InitialPosition);
-
     }
-
 
     public static void UpdatePositionTo(Point position)
     {
@@ -44,7 +39,6 @@ public static class DragService
         FinalPosition = SimulationService.Difference(position, MouseOffset);
         SimulationService.SnapCollectionToPosition(Objects, FinalPosition, null);
     }
-
 
     public static void Stop()
     {
@@ -61,7 +55,6 @@ public static class DragService
 
         Objects.Clear();
     }
-
 
     public static bool IsRunning() => Objects.Count > 0;
 }
