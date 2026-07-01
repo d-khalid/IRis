@@ -38,6 +38,8 @@ However, for Sketch to Simulation Conversion feature, you would have to download
 - `Esc` for dropping a component preview.
 - `Ctrl+X`, `Ctrl+C`, `Ctrl+V` as shortcuts for cutting, copying, pasting components respectively.
 - `Ctrl+Z`, `Ctrl+Y` for undo/redo commands.
+- `Arrow keys` or `Ctrl+LeftClick` for canvas control and movement.
+- `RightClick` for menu with options from **Simulate tab**.
 
 ---
 
