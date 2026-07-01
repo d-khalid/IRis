@@ -87,7 +87,7 @@ Also note that services can also use other services in their constructors, but c
 
 #### Initializing Components
 
-All kinds of components are only initialized in the `ViewModels/Main/leftSidebarViewModel.cs` so any changes in the constructors have to be kept consistent with that file.
+All kinds of components are only initialized in the `ViewModels/Main/LeftSidebarViewModel.cs` so any changes in the constructors have to be kept consistent with that file.
 
 Furthermore, initializing models has a certain process to it that has to be followed. For instance, adding an **AND Gate** involves declaring an instance with a new Output pin, and then adding two Input pins to it as in:
 
@@ -97,7 +97,7 @@ gate.Inputs.Add(new());
 gate.Inputs.Add(new());
 ```
 
-This process has been programmed to facilitate the construction of components during deserialization, which would otherwise cause untraceable bugs.
+This process has been programmed to facilitate the construction of components during deserialization, which would otherwise cause untraceable bugs. To simplify this, we have already considered using `ComponentFactoryService` to abstract this logic, but that would be redundant as we are only initializing components in the above mentioned ViewModel.
 
 #### ViewModels have Models
 
