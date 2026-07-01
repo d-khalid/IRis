@@ -10,7 +10,7 @@ namespace IRis.ViewModels.Main;
 public partial class LeftSidebarViewModel : ViewModelBase
 {
     [ObservableProperty]
-    private AppState _appState = AppState.Get();
+    private AppState _appState;
 
     private readonly Simulation _simulation;
     private readonly Selection _selection;
