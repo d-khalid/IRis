@@ -2,11 +2,13 @@ using System;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Collections;
+using Avalonia.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.CircuitObjects;
 using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.Core;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
 
@@ -38,6 +40,11 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         if (e.PropertyName is nameof(TerminalViewModel.X) or nameof(TerminalViewModel.Y))
             Fix();
     }
+
+    private readonly WirePreview _wirePreview =
+        App.Current.Services.GetRequiredService<WirePreview>();
+    private readonly Preview _preview = App.Current.Services.GetRequiredService<Preview>();
+    private readonly AppState _appState = App.Current.Services.GetRequiredService<AppState>();
 
     public void Redraw()
     {
@@ -169,23 +176,35 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         return false;
     }
 
-    public void PointerPressed()
+    public void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         // STUB: may be used later
     }
 
-    public void PointerEntered()
+    public void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || DragService.IsRunning())
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
+
+        if (!_appState.EditingAllowed)
+            return;
+
+        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || DragService.IsRunning())
             return;
 
         if (!IsSelected)
             HoverEffectService.On(this);
     }
 
-    public void PointerExited()
+    public void OnPointerExited(object? sender, PointerEventArgs e)
     {
-        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || DragService.IsRunning())
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
+
+        if (!_appState.EditingAllowed)
+            return;
+
+        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || DragService.IsRunning())
             return;
 
         if (!IsSelected && HoverEffectService.IsRunning())

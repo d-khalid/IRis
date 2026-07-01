@@ -1,11 +1,14 @@
 using Avalonia.Collections;
+using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.ViewModels.Main.Canvas;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 namespace IRis.Services.Singleton;
 
-public partial class Selection : SingletonCollection<Selection>
+public partial class Selection : ObservableObject
 {
+    public AvaloniaList<CircuitObjectViewModel> Objects { get; } = [];
+
     public void Highlight(CircuitObjectViewModel co)
     {
         Objects.Add(co);

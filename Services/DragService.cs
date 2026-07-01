@@ -3,6 +3,7 @@ using Avalonia.Collections;
 using IRis.Services.Commands;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IRis.Services;
 
@@ -14,6 +15,8 @@ public static class DragService
 {
     public static AvaloniaList<CircuitObjectViewModel> Objects { get; } = [];
     public static bool Used { get; set; } = false;
+    private static readonly Selection _selection =
+        App.Current.Services.GetRequiredService<Selection>();
 
     private static Point InitialPosition { get; set; } = new(0, 0);
     private static Point FinalPosition { get; set; } = new(0, 0);
@@ -21,7 +24,7 @@ public static class DragService
 
     public static void StartAt(Point position)
     {
-        var collection = Selection.Get().Objects;
+        var collection = _selection.Objects;
         Objects.AddRange(collection);
 
         InitialPosition = SimulationService.GetMinPointInCollection(collection);
@@ -33,7 +36,7 @@ public static class DragService
         if (!Used)
         {
             Used = true;
-            Selection.Get().UnHighlightAll();
+            _selection.UnHighlightAll();
         }
 
         FinalPosition = SimulationService.Difference(position, MouseOffset);
@@ -45,7 +48,7 @@ public static class DragService
         if (Used)
         {
             Used = false;
-            Selection.Get().Highlight(Objects);
+            _selection.Highlight(Objects);
 
             string name = Objects.Count == 1 ? "Move Object" : "Move Objects";
             CommandService.Execute(

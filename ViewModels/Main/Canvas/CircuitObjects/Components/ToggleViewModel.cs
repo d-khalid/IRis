@@ -6,6 +6,7 @@ using IRis.Models.Core;
 using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.Core;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
@@ -29,15 +30,19 @@ public partial class ToggleViewModel : ComponentViewModel
     [property: JsonIgnore]
     private string _label = "0";
 
+    private readonly AppState _appState;
+
     public ToggleViewModel()
         : this(new Toggle()) { }
 
     private ToggleViewModel(Toggle model)
         : base(model)
     {
+        _appState = App.Current.Services.GetRequiredService<AppState>();
+
         Width = Height = 20;
 
-        Application.Current!.TryGetResource("LowStateBrush", AppState.Get().Theme, out var res);
+        App.Current.TryGetResource("LowStateBrush", _appState.Theme, out var res);
 
         if (res is IBrush brush)
             _background = brush;
@@ -55,7 +60,7 @@ public partial class ToggleViewModel : ComponentViewModel
             Label = value == LogicState.High ? "1" : "0";
 
             var resource = value == LogicState.High ? "HighStateBrush" : "LowStateBrush";
-            Application.Current!.TryGetResource(resource, AppState.Get().Theme, out var res);
+            App.Current.TryGetResource(resource, _appState.Theme, out var res);
             Background = (IBrush)res!;
         }
     }

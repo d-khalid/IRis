@@ -1,6 +1,7 @@
 using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input.Platform;
 using Avalonia.Markup.Xaml;
 using IRis.Services.Singleton;
 using IRis.ViewModels;
@@ -20,6 +21,8 @@ public partial class App : Application
 
     public static MainWindowViewModel MainWindow =>
         (MainWindowViewModel)ApplicationLifetime.MainWindow!.DataContext!;
+
+    public static IClipboard Clipboard => ApplicationLifetime.MainWindow!.Clipboard!;
 
     public App()
     {

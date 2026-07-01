@@ -1,10 +1,11 @@
-using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Core;
 using IRis.Services;
 using IRis.Services.Singleton;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace IRis.ViewModels.Main.Canvas.Core;
@@ -36,20 +37,25 @@ public partial class TerminalViewModel : ObservableObject
     [property: JsonIgnore]
     private Cursor _cursor = new(StandardCursorType.Arrow);
 
+    private readonly AppState _appState;
+    private readonly Selection _selection;
+    private readonly WirePreview _wirePreview;
+
     public TerminalViewModel()
     {
+        _appState = App.Current.Services.GetRequiredService<AppState>();
+        _selection = App.Current.Services.GetRequiredService<Selection>();
+        _wirePreview = App.Current.Services.GetRequiredService<WirePreview>();
+
         Model.PropertyChanged += (_, e) =>
         {
-            if (
-                AppState.Get().TerminalColorChangeAllowed
-                && e.PropertyName is nameof(Terminal.State)
-            )
+            if (_appState.TerminalColorChangeAllowed && e.PropertyName is nameof(Terminal.State))
                 UpdateColor();
         };
 
-        AppState.Get().PropertyChanged += (_, e) =>
+        _appState.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName is nameof(AppState.TerminalColorChangeAllowed))
+            if (e.PropertyName is nameof(_appState.TerminalColorChangeAllowed))
             {
                 UpdateColor();
             }
@@ -62,7 +68,7 @@ public partial class TerminalViewModel : ObservableObject
     {
         string resource;
 
-        if (AppState.Get().TerminalColorChangeAllowed)
+        if (_appState.TerminalColorChangeAllowed)
         {
             resource = Model.State switch
             {
@@ -77,31 +83,58 @@ public partial class TerminalViewModel : ObservableObject
             resource = "UnknownStateBrush";
         }
 
-        Application.Current!.TryGetResource(resource, AppState.Get().Theme, out var res);
+        App.Current.TryGetResource(resource, _appState.Theme, out var res);
         Color = (IBrush)res!;
     }
 
-    public void PointerPressed()
+    public void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (!Selection.Get().IsEmpty())
-            Selection.Get().UnHighlightAll();
+        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed)
+            return;
+
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
+
+        e.Handled = true;
+
+        if (!_appState.EditingAllowed)
+            return;
+
+        if (!_selection.IsEmpty())
+            _selection.UnHighlightAll();
 
         HoverEffectService.Stop();
 
-        if (WirePreview.Get().IsEmpty())
-            WirePreview.Get().StartAt(this);
+        if (_wirePreview.IsEmpty())
+            _wirePreview.StartAt(this);
         else
-            WirePreview.Get().EndAt(this);
+            _wirePreview.EndAt(this);
     }
 
-    public void PointerEntered()
+    public void OnPointerEntered(object? sender, PointerEventArgs e)
     {
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
+
+        e.Handled = true;
+
+        if (!_appState.EditingAllowed)
+            return;
+
         Cursor = new(StandardCursorType.Cross);
         HoverEffectService.Hide();
     }
 
-    public void PointerExited()
+    public void OnPointerExited(object? sender, PointerEventArgs e)
     {
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
+
+        e.Handled = true;
+
+        if (!_appState.EditingAllowed)
+            return;
+
         Cursor = new(StandardCursorType.Arrow);
         HoverEffectService.Show();
     }

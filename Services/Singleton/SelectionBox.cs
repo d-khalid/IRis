@@ -1,11 +1,12 @@
 using System;
 using Avalonia;
+using Avalonia.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.ViewModels.Main.Canvas;
 
 namespace IRis.Services.Singleton;
 
-public partial class SelectionBox : SingletonBase<SelectionBox>
+public partial class SelectionBox(Selection selection, Simulation simulation) : ObservableObject
 {
     private Point SelectionBoxStartPt { get; set; } = new(0, 0);
 
@@ -24,9 +25,13 @@ public partial class SelectionBox : SingletonBase<SelectionBox>
     [ObservableProperty]
     private double _height = 0;
 
+    public AvaloniaList<CircuitObjectViewModel> Objects { get; } = [];
+    private readonly Selection _selection = selection;
+    private readonly Simulation _simulation = simulation;
+
     public void StartAt(Point position)
     {
-        Selection.Get().UnHighlightAll();
+        _selection.UnHighlightAll();
         SelectionBoxStartPt = position;
         IsVisible = true;
     }
@@ -39,18 +44,13 @@ public partial class SelectionBox : SingletonBase<SelectionBox>
         Y = Math.Min(SelectionBoxStartPt.Y, position.Y);
 
         var selectionBounds = new Rect(X, Y, Width, Height);
-        var sel = Selection.Get();
 
-        foreach (CircuitObjectViewModel co in Simulation.Get().Objects)
+        foreach (CircuitObjectViewModel co in _simulation.Objects)
         {
             if (!co.IsSelected && co.Intersects(selectionBounds))
-            {
-                sel.Highlight(co);
-            }
+                _selection.Highlight(co);
             else if (co.IsSelected && !co.Intersects(selectionBounds))
-            {
-                sel.UnHighlight(co);
-            }
+                _selection.UnHighlight(co);
         }
     }
 

@@ -1,8 +1,12 @@
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.CircuitObjects;
 using IRis.Services;
 using IRis.Services.Singleton;
+using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
@@ -43,53 +47,86 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
         OnPropertyChanged(nameof(TextRotation));
     }
 
+    private readonly AppState _appState;
+    private readonly Selection _selection;
+    private readonly WirePreview _wirePreview;
+    private readonly Preview _preview;
+
     public ComponentViewModel(Component model)
         : base(model)
     {
         ZIndex = 1;
+
+        _appState = App.Current.Services.GetRequiredService<AppState>();
+        _selection = App.Current.Services.GetRequiredService<Selection>();
+        _wirePreview = App.Current.Services.GetRequiredService<WirePreview>();
+        _preview = App.Current.Services.GetRequiredService<Preview>();
     }
 
-    public override bool Intersects(Rect rect)
-    {
-        return rect.Intersects(new Rect(X, Y, Width, Height));
-    }
+    public override bool Intersects(Rect rect) => rect.Intersects(new Rect(X, Y, Width, Height));
 
-    public override bool Contains(Point pt)
-    {
-        return new Rect(X, Y, Width, Height).Contains(pt);
-    }
+    public override bool Contains(Point pt) => new Rect(X, Y, Width, Height).Contains(pt);
 
-    public void PointerPressed()
+    public void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (!IsSelected)
+        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed)
+            return;
+
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
+
+        e.Handled = true;
+
+        if (_appState.EditingAllowed)
         {
-            if (!Selection.Get().IsEmpty())
-                Selection.Get().UnHighlightAll();
+            if (!IsSelected)
+            {
+                if (!_selection.IsEmpty())
+                    _selection.UnHighlightAll();
 
-            Selection.Get().Highlight(this);
+                _selection.Highlight(this);
+            }
+
+            DragService.StartAt(_appState.MousePosition);
         }
-
-        DragService.StartAt(AppState.Get().MousePosition);
+        else if (this is ToggleViewModel t)
+        {
+            t.Toggle();
+        }
     }
 
-    public static void PointerReleased()
+    public void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
+
+        e.Handled = true;
+
+        if (!_appState.EditingAllowed)
+            return;
+
         if (DragService.IsRunning())
             DragService.Stop();
     }
 
-    public void PointerEntered()
+    public void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || DragService.IsRunning())
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
+
+        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || DragService.IsRunning())
             return;
 
         if (!IsSelected)
             HoverEffectService.On(this);
     }
 
-    public void PointerExited()
+    public void OnPointerExited(object? sender, PointerEventArgs e)
     {
-        if (!WirePreview.Get().IsEmpty() || !Preview.Get().IsEmpty() || DragService.IsRunning())
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
+
+        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || DragService.IsRunning())
             return;
 
         if (!IsSelected && HoverEffectService.IsRunning())

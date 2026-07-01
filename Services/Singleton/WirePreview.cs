@@ -8,15 +8,16 @@ using IRis.ViewModels.Main.Canvas.Core;
 
 namespace IRis.Services.Singleton;
 
-public partial class WirePreview : SingletonBase<WirePreview>
+public partial class WirePreview : ObservableObject
 {
     [ObservableProperty]
     private WireViewModel? _wire = null;
-    public AvaloniaList<Point> CommittedPoints { get; set; } = [];
-    public AvaloniaList<Point> TemporaryPoints { get; set; } = [];
 
     [ObservableProperty]
     private bool _isVisible = false;
+
+    public AvaloniaList<Point> CommittedPoints { get; set; } = [];
+    public AvaloniaList<Point> TemporaryPoints { get; set; } = [];
 
     public void StartAt(TerminalViewModel target)
     {

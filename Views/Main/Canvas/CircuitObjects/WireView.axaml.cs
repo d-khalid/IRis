@@ -12,21 +12,9 @@ public partial class WireView : UserControl
         InitializeComponent();
     }
 
-    private void OnPointerEntered(object? sender, PointerEventArgs e)
-    {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
-            return;
+    private void OnPointerEntered(object? sender, PointerEventArgs e) =>
+        (DataContext as WireViewModel)?.OnPointerEntered(sender, e);
 
-        if (AppState.Get().EditingAllowed)
-            (DataContext as WireViewModel)!.PointerEntered();
-    }
-
-    private void OnPointerExited(object? sender, PointerEventArgs e)
-    {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
-            return;
-
-        if (AppState.Get().EditingAllowed)
-            (DataContext as WireViewModel)?.PointerExited();
-    }
+    private void OnPointerExited(object? sender, PointerEventArgs e) =>
+        (DataContext as WireViewModel)?.OnPointerExited(sender, e);
 }

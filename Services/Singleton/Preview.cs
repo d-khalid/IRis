@@ -7,8 +7,9 @@ using IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 namespace IRis.Services.Singleton;
 
-public partial class Preview : SingletonCollection<Preview>
+public partial class Preview : ObservableObject
 {
+    public AvaloniaList<CircuitObjectViewModel> Objects { get; } = [];
     private Point SavedMouseOffset { get; set; } = new(0, 0);
 
     [ObservableProperty]

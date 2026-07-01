@@ -6,6 +6,7 @@ using IRis.Models.Core;
 using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.Core;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
@@ -23,15 +24,19 @@ public partial class ProbeViewModel : ComponentViewModel
     [property: JsonIgnore]
     private string _label = "?";
 
+    private readonly AppState _appState;
+
     public ProbeViewModel()
         : this(new Probe()) { }
 
     private ProbeViewModel(Probe model)
         : base(model)
     {
+        _appState = App.Current.Services.GetRequiredService<AppState>();
+
         Width = Height = 20;
 
-        Application.Current!.TryGetResource("UnknownStateBrush", AppState.Get().Theme, out var res);
+        App.Current.TryGetResource("UnknownStateBrush", _appState.Theme, out var res);
 
         if (res is IBrush brush)
             _background = brush;
@@ -92,7 +97,7 @@ public partial class ProbeViewModel : ComponentViewModel
                 return;
         }
 
-        Application.Current!.TryGetResource(resource, AppState.Get().Theme, out var res);
+        App.Current.TryGetResource(resource, _appState.Theme, out var res);
         Background = (IBrush)res!;
     }
 }
