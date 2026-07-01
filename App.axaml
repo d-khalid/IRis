@@ -37,7 +37,7 @@
           <SolidColorBrush x:Key="LowStateBrush" Color="DarkRed" />
           <SolidColorBrush x:Key="UnknownStateBrush" Color="#5F5F5F" />
         </ResourceDictionary>
-        
+
         <ResourceDictionary x:Key="Dark">
           <VisualBrush
             x:Key="CanvasGridTileBrush"
