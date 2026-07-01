@@ -9,16 +9,24 @@ using IRis.ViewModels.Main.Canvas;
 
 namespace IRis.Services.Singleton;
 
-public partial class Simulation : SingletonCollection<Simulation>
+public partial class Simulation : ObservableObject
 {
     [ObservableProperty]
     private bool _running = false;
 
+    public AvaloniaList<CircuitObjectViewModel> Objects { get; } = [];
     private readonly HashSet<Point> _forbiddenMatrix = [];
     private readonly DispatcherTimer _timer;
+    private readonly Selection _selection;
+    private readonly Preview _preview;
+    private readonly WirePreview _wirePreview;
 
-    public Simulation()
+    public Simulation(Selection selection, Preview preview, WirePreview wirePreview)
     {
+        _selection = selection;
+        _preview = preview;
+        _wirePreview = wirePreview;
+
         _timer = new() { Interval = TimeSpan.FromMilliseconds(1000 / 100) };
         _timer.Tick += (_, _) =>
         {
@@ -33,9 +41,9 @@ public partial class Simulation : SingletonCollection<Simulation>
     {
         if (value)
         {
-            Selection.Get().UnHighlightAll();
-            Preview.Get().Drop();
-            WirePreview.Get().Nuke();
+            _selection.UnHighlightAll();
+            _preview.Drop();
+            _wirePreview.Nuke();
 
             _timer.Start();
         }

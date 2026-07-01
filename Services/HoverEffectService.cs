@@ -2,18 +2,21 @@ using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IRis.Services;
 
 public static class HoverEffectService
 {
+    private static readonly AppState _appState =
+        App.Current.Services.GetRequiredService<AppState>();
     private static CircuitObjectViewModel? Object { get; set; } = null;
 
     public static void On(CircuitObjectViewModel co)
     {
         Object = co;
 
-        if (!AppState.Get().EditingAllowed)
+        if (!_appState.EditingAllowed)
             return;
 
         if (co is ComponentViewModel c)

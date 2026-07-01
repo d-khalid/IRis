@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace IRis.Services.Singleton;
 
-public partial class AppState : SingletonBase<AppState>
+public partial class AppState : ObservableObject
 {
     private static readonly string SettingsPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -24,6 +24,10 @@ public partial class AppState : SingletonBase<AppState>
 
     public static bool FileNeedsSaving { get; set; } = false;
     private readonly DispatcherTimer _timer;
+    private readonly Simulation _simulation;
+    private readonly Selection _selection;
+    private readonly Preview _preview;
+    private readonly WirePreview _wirePreview;
 
     [ObservableProperty]
     private bool _designTabActive = true;
@@ -52,8 +56,18 @@ public partial class AppState : SingletonBase<AppState>
     [property: JsonIgnore]
     private string _lastCommand = "(no action yet)";
 
-    public AppState()
+    public AppState(
+        Simulation simulation,
+        Selection selection,
+        Preview preview,
+        WirePreview wirePreview
+    )
     {
+        _simulation = simulation;
+        _selection = selection;
+        _preview = preview;
+        _wirePreview = wirePreview;
+
         Load();
         PropertyChanged += (_, e) =>
         {
@@ -80,11 +94,11 @@ public partial class AppState : SingletonBase<AppState>
 
     partial void OnEditingAllowedChanged(bool value)
     {
-        if (value is false && Simulation.Get().Running)
+        if (value is false && _simulation.Running)
         {
-            Selection.Get().UnHighlightAll();
-            Preview.Get().Drop();
-            WirePreview.Get().Nuke();
+            _selection.UnHighlightAll();
+            _preview.Drop();
+            _wirePreview.Nuke();
         }
     }
 
@@ -99,7 +113,7 @@ public partial class AppState : SingletonBase<AppState>
 
         try
         {
-            var circuit = Simulation.Get().Objects;
+            var circuit = _simulation.Objects;
             await File.WriteAllTextAsync(path, SerializationService.Serialize(circuit));
 
             FileNeedsSaving = false;
