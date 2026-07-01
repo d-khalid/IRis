@@ -53,6 +53,7 @@ All the text bellow is meant for developers who are working, or who want to work
 - Make sure it is installed properly by running `dotnet --version` in a terminal.
 - Download the source code from here into a folder, open that folder in a terminal and execute `dotnet build`.
 - .NET automatically resolves the dependencies, so it should build with no issues. Execute `dotnet run` to run the program.
+- For sketch-to-simulation conversion, download the `sketchlogic.exe` file from [here](https://github.com/ShahzaibAhmad05/SketchLogic/releases/tag/v0.1.0) and place it in the project root. Then look for a `Generate Circuit From Image` option in the top menu of the simulator.
 
 ### Code Formatting
 
@@ -78,34 +79,29 @@ The sections bellow are details of why and how the codebase architecture was bui
 
 Inspired by the [official documentation: IoC](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/ioc) for `CommunityToolkit.Mvvm` and a few thoughts we had in mind, we implemented **Dependency Injection** for better code structure, maintainability, flexibility, etc.
 
-This involves registering the static and instance-dependent services in `app.axaml.cs` and then calling `App.Current.Services.GetRequiredService<RequesterClass>() assuming we declare an instance of the _RequesterClass_. This approach will be the default in the future.
+This involves registering the static and instance-dependent services in `app.axaml.cs` and then calling `App.Current.Services.GetRequiredService<RequesterClass>() assuming we declare an instance of the _RequesterClass_.
 
-Services can also use other services in their constructors, but circular dependencies (if they occur) would certainly cause errors and crashes.
+It is to be noted that the true DI as mentioned in the documentation involves injecting services through the constructors. we had to take a different approach for components. They involve hierarchies and constructor chaining, so it's common sense that injecting services through the constructors would lead to more rigidity. So instead, we get the services in the constructor code blocks using `App.Current.Services.GetRequiredService<ServiceName>()`.
 
-#### SingletonCollection Class
+Also note that services can also use other services in their constructors, but circular dependencies (if they occur) would certainly cause errors and crashes.
 
-`SingletonCollection` class can be used to access and view a list of CircuitObjects. It implements Singleton pattern in itself so a lot of code repetition is saved. Any child class must provide its name as argument when inheriting:
+#### Initializing Components
 
-```csharp
-public partial class Simulation : SingletonCollection<Simulation> { ... }
-```
+All kinds of components are only initialized in the `ViewModels/Main/leftSidebarViewModel.cs` so any changes in the constructors have to be kept consistent with that file.
 
-For getting an instance of a Child class, just call the GetInstance method. For example:
+Furthermore, initializing models has a certain process to it that has to be followed. For instance, adding an **AND Gate** involves declaring an instance with a new Output pin, and then adding two Input pins to it as in:
 
 ```csharp
-var instance = Simulation.Get();
+AndGateViewModel gate = new() { Output = new() };
+gate.Inputs.Add(new());
+gate.Inputs.Add(new());
 ```
 
-> [!NOTE]
-> This approach has been deprecated recently. It is being actively replaced by [Dependency Injection](#dependency-injection) for better control and maintainability.
-
-#### Usage of Views
-
-Most of the UI features are dealt with in Views, except where either the code file becomes too long/messy or where framework limitations come in our way, then we have to use ViewModels.
+This process has been programmed to facilitate the construction of components during deserialization, which would otherwise cause untraceable bugs.
 
 #### ViewModels have Models
 
-Every object in a circuit (except for Terminals) inherits from CircuitObjectViewModel and stores an instance of it's model privately just in case it is ever needed.
+Every object in a circuit (except for Terminals) inherits from CircuitObjectViewModel and stores an instance of it's model privately because the logic is needed at various points during the object's lifetime.
 
 The `TerminalViewModel` for wires and gates can change on runtime (i.e. when a wire is attached to a gate), which is covered by allowing a method `TerminalViewModel.GetModel()` that allows access to the underlying terminal.
 
@@ -123,21 +119,21 @@ public LogicState State
 }
 ```
 
-#### Wire Cloning/Copying
+#### Wire Cloning
 
-Wire cloning is too tricky to be messed with. One IMPORTANT thing if you are working on this codebase would be to always clone a collection of objects together. NEVER EVER think of cloning each object separately. Otherwise their memory references would break, and you would end up with disconnected weird-behaving circuit objects.
+Wire cloning is too tricky to be messed with. One IMPORTANT thing when you are working on this codebase would be to always clone a collection of objects together. NEVER EVER think of cloning each object separately. Otherwise their memory references would break, and you would end up with disconnected misbehaving circuit objects.
 
-#### Cloning Service
+#### Clipboard Actions: Cut, Copy, Paste
 
-Currently it relies on JsonSerialization. One thing to note is that the entire app's functionality depend on cloning, and cloning depends on serialization. If serialization/deserialization breaks, nothing will behave as expected.
+All of these rely on JsonSerialization. When an object is copied it's Json is copied to the system clipboard in text. This can be verified by pasting it anywhere, that is, the json will be pasted. Hence clipboard actions depend on serialization/deserialization.
 
-#### Why did we use Singleton Pattern in Services?
+#### Singleton Pattern for Statefull Services
 
-We need Static classes to share states between different parts of IRis, but neither can static classes inherit from `ObservableObject` (considering we need those static classes to have observable properties) nor can they implement `INotifyPropertyChanged` which forces us to find a workaround.
+Singleton pattern is provided to us by `Microsoft.Extensions.DependencyInjection` which we are using for Statefull Services as present in `Services/Singleton/`.
 
-We have chosen this workaround to be the singleton pattern. This pattern is provided to us by `Microsoft.Extensions.DependencyInjection`. We are currently replacing any manual implementation of the pattern.
+Some services are abolutely static in their lifetimes (and so are their classes) so we are using them directly wherever needed because enforcing dependency injection for these would just be extra boilerplate which is never good for scalability/maintainability.
 
-### How to add new icons for Context Menus
+#### How to add new icons for Context Menus
 
 Grab a Path geometry from [fluenticons](https://fluenticons.co/). Add it in a StreamGeometry tag in `app.axaml` as follows:
 
