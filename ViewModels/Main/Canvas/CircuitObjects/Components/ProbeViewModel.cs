@@ -6,8 +6,8 @@ using IRis.Models.Core;
 using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.Core;
-using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 

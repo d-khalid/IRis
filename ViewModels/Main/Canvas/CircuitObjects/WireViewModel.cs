@@ -41,7 +41,8 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
             Fix();
     }
 
-    private readonly WirePreview _wirePreview = App.Current.Services.GetRequiredService<WirePreview>();
+    private readonly WirePreview _wirePreview =
+        App.Current.Services.GetRequiredService<WirePreview>();
     private readonly Preview _preview = App.Current.Services.GetRequiredService<Preview>();
     private readonly AppState _appState = App.Current.Services.GetRequiredService<AppState>();
 

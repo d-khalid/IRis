@@ -18,7 +18,7 @@ public abstract partial class SingletonBase<T> : ObservableObject
     public SingletonBase()
     {
         if (_instance != null)
-            throw new Exception("use GetInstance() instead pls.");
+            System.Console.WriteLine("use GetInstance() instead pls.");
 
         _instance = (T)this;
     }

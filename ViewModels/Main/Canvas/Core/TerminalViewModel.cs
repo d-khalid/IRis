@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -6,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.Core;
 using IRis.Services;
 using IRis.Services.Singleton;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace IRis.ViewModels.Main.Canvas.Core;
@@ -49,10 +49,7 @@ public partial class TerminalViewModel : ObservableObject
 
         Model.PropertyChanged += (_, e) =>
         {
-            if (
-                _appState.TerminalColorChangeAllowed
-                && e.PropertyName is nameof(Terminal.State)
-            )
+            if (_appState.TerminalColorChangeAllowed && e.PropertyName is nameof(Terminal.State))
                 UpdateColor();
         };
 
