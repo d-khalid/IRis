@@ -1,0 +1,119 @@
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
+  x:DataType="vm:DemultiplexerViewModel"
+  x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.DemultiplexerView"
+  xmlns:core="using:IRis.Views.Main.Canvas.Core"
+  ClipToBounds="False"
+>
+  <Grid ClipToBounds="False">
+    <Rectangle Margin="-20,-5,-20,-20" Fill="Transparent" />
+
+    <Border
+      Width="{Binding Width}"
+      Height="{Binding Height}"
+      Background="{DynamicResource ComponentFillBrush}"
+      BorderBrush="{DynamicResource ComponentBorderBrush}"
+      BorderThickness="2"
+      CornerRadius="2"
+    >
+      <Grid>
+        <Grid.RenderTransform>
+          <RotateTransform Angle="{Binding TextRotation}" />
+        </Grid.RenderTransform>
+      </Grid>
+    </Border>
+
+    <Grid ClipToBounds="False">
+      <Line
+        StartPoint="0,0"
+        EndPoint="10,0"
+        Stroke="{DynamicResource ComponentBorderBrush}"
+        StrokeThickness="2"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        Margin="-10,0,0,0"
+      />
+      <core:TerminalView
+        DataContext="{Binding Input}"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        Margin="-20,0,0,0"
+      />
+    </Grid>
+
+    <ItemsControl ItemsSource="{Binding Outputs}" ClipToBounds="False">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <UniformGrid Columns="1" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Grid ClipToBounds="False">
+            <Line
+              StartPoint="0,0"
+              EndPoint="10,0"
+              Stroke="{DynamicResource ComponentBorderBrush}"
+              StrokeThickness="2"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
+              Margin="0,0,-10,0"
+            />
+            <core:TerminalView
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
+              Margin="0,0,-20,0"
+            />
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <ItemsControl
+      ItemsSource="{Binding Selects}"
+      ClipToBounds="False"
+      HorizontalAlignment="Stretch"
+      VerticalAlignment="Bottom"
+    >
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <UniformGrid Rows="1" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Grid ClipToBounds="False">
+            <Line
+              StartPoint="0,0"
+              EndPoint="0,10"
+              Stroke="{DynamicResource ComponentBorderBrush}"
+              StrokeThickness="2"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Bottom"
+              Margin="0,0,0,-10"
+            />
+            <core:TerminalView
+              HorizontalAlignment="Center"
+              VerticalAlignment="Bottom"
+              Margin="0,0,0,-20"
+            />
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <Rectangle
+      Stroke="DodgerBlue"
+      StrokeThickness="1"
+      Margin="-20,-5,-20,-20"
+      IsHitTestVisible="False"
+      Opacity="{Binding SelectionOpacity}"
+    >
+      <Rectangle.Fill>
+        <SolidColorBrush Color="#469adf" Opacity="0.2" />
+      </Rectangle.Fill>
+    </Rectangle>
+  </Grid>
+</UserControl>

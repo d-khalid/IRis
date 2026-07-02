@@ -1,0 +1,179 @@
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
+  x:DataType="vm:FullAdderViewModel"
+  x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.FullAdderView"
+  xmlns:core="using:IRis.Views.Main.Canvas.Core"
+  ClipToBounds="False"
+>
+  <Grid ClipToBounds="False">
+    <Rectangle Margin="-20,-5,-20,-5" Fill="Transparent" />
+
+    <Border
+      Width="{Binding Width}"
+      Height="{Binding Height}"
+      Background="{DynamicResource ComponentFillBrush}"
+      BorderBrush="{DynamicResource ComponentBorderBrush}"
+      BorderThickness="2"
+      CornerRadius="2"
+    >
+      <Grid>
+        <Grid.Styles>
+          <Style Selector="TextBlock">
+            <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+            <Setter Property="RenderTransform">
+              <RotateTransform Angle="{Binding TextRotation}" />
+            </Setter>
+          </Style>
+        </Grid.Styles>
+        <TextBlock
+          Text="A"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Top"
+          FontSize="8"
+          Margin="3,3,0,0"
+          IsHitTestVisible="False"
+        />
+        <TextBlock
+          Text="B"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          FontSize="8"
+          Margin="3,0,0,0"
+          IsHitTestVisible="False"
+        />
+        <TextBlock
+          Text="Cᵢ"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Bottom"
+          FontSize="8"
+          Margin="3,0,0,3"
+          IsHitTestVisible="False"
+        />
+        <TextBlock
+          Text="S"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Top"
+          FontSize="8"
+          Margin="0,12,3,0"
+          IsHitTestVisible="False"
+        />
+        <TextBlock
+          Text="Cₒ"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Bottom"
+          FontSize="8"
+          Margin="0,0,3,12"
+          IsHitTestVisible="False"
+        />
+      </Grid>
+    </Border>
+
+    <UniformGrid Columns="1" ClipToBounds="False">
+      <Grid ClipToBounds="False">
+        <Line
+          StartPoint="0,0"
+          EndPoint="10,0"
+          Stroke="{DynamicResource ComponentBorderBrush}"
+          StrokeThickness="2"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-10,0,0,0"
+        />
+        <core:TerminalView
+          DataContext="{Binding A}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-20,0,0,0"
+        />
+      </Grid>
+      <Grid ClipToBounds="False">
+        <Line
+          StartPoint="0,0"
+          EndPoint="10,0"
+          Stroke="{DynamicResource ComponentBorderBrush}"
+          StrokeThickness="2"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-10,0,0,0"
+        />
+        <core:TerminalView
+          DataContext="{Binding B}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-20,0,0,0"
+        />
+      </Grid>
+      <Grid ClipToBounds="False">
+        <Line
+          StartPoint="0,0"
+          EndPoint="10,0"
+          Stroke="{DynamicResource ComponentBorderBrush}"
+          StrokeThickness="2"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-10,0,0,0"
+        />
+        <core:TerminalView
+          DataContext="{Binding Cin}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-20,0,0,0"
+        />
+      </Grid>
+    </UniformGrid>
+
+    <Grid ClipToBounds="False">
+      <Grid ClipToBounds="False">
+        <Line
+          StartPoint="0,20"
+          EndPoint="10,20"
+          Stroke="{DynamicResource ComponentBorderBrush}"
+          StrokeThickness="2"
+          Margin="0,0,-10,0"
+          HorizontalAlignment="Right"
+        />
+        <core:TerminalView
+          DataContext="{Binding Sum}"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Top"
+          Margin="0,15,-20,0"
+        />
+      </Grid>
+      <Grid ClipToBounds="False">
+        <Line
+          StartPoint="0,40"
+          EndPoint="10,40"
+          Stroke="{DynamicResource ComponentBorderBrush}"
+          StrokeThickness="2"
+          Margin="0,0,-10,0"
+          HorizontalAlignment="Right"
+        />
+        <core:TerminalView
+          DataContext="{Binding Cout}"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Bottom"
+          Margin="0,0,-20,15"
+        />
+      </Grid>
+    </Grid>
+
+    <Rectangle
+      Stroke="DodgerBlue"
+      StrokeThickness="1"
+      Margin="-20,-5,-20,-5"
+      IsHitTestVisible="False"
+      Opacity="{Binding SelectionOpacity}"
+    >
+      <Rectangle.Fill>
+        <SolidColorBrush Color="#469adf" Opacity="0.2" />
+      </Rectangle.Fill>
+    </Rectangle>
+  </Grid>
+</UserControl>
