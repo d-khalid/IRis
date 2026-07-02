@@ -19,9 +19,14 @@
       CornerRadius="2"
     >
       <Grid>
-        <Grid.RenderTransform>
-          <RotateTransform Angle="{Binding TextRotation}" />
-        </Grid.RenderTransform>
+        <Grid.Styles>
+          <Style Selector="TextBlock">
+            <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+            <Setter Property="RenderTransform">
+              <RotateTransform Angle="{Binding TextRotation}" />
+            </Setter>
+          </Style>
+        </Grid.Styles>
         <TextBlock
           Text="A"
           Foreground="{DynamicResource ComponentBorderBrush}"
