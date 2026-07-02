@@ -162,7 +162,7 @@
     </Viewbox>
     <Border
       x:Key="SampleFullAdder"
-      Width="16"
+      Width="20"
       Height="20"
       Background="{DynamicResource ComponentFillBrush}"
       BorderBrush="{DynamicResource ComponentBorderBrush}"
@@ -176,6 +176,7 @@
         VerticalAlignment="Center"
         FontSize="9"
         FontWeight="ExtraBold"
+        Margin="1,0,0,0"
       />
     </Border>
     <Border
@@ -186,7 +187,17 @@
       BorderBrush="{DynamicResource ComponentBorderBrush}"
       BorderThickness="2"
       CornerRadius="2"
-    />
+    >
+      <TextBlock
+        Text="M"
+        Foreground="{DynamicResource ComponentBorderBrush}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        FontSize="9"
+        FontWeight="ExtraBold"
+        Margin="2,0,0,0"
+      />
+    </Border>
     <Border
       x:Key="SampleDemux"
       Width="16"
@@ -203,6 +214,7 @@
         VerticalAlignment="Center"
         FontSize="9"
         FontWeight="ExtraBold"
+        Margin="1,0,0,0"
       />
     </Border>
   </UserControl.Resources>
