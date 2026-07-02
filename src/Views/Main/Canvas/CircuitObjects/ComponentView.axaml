@@ -1,0 +1,47 @@
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
+  x:DataType="vm:ComponentViewModel"
+  x:Class="IRis.Views.Main.Canvas.CircuitObjects.ComponentView"
+  xmlns:components="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
+  xmlns:views="using:IRis.Views.Main.Canvas.CircuitObjects.Components"
+  ClipToBounds="False"
+>
+  <UserControl.DataTemplates>
+    <DataTemplate DataType="components:GateViewModel">
+      <views:GateView />
+    </DataTemplate>
+    <DataTemplate DataType="components:ToggleViewModel">
+      <views:ToggleView />
+    </DataTemplate>
+    <DataTemplate DataType="components:ProbeViewModel">
+      <views:ProbeView />
+    </DataTemplate>
+    <DataTemplate DataType="components:FullAdderViewModel">
+      <views:FullAdderView />
+    </DataTemplate>
+    <DataTemplate DataType="components:MultiplexerViewModel">
+      <views:MultiplexerView />
+    </DataTemplate>
+    <DataTemplate DataType="components:DemultiplexerViewModel">
+      <views:DemultiplexerView />
+    </DataTemplate>
+  </UserControl.DataTemplates>
+
+  <ContentControl
+    Content="{Binding}"
+    Width="{Binding Width}"
+    Height="{Binding Height}"
+    PointerPressed="OnPointerPressed"
+    PointerReleased="OnPointerReleased"
+    PointerEntered="OnPointerEntered"
+    PointerExited="OnPointerExited"
+    RenderTransformOrigin="50%,50%"
+    ClipToBounds="False"
+  >
+    <ContentControl.RenderTransform>
+      <RotateTransform Angle="{Binding Rotation}" />
+    </ContentControl.RenderTransform>
+  </ContentControl>
+</UserControl>

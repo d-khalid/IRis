@@ -1,0 +1,20 @@
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels.Main.Canvas.Core"
+  x:DataType="vm:TerminalViewModel"
+  x:Class="IRis.Views.Main.Canvas.Core.TerminalView"
+  ClipToBounds="False"
+>
+  <Grid ClipToBounds="False">
+    <Ellipse
+      PointerPressed="OnPointerPressed"
+      PointerEntered="OnPointerEntered"
+      PointerExited="OnPointerExited"
+      Width="10"
+      Height="10"
+      Fill="{Binding Color}"
+      Cursor="{Binding Cursor}"
+    />
+  </Grid>
+</UserControl>

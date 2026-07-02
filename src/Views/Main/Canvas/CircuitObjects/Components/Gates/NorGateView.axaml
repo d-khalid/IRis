@@ -1,0 +1,29 @@
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates"
+  x:DataType="vm:NorGateViewModel"
+  x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.Gates.NorGateView"
+  ClipToBounds="False"
+>
+  <Grid ClipToBounds="False">
+    <Path
+      Fill="{DynamicResource ComponentFillBrush}"
+      Stroke="{DynamicResource ComponentBorderBrush}"
+      StrokeThickness="2"
+      Stretch="Fill"
+      Data="M 0,0 Q 14,50 0,100 Q 60,95 100,50 Q 60,5 0,0 Z"
+      Margin="0,0,4,0"
+    />
+    <Ellipse
+      Width="8"
+      Height="8"
+      Fill="{DynamicResource ComponentFillBrush}"
+      Stroke="{DynamicResource ComponentBorderBrush}"
+      StrokeThickness="2"
+      Margin="0,0,-4,0"
+      HorizontalAlignment="Right"
+      VerticalAlignment="Center"
+    />
+  </Grid>
+</UserControl>
