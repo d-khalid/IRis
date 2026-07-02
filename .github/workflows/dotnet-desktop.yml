@@ -26,7 +26,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build src/IRis.csproj --configuration Release --no-restore
 
     - name: Test
       run: dotnet test --configuration Release --no-build
@@ -45,7 +45,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Publish Windows
-      run: dotnet publish --configuration Release --runtime win-x64 --self-contained --output ./publish-win
+      run: dotnet publish src/IRis.csproj --configuration Release --runtime win-x64 --self-contained --output ./publish-win
 
     - name: Upload Windows Build
       uses: actions/upload-artifact@v4
@@ -67,7 +67,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Publish Linux
-      run: dotnet publish --configuration Release --runtime linux-x64 --self-contained --output ./publish-linux
+      run: dotnet publish src/IRis.csproj --configuration Release --runtime linux-x64 --self-contained --output ./publish-linux
 
     - name: Upload Linux Build
       uses: actions/upload-artifact@v4

@@ -51,9 +51,9 @@ All the text bellow is meant for developers who are working, or who want to work
 
 - Install .NET SDK 9.0 from [here](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
 - Make sure it is installed properly by running `dotnet --version` in a terminal.
-- Download the source code from here into a folder, open that folder in a terminal and execute `dotnet build`.
-- .NET automatically resolves the dependencies, so it should build with no issues. Execute `dotnet run` to run the program.
-- For sketch-to-simulation conversion, download the `sketchlogic.exe` file from [here](https://github.com/ShahzaibAhmad05/SketchLogic/releases/tag/v0.1.0) and place it in the project root. Then look for a `Generate Circuit From Image` option in the top menu of the simulator.
+- Download the source code from here into a folder, open that folder in a terminal and use `cd src` and `dotnet build`.
+- .NET automatically resolves the dependencies, so it should build with no issues. Use `cd src` and `dotnet run` to run the program.
+- For sketch-to-simulation conversion, download the `sketchlogic.exe` file from [here](https://github.com/ShahzaibAhmad05/SketchLogic/releases/tag/v0.1.0) and place it in the `src/` directory. Then look for a `Generate Circuit From Image` option in the top menu of the simulator.
 
 ### Code Formatting
 
@@ -82,6 +82,8 @@ Inspired by the [official documentation: IoC](https://learn.microsoft.com/en-us/
 This involves registering the static and instance-dependent services in `app.axaml.cs` and then calling `App.Current.Services.GetRequiredService<RequesterClass>()` assuming we declare an instance of the _RequesterClass_. This approach is followed for all the Services except for `CommandService` which would otherwise create cycles of service dependencies and hence errors, since services can use other services in their constructors.
 
 It is to be noted that the true DI as mentioned in the documentation involves injecting services through the constructors. we had to take a different approach for components. They involve hierarchies and constructor chaining, so it's common sense that injecting services through the constructors would lead to more rigidity. So instead, we get the services in the constructor code blocks using `App.Current.Services.GetRequiredService<ServiceName>()`.
+
+Furthermore, singleton pattern is provided to us by `Microsoft.Extensions.DependencyInjection` which we are using for Services as present in `Services/`.
 
 #### Initializing Components
 
@@ -124,12 +126,6 @@ Wire cloning is too tricky to be messed with. One IMPORTANT thing when you are w
 #### Clipboard Actions: Cut, Copy, Paste
 
 All of these rely on JsonSerialization. When an object is copied it's Json is copied to the system clipboard in text. This can be verified by pasting it anywhere, that is, the json will be pasted. Hence clipboard actions depend on serialization/deserialization.
-
-#### Singleton Pattern for Statefull Services
-
-Singleton pattern is provided to us by `Microsoft.Extensions.DependencyInjection` which we are using for Statefull Services as present in `Services/Singleton/`.
-
-Some services are abolutely static in their lifetimes (and so are their classes) so we are using them directly wherever needed because enforcing dependency injection for these would just be extra boilerplate which is never good for scalability/maintainability.
 
 #### How to add new icons for Context Menus
 
