@@ -1,6 +1,8 @@
 using Avalonia;
 using Avalonia.Collections;
+using IRis.Services;
 using IRis.ViewModels.Main.Canvas;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IRis.Services.Commands;
 
@@ -12,8 +14,12 @@ public class MoveCommand(Point p1, Point p2, AvaloniaList<CircuitObjectViewModel
     private readonly AvaloniaList<CircuitObjectViewModel> _collection = collection;
 
     public override void Execute() =>
-        SimulationService.SnapCollectionToPosition(_collection, _final);
+        App
+            .Current.Services.GetRequiredService<SimulationService>()
+            .SnapCollectionToPosition(_collection, _final);
 
     public override void Undo() =>
-        SimulationService.SnapCollectionToPosition(_collection, _initial);
+        App
+            .Current.Services.GetRequiredService<SimulationService>()
+            .SnapCollectionToPosition(_collection, _initial);
 }

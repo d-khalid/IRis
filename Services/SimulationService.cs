@@ -6,9 +6,9 @@ using IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 namespace IRis.Services;
 
-public static class SimulationService
+public class SimulationService
 {
-    public static Point SnapPointToGrid(Point pt)
+    public Point SnapPointToGrid(Point pt)
     {
         double gridSpacing = 10.0;
         double snapX = Math.Round(pt.X / gridSpacing) * gridSpacing;
@@ -16,22 +16,22 @@ public static class SimulationService
         return new Point(snapX, snapY);
     }
 
-    public static Point Sum(Point p1, Point p2)
+    public Point Sum(Point p1, Point p2)
     {
         return new Point(p1.X + p2.X, p1.Y + p2.Y);
     }
 
-    public static Point Difference(Point p1, Point p2)
+    public Point Difference(Point p1, Point p2)
     {
         return new Point(p1.X - p2.X, p1.Y - p2.Y);
     }
 
-    public static Point Average(Point p1, Point p2)
+    public Point Average(Point p1, Point p2)
     {
         return new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
     }
 
-    public static Point GetMaxPointInCollection(AvaloniaList<CircuitObjectViewModel> collection)
+    public Point GetMaxPointInCollection(AvaloniaList<CircuitObjectViewModel> collection)
     {
         double maxX = 0.0;
         double maxY = 0.0;
@@ -50,7 +50,7 @@ public static class SimulationService
         return new Point(maxX, maxY);
     }
 
-    public static Point GetMinPointInCollection(AvaloniaList<CircuitObjectViewModel> collection)
+    public Point GetMinPointInCollection(AvaloniaList<CircuitObjectViewModel> collection)
     {
         double minX = double.MaxValue;
         double minY = double.MaxValue;
@@ -69,7 +69,7 @@ public static class SimulationService
         return new Point(minX, minY);
     }
 
-    public static void SnapCollectionToPosition(
+    public void SnapCollectionToPosition(
         AvaloniaList<CircuitObjectViewModel> collection,
         Point Position,
         Point? offset = null
@@ -96,7 +96,7 @@ public static class SimulationService
         }
     }
 
-    public static Point RotateTerminalPosition(
+    public Point RotateTerminalPosition(
         double unrotatedX,
         double unrotatedY,
         double rotation,
@@ -128,7 +128,7 @@ public static class SimulationService
         return new Point(rotatedX, rotatedY);
     }
 
-    public static void RedrawEmptyWires(AvaloniaList<CircuitObjectViewModel> collection)
+    public void RedrawEmptyWires(AvaloniaList<CircuitObjectViewModel> collection)
     {
         foreach (var co in collection)
         {
@@ -137,7 +137,7 @@ public static class SimulationService
         }
     }
 
-    public static double Distance(Point p1, Point p2)
+    public double Distance(Point p1, Point p2)
     {
         double deltaX = p2.X - p1.X;
         double deltaY = p2.Y - p1.Y;

@@ -32,7 +32,7 @@ public partial class NotGateViewModel : GateViewModel
         double unrotatedX = X - 10;
         double unrotatedY = Y + (Height / 2);
 
-        Point rotatedPos = SimulationService.RotateTerminalPosition(
+        Point rotatedPos = _simulationService.RotateTerminalPosition(
             unrotatedX,
             unrotatedY,
             Rotation,

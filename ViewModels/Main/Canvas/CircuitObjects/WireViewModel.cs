@@ -45,6 +45,10 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         App.Current.Services.GetRequiredService<WirePreview>();
     private readonly Preview _preview = App.Current.Services.GetRequiredService<Preview>();
     private readonly AppState _appState = App.Current.Services.GetRequiredService<AppState>();
+    private readonly DragService _dragService =
+        App.Current.Services.GetRequiredService<DragService>();
+    private readonly HoverEffectService _hoverEffectService =
+        App.Current.Services.GetRequiredService<HoverEffectService>();
 
     public void Redraw()
     {
@@ -189,11 +193,11 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         if (!_appState.EditingAllowed)
             return;
 
-        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || DragService.IsRunning())
+        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || _dragService.IsRunning())
             return;
 
         if (!IsSelected)
-            HoverEffectService.On(this);
+            _hoverEffectService.On(this);
     }
 
     public void OnPointerExited(object? sender, PointerEventArgs e)
@@ -204,10 +208,10 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         if (!_appState.EditingAllowed)
             return;
 
-        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || DragService.IsRunning())
+        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || _dragService.IsRunning())
             return;
 
-        if (!IsSelected && HoverEffectService.IsRunning())
-            HoverEffectService.Stop();
+        if (!IsSelected && _hoverEffectService.IsRunning())
+            _hoverEffectService.Stop();
     }
 }

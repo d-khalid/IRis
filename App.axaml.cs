@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
 using Avalonia.Markup.Xaml;
+using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels;
 using IRis.ViewModels.Main;
@@ -48,6 +49,13 @@ public partial class App : Application
     public static IServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
+
+        services.AddSingleton<SerializationService>();
+        services.AddSingleton<CloningService>();
+        services.AddSingleton<SimulationService>();
+        services.AddSingleton<ClipboardService>();
+        services.AddSingleton<DragService>();
+        services.AddSingleton<HoverEffectService>();
 
         services.AddSingleton<AppState>();
         services.AddSingleton<Simulation>();

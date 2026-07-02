@@ -26,6 +26,8 @@ public partial class GenerateFromImageWindowViewModel : ViewModelBase
     private readonly Simulation _simulation;
     private readonly Selection _selection;
     private readonly AppState _appState;
+    private readonly SerializationService _serialization;
+    private readonly SimulationService _simulationService;
 
     [ObservableProperty]
     private Bitmap? _previewImage;
@@ -34,13 +36,17 @@ public partial class GenerateFromImageWindowViewModel : ViewModelBase
         GenerateFromImageWindowView owner,
         Simulation simulation,
         Selection selection,
-        AppState appState
+        AppState appState,
+        SerializationService serialization,
+        SimulationService simulationService
     )
     {
         _owner = owner;
         _simulation = simulation;
         _selection = selection;
         _appState = appState;
+        _serialization = serialization;
+        _simulationService = simulationService;
     }
 
     [RelayCommand]
@@ -103,12 +109,12 @@ public partial class GenerateFromImageWindowViewModel : ViewModelBase
                 _simulation.Running = false;
 
             var json = await File.ReadAllTextAsync(OutputIrisPath);
-            var collection = SerializationService.Deserialize(json);
+            var collection = _serialization.Deserialize(json);
             if (collection is null)
                 return;
 
             _appState.CurrentFilePath = OutputIrisPath;
-            SimulationService.RedrawEmptyWires(collection);
+            _simulationService.RedrawEmptyWires(collection);
             _selection.Highlight(collection);
             _simulation.Add(collection);
 

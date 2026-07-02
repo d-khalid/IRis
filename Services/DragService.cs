@@ -3,7 +3,6 @@ using Avalonia.Collections;
 using IRis.Services.Commands;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace IRis.Services;
 
@@ -11,27 +10,28 @@ namespace IRis.Services;
 /// Gets the objects from selection automatically and adds them to a list to
 /// drag them with the mouse. Also implicitly throws away any hovers and selections.
 /// </summary>
-public static class DragService
+public class DragService(Selection selection, SimulationService simulationService)
 {
-    public static AvaloniaList<CircuitObjectViewModel> Objects { get; } = [];
-    public static bool Used { get; set; } = false;
-    private static readonly Selection _selection =
-        App.Current.Services.GetRequiredService<Selection>();
+    private readonly Selection _selection = selection;
+    private readonly SimulationService _simulationService = simulationService;
 
-    private static Point InitialPosition { get; set; } = new(0, 0);
-    private static Point FinalPosition { get; set; } = new(0, 0);
-    private static Point MouseOffset { get; set; } = new(0, 0);
+    public AvaloniaList<CircuitObjectViewModel> Objects { get; } = [];
+    public bool Used { get; set; } = false;
 
-    public static void StartAt(Point position)
+    private Point InitialPosition { get; set; } = new(0, 0);
+    private Point FinalPosition { get; set; } = new(0, 0);
+    private Point MouseOffset { get; set; } = new(0, 0);
+
+    public void StartAt(Point position)
     {
         var collection = _selection.Objects;
         Objects.AddRange(collection);
 
-        InitialPosition = SimulationService.GetMinPointInCollection(collection);
-        MouseOffset = SimulationService.Difference(position, InitialPosition);
+        InitialPosition = _simulationService.GetMinPointInCollection(collection);
+        MouseOffset = _simulationService.Difference(position, InitialPosition);
     }
 
-    public static void UpdatePositionTo(Point position)
+    public void UpdatePositionTo(Point position)
     {
         if (!Used)
         {
@@ -39,11 +39,11 @@ public static class DragService
             _selection.UnHighlightAll();
         }
 
-        FinalPosition = SimulationService.Difference(position, MouseOffset);
-        SimulationService.SnapCollectionToPosition(Objects, FinalPosition, null);
+        FinalPosition = _simulationService.Difference(position, MouseOffset);
+        _simulationService.SnapCollectionToPosition(Objects, FinalPosition, null);
     }
 
-    public static void Stop()
+    public void Stop()
     {
         if (Used)
         {
@@ -59,5 +59,5 @@ public static class DragService
         Objects.Clear();
     }
 
-    public static bool IsRunning() => Objects.Count > 0;
+    public bool IsRunning() => Objects.Count > 0;
 }

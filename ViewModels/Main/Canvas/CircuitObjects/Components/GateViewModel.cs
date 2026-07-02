@@ -31,7 +31,7 @@ public abstract partial class GateViewModel(Gate model) : ComponentViewModel(mod
         double unrotatedX = X + (Width + 10);
         double unrotatedY = Y + (Height / 2);
 
-        Point rotatedPos = SimulationService.RotateTerminalPosition(
+        Point rotatedPos = _simulationService.RotateTerminalPosition(
             unrotatedX,
             unrotatedY,
             Rotation,

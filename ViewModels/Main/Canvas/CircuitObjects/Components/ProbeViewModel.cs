@@ -61,7 +61,7 @@ public partial class ProbeViewModel : ComponentViewModel
         double unrotatedX = X - 10;
         double unrotatedY = Y + 10;
 
-        Point rotatedPos = SimulationService.RotateTerminalPosition(
+        Point rotatedPos = _simulationService.RotateTerminalPosition(
             unrotatedX,
             unrotatedY,
             Rotation,

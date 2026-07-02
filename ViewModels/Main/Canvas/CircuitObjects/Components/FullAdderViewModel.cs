@@ -78,7 +78,7 @@ public partial class FullAdderViewModel : ComponentViewModel
 
     private void PlaceTerminal(TerminalViewModel terminal, double unrotatedX, double unrotatedY)
     {
-        Point rotatedPos = SimulationService.RotateTerminalPosition(
+        Point rotatedPos = _simulationService.RotateTerminalPosition(
             unrotatedX,
             unrotatedY,
             Rotation,

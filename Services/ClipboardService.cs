@@ -4,21 +4,23 @@ using IRis.ViewModels.Main.Canvas;
 
 namespace IRis.Services;
 
-public static class ClipboardService
+public class ClipboardService(SerializationService serialization)
 {
-    public static async void Copy(AvaloniaList<CircuitObjectViewModel> collection)
+    private readonly SerializationService _serialization = serialization;
+
+    public async void Copy(AvaloniaList<CircuitObjectViewModel> collection)
     {
-        string json = SerializationService.Serialize(collection);
+        string json = _serialization.Serialize(collection);
         await App.Clipboard.SetTextAsync(json);
     }
 
-    public static async Task<AvaloniaList<CircuitObjectViewModel>> Paste()
+    public async Task<AvaloniaList<CircuitObjectViewModel>> Paste()
     {
         var json = await App.Clipboard.GetTextAsync();
         if (json is null)
             return [];
 
-        var pasted = SerializationService.Deserialize(json);
+        var pasted = _serialization.Deserialize(json);
         if (pasted is null)
             return [];
 

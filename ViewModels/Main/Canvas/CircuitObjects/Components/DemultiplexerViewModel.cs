@@ -101,7 +101,7 @@ public partial class DemultiplexerViewModel : ComponentViewModel
         if (Input is null)
             return;
 
-        Point inputPos = SimulationService.RotateTerminalPosition(
+        Point inputPos = _simulationService.RotateTerminalPosition(
             X - 10,
             Y + (Height / 2),
             Rotation,
@@ -115,7 +115,7 @@ public partial class DemultiplexerViewModel : ComponentViewModel
 
         for (int i = 0; i < Outputs.Count; i++)
         {
-            Point outputPos = SimulationService.RotateTerminalPosition(
+            Point outputPos = _simulationService.RotateTerminalPosition(
                 X + (Width + 10),
                 Y + (i * 20) + 10,
                 Rotation,
@@ -133,7 +133,7 @@ public partial class DemultiplexerViewModel : ComponentViewModel
             double unrotatedX = X + ((i + 0.5) * (Width / Selects.Count));
             double unrotatedY = Y + Height + 10;
 
-            Point selectPos = SimulationService.RotateTerminalPosition(
+            Point selectPos = _simulationService.RotateTerminalPosition(
                 unrotatedX,
                 unrotatedY,
                 Rotation,

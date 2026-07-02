@@ -72,7 +72,7 @@ public partial class ToggleViewModel : ComponentViewModel
         double unrotatedX = X + (Width + 10);
         double unrotatedY = Y + (Height / 2);
 
-        Point rotatedPos = SimulationService.RotateTerminalPosition(
+        Point rotatedPos = _simulationService.RotateTerminalPosition(
             unrotatedX,
             unrotatedY,
             Rotation,

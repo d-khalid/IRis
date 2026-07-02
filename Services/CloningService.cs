@@ -2,9 +2,9 @@ using Newtonsoft.Json;
 
 namespace IRis.Services;
 
-public static class CloningService
+public class CloningService
 {
-    public static JsonSerializerSettings Settings() =>
+    public JsonSerializerSettings Settings() =>
         new()
         {
             TypeNameHandling = TypeNameHandling.All,
@@ -12,7 +12,7 @@ public static class CloningService
             Formatting = Formatting.Indented,
         };
 
-    public static T Clone<T>(T source)
+    public T Clone<T>(T source)
     {
         return (T)
             JsonConvert.DeserializeObject(

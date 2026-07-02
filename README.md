@@ -73,17 +73,15 @@ With the above in mind, try to keep the code formatting consistent with the exis
 
 ### Understanding the Architecture
 
-The sections bellow are details of why and how the codebase architecture was built like this. Every major architectural choice is documented here.
+The sections bellow are details of why and how the codebase architecture was built like this. Every major architectural choice is documented here, every decision was criticized repeatedly until everything came very close to perfection.
 
 #### Dependency Injection
 
 Inspired by the [official documentation: IoC](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/ioc) for `CommunityToolkit.Mvvm` and a few thoughts we had in mind, we implemented **Dependency Injection** for better code structure, maintainability, flexibility, etc.
 
-This involves registering the static and instance-dependent services in `app.axaml.cs` and then calling `App.Current.Services.GetRequiredService<RequesterClass>() assuming we declare an instance of the _RequesterClass_.
+This involves registering the static and instance-dependent services in `app.axaml.cs` and then calling `App.Current.Services.GetRequiredService<RequesterClass>()` assuming we declare an instance of the _RequesterClass_. This approach is followed for all the Services except for `CommandService` which would otherwise create cycles of service dependencies and hence errors, since services can use other services in their constructors.
 
 It is to be noted that the true DI as mentioned in the documentation involves injecting services through the constructors. we had to take a different approach for components. They involve hierarchies and constructor chaining, so it's common sense that injecting services through the constructors would lead to more rigidity. So instead, we get the services in the constructor code blocks using `App.Current.Services.GetRequiredService<ServiceName>()`.
-
-Also note that services can also use other services in their constructors, but circular dependencies (if they occur) would certainly cause errors and crashes.
 
 #### Initializing Components
 
