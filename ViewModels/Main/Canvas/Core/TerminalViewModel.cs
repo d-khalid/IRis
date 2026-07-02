@@ -40,12 +40,14 @@ public partial class TerminalViewModel : ObservableObject
     private readonly AppState _appState;
     private readonly Selection _selection;
     private readonly WirePreview _wirePreview;
+    private readonly HoverEffectService _hoverEffectService;
 
     public TerminalViewModel()
     {
         _appState = App.Current.Services.GetRequiredService<AppState>();
         _selection = App.Current.Services.GetRequiredService<Selection>();
         _wirePreview = App.Current.Services.GetRequiredService<WirePreview>();
+        _hoverEffectService = App.Current.Services.GetRequiredService<HoverEffectService>();
 
         Model.PropertyChanged += (_, e) =>
         {
@@ -103,7 +105,7 @@ public partial class TerminalViewModel : ObservableObject
         if (!_selection.IsEmpty())
             _selection.UnHighlightAll();
 
-        HoverEffectService.Stop();
+        _hoverEffectService.Stop();
 
         if (_wirePreview.IsEmpty())
             _wirePreview.StartAt(this);
@@ -122,7 +124,7 @@ public partial class TerminalViewModel : ObservableObject
             return;
 
         Cursor = new(StandardCursorType.Cross);
-        HoverEffectService.Hide();
+        _hoverEffectService.Hide();
     }
 
     public void OnPointerExited(object? sender, PointerEventArgs e)
@@ -136,6 +138,6 @@ public partial class TerminalViewModel : ObservableObject
             return;
 
         Cursor = new(StandardCursorType.Arrow);
-        HoverEffectService.Show();
+        _hoverEffectService.Show();
     }
 }

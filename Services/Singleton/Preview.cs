@@ -1,14 +1,19 @@
 using Avalonia;
 using Avalonia.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.Services;
 using IRis.Services.Commands;
 using IRis.ViewModels.Main.Canvas;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 namespace IRis.Services.Singleton;
 
-public partial class Preview : ObservableObject
+public partial class Preview(SimulationService simulationService, CloningService cloningService)
+    : ObservableObject
 {
+    private readonly SimulationService _simulationService = simulationService;
+    private readonly CloningService _cloningService = cloningService;
+
     public AvaloniaList<CircuitObjectViewModel> Objects { get; } = [];
     private Point SavedMouseOffset { get; set; } = new(0, 0);
 
@@ -16,7 +21,7 @@ public partial class Preview : ObservableObject
     private bool _isVisible = false;
 
     public void UpdatePositionTo(Point position) =>
-        SimulationService.SnapCollectionToPosition(Objects, position, SavedMouseOffset);
+        _simulationService.SnapCollectionToPosition(Objects, position, SavedMouseOffset);
 
     public void Drop() => Objects.Clear();
 
@@ -32,16 +37,16 @@ public partial class Preview : ObservableObject
         foreach (var co in collection)
             co.Opacity = 0.5;
 
-        Point min = SimulationService.GetMinPointInCollection(collection);
-        Point max = SimulationService.GetMaxPointInCollection(collection);
-        Point center = SimulationService.Average(min, max);
+        Point min = _simulationService.GetMinPointInCollection(collection);
+        Point max = _simulationService.GetMaxPointInCollection(collection);
+        Point center = _simulationService.Average(min, max);
 
-        SavedMouseOffset = SimulationService.Difference(center, min);
+        SavedMouseOffset = _simulationService.Difference(center, min);
     }
 
     public void Commit()
     {
-        var cloned = CloningService.Clone(Objects);
+        var cloned = _cloningService.Clone(Objects);
         string name = cloned.Count == 1 ? "Commit Object" : "Commit Objects";
 
         CommandService.Execute(new CommitCommand(cloned) { Name = name });

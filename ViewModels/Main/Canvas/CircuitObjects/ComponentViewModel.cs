@@ -51,6 +51,9 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
     private readonly Selection _selection;
     private readonly WirePreview _wirePreview;
     private readonly Preview _preview;
+    protected readonly SimulationService _simulationService;
+    protected readonly DragService _dragService;
+    protected readonly HoverEffectService _hoverEffectService;
 
     public ComponentViewModel(Component model)
         : base(model)
@@ -61,6 +64,9 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
         _selection = App.Current.Services.GetRequiredService<Selection>();
         _wirePreview = App.Current.Services.GetRequiredService<WirePreview>();
         _preview = App.Current.Services.GetRequiredService<Preview>();
+        _simulationService = App.Current.Services.GetRequiredService<SimulationService>();
+        _dragService = App.Current.Services.GetRequiredService<DragService>();
+        _hoverEffectService = App.Current.Services.GetRequiredService<HoverEffectService>();
     }
 
     public override bool Intersects(Rect rect) => rect.Intersects(new Rect(X, Y, Width, Height));
@@ -87,7 +93,7 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
                 _selection.Highlight(this);
             }
 
-            DragService.StartAt(_appState.MousePosition);
+            _dragService.StartAt(_appState.MousePosition);
         }
         else if (this is ToggleViewModel t)
         {
@@ -105,8 +111,8 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
         if (!_appState.EditingAllowed)
             return;
 
-        if (DragService.IsRunning())
-            DragService.Stop();
+        if (_dragService.IsRunning())
+            _dragService.Stop();
     }
 
     public void OnPointerEntered(object? sender, PointerEventArgs e)
@@ -114,11 +120,11 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
             return;
 
-        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || DragService.IsRunning())
+        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || _dragService.IsRunning())
             return;
 
         if (!IsSelected)
-            HoverEffectService.On(this);
+            _hoverEffectService.On(this);
     }
 
     public void OnPointerExited(object? sender, PointerEventArgs e)
@@ -126,11 +132,11 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
             return;
 
-        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || DragService.IsRunning())
+        if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || _dragService.IsRunning())
             return;
 
-        if (!IsSelected && HoverEffectService.IsRunning())
-            HoverEffectService.Stop();
+        if (!IsSelected && _hoverEffectService.IsRunning())
+            _hoverEffectService.Stop();
     }
 
     public abstract void UpdateTerminals();

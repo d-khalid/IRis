@@ -10,11 +10,20 @@ public partial class AppViewModel : ViewModelBase
     [ObservableProperty]
     private AppState _appState;
     private readonly Simulation _simulation;
+    private readonly SerializationService _serialization;
+    private readonly SimulationService _simulationService;
 
-    public AppViewModel(AppState appState, Simulation simulation)
+    public AppViewModel(
+        AppState appState,
+        Simulation simulation,
+        SerializationService serialization,
+        SimulationService simulationService
+    )
     {
         AppState = appState;
         _simulation = simulation;
+        _serialization = serialization;
+        _simulationService = simulationService;
         LoadLastSessionFile();
     }
 
@@ -37,11 +46,11 @@ public partial class AppViewModel : ViewModelBase
         }
 
         var json = File.ReadAllText(lastOpenedFile);
-        var collection = SerializationService.Deserialize(json);
+        var collection = _serialization.Deserialize(json);
 
         if (collection is not null)
         {
-            SimulationService.RedrawEmptyWires(collection);
+            _simulationService.RedrawEmptyWires(collection);
             _simulation.Add(collection);
         }
     }

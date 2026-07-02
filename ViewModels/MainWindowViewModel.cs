@@ -26,13 +26,23 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly Selection _selection;
     private readonly Preview _preview;
     private readonly WirePreview _wirePreview;
+    private readonly ClipboardService _clipboardService;
+    private readonly DragService _dragService;
+    private readonly HoverEffectService _hoverEffectService;
+    private readonly SerializationService _serialization;
+    private readonly SimulationService _simulationService;
 
     public MainWindowViewModel(
         AppState appState,
         Simulation simulation,
         Selection selection,
         Preview preview,
-        WirePreview wirePreview
+        WirePreview wirePreview,
+        ClipboardService clipboardService,
+        DragService dragService,
+        HoverEffectService hoverEffectService,
+        SerializationService serialization,
+        SimulationService simulationService
     )
     {
         AppState = appState;
@@ -40,6 +50,11 @@ public partial class MainWindowViewModel : ViewModelBase
         _selection = selection;
         _preview = preview;
         _wirePreview = wirePreview;
+        _clipboardService = clipboardService;
+        _dragService = dragService;
+        _hoverEffectService = hoverEffectService;
+        _serialization = serialization;
+        _simulationService = simulationService;
     }
 
     private async Task<bool> AskNukeChangesAsync()
@@ -113,7 +128,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             string path = files[0].Path.LocalPath;
             var json = await File.ReadAllTextAsync(path);
-            var collection = SerializationService.Deserialize(json);
+            var collection = _serialization.Deserialize(json);
 
             if (collection is not null)
             {
@@ -123,7 +138,7 @@ public partial class MainWindowViewModel : ViewModelBase
                     _simulation.Nuke();
                 }
 
-                SimulationService.RedrawEmptyWires(collection);
+                _simulationService.RedrawEmptyWires(collection);
                 _selection.Highlight(collection);
                 _simulation.Add(collection);
             }
@@ -141,7 +156,7 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        var json = SerializationService.Serialize(_simulation.Objects);
+        var json = _serialization.Serialize(_simulation.Objects);
         await File.WriteAllTextAsync(AppState.CurrentFilePath, json);
 
         AppState.FileNeedsSaving = false;
@@ -212,15 +227,15 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (!_preview.IsEmpty())
         {
-            ClipboardService.Copy(_preview.Objects);
+            _clipboardService.Copy(_preview.Objects);
         }
         else if (!_selection.IsEmpty())
         {
-            ClipboardService.Copy(_selection.Objects);
+            _clipboardService.Copy(_selection.Objects);
         }
-        else if (DragService.IsRunning())
+        else if (_dragService.IsRunning())
         {
-            ClipboardService.Copy(DragService.Objects);
+            _clipboardService.Copy(_dragService.Objects);
         }
     }
 
@@ -229,20 +244,20 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (!_preview.IsEmpty())
         {
-            ClipboardService.Copy(_preview.Objects);
+            _clipboardService.Copy(_preview.Objects);
             _preview.Nuke();
         }
         else if (!_selection.IsEmpty())
         {
-            ClipboardService.Copy(_selection.Objects);
+            _clipboardService.Copy(_selection.Objects);
             _simulation.Remove(_selection.Objects);
             _selection.UnHighlightAll();
         }
-        else if (DragService.IsRunning())
+        else if (_dragService.IsRunning())
         {
-            ClipboardService.Copy(DragService.Objects);
-            _simulation.Remove(DragService.Objects);
-            DragService.Stop();
+            _clipboardService.Copy(_dragService.Objects);
+            _simulation.Remove(_dragService.Objects);
+            _dragService.Stop();
         }
     }
 
@@ -252,9 +267,9 @@ public partial class MainWindowViewModel : ViewModelBase
         _selection.UnHighlightAll();
         _preview.Nuke();
         _wirePreview.Nuke();
-        DragService.Stop();
+        _dragService.Stop();
 
-        var pasted = await ClipboardService.Paste();
+        var pasted = await _clipboardService.Paste();
         _preview.Pick(pasted);
         _preview.UpdatePositionTo(AppState.MousePosition);
     }
@@ -266,35 +281,35 @@ public partial class MainWindowViewModel : ViewModelBase
             RotateCollection(_preview.Objects);
         else if (!_selection.IsEmpty())
             RotateCollection(_selection.Objects);
-        else if (DragService.IsRunning())
-            RotateCollection(DragService.Objects);
+        else if (_dragService.IsRunning())
+            RotateCollection(_dragService.Objects);
+    }
 
-        static void RotateCollection(AvaloniaList<CircuitObjectViewModel> collection)
+    private void RotateCollection(AvaloniaList<CircuitObjectViewModel> collection)
+    {
+        Point min = _simulationService.GetMinPointInCollection(collection);
+        Point max = _simulationService.GetMaxPointInCollection(collection);
+        Point center = _simulationService.Average(min, max);
+
+        foreach (CircuitObjectViewModel co in collection)
         {
-            Point min = SimulationService.GetMinPointInCollection(collection);
-            Point max = SimulationService.GetMaxPointInCollection(collection);
-            Point center = SimulationService.Average(min, max);
-
-            foreach (CircuitObjectViewModel co in collection)
+            if (co is ComponentViewModel c)
             {
-                if (co is ComponentViewModel c)
-                {
-                    c.Rotation = (c.Rotation + 90) % 360;
+                c.Rotation = (c.Rotation + 90) % 360;
 
-                    // this MATH bellow was done by Gemini 3.1 Pro, it works
+                // this MATH bellow was done by Gemini 3.1 Pro, it works
 
-                    double objCenterX = c.X + (c.Width / 2.0);
-                    double objCenterY = c.Y + (c.Height / 2.0);
+                double objCenterX = c.X + (c.Width / 2.0);
+                double objCenterY = c.Y + (c.Height / 2.0);
 
-                    double translatedX = objCenterX - center.X;
-                    double translatedY = objCenterY - center.Y;
+                double translatedX = objCenterX - center.X;
+                double translatedY = objCenterY - center.Y;
 
-                    double newCenterX = -translatedY + center.X;
-                    double newCenterY = translatedX + center.Y;
+                double newCenterX = -translatedY + center.X;
+                double newCenterY = translatedX + center.Y;
 
-                    c.X = newCenterX - (c.Width / 2.0);
-                    c.Y = newCenterY - (c.Height / 2.0);
-                }
+                c.X = newCenterX - (c.Width / 2.0);
+                c.Y = newCenterY - (c.Height / 2.0);
             }
         }
     }
@@ -306,8 +321,8 @@ public partial class MainWindowViewModel : ViewModelBase
             AddInput(_preview.Objects);
         else if (!_selection.IsEmpty())
             AddInput(_selection.Objects);
-        else if (DragService.IsRunning())
-            AddInput(DragService.Objects);
+        else if (_dragService.IsRunning())
+            AddInput(_dragService.Objects);
 
         static void AddInput(AvaloniaList<CircuitObjectViewModel> collection)
         {
@@ -330,8 +345,8 @@ public partial class MainWindowViewModel : ViewModelBase
             RemoveInput(_preview.Objects);
         else if (!_selection.IsEmpty())
             RemoveInput(_selection.Objects);
-        else if (DragService.IsRunning())
-            RemoveInput(DragService.Objects);
+        else if (_dragService.IsRunning())
+            RemoveInput(_dragService.Objects);
 
         static void RemoveInput(AvaloniaList<CircuitObjectViewModel> collection)
         {
@@ -356,8 +371,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void Toggle()
     {
-        if (HoverEffectService.HasToggle())
-            (HoverEffectService.GetObject() as ToggleViewModel)!.Toggle();
+        if (_hoverEffectService.HasToggle())
+            (_hoverEffectService.GetObject() as ToggleViewModel)!.Toggle();
     }
 
     [RelayCommand]

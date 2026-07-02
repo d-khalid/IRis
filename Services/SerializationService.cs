@@ -9,9 +9,9 @@ using Newtonsoft.Json.Serialization;
 
 namespace IRis.Services;
 
-public static class SerializationService
+public class SerializationService
 {
-    public static JsonSerializerSettings Settings() =>
+    public JsonSerializerSettings Settings() =>
         new()
         {
             TypeNameHandling = TypeNameHandling.Auto,
@@ -21,14 +21,14 @@ public static class SerializationService
             Converters = { new StringEnumConverter() },
         };
 
-    public static string Serialize<T>(T source)
+    public string Serialize<T>(T source)
     {
         if (source is null)
             return "";
         return JsonConvert.SerializeObject(source, Settings());
     }
 
-    public static AvaloniaList<CircuitObjectViewModel>? Deserialize(string json)
+    public AvaloniaList<CircuitObjectViewModel>? Deserialize(string json)
     {
         try
         {

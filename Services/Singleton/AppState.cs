@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.Services;
 using Newtonsoft.Json;
 
 namespace IRis.Services.Singleton;
@@ -28,6 +29,7 @@ public partial class AppState : ObservableObject
     private readonly Selection _selection;
     private readonly Preview _preview;
     private readonly WirePreview _wirePreview;
+    private readonly SerializationService _serialization;
 
     [ObservableProperty]
     private bool _designTabActive = true;
@@ -60,13 +62,15 @@ public partial class AppState : ObservableObject
         Simulation simulation,
         Selection selection,
         Preview preview,
-        WirePreview wirePreview
+        WirePreview wirePreview,
+        SerializationService serialization
     )
     {
         _simulation = simulation;
         _selection = selection;
         _preview = preview;
         _wirePreview = wirePreview;
+        _serialization = serialization;
 
         Load();
         PropertyChanged += (_, e) =>
@@ -114,7 +118,7 @@ public partial class AppState : ObservableObject
         try
         {
             var circuit = _simulation.Objects;
-            await File.WriteAllTextAsync(path, SerializationService.Serialize(circuit));
+            await File.WriteAllTextAsync(path, _serialization.Serialize(circuit));
 
             FileNeedsSaving = false;
         }

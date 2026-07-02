@@ -2,17 +2,15 @@ using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace IRis.Services;
 
-public static class HoverEffectService
+public class HoverEffectService(AppState appState)
 {
-    private static readonly AppState _appState =
-        App.Current.Services.GetRequiredService<AppState>();
-    private static CircuitObjectViewModel? Object { get; set; } = null;
+    private readonly AppState _appState = appState;
+    private CircuitObjectViewModel? Object { get; set; } = null;
 
-    public static void On(CircuitObjectViewModel co)
+    public void On(CircuitObjectViewModel co)
     {
         Object = co;
 
@@ -25,7 +23,7 @@ public static class HoverEffectService
             w.SelectionOpacity = 0.2;
     }
 
-    public static void Stop()
+    public void Stop()
     {
         if (Object is not null)
         {
@@ -34,7 +32,7 @@ public static class HoverEffectService
         }
     }
 
-    public static void Hide()
+    public void Hide()
     {
         if (Object is not null)
         {
@@ -42,7 +40,7 @@ public static class HoverEffectService
         }
     }
 
-    public static void Show()
+    public void Show()
     {
         if (Object is not null)
         {
@@ -50,9 +48,9 @@ public static class HoverEffectService
         }
     }
 
-    public static bool IsRunning() => Object is not null;
+    public bool IsRunning() => Object is not null;
 
-    public static bool HasToggle() => Object is ToggleViewModel;
+    public bool HasToggle() => Object is ToggleViewModel;
 
-    public static CircuitObjectViewModel? GetObject() => Object;
+    public CircuitObjectViewModel? GetObject() => Object;
 }

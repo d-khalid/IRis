@@ -12,7 +12,9 @@ public partial class CanvasViewModel(
     Preview preview,
     SelectionBox selectionBox,
     WirePreview wirePreview,
-    AppState appState
+    AppState appState,
+    DragService dragService,
+    SimulationService simulationService
 ) : ViewModelBase
 {
     public Preview Preview { get; } = preview;
@@ -20,6 +22,9 @@ public partial class CanvasViewModel(
     public AppState AppState { get; } = appState;
     public WirePreview WirePreview { get; } = wirePreview;
     public Simulation Simulation { get; } = simulation;
+
+    private readonly DragService _dragService = dragService;
+    private readonly SimulationService _simulationService = simulationService;
 
     public void OnPointerEntered(object? sender, PointerEventArgs e)
     {
@@ -89,7 +94,7 @@ public partial class CanvasViewModel(
         if (!AppState.EditingAllowed)
             return;
 
-        AppState.MousePosition = SimulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
+        AppState.MousePosition = _simulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
 
         if (SelectionBox.Exists())
             SelectionBox.UpdateTo(AppState.MousePosition);
@@ -97,8 +102,8 @@ public partial class CanvasViewModel(
             Preview.UpdatePositionTo(AppState.MousePosition);
         else if (!WirePreview.IsEmpty())
             WirePreview.UpdateTo(AppState.MousePosition);
-        else if (DragService.IsRunning())
-            DragService.UpdatePositionTo(AppState.MousePosition);
+        else if (_dragService.IsRunning())
+            _dragService.UpdatePositionTo(AppState.MousePosition);
     }
 
     public void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -153,7 +158,7 @@ public partial class CanvasViewModel(
                 return;
         }
 
-        AppState.MousePosition = SimulationService.SnapPointToGrid(mousePosition);
+        AppState.MousePosition = _simulationService.SnapPointToGrid(mousePosition);
         e.Handled = true;
     }
 }

@@ -45,7 +45,7 @@ public abstract partial class MultiInputGateViewModel : GateViewModel
         {
             double unrotatedY = Y + (i * multiplier) + 10;
 
-            Point rotatedPos = SimulationService.RotateTerminalPosition(
+            Point rotatedPos = _simulationService.RotateTerminalPosition(
                 unrotatedX,
                 unrotatedY,
                 Rotation,
