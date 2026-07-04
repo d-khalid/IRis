@@ -80,6 +80,12 @@ cd tests
 dotnet test
 ```
 
+### Debugging
+
+Logger is registered in services. It can be declared using any other service. Common logging levels used in IRis are `DEBUG`, `INFO`, `WARNING` and `ERROR`. More and more logs will be added as the app expands.
+
+As for debugging a compiled app, it's `.exe` has to be run from a terminal which would then print debugging info as the app is running.
+
 ### Publishing Releases
 
 Move into `src/` directory since we have the code there. Available target systems as runtime identifiers are given in this [catalog](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog).
