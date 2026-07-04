@@ -33,4 +33,4 @@ jobs:
       - name: tests
         run: |
           cd tests
-          dotnet test IRis.Tests
+          dotnet test
