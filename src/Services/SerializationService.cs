@@ -3,10 +3,10 @@ using System.Linq;
 using System.Reflection;
 using Avalonia.Collections;
 using IRis.ViewModels.Main.Canvas;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using Microsoft.Extensions.Logging;
 
 namespace IRis.Services;
 

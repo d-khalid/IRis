@@ -74,7 +74,7 @@ public partial class AppState : ObservableObject
         _wirePreview = wirePreview;
         _serialization = serialization;
         _logger = logger;
-        
+
         Load();
         PropertyChanged += (_, e) =>
         {

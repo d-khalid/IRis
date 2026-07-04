@@ -53,8 +53,9 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
     private readonly HoverEffectService _hoverEffectService =
         App.Current.Services.GetRequiredService<HoverEffectService>();
 
-    private readonly ILogger<WireViewModel> _logger =
-        App.Current.Services.GetRequiredService<ILogger<WireViewModel>>();
+    private readonly ILogger<WireViewModel> _logger = App.Current.Services.GetRequiredService<
+        ILogger<WireViewModel>
+    >();
 
     public void Redraw()
     {
