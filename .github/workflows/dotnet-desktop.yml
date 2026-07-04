@@ -26,4 +26,11 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Build
-        run: dotnet build src/IRis.csproj
+        run: |
+          cd src
+          dotnet build
+
+      - name: tests
+        run: |
+          cd tests
+          dotnet test IRis.Tests
