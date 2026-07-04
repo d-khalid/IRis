@@ -4,7 +4,7 @@ using Avalonia;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
-using IRis.Services;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace IRis.Services.Singleton;
@@ -30,6 +30,7 @@ public partial class AppState : ObservableObject
     private readonly Preview _preview;
     private readonly WirePreview _wirePreview;
     private readonly SerializationService _serialization;
+    private readonly ILogger<AppState> _logger;
 
     [ObservableProperty]
     private bool _designTabActive = true;
@@ -63,7 +64,8 @@ public partial class AppState : ObservableObject
         Selection selection,
         Preview preview,
         WirePreview wirePreview,
-        SerializationService serialization
+        SerializationService serialization,
+        ILogger<AppState> logger
     )
     {
         _simulation = simulation;
@@ -71,7 +73,8 @@ public partial class AppState : ObservableObject
         _preview = preview;
         _wirePreview = wirePreview;
         _serialization = serialization;
-
+        _logger = logger;
+        
         Load();
         PropertyChanged += (_, e) =>
         {
@@ -124,7 +127,7 @@ public partial class AppState : ObservableObject
         }
         catch (IOException)
         {
-            Console.WriteLine("AutoSaveCurrentSession(): failed to write to file.");
+            _logger.LogWarning("AutoSaveCurrentSession(): failed to write to file.");
         }
     }
 

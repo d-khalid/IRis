@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Collections;
@@ -9,6 +8,7 @@ using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
 
@@ -43,12 +43,18 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 
     private readonly WirePreview _wirePreview =
         App.Current.Services.GetRequiredService<WirePreview>();
+
     private readonly Preview _preview = App.Current.Services.GetRequiredService<Preview>();
     private readonly AppState _appState = App.Current.Services.GetRequiredService<AppState>();
+
     private readonly DragService _dragService =
         App.Current.Services.GetRequiredService<DragService>();
+
     private readonly HoverEffectService _hoverEffectService =
         App.Current.Services.GetRequiredService<HoverEffectService>();
+
+    private readonly ILogger<WireViewModel> _logger =
+        App.Current.Services.GetRequiredService<ILogger<WireViewModel>>();
 
     public void Redraw()
     {
@@ -159,7 +165,7 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         else if (MainOutput.IsOrphan)
             MainOutput = target;
         else
-            Console.WriteLine("SetOrphanTo(): could not find any orphan in wire.");
+            _logger.LogWarning("SetOrphanTo(): could not find any orphan in wire.");
     }
 
     public override bool Contains(Point pt)

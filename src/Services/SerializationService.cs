@@ -6,11 +6,14 @@ using IRis.ViewModels.Main.Canvas;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using Microsoft.Extensions.Logging;
 
 namespace IRis.Services;
 
-public class SerializationService
+public class SerializationService(ILogger<SerializationService> logger)
 {
+    private readonly ILogger<SerializationService> _logger = logger;
+
     public JsonSerializerSettings Settings() =>
         new()
         {
@@ -39,7 +42,7 @@ public class SerializationService
         }
         catch (JsonException e)
         {
-            Console.WriteLine(e.Message);
+            _logger.LogError(e, "Deserialize(): failed to deserialize JSON.");
             return null;
         }
     }

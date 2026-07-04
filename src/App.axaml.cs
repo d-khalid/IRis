@@ -9,6 +9,7 @@ using IRis.ViewModels;
 using IRis.ViewModels.Main;
 using IRis.Views;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace IRis;
 
@@ -69,6 +70,12 @@ public partial class App : Application
         services.AddSingleton<CanvasViewModel>();
         services.AddSingleton<GenerateFromImageWindowViewModel>();
         services.AddSingleton<LeftSidebarViewModel>();
+
+        services.AddLogging(builder =>
+        {
+            builder.AddConsole();
+            builder.SetMinimumLevel(LogLevel.Information);
+        });
 
         return services.BuildServiceProvider();
     }
