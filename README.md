@@ -55,6 +55,20 @@ All the text bellow is meant for developers who are working, or who want to work
 - .NET automatically resolves the dependencies, so it should build with no issues. Use `cd src` and `dotnet run` to run the program.
 - For sketch-to-simulation conversion, download the `sketchlogic.exe` file from [here](https://github.com/ShahzaibAhmad05/SketchLogic/releases/tag/v0.1.0) and place it in the `src/` directory. Then look for a `Generate Circuit From Image` option in the top menu of the simulator.
 
+### Publishing Releases
+
+Move into `src/` directory since we have the code there. Available target systems as runtime identifiers are given in this [catalog](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog).
+
+```bash
+dotnet publish IRis.csproj --configuration Release --runtime <RUNTIME_IDENTIFIER> --self-contained true --output ./publish/win 
+```
+
+Note that we are using `--self-contained` to bundle the .NET runtime into the published folder. We then compress the folder to a `.zip` file to ship it with a release.
+
+Releases have the version formatting of `major.minor`. As for release notes, auto-generate them and only keep the ones responsible for changes visible on the UI. We are currently publishing releases for `win-x64`, `win-x86`, `linux-x64` and `osx`.
+
+Additionally, the sketch-to-simulation feature has to be kept optional, so users who want that feature have to download `sketchlogic.exe` and place it next to `IRis.exe` in the publish folder.
+
 ### Code Formatting
 
 `CSharpier.MsBuild` has been configured in `IRis.csproj` for automatic code formatting on builds. Some rules that are not enforced by the code formatter are as follows:
