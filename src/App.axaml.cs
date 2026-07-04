@@ -71,6 +71,7 @@ public partial class App : Application
         services.AddSingleton<CanvasViewModel>();
         services.AddSingleton<GenerateFromImageWindowViewModel>();
         services.AddSingleton<LeftSidebarViewModel>();
+        services.AddSingleton<RightSidebarViewModel>();
 
         services.AddLogging(builder =>
         {

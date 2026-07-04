@@ -1,0 +1,65 @@
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels.Main"
+  x:DataType="vm:RightSidebarViewModel"
+  x:Class="IRis.Views.Main.RightSidebarView"
+  xmlns:components="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
+  xmlns:gates="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates"
+  xmlns:componentViews="using:IRis.Views.Main.Canvas.CircuitObjects.Components"
+  xmlns:gateViews="using:IRis.Views.Main.Canvas.CircuitObjects.Components.Gates"
+  IsVisible="{Binding IsVisible}"
+  Width="200"
+  FontSize="12"
+>
+  <UserControl.DataTemplates>
+    <DataTemplate DataType="components:GateViewModel">
+      <componentViews:GateView />
+    </DataTemplate>
+    <DataTemplate DataType="components:ToggleViewModel">
+      <componentViews:ToggleView />
+    </DataTemplate>
+    <DataTemplate DataType="components:ProbeViewModel">
+      <componentViews:ProbeView />
+    </DataTemplate>
+    <DataTemplate DataType="components:FullAdderViewModel">
+      <componentViews:FullAdderView />
+    </DataTemplate>
+    <DataTemplate DataType="components:MultiplexerViewModel">
+      <componentViews:MultiplexerView />
+    </DataTemplate>
+    <DataTemplate DataType="components:DemultiplexerViewModel">
+      <componentViews:DemultiplexerView />
+    </DataTemplate>
+  </UserControl.DataTemplates>
+
+  <Border Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
+    <StackPanel Margin="8,8" Spacing="4">
+      <Panel
+        Width="100"
+        Height="100"
+        HorizontalAlignment="Center"
+        ClipToBounds="False"
+        Margin="0,8"
+      >
+        <ContentControl
+          Content="{Binding SelectedComponent}"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          ClipToBounds="False"
+        />
+      </Panel>
+
+      <Border Height="1" Background="#3A3A3A" Margin="0,8" />
+
+      <Grid ColumnDefinitions="*,Auto" Margin="4">
+        <TextBlock Text="Type" VerticalAlignment="Center" Opacity="0.8" />
+        <TextBlock Grid.Column="1" Text="{Binding ComponentType}" />
+      </Grid>
+      <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding IsMultiInputVisible}" Margin="4">
+        <TextBlock Text="Input Count" VerticalAlignment="Center" Opacity="0.8" />
+        <TextBox Grid.Column="1" Text="{Binding InputCountText, Mode=TwoWay}" FontSize="12" />
+      </Grid>
+    </StackPanel>
+  </Border>
+</UserControl>

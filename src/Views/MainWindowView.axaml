@@ -74,7 +74,10 @@
         </StackPanel>
       </Grid>
     </Border>
-    <main:CanvasView />
+    <Grid>
+      <main:CanvasView />
+      <main:RightSidebarView HorizontalAlignment="Right" VerticalAlignment="Stretch" />
+    </Grid>
   </DockPanel>
 
   <Window.KeyBindings>

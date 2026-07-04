@@ -36,6 +36,18 @@ public abstract partial class MultiInputGateViewModel : GateViewModel
         };
     }
 
+    public void RemoveInput()
+    {
+        if (Inputs.Count > 2)
+            Inputs.Remove(Inputs[^1]);
+    }
+
+    public void AddInput()
+    {
+        if (Inputs.Count < 50)
+            Inputs.Add(new());
+    }
+
     protected override void UpdateInputTerminals()
     {
         double unrotatedX = X - 10;
