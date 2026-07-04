@@ -77,7 +77,7 @@ Continuous Integration has been configured in `.github/dotnet-desktop.yml`. This
 
 ```bash
 cd tests
-dotnet test IRis.Tests
+dotnet test
 ```
 
 ### Publishing Releases
