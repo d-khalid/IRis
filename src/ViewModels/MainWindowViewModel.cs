@@ -329,7 +329,7 @@ public partial class MainWindowViewModel : ViewModelBase
             foreach (CircuitObjectViewModel co in collection)
             {
                 if (co is MultiInputGateViewModel mig)
-                    mig.Inputs.Add(new TerminalViewModel());
+                    mig.AddInput();
                 else if (co is MultiplexerViewModel mux)
                     mux.AddSelectLine();
                 else if (co is DemultiplexerViewModel demux)
@@ -354,7 +354,7 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 if (co is MultiInputGateViewModel mig)
                 {
-                    mig.Inputs.Remove(mig.Inputs[^1]);
+                    mig.RemoveInput();
                 }
                 else if (co is MultiplexerViewModel mux)
                 {
