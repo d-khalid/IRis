@@ -40,10 +40,16 @@ public class SimulationService
         {
             if (co is ComponentViewModel c)
             {
-                if (c.X + c.Width > maxX)
-                    maxX = c.X + c.Width;
-                if (c.Y + c.Height > maxY)
-                    maxY = c.Y + c.Height;
+                double x = c.X + c.Width;
+                double y = c.Y + c.Height;
+
+                if (x > 999999 || y > 999999)
+                    continue;
+
+                if (x > maxX)
+                    maxX = x;
+                if (y > maxY)
+                    maxY = y;
             }
         }
 

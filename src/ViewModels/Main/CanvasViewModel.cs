@@ -19,9 +19,9 @@ public partial class CanvasViewModel(
 {
     public Preview Preview { get; } = preview;
     public SelectionBox SelectionBox { get; } = selectionBox;
-    public AppState AppState { get; } = appState;
     public WirePreview WirePreview { get; } = wirePreview;
     public Simulation Simulation { get; } = simulation;
+    public AppState AppState { get; } = appState;
 
     private readonly DragService _dragService = dragService;
     private readonly SimulationService _simulationService = simulationService;

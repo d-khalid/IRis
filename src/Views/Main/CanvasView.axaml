@@ -28,8 +28,8 @@
     KeyDown="OnKeyDown"
   >
     <Canvas
-      MinWidth="2000"
-      MinHeight="2000"
+      Width="{Binding AppState.CanvasWidth}"
+      Height="{Binding AppState.CanvasHeight}"
       Background="{DynamicResource CanvasGridTileBrush}"
       PointerPressed="OnPointerPressed"
       PointerMoved="OnPointerMoved"
