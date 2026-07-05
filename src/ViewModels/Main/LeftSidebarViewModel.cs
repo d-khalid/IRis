@@ -1,9 +1,10 @@
-using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
+using Microsoft.Extensions.Logging;
 
 namespace IRis.ViewModels.Main;
 
@@ -15,20 +16,61 @@ public partial class LeftSidebarViewModel : ViewModelBase
     [ObservableProperty]
     private Simulation _simulation;
 
+    [ObservableProperty]
+    private string _canvasWidth;
+
+    [ObservableProperty]
+    private string _canvasHeight;
+
     private readonly Selection _selection;
     private readonly Preview _preview;
+    private readonly SimulationService _simulationService;
+    private readonly ILogger<LeftSidebarViewModel> _logger;
 
     public LeftSidebarViewModel(
         AppState appState,
         Simulation simulation,
         Selection selection,
-        Preview preview
+        Preview preview,
+        SimulationService simulationService,
+        ILogger<LeftSidebarViewModel> logger
     )
     {
         AppState = appState;
         _simulation = simulation;
         _selection = selection;
         _preview = preview;
+        _simulationService = simulationService;
+        _logger = logger;
+
+        CanvasWidth = AppState.CanvasWidth.ToString();
+        CanvasHeight = AppState.CanvasHeight.ToString();
+    }
+
+    partial void OnCanvasWidthChanged(string value)
+    {
+        if (
+            int.TryParse(value, out int width)
+            && width > 100
+            && width < 25000
+            && _simulationService.GetMaxPointInCollection(Simulation.Objects).X + 20 < width
+        )
+        {
+            AppState.CanvasWidth = width;
+        }
+    }
+
+    partial void OnCanvasHeightChanged(string value)
+    {
+        if (
+            int.TryParse(value, out int height)
+            && height > 100
+            && height < 25000
+            && _simulationService.GetMaxPointInCollection(Simulation.Objects).Y + 20 < height
+        )
+        {
+            AppState.CanvasHeight = height;
+        }
     }
 
     [RelayCommand]

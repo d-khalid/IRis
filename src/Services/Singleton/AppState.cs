@@ -48,6 +48,12 @@ public partial class AppState : ObservableObject
     private string _currentFilePath = "(unsaved)";
 
     [ObservableProperty]
+    private double _canvasWidth = 2000;
+
+    [ObservableProperty]
+    private double _canvasHeight = 2000;
+
+    [ObservableProperty]
     [property: JsonIgnore]
     private bool _editingAllowed = true;
 
