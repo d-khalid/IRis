@@ -2,7 +2,7 @@
 
 IRis is a circuit simulation software that allows design and simulation of digital logic circuits, along with generation of simulations from hand-drawn sketches without using any LLMs or paid API.
 
-It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-to-simulation system is built in python in a seperate repository and compiled to `.exe` to be used internally. For details, refer to [this](https://github.com/ShahzaibAhmad05/SketchLogic).
+It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-to-simulation system is built by the same developers in a [seperate repository](https://github.com/ShahzaibAhmad05/SketchLogic) and compiled to `.exe` to be used internally.
 
 ![C#](https://img.shields.io/badge/C%23-333333?style=for-the-badge&logo=csharp&logoColor=white)
 ![.NET](https://img.shields.io/badge/.NET-333333?style=for-the-badge&logo=dotnet&logoColor=white)
@@ -14,15 +14,15 @@ https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08
 
 ## Distinguishing Features
 
-- Sketch-to-Simulation conversion.
-- A more engaging UX than any existing circuit simulation software.
-- Convenient [keyboard shortcuts](#key-controls-for-circuit-design) for faster designing.
+- Sketch-to-Simulation conversion via [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic).
+- A better UX than [Logisim Evolution](https://github.com/logisim-evolution/logisim-evolution) and [CircuitVerse](https://circuitverse.org/). See for yourself in the screenshots and demo above.
+- Convenient [keyboard shortcuts](#key-controls-for-circuit-design) for a smooth designing experience.
 
 ---
 
 ## Try it
 
-Supports but not limited to: _Windows, Linux, and MacOS._
+Supports & Tested on: _Windows, Linux, and MacOS._
 
 There are no compiled packages/installers yet, but the setup is arguably simple. If you want to run it on your PC, refer to the [Developer Setup](#developer-setup) section for instructions. After following those you will have the simulator running on your system.
 
@@ -40,6 +40,14 @@ However, for Sketch to Simulation Conversion feature, you would have to download
 - `Ctrl+Z`, `Ctrl+Y` for undo/redo commands.
 - `Arrow keys` or `Ctrl+LeftClick` for canvas control and movement.
 - `RightClick` for menu with options from **Simulate tab**.
+
+---
+
+## License & Contributions
+
+This project is licensed under `GPL-3.0`. For details, refer to [LICENSE](https://github.com/d-khalid/IRis?tab=GPL-3.0-1-ov-file). 
+
+Contributions are welcome. **github-actions-bot** has been setup to facilitate contributors. For details, refer to [CONTRIBUTING](https://github.com/d-khalid/IRis?tab=contributing-ov-file).
 
 ---
 
@@ -91,7 +99,7 @@ As for debugging a compiled app, it's `.exe` has to be run from a terminal which
 Move into `src/` directory since we have the code there. Available target systems as runtime identifiers are given in this [catalog](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog).
 
 ```bash
-dotnet publish IRis.csproj --configuration Release --runtime <RUNTIME_IDENTIFIER> --self-contained true --output ./publish/win 
+dotnet publish IRis.csproj --configuration Release --runtime <RUNTIME_IDENTIFIER> --self-contained true --output ./publish/win
 ```
 
 Note that we are using `--self-contained` to bundle the .NET runtime into the published folder. We then compress the folder to a `.zip` file to ship it with a release.
@@ -102,7 +110,7 @@ Additionally, the sketch-to-simulation feature has to be kept optional, so users
 
 ### Understanding the Architecture
 
-The sections bellow are details of why and how the codebase architecture was built like this. Every major architectural choice is documented here, every decision was criticized repeatedly until everything came very close to perfection.
+The sections bellow are details of why and how the codebase architecture was built like this. Every major architectural choice is documented here.
 
 #### Dependency Injection
 
