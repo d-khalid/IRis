@@ -27,6 +27,12 @@
         <ToggleButton Classes="section" x:Name="IoToggle" IsChecked="True" Content="I/O" />
         <StackPanel IsVisible="{Binding #IoToggle.IsChecked}">
           <StackPanel>
+            <Button Classes="item" Command="{Binding AddClockCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Viewbox Height="16" Child="{StaticResource SampleClock}" />
+                <TextBlock Text="Clock" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
             <Button Classes="item" Command="{Binding AddToggleCommand}">
               <StackPanel Orientation="Horizontal" Spacing="4">
                 <Viewbox Height="16" Child="{StaticResource SampleToggle}" />
