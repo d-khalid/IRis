@@ -28,7 +28,7 @@ https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08
 
 Supports & Tested on: _Windows, Linux, and MacOS._
 
-There are no compiled packages/installers yet, but the setup is arguably simple. If you want to run it on your PC, refer to the [Developer Setup](#developer-setup) section for instructions. After following those you will have the simulator running on your system.
+To use this software on your PC, just download the latest `.zip` for your system from [releases](https://github.com/d-khalid/IRis/releases). After unzipping, open the folder, double-click on `IRis.exe`, and you will have the simulation software running in a window. **(no .NET required)**
 
 However, for Sketch to Simulation Conversion feature, you would have to download the latest `.exe` release from [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic/releases). Just put the `.exe` file in the project root and the simulator will pick it up.
 
