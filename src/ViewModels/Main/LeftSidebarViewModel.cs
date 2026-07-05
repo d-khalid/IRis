@@ -12,15 +12,11 @@ public partial class LeftSidebarViewModel : ViewModelBase
     [ObservableProperty]
     private AppState _appState;
 
-    private readonly Simulation _simulation;
+    [ObservableProperty]
+    private Simulation _simulation;
+
     private readonly Selection _selection;
     private readonly Preview _preview;
-
-    [ObservableProperty]
-    private string _simulationToggleContent;
-
-    [ObservableProperty]
-    private Brush _simulationToggleBrush;
 
     public LeftSidebarViewModel(
         AppState appState,
@@ -33,42 +29,13 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _simulation = simulation;
         _selection = selection;
         _preview = preview;
-
-        _simulation.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName is nameof(Simulation.Running))
-            {
-                SimulationToggleContent = _simulation.Running
-                    ? "Simulation: ON"
-                    : "Simulation: OFF";
-
-                SimulationToggleBrush = new SolidColorBrush(
-                    _simulation.Running ? Colors.DarkGreen : Colors.DarkRed
-                );
-            }
-        };
-
-        _simulationToggleContent = _simulation.Running ? "Simulation: ON" : "Simulation: OFF";
-
-        _simulationToggleBrush = new SolidColorBrush(
-            _simulation.Running ? Colors.DarkGreen : Colors.DarkRed
-        );
-    }
-
-    [RelayCommand]
-    private void SimulationToggle()
-    {
-        if (!_simulation.Running)
-            _simulation.Running = true;
-        else
-            _simulation.Running = false;
     }
 
     [RelayCommand]
     private void ShowDesignTab() => AppState.DesignTabActive = true;
 
     [RelayCommand]
-    private void ShowSimulateTab() => AppState.DesignTabActive = false;
+    private void ShowCanvasTab() => AppState.DesignTabActive = false;
 
     [RelayCommand]
     private void AddAnd()

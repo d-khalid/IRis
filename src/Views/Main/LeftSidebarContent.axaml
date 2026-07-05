@@ -17,9 +17,9 @@
         />
         <Button
           Classes="tab"
-          Content="Simulate"
+          Content="Canvas"
           Classes.active="{Binding AppState.DesignTabActive, Converter={x:Static BoolConverters.Not}}"
-          Command="{Binding ShowSimulateTabCommand}"
+          Command="{Binding ShowCanvasTabCommand}"
         />
       </StackPanel>
       <Border Height="1" Background="#3A3A3A" Margin="0,0,0,5" />
@@ -161,14 +161,17 @@
           </Viewbox>
           <TextBlock Text="Circuit Editing" VerticalAlignment="Center" />
         </StackPanel>
-        <Button
-          Command="{Binding SimulationToggleCommand}"
-          Background="{Binding SimulationToggleBrush}"
-          Content="{Binding SimulationToggleContent}"
-          Margin="0,20"
-          BorderThickness="0"
-          Focusable="False"
-        />
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
+          <Viewbox Height="24">
+            <CheckBox IsChecked="{Binding Simulation.Running, Mode=TwoWay}" Focusable="False">
+              <CheckBox.Resources>
+                <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="DodgerBlue" />
+                <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="DodgerBlue" />
+              </CheckBox.Resources>
+            </CheckBox>
+          </Viewbox>
+          <TextBlock Text="Simulation" VerticalAlignment="Center" />
+        </StackPanel>
       </StackPanel>
     </StackPanel>
   </ScrollViewer>
