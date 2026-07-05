@@ -1,8 +1,12 @@
 # Logic Circuit Simulator
 
-IRis is a circuit simulation software that allows design and simulation of digital logic circuits, along with generation of simulations from hand-drawn sketches without using any LLMs or paid API.
+IRis is a desktop app that allows design and simulation of digital logic circuits. It features generation of simulations from hand-drawn sketches without using LLMs or any paid API.
 
 It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-to-simulation system is built by the same developers in a [seperate repository](https://github.com/ShahzaibAhmad05/SketchLogic) and compiled to `.exe` to be used internally.
+
+![License](https://img.shields.io/github/license/d-khalid/IRis?style=for-the-badge&color=333333)
+![Build Status](https://img.shields.io/github/actions/workflow/status/d-khalid/IRis/dotnet-desktop.yml?style=for-the-badge&color=333333)
+![Last Commit](https://img.shields.io/github/last-commit/d-khalid/IRis?style=for-the-badge&color=333333)
 
 ![C#](https://img.shields.io/badge/C%23-333333?style=for-the-badge&logo=csharp&logoColor=white)
 ![.NET](https://img.shields.io/badge/.NET-333333?style=for-the-badge&logo=dotnet&logoColor=white)
@@ -14,7 +18,7 @@ https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08
 
 ## Distinguishing Features
 
-- Sketch-to-Simulation conversion via [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic).
+- Sketch-to-Simulation conversion via [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic) built by the same developers.
 - A better UX than [Logisim Evolution](https://github.com/logisim-evolution/logisim-evolution) and [CircuitVerse](https://circuitverse.org/). See for yourself in the screenshots and demo above.
 - Convenient [keyboard shortcuts](#key-controls-for-circuit-design) for a smooth designing experience.
 
