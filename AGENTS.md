@@ -1,6 +1,6 @@
 ## Token Saving
 
-- Keep your responses extremely short to save tokens wherever possible.
+- Keep your responses very very short. You have to save every last token you can save.
 - Avoid long explanations. Keep sentences as concise as possible unless explicitly specified.
 
 ## Behaviour
