@@ -4,15 +4,15 @@ IRis is a desktop app that allows design and simulation of digital logic circuit
 
 It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-to-simulation system is built by the same developers in a [seperate repository](https://github.com/ShahzaibAhmad05/SketchLogic) and compiled to `.exe` to be used internally.
 
-![License](https://img.shields.io/github/license/d-khalid/IRis?style=for-the-badge&color=333333)
-![Build Status](https://img.shields.io/github/actions/workflow/status/d-khalid/IRis/dotnet-desktop.yml?style=for-the-badge&color=333333)
-![Last Commit](https://img.shields.io/github/last-commit/d-khalid/IRis?style=for-the-badge&color=333333)
+License
+Build Status
+Last Commit
 
-![C#](https://img.shields.io/badge/C%23-333333?style=for-the-badge&logo=csharp&logoColor=white)
-![.NET](https://img.shields.io/badge/.NET-333333?style=for-the-badge&logo=dotnet&logoColor=white)
-![Avalonia](https://img.shields.io/badge/Avalonia-333333?style=for-the-badge&logo=avalonia&logoColor=white)
+C#
+.NET
+Avalonia
 
-https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08
+[https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08](https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08)
 
 ---
 
@@ -26,11 +26,11 @@ https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08
 
 ## Try it
 
-Supports & Tested on: _Windows, Linux, and MacOS._
+Supports & Tested on: *Windows, Linux, and MacOS.*
 
 To use this software on your PC, just download the latest `.zip` for your system from [releases](https://github.com/d-khalid/IRis/releases). After unzipping, open the folder, double-click on `IRis.exe`, and you will have the simulation software running in a window. **(no .NET required)**
 
-However, for Sketch to Simulation Conversion feature, you would have to download the latest `.exe` release from [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic/releases). Just put the `.exe` file in the project root and the simulator will pick it up.
+Now for the Sketch to Simulation feature, you would have to download the latest `.exe` release from [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic/releases). Just put the `.exe` file in the project root and the simulator will pick it up.
 
 ---
 
@@ -106,11 +106,14 @@ Move into `src/` directory since we have the code there. Available target system
 dotnet publish IRis.csproj --configuration Release --runtime <RUNTIME_IDENTIFIER> --self-contained true --output ./publish/win
 ```
 
-Note that we are using `--self-contained` to bundle the .NET runtime into the published folder. We then compress the folder to a `.zip` file to ship it with a release.
+Note that we are using `--self-contained` to bundle the .NET runtime into the published folder. We then compress the folder to a `.zip` file to ship it with a release. 
 
-Releases have the version formatting of `major.minor`. As for release notes, auto-generate them and only keep the ones responsible for changes visible on the UI. We are currently publishing releases for `win-x64`, `win-x86`, `linux-x64` and `osx`.
+Releases have the version formatting of `Major.Minor.Patch`. As for release notes, auto-generate them and only keep the ones responsible for changes visible on the UI. We are currently publishing releases for `win-x64`, `win-x86`, `linux-x64` and `osx`.
 
 Additionally, the sketch-to-simulation feature has to be kept optional, so users who want that feature have to download `sketchlogic.exe` and place it next to `IRis.exe` in the publish folder.
+
+> [!NOTE]
+> We prefer having a console alongside the app on windows, for transparency and partially because we consider our users to be smart enough to know that having a console printing state info is often more helpful than just a dead GUI.
 
 ### Understanding the Architecture
 
@@ -120,7 +123,7 @@ The sections bellow are details of why and how the codebase architecture was bui
 
 Inspired by the [official documentation: IoC](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/ioc) for `CommunityToolkit.Mvvm` and a few thoughts we had in mind, we implemented **Dependency Injection** for better code structure, maintainability, flexibility, etc.
 
-This involves registering the static and instance-dependent services in `app.axaml.cs` and then calling `App.Current.Services.GetRequiredService<RequesterClass>()` assuming we declare an instance of the _RequesterClass_. This approach is followed for all the Services except for `CommandService` which would otherwise create cycles of service dependencies and hence errors, since services can use other services in their constructors.
+This involves registering the static and instance-dependent services in `app.axaml.cs` and then calling `App.Current.Services.GetRequiredService<RequesterClass>()` assuming we declare an instance of the *RequesterClass*. This approach is followed for all the Services except for `CommandService` which would otherwise create cycles of service dependencies and hence errors, since services can use other services in their constructors.
 
 It is to be noted that the true DI as mentioned in the documentation involves injecting services through the constructors. we had to take a different approach for components. They involve hierarchies and constructor chaining, so it's common sense that injecting services through the constructors would lead to more rigidity. So instead, we get the services in the constructor code blocks using `App.Current.Services.GetRequiredService<ServiceName>()`.
 
@@ -183,3 +186,4 @@ Now refer to it as a Static Resource in MenuIcon:
 ```xml
 <MenuItem.Icon><PathIcon Data="{StaticResource save_edit}" /></MenuItem.Icon>
 ```
+
