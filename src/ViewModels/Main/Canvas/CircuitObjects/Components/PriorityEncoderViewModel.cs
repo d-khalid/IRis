@@ -1,10 +1,10 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Avalonia;
 using IRis.Models.CircuitObjects.Components;
 using IRis.Models.Core;
 using IRis.ViewModels.Main.Canvas.Core;
-using System;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 

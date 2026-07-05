@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using IRis.Models.Core;
-using System;
 
 namespace IRis.Models.CircuitObjects.Components;
 
@@ -41,9 +41,8 @@ public class PriorityEncoder : Component
 
         for (int bit = 0; bit < Outputs.Count; bit++)
         {
-            Outputs[bit].State = index / (int)Math.Pow(2, bit) % 2 == 1
-                ? LogicState.High
-                : LogicState.Low;
+            Outputs[bit].State =
+                index / (int)Math.Pow(2, bit) % 2 == 1 ? LogicState.High : LogicState.Low;
         }
     }
 

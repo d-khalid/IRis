@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using IRis.Models.Core;
-using System;
 
 namespace IRis.Models.CircuitObjects.Components;
 
