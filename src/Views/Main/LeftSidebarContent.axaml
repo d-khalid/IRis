@@ -116,6 +116,18 @@
                 <TextBlock Text="Demultiplexer" VerticalAlignment="Center" />
               </StackPanel>
             </Button>
+            <Button Classes="item" Command="{Binding AddDecoderCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Viewbox Height="16" Child="{StaticResource SampleDecoder}" />
+                <TextBlock Text="Decoder" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="item" Command="{Binding AddPriorityEncoderCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Viewbox Height="16" Child="{StaticResource SamplePriorityEncoder}" />
+                <TextBlock Text="Priority Encoder" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
           </StackPanel>
         </StackPanel>
 
@@ -143,14 +155,20 @@
         Spacing="5"
       >
         <Grid ColumnDefinitions="Auto,*,*" Margin="0,0,0,8">
-          <TextBlock Text="Canvas" VerticalAlignment="Center" Margin="0,0,8,0" />
+          <TextBlock Text="Size" VerticalAlignment="Center" Margin="0,0,8,0" />
           <TextBox
             Grid.Column="1"
             Margin="0,0,4,0"
             MinWidth="20"
             Text="{Binding CanvasWidth, Mode=TwoWay}"
+            FontSize="12"
           />
-          <TextBox Grid.Column="2" MinWidth="20" Text="{Binding CanvasHeight, Mode=TwoWay}" />
+          <TextBox
+            Grid.Column="2"
+            MinWidth="20"
+            Text="{Binding CanvasHeight, Mode=TwoWay}"
+            FontSize="12"
+          />
         </Grid>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
           <Viewbox Height="24">

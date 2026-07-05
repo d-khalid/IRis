@@ -30,6 +30,12 @@
     <DataTemplate DataType="components:DemultiplexerViewModel">
       <views:DemultiplexerView />
     </DataTemplate>
+    <DataTemplate DataType="components:DecoderViewModel">
+      <views:DecoderView />
+    </DataTemplate>
+    <DataTemplate DataType="components:PriorityEncoderViewModel">
+      <views:PriorityEncoderView />
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <ContentControl

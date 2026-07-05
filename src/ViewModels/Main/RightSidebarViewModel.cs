@@ -11,22 +11,22 @@ public partial class RightSidebarViewModel : ViewModelBase
     private readonly Selection _selection;
 
     [ObservableProperty]
+    private bool _isVisible;
+
+    [ObservableProperty]
     private ComponentViewModel? _selectedComponent;
 
     [ObservableProperty]
     private string _componentType = "";
 
     [ObservableProperty]
-    private bool _isVisible;
-
-    [ObservableProperty]
     private bool _isMultiInputVisible;
 
     [ObservableProperty]
-    private bool _isClockVisible;
+    private string _inputCountText = "";
 
     [ObservableProperty]
-    private string _inputCountText = "";
+    private bool _isClockVisible;
 
     [ObservableProperty]
     private string _frequencyText = "";
@@ -37,26 +37,19 @@ public partial class RightSidebarViewModel : ViewModelBase
 
         _selection.Objects.CollectionChanged += (_, _) =>
         {
+            IsVisible = false;
+            IsMultiInputVisible = false;
+            IsClockVisible = false;
+
             if (_selection.Objects.Count == 1 && _selection.Objects[0] is ComponentViewModel co)
             {
-                SelectedComponent = co;
-
-                ComponentType = co.GetType().Name.Replace("ViewModel", "");
-
                 IsVisible = true;
-
-                IsMultiInputVisible = false;
-
-                IsClockVisible = false;
-
-                InputCountText = "";
-
-                FrequencyText = "";
+                SelectedComponent = co;
+                ComponentType = co.GetType().Name.Replace("ViewModel", "");
 
                 if (co is MultiInputGateViewModel mig)
                 {
                     InputCountText = mig.Inputs.Count.ToString();
-
                     IsMultiInputVisible = true;
 
                     mig.Inputs.CollectionChanged += (_, _) =>
@@ -67,23 +60,8 @@ public partial class RightSidebarViewModel : ViewModelBase
                 else if (co is ClockViewModel clock)
                 {
                     IsClockVisible = true;
-
                     FrequencyText = clock.FrequencyHz.ToString();
                 }
-            }
-            else
-            {
-                SelectedComponent = null;
-
-                IsVisible = false;
-
-                IsMultiInputVisible = false;
-
-                IsClockVisible = false;
-
-                InputCountText = "";
-
-                FrequencyText = "";
             }
         };
     }

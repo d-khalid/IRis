@@ -34,6 +34,12 @@
     <DataTemplate DataType="components:DemultiplexerViewModel">
       <componentViews:DemultiplexerView />
     </DataTemplate>
+    <DataTemplate DataType="components:DecoderViewModel">
+      <componentViews:DecoderView />
+    </DataTemplate>
+    <DataTemplate DataType="components:PriorityEncoderViewModel">
+      <componentViews:PriorityEncoderView />
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <Border Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">

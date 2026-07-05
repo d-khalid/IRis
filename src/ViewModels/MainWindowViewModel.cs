@@ -334,6 +334,10 @@ public partial class MainWindowViewModel : ViewModelBase
                     mux.AddSelectLine();
                 else if (co is DemultiplexerViewModel demux)
                     demux.AddSelectLine();
+                else if (co is DecoderViewModel decoder)
+                    decoder.AddSelectLine();
+                else if (co is PriorityEncoderViewModel encoder)
+                    encoder.AddSelectLine();
             }
         }
     }
@@ -363,6 +367,14 @@ public partial class MainWindowViewModel : ViewModelBase
                 else if (co is DemultiplexerViewModel demux)
                 {
                     demux.RemoveSelectLine();
+                }
+                else if (co is DecoderViewModel decoder)
+                {
+                    decoder.RemoveSelectLine();
+                }
+                else if (co is PriorityEncoderViewModel encoder)
+                {
+                    encoder.RemoveSelectLine();
                 }
             }
         }
