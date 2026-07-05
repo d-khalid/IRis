@@ -116,6 +116,18 @@
                 <TextBlock Text="Demultiplexer" VerticalAlignment="Center" />
               </StackPanel>
             </Button>
+            <Button Classes="item" Command="{Binding AddDecoderCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Viewbox Height="16" Child="{StaticResource SampleDecoder}" />
+                <TextBlock Text="Decoder" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="item" Command="{Binding AddPriorityEncoderCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Viewbox Height="16" Child="{StaticResource SamplePriorityEncoder}" />
+                <TextBlock Text="Priority Encoder" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
           </StackPanel>
         </StackPanel>
 

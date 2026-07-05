@@ -236,6 +236,42 @@
         Margin="1,0,0,0"
       />
     </Border>
+    <Border
+      x:Key="SampleDecoder"
+      Width="16"
+      Height="20"
+      Background="{DynamicResource ComponentFillBrush}"
+      BorderBrush="{DynamicResource ComponentBorderBrush}"
+      BorderThickness="2"
+      CornerRadius="2"
+    >
+      <TextBlock
+        Text="Dc"
+        Foreground="{DynamicResource ComponentBorderBrush}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        FontSize="8"
+        FontWeight="ExtraBold"
+      />
+    </Border>
+    <Border
+      x:Key="SamplePriorityEncoder"
+      Width="16"
+      Height="20"
+      Background="{DynamicResource ComponentFillBrush}"
+      BorderBrush="{DynamicResource ComponentBorderBrush}"
+      BorderThickness="2"
+      CornerRadius="2"
+    >
+      <TextBlock
+        Text="Pe"
+        Foreground="{DynamicResource ComponentBorderBrush}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        FontSize="8"
+        FontWeight="ExtraBold"
+      />
+    </Border>
   </UserControl.Resources>
 
   <UserControl.Styles>

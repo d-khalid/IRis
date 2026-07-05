@@ -4,9 +4,8 @@ using System;
 
 namespace IRis.Models.CircuitObjects.Components;
 
-public class Demultiplexer : Component
+public class Decoder : Component
 {
-    public Terminal Input = null!;
     public List<Terminal> Selects { get; } = [];
     public List<Terminal> Outputs { get; } = [];
 
@@ -27,8 +26,15 @@ public class Demultiplexer : Component
                 index += (int)Math.Pow(2, i);
         }
 
+        if (index >= Outputs.Count)
+        {
+            foreach (var o in Outputs)
+                o.State = LogicState.Unknown;
+            return;
+        }
+
         for (int i = 0; i < Outputs.Count; i++)
-            Outputs[i].State = i == index ? Input.State : LogicState.Low;
+            Outputs[i].State = i == index ? LogicState.High : LogicState.Low;
     }
 
     public override void Reset()

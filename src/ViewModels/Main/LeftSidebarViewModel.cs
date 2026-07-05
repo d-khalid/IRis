@@ -202,6 +202,30 @@ public partial class LeftSidebarViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void AddDecoder()
+    {
+        _selection.UnHighlightAll();
+
+        DecoderViewModel decoder = new();
+        decoder.AddSelectLine();
+        decoder.AddSelectLine();
+
+        _preview.Pick(decoder);
+    }
+
+    [RelayCommand]
+    private void AddPriorityEncoder()
+    {
+        _selection.UnHighlightAll();
+
+        PriorityEncoderViewModel encoder = new();
+        encoder.AddSelectLine();
+        encoder.AddSelectLine();
+
+        _preview.Pick(encoder);
+    }
+
+    [RelayCommand]
     private void AddToggle()
     {
         _selection.UnHighlightAll();
