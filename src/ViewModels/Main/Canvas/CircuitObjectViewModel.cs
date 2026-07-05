@@ -26,9 +26,9 @@ public abstract partial class CircuitObjectViewModel(CircuitObject model)
 
     protected CircuitObject Model { get; } = model;
 
-    public void Simulate() => Model.Simulate();
+    public virtual void Simulate() => Model.Simulate();
 
-    public void Reset() => Model.Reset();
+    public virtual void Reset() => Model.Reset();
 
     public abstract bool Contains(Point pt);
     public abstract bool Intersects(Rect rect);

@@ -28,6 +28,25 @@
       />
     </Border>
     <Border
+      x:Key="SampleClock"
+      Width="20"
+      Height="20"
+      Background="{DynamicResource ComponentFillBrush}"
+      BorderBrush="{DynamicResource ComponentBorderBrush}"
+      BorderThickness="2"
+      CornerRadius="1"
+    >
+      <TextBlock
+        Text="~"
+        Foreground="{DynamicResource ComponentBorderBrush}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Margin="0,0,0,1"
+        FontSize="14"
+        FontWeight="ExtraBold"
+      />
+    </Border>
+    <Border
       x:Key="SampleProbe"
       Width="20"
       Height="20"

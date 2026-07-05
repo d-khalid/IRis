@@ -169,6 +169,15 @@ public partial class LeftSidebarViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void AddClock()
+    {
+        _selection.UnHighlightAll();
+
+        ClockViewModel clock = new() { Output = new() };
+        _preview.Pick(clock);
+    }
+
+    [RelayCommand]
     private void AddProbe()
     {
         _selection.UnHighlightAll();
