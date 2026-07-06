@@ -44,20 +44,22 @@
 
   <Border Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
     <StackPanel Margin="8,8" Spacing="4">
-      <Panel
+      <Border
         Width="100"
         Height="100"
         HorizontalAlignment="Center"
-        ClipToBounds="False"
         Margin="0,8"
+        ClipToBounds="False"
       >
-        <ContentControl
-          Content="{Binding SelectedComponent}"
-          HorizontalAlignment="Center"
-          VerticalAlignment="Center"
-          ClipToBounds="False"
-        />
-      </Panel>
+        <Viewbox Stretch="Uniform" StretchDirection="DownOnly" ClipToBounds="False">
+          <ContentControl
+            Content="{Binding SelectedComponent}"
+            Width="{Binding SelectedComponent.Width}"
+            Height="{Binding SelectedComponent.Height}"
+            ClipToBounds="False"
+          />
+        </Viewbox>
+      </Border>
 
       <Border Height="1" Background="#3A3A3A" Margin="0,8" />
 
