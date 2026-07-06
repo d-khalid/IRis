@@ -25,7 +25,7 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Build
+      - name: build
         run: |
           cd src
           dotnet build
@@ -34,3 +34,9 @@ jobs:
         run: |
           cd tests
           dotnet test
+
+      - name: update code coverage
+        if: runner.os == 'Linux'
+        uses: codecov/codecov-action@v4
+        with:
+          files: tests/coverage.cobertura.xml
