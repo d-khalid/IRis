@@ -203,28 +203,24 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void Delete()
     {
-        WireViewModel? findAttachedWire(TerminalViewModel terminal)
+        AvaloniaList<WireViewModel> findAttachedWires(TerminalViewModel terminal)
         {
+            AvaloniaList<WireViewModel> wires = [];
+
             foreach (CircuitObjectViewModel co in _simulation.Objects)
             {
-                if (co is WireViewModel w)
-                {
-                    if (w.MainInput == terminal || w.MainOutput == terminal)
-                    {
-                        return w;
-                    }
-                }
+                if (co is WireViewModel w && (w.MainInput == terminal || w.MainOutput == terminal))
+                    wires.Add(w);
             }
 
-            return null;
+            return wires;
         }
 
         foreach (CircuitObjectViewModel co in _selection.Objects)
         {
             if (co is GateViewModel gate)
             {
-                WireViewModel? wire = findAttachedWire(gate.Output);
-                if (wire is not null)
+                foreach (WireViewModel wire in findAttachedWires(gate.Output))
                     wire.MainInput = new() { IsOrphan = true };
 
                 AvaloniaList<TerminalViewModel> inputs = [];
@@ -243,12 +239,10 @@ public partial class MainWindowViewModel : ViewModelBase
 
                 foreach (TerminalViewModel input in inputs)
                 {
-                    WireViewModel? w = findAttachedWire(input);
-                    if (w is not null)
-                        w.MainOutput = new() { IsOrphan = true };
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                        wire.MainOutput = new() { IsOrphan = true };
                 }
             }
-
             else if (co is FullAdderViewModel fa)
             {
                 AvaloniaList<TerminalViewModel> inputs = [fa.A, fa.B, fa.Cin];
@@ -256,52 +250,96 @@ public partial class MainWindowViewModel : ViewModelBase
 
                 foreach (TerminalViewModel input in inputs)
                 {
-                    WireViewModel? w = findAttachedWire(input);
-                    if (w is not null)
-                        w.MainOutput = new() { IsOrphan = true };
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                        wire.MainOutput = new() { IsOrphan = true };
                 }
 
                 foreach (TerminalViewModel output in outputs)
                 {
-                    WireViewModel? w = findAttachedWire(output);
-                    if (w is not null)
-                        w.MainInput = new() { IsOrphan = true };
+                    foreach (WireViewModel wire in findAttachedWires(output))
+                        wire.MainInput = new() { IsOrphan = true };
                 }
             }
-
             else if (co is MultiplexerViewModel mux)
             {
                 AvaloniaList<TerminalViewModel> inputs = [.. mux.Inputs, .. mux.Selects];
 
                 foreach (TerminalViewModel input in inputs)
                 {
-                    WireViewModel? w = findAttachedWire(input);
-                    if (w is not null)
-                        w.MainOutput = new() { IsOrphan = true };
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                        wire.MainOutput = new() { IsOrphan = true };
                 }
 
-                WireViewModel? wire = findAttachedWire(mux.Output);
-                if (wire is not null)
+                foreach (WireViewModel wire in findAttachedWires(mux.Output))
                     wire.MainInput = new() { IsOrphan = true };
             }
-
             else if (co is DemultiplexerViewModel demux)
             {
                 AvaloniaList<TerminalViewModel> inputs = [demux.Input, .. demux.Selects];
 
                 foreach (TerminalViewModel input in inputs)
                 {
-                    WireViewModel? w = findAttachedWire(input);
-                    if (w is not null)
-                        w.MainOutput = new() { IsOrphan = true };
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                        wire.MainOutput = new() { IsOrphan = true };
                 }
 
                 foreach (TerminalViewModel output in demux.Outputs)
                 {
-                    WireViewModel? w = findAttachedWire(output);
-                    if (w is not null)
-                        w.MainInput = new() { IsOrphan = true };
+                    foreach (WireViewModel wire in findAttachedWires(output))
+                        wire.MainInput = new() { IsOrphan = true };
                 }
+            }
+            else if (co is DecoderViewModel decoder)
+            {
+                foreach (TerminalViewModel input in decoder.Selects)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                        wire.MainOutput = new() { IsOrphan = true };
+                }
+
+                foreach (TerminalViewModel output in decoder.Outputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(output))
+                        wire.MainInput = new() { IsOrphan = true };
+                }
+            }
+            else if (co is PriorityEncoderViewModel encoder)
+            {
+                foreach (TerminalViewModel input in encoder.Inputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                        wire.MainOutput = new() { IsOrphan = true };
+                }
+
+                foreach (TerminalViewModel output in encoder.Outputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(output))
+                        wire.MainInput = new() { IsOrphan = true };
+                }
+            }
+            else if (co is ToggleViewModel toggle)
+            {
+                foreach (WireViewModel wire in findAttachedWires(toggle.Output))
+                    wire.MainInput = new() { IsOrphan = true };
+            }
+            else if (co is ClockViewModel clock)
+            {
+                foreach (WireViewModel wire in findAttachedWires(clock.Output))
+                    wire.MainInput = new() { IsOrphan = true };
+            }
+            else if (co is ProbeViewModel probe)
+            {
+                foreach (WireViewModel wire in findAttachedWires(probe.Input))
+                    wire.MainOutput = new() { IsOrphan = true };
+            }
+        }
+
+        foreach (CircuitObjectViewModel co in _selection.Objects)
+        {
+            if (co is WireViewModel wire)
+            {
+                wire.MainInput.GetModel().State = LogicState.Unknown;
+                wire.MainOutput.GetModel().State = LogicState.Unknown;
             }
         }
 
