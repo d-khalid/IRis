@@ -6,7 +6,7 @@ It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-t
 
 ![License](https://img.shields.io/github/license/d-khalid/IRis?style=for-the-badge&color=333333)
 ![Build Status](https://img.shields.io/github/actions/workflow/status/d-khalid/IRis/dotnet-desktop.yml?style=for-the-badge&color=333333)
-[![Code Coverage](https://codecov.io/gh/d-khalid/IRis/graph/badge.svg?style=for-the-badge)](https://codecov.io/gh/d-khalid/IRis)
+![Code Coverage](https://img.shields.io/codecov/c/github/d-khalid/IRis?style=for-the-badge&color=333333)
 ![Last Commit](https://img.shields.io/github/last-commit/d-khalid/IRis?style=for-the-badge&color=333333)
 
 ![C#](https://img.shields.io/badge/C%23-333333?style=for-the-badge&logo=csharp&logoColor=white)
