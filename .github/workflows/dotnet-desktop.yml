@@ -24,13 +24,16 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-
+          
       - name: Build
         run: |
           cd src
           dotnet build
 
-      - name: tests
-        run: |
-          cd tests
-          dotnet test
+      - name: Run tests with coverage
+        run: dotnet test --no-restore --verbosity normal --collect:"XPlat Code Coverage"
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
