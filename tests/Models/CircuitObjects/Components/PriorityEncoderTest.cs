@@ -12,11 +12,7 @@ public class PriorityEncoderTest
     [InlineData(LogicState.High, LogicState.High, LogicState.High)]
     [InlineData(LogicState.Low, LogicState.Low, LogicState.Low)]
     [InlineData(LogicState.Unknown, LogicState.Low, LogicState.Unknown)]
-    public void SimulateExampleScenarios(
-        LogicState input0,
-        LogicState input1,
-        LogicState expected
-    )
+    public void SimulateExampleScenarios(LogicState input0, LogicState input1, LogicState expected)
     {
         var encoder = new PriorityEncoder();
         encoder.Inputs.Add(new Terminal { State = input0 });
