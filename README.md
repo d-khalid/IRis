@@ -2,7 +2,7 @@
 
 IRis is a desktop app that allows design and simulation of digital logic circuits. It features generation of simulations from hand-drawn sketches without using LLMs or any paid API.
 
-It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-to-simulation system is built by the same developers in a [seperate repository](https://github.com/ShahzaibAhmad05/SketchLogic) and compiled to `.exe` to be used internally.
+It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-to-simulation system is built by the same developers in a [seperate repository](https://github.com/ShahzaibAhmad05/SketchLogic) and compiled to `.exe` to be used internally. This `README` is entirely human-written and human-maintained; it's worth a read.
 
 ![License](https://img.shields.io/github/license/d-khalid/IRis?style=for-the-badge&color=333333)
 ![Build Status](https://img.shields.io/github/actions/workflow/status/d-khalid/IRis/dotnet-desktop.yml?style=for-the-badge&color=333333)
@@ -55,11 +55,7 @@ Contributions are welcome. **github-actions-bot** has been setup to facilitate c
 
 ---
 
-## Developer Notes
-
-All the text bellow is meant for developers who are working, or who want to work on this codebase. It's all human-written, so it's worth a read.
-
-### Local Setup
+## Local Setup
 
 - Install .NET SDK 9.0 from [here](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
 - Make sure it is installed properly by running `dotnet --version` in a terminal.
@@ -67,7 +63,9 @@ All the text bellow is meant for developers who are working, or who want to work
 - .NET automatically resolves the dependencies, so it should build with no issues. Use `cd src` and `dotnet run` to run the program.
 - For sketch-to-simulation conversion, download the `sketchlogic.exe` file from [here](https://github.com/ShahzaibAhmad05/SketchLogic/releases/tag/v0.1.0) and place it in the `src/` directory. Then look for a `Generate Circuit From Image` option in the top menu of the simulator.
 
-### Code Formatting
+---
+
+## Code Formatting
 
 `CSharpier.MsBuild` has been configured in `IRis.csproj` for automatic code formatting on builds. Some rules that are not enforced by the code formatter are as follows:
 
@@ -83,7 +81,9 @@ With the above in mind, try to keep the code formatting consistent with the exis
 > [!NOTE]
 > Any edits to this section have to be repeated for `AGENTS.md`.
 
-### CI & Testing
+---
+
+## CI & Testing
 
 Continuous Integration has been configured in `.github/dotnet-desktop.yml`. This runs a sample build first, and then the testing module. Testing checks all the components against sample inputs and expected outputs using `[Theory]` and `InlineData`. To manually run testing, follow this:
 
@@ -92,13 +92,17 @@ cd tests
 dotnet test
 ```
 
-### Debugging
+---
+
+## Debugging
 
 Logger is registered in services. It can be declared using any other service. Common logging levels used in IRis are `DEBUG`, `INFO`, `WARNING` and `ERROR`. More and more logs will be added as the app expands.
 
 As for debugging a compiled app, it's `.exe` has to be run from a terminal which would then print debugging info as the app is running.
 
-### Publishing Releases
+---
+
+## Publishing Releases
 
 Move into `src/` directory since we have the code there. Available target systems as runtime identifiers are given in this [catalog](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog).
 
@@ -108,28 +112,30 @@ dotnet publish IRis.csproj --configuration Release --runtime <RUNTIME_IDENTIFIER
 
 Note that we are using `--self-contained` to bundle the .NET runtime into the published folder. We then compress the folder to a `.zip` file to ship it with a release. 
 
-Releases have the version formatting of `Major.Minor.Patch`. As for release notes, auto-generate them and only keep the ones responsible for changes visible on the UI. We are currently publishing releases for `win-x64`, `win-x86`, `linux-x64` and `osx`.
+Releases have the version formatting of `Major.Minor.Patch`. As for release notes, auto-generate them and only keep the ones responsible for changes visible on the UI. We are currently publishing releases for `win-x64`, `win-x86`, `linux-x64`, `osx-x64` and `osx-arm64`.
 
 Additionally, the sketch-to-simulation feature has to be kept optional, so users who want that feature have to download `sketchlogic.exe` and place it next to `IRis.exe` in the publish folder.
 
 > [!NOTE]
 > We prefer having a console alongside the app on windows, for transparency and partially because we consider our users to be smart enough to know that having a console printing state info is often more helpful than just a dead GUI.
 
-### Understanding the Architecture
+---
 
-The sections bellow are details of why and how the codebase architecture was built like this. Every major architectural choice is documented here.
+## Understanding the Architecture
 
-#### Dependency Injection
+The sections bellow are details of why and how the codebase architecture was built like this. Every developer working on this codebase is requested to read this atleast once.
+
+### Dependency Injection
 
 Inspired by the [official documentation: IoC](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/ioc) for `CommunityToolkit.Mvvm` and a few thoughts we had in mind, we implemented **Dependency Injection** for better code structure, maintainability, flexibility, etc.
 
-This involves registering the static and instance-dependent services in `app.axaml.cs` and then calling `App.Current.Services.GetRequiredService<RequesterClass>()` assuming we declare an instance of the *RequesterClass*. This approach is followed for all the Services except for `CommandService` which would otherwise create cycles of service dependencies and hence errors, since services can use other services in their constructors.
+This involves registering the static and instance-dependent services in `app.axaml.cs` and then calling `App.Current.Services.GetRequiredService<RequestedService>()` including registration of the requested service as a singleton. This approach is followed for all the Services except for `CommandService` which would otherwise create cycles of service dependencies and hence errors, since services can use other services in their constructors.
 
-It is to be noted that the true DI as mentioned in the documentation involves injecting services through the constructors. we had to take a different approach for components. They involve hierarchies and constructor chaining, so it's common sense that injecting services through the constructors would lead to more rigidity. So instead, we get the services in the constructor code blocks using `App.Current.Services.GetRequiredService<ServiceName>()`.
+It is to be noted that usually DI involves injecting services through the constructors. However, we had to take a different approach for components. They involve hierarchies and constructor chaining, so it's common sense that injecting services through the long constructor-chains is not feasible. So instead, we call the services in the constructors themselves using `App.Current.Services.GetRequiredService<ServiceName>()` and store instances of each service being used.
 
-Furthermore, singleton pattern is provided to us by `Microsoft.Extensions.DependencyInjection` which we are using for Services as present in `Services/`.
+Furthermore, singleton pattern is provided to us by `Microsoft.Extensions.DependencyInjection` and we are using it for Services as present in `Services/`.
 
-#### Initializing Components
+### Initializing Components
 
 All kinds of components are only initialized in the `ViewModels/Main/LeftSidebarViewModel.cs` so any changes in the constructors have to be kept consistent with that file.
 
@@ -143,7 +149,7 @@ gate.Inputs.Add(new());
 
 This process has been programmed to facilitate the construction of components during deserialization, which would otherwise cause untraceable bugs. To simplify this, we have already considered using `ComponentFactoryService` to abstract this logic, but that would be redundant as we are only initializing components in the above mentioned ViewModel.
 
-#### ViewModels have Models
+### ViewModels have Models
 
 Every object in a circuit (except for Terminals) inherits from CircuitObjectViewModel and stores an instance of it's model privately because the logic is needed at various points during the object's lifetime.
 
@@ -163,15 +169,15 @@ public LogicState State
 }
 ```
 
-#### Wire Cloning
+### Wire Cloning
 
 Wire cloning is too tricky to be messed with. One IMPORTANT thing when you are working on this codebase would be to always clone a collection of objects together. NEVER EVER think of cloning each object separately. Otherwise their memory references would break, and you would end up with disconnected misbehaving circuit objects.
 
-#### Clipboard Actions: Cut, Copy, Paste
+### Clipboard Actions: Cut, Copy, Paste
 
 All of these rely on JsonSerialization. When an object is copied it's Json is copied to the system clipboard in text. This can be verified by pasting it anywhere, that is, the json will be pasted. Hence clipboard actions depend on serialization/deserialization.
 
-#### How to add new icons for Context Menus
+### How to add new icons for Context Menus
 
 Grab a Path geometry from [fluenticons](https://fluenticons.co/). Add it in a StreamGeometry tag in `app.axaml` as follows:
 
@@ -186,4 +192,3 @@ Now refer to it as a Static Resource in MenuIcon:
 ```xml
 <MenuItem.Icon><PathIcon Data="{StaticResource save_edit}" /></MenuItem.Icon>
 ```
-
