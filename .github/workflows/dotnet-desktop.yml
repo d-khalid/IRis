@@ -35,8 +35,9 @@ jobs:
           cd tests
           dotnet test
 
-      - name: update code coverage
+      - name: update codecov
         if: runner.os == 'Linux'
         uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: tests/coverage.cobertura.xml
