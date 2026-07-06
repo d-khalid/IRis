@@ -6,6 +6,7 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using IRis.Models.Core;
 using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas;
@@ -202,6 +203,108 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void Delete()
     {
+        WireViewModel? findAttachedWire(TerminalViewModel terminal)
+        {
+            foreach (CircuitObjectViewModel co in _simulation.Objects)
+            {
+                if (co is WireViewModel w)
+                {
+                    if (w.MainInput == terminal || w.MainOutput == terminal)
+                    {
+                        return w;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        foreach (CircuitObjectViewModel co in _selection.Objects)
+        {
+            if (co is GateViewModel gate)
+            {
+                WireViewModel? wire = findAttachedWire(gate.Output);
+                if (wire is not null)
+                    wire.MainInput = new() { IsOrphan = true };
+
+                AvaloniaList<TerminalViewModel> inputs = [];
+
+                if (gate is MultiInputGateViewModel mig)
+                {
+                    foreach (TerminalViewModel input in mig.Inputs)
+                    {
+                        inputs.Add(input);
+                    }
+                }
+                else if (gate is NotGateViewModel notGate)
+                {
+                    inputs.Add(notGate.Input);
+                }
+
+                foreach (TerminalViewModel input in inputs)
+                {
+                    WireViewModel? w = findAttachedWire(input);
+                    if (w is not null)
+                        w.MainOutput = new() { IsOrphan = true };
+                }
+            }
+
+            else if (co is FullAdderViewModel fa)
+            {
+                AvaloniaList<TerminalViewModel> inputs = [fa.A, fa.B, fa.Cin];
+                AvaloniaList<TerminalViewModel> outputs = [fa.Sum, fa.Cout];
+
+                foreach (TerminalViewModel input in inputs)
+                {
+                    WireViewModel? w = findAttachedWire(input);
+                    if (w is not null)
+                        w.MainOutput = new() { IsOrphan = true };
+                }
+
+                foreach (TerminalViewModel output in outputs)
+                {
+                    WireViewModel? w = findAttachedWire(output);
+                    if (w is not null)
+                        w.MainInput = new() { IsOrphan = true };
+                }
+            }
+
+            else if (co is MultiplexerViewModel mux)
+            {
+                AvaloniaList<TerminalViewModel> inputs = [.. mux.Inputs, .. mux.Selects];
+
+                foreach (TerminalViewModel input in inputs)
+                {
+                    WireViewModel? w = findAttachedWire(input);
+                    if (w is not null)
+                        w.MainOutput = new() { IsOrphan = true };
+                }
+
+                WireViewModel? wire = findAttachedWire(mux.Output);
+                if (wire is not null)
+                    wire.MainInput = new() { IsOrphan = true };
+            }
+
+            else if (co is DemultiplexerViewModel demux)
+            {
+                AvaloniaList<TerminalViewModel> inputs = [demux.Input, .. demux.Selects];
+
+                foreach (TerminalViewModel input in inputs)
+                {
+                    WireViewModel? w = findAttachedWire(input);
+                    if (w is not null)
+                        w.MainOutput = new() { IsOrphan = true };
+                }
+
+                foreach (TerminalViewModel output in demux.Outputs)
+                {
+                    WireViewModel? w = findAttachedWire(output);
+                    if (w is not null)
+                        w.MainInput = new() { IsOrphan = true };
+                }
+            }
+        }
+
         _simulation.Remove(_selection.Objects);
         _selection.UnHighlightAll();
     }
