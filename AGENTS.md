@@ -3,6 +3,7 @@
 - Keep your responses very very short. You have to save every last token you can save.
 - Avoid long explanations. Keep sentences as concise as possible unless explicitly specified.,
 - DO NOT run tests or builds or restores unless the user specifies it explicitly.
+- The user dislikes explicit defaults. If something is covered by a default value don't add it, just tell the user it's there by default.
 
 ## Behaviour
 
