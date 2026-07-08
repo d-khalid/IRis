@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Services.Commands;
 using IRis.ViewModels.Main.Canvas;
+using IRis.ViewModels.Main.Canvas.CircuitObjects;
 
 namespace IRis.Services.Singleton;
 
@@ -13,6 +14,9 @@ public partial class Simulation : ObservableObject
 {
     [ObservableProperty]
     private bool _running = false;
+
+    [ObservableProperty]
+    private int _frequencyHz = 100;
 
     public AvaloniaList<CircuitObjectViewModel> Objects { get; } = [];
     private readonly HashSet<Point> _forbiddenMatrix = [];
@@ -27,15 +31,23 @@ public partial class Simulation : ObservableObject
         _preview = preview;
         _wirePreview = wirePreview;
 
-        _timer = new() { Interval = TimeSpan.FromMilliseconds(1000 / 100) };
+        _timer = new() { Interval = TimeSpan.FromMilliseconds(1000 / FrequencyHz) };
         _timer.Tick += (_, _) =>
         {
             foreach (var co in Objects)
-                co.Simulate();
+                if (co is ComponentViewModel component)
+                    component.Simulate();
+
+            foreach (var co in Objects)
+                if (co is WireViewModel wire)
+                    wire.Simulate();
         };
 
         Running = true;
     }
+
+    partial void OnFrequencyHzChanged(int value) =>
+        _timer.Interval = TimeSpan.FromMilliseconds(1000 / value);
 
     partial void OnRunningChanged(bool value)
     {
@@ -56,10 +68,7 @@ public partial class Simulation : ObservableObject
         }
     }
 
-    public void UpdateForbiddenMatrix()
-    {
-        _forbiddenMatrix.Clear();
-    }
+    public void UpdateForbiddenMatrix() => _forbiddenMatrix.Clear();
 
     public bool IsForbidden(Point pt) => _forbiddenMatrix.Contains(pt);
 
@@ -69,11 +78,11 @@ public partial class Simulation : ObservableObject
 
     public void Remove(CircuitObjectViewModel co) => Objects.Remove(co);
 
+    public void Nuke() => Objects.Clear();
+
     public void Remove(AvaloniaList<CircuitObjectViewModel> collection)
     {
         string name = collection.Count == 1 ? "Delete Object" : "Delete Objects";
         CommandService.Execute(new DeleteCommand(Objects, collection) { Name = name });
     }
-
-    public void Nuke() => Objects.Clear();
 }
