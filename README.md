@@ -184,15 +184,21 @@ public LogicState State
 }
 ```
 
-### Wire Cloning
+### Cloning & Clipboard
 
 Wire cloning is too tricky to be messed with. One IMPORTANT thing when you are working on this codebase would be to always clone a collection of objects together. NEVER EVER think of cloning each object separately. Otherwise their memory references would break, and you would end up with disconnected misbehaving circuit objects.
 
-### Clipboard Actions: Cut, Copy, Paste
+Clipboard actions such as cut, copy, paste rely on JsonSerialization. When an object is copied it's Json is copied to the system clipboard in text. This can be verified by pasting it anywhere, that is, the json will be pasted. Hence clipboard actions depend on serialization/deserialization.
 
-All of these rely on JsonSerialization. When an object is copied it's Json is copied to the system clipboard in text. This can be verified by pasting it anywhere, that is, the json will be pasted. Hence clipboard actions depend on serialization/deserialization.
+### How does the Simulation Work?
 
-### How to add new icons for Context Menus
+Everything in a canvas is described by one `AvaloniaList<CircuitObject>`. This list contains components and wires.
+
+Every component has a `Simulate()` function through which it accesses it's logical layer and computes it's output. On the other hand, wires propagate signals instantaneously independent of the frequency setting of the simulation.
+
+The simulation frequency (in Hz) can be adjusted on the left sidebar in the Canvas tab. It affects how many times the components would recompute their output each second.
+
+### How to add new icons for Context Menus?
 
 Grab a Path geometry from [fluenticons](https://fluenticons.co/). Add it in a StreamGeometry tag in `app.axaml` as follows:
 
