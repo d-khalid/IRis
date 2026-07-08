@@ -17,6 +17,9 @@ public partial class LeftSidebarViewModel : ViewModelBase
     private Simulation _simulation;
 
     [ObservableProperty]
+    private string _frequencyHzText;
+
+    [ObservableProperty]
     private string _canvasWidth;
 
     [ObservableProperty]
@@ -45,6 +48,13 @@ public partial class LeftSidebarViewModel : ViewModelBase
 
         CanvasWidth = AppState.CanvasWidth.ToString();
         CanvasHeight = AppState.CanvasHeight.ToString();
+        FrequencyHzText = Simulation.FrequencyHz.ToString();
+    }
+
+    partial void OnFrequencyHzTextChanged(string value)
+    {
+        if (int.TryParse(value, out int frequencyHz) && frequencyHz > 0 && frequencyHz <= 1000)
+            Simulation.FrequencyHz = frequencyHz;
     }
 
     partial void OnCanvasWidthChanged(string value)

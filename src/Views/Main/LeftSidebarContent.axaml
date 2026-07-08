@@ -154,7 +154,7 @@
         Margin="20,10"
         Spacing="5"
       >
-        <Grid ColumnDefinitions="Auto,*,*" Margin="0,0,0,8">
+        <Grid ColumnDefinitions="Auto,*,*" Margin="0,0,0,2">
           <TextBlock Text="Size" VerticalAlignment="Center" Margin="0,0,8,0" />
           <TextBox
             Grid.Column="1"
@@ -169,6 +169,10 @@
             Text="{Binding CanvasHeight, Mode=TwoWay}"
             FontSize="12"
           />
+        </Grid>
+        <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,4">
+          <TextBlock Text="Frequency (Hz)" VerticalAlignment="Center" Opacity="0.8" />
+          <TextBox Grid.Column="1" Text="{Binding FrequencyHzText, Mode=TwoWay}" FontSize="12" />
         </Grid>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
           <Viewbox Height="24">
