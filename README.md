@@ -27,7 +27,7 @@ It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-t
 
 ## Try it
 
-Supports & Tested on: *Windows, Linux, and MacOS.*
+Supports & Tested on: _Windows, Linux, and MacOS._
 
 To use this software on your PC, just download the latest `.zip` for your system from [releases](https://github.com/d-khalid/IRis/releases). After unzipping, open the folder, double-click on `IRis.exe`, and you will have the simulation software running in a window. **(no .NET required)**
 
@@ -50,7 +50,7 @@ Now for the Sketch to Simulation feature, you would have to download the latest 
 
 ## License & Contributions
 
-This project is licensed under `GPL-3.0`. For details, refer to [LICENSE](https://github.com/d-khalid/IRis?tab=GPL-3.0-1-ov-file). 
+This project is licensed under `GPL-3.0`. For details, refer to [LICENSE](https://github.com/d-khalid/IRis?tab=GPL-3.0-1-ov-file).
 
 Contributions are welcome, but only after understanding the documentation bellow, under strict reviewing and absolutely no AI-slop (refer to [Agents Use](#why-do-we-have-a-agentsmd-file)). For details on policies, refer to [CONTRIBUTING](https://github.com/d-khalid/IRis?tab=contributing-ov-file).
 
@@ -58,13 +58,13 @@ Contributions are welcome, but only after understanding the documentation bellow
 
 ## Why do we have a `AGENTS.md` file?
 
-While it is obvious that just like this `README.md`, this codebase is entirely organic and pest-free (manually typed). Absolutely no AI-Agents have worked on this codebase ever. That is, they haven't made edits in it directly. 
+While it is obvious that just like this `README.md`, this codebase is entirely organic and pest-free (manually typed). Absolutely no AI-Agents have worked on this codebase ever. That is, they haven't made edits in it directly.
 
-The `AGENTS.md` file is there to facilitate the use of AI-agents in **Ask Mode** to query about better approaches, more efficient code, tracing down logic in some places, etc. We believe this is how AI-agents should be used in programming, because only software engineers are smart enough to be making architectural decisions. 
+The `AGENTS.md` file is there to facilitate the use of AI-agents in **Ask Mode** to query about better approaches, more efficient code, tracing down logic in some places, etc. We believe this is how AI-agents should be used in programming, because only software engineers are smart enough to be making architectural decisions.
 
 Decisions that involve trade-offs, deciding whether something is worth adding or removing, making the experience more seemless for a human, user-experience engineering, (and so on) none of these can ever be done by AI-agents.
 
-The file instructs agents to use the least number of tokens, avoid markdown language, try to sound like a human and about how [Code is Formatted](#code-formatting).
+The file instructs agents to use the least number of tokens, avoid markdown language, try to sound like a human and about how [Code is Formatted](#code-formatting). It is to be noted that sometimes AI-agents skip reading this file entirely, if it's the case with your agent too then just remind it to read before every prompt.
 
 ---
 
@@ -125,7 +125,7 @@ Move into `src/` directory since we have the code there. Available target system
 dotnet publish IRis.csproj --configuration Release --runtime <RUNTIME_IDENTIFIER> --self-contained true --output ./publish/win
 ```
 
-Note that we are using `--self-contained` to bundle the .NET runtime into the published folder. We then compress the folder to a `.zip` file to ship it with a release. 
+Note that we are using `--self-contained` to bundle the .NET runtime into the published folder. We then compress the folder to a `.zip` file to ship it with a release.
 
 Releases have the version formatting of `Major.Minor.Patch`. As for release notes, auto-generate them and only keep the ones responsible for changes visible on the UI. We are currently publishing releases for `win-x64`, `win-x86`, `linux-x64`, `osx-x64` and `osx-arm64`.
 

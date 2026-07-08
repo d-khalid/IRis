@@ -117,9 +117,6 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
 
     public void OnPointerEntered(object? sender, PointerEventArgs e)
     {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
-            return;
-
         if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || _dragService.IsRunning())
             return;
 
@@ -129,9 +126,6 @@ public abstract partial class ComponentViewModel : CircuitObjectViewModel
 
     public void OnPointerExited(object? sender, PointerEventArgs e)
     {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
-            return;
-
         if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || _dragService.IsRunning())
             return;
 
