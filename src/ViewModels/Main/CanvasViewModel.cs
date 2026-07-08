@@ -14,7 +14,8 @@ public partial class CanvasViewModel(
     WirePreview wirePreview,
     AppState appState,
     DragService dragService,
-    SimulationService simulationService
+    SimulationService simulationService,
+    HoverEffectService hoverEffectService
 ) : ViewModelBase
 {
     public Preview Preview { get; } = preview;
@@ -25,6 +26,7 @@ public partial class CanvasViewModel(
 
     private readonly DragService _dragService = dragService;
     private readonly SimulationService _simulationService = simulationService;
+    private readonly HoverEffectService _hoverEffectService = hoverEffectService;
 
     public void OnPointerEntered(object? sender, PointerEventArgs e)
     {
@@ -63,12 +65,16 @@ public partial class CanvasViewModel(
     public void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        {
+            e.Pointer.Capture(null);
             return;
+        }
 
         if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed)
             return;
 
         e.Handled = true;
+        AppState.MousePosition = _simulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
 
         if (!AppState.EditingAllowed)
             return;
@@ -86,6 +92,8 @@ public partial class CanvasViewModel(
 
     public void OnPointerMoved(object? sender, PointerEventArgs e)
     {
+        AppState.MousePosition = _simulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
+
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
             return;
 
@@ -93,8 +101,6 @@ public partial class CanvasViewModel(
 
         if (!AppState.EditingAllowed)
             return;
-
-        AppState.MousePosition = _simulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
 
         if (SelectionBox.Exists())
             SelectionBox.UpdateTo(AppState.MousePosition);
@@ -108,6 +114,11 @@ public partial class CanvasViewModel(
 
     public void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
+        e.Pointer.Capture(null);
+
+        if (SelectionBox.Exists())
+            SelectionBox.Nuke();
+
         if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
             return;
 
@@ -115,12 +126,6 @@ public partial class CanvasViewModel(
 
         if (!AppState.EditingAllowed)
             return;
-
-        if (SelectionBox.Exists())
-        {
-            SelectionBox.Nuke();
-            e.Pointer.Capture(null);
-        }
     }
 
     public void OnKeyDown(object? sender, KeyEventArgs e)
