@@ -188,6 +188,77 @@ public partial class LeftSidebarViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void AddDLatch()
+    {
+        _selection.UnHighlightAll();
+
+        DLatchViewModel latch = new()
+        {
+            D = new(),
+            En = new(),
+            Q = new(),
+            QBar = new(),
+        };
+
+        _preview.Pick(latch);
+    }
+
+    [RelayCommand]
+    private void AddDFlipFlop()
+    {
+        _selection.UnHighlightAll();
+
+        DFlipFlopViewModel ff = new()
+        {
+            D = new(),
+            Clk = new(),
+            Set = new(),
+            Clr = new(),
+            Q = new(),
+            QBar = new(),
+        };
+
+        _preview.Pick(ff);
+    }
+
+    [RelayCommand]
+    private void AddJKFlipFlop()
+    {
+        _selection.UnHighlightAll();
+
+        JKFlipFlopViewModel ff = new()
+        {
+            J = new(),
+            K = new(),
+            Clk = new(),
+            Set = new(),
+            Clr = new(),
+            Q = new(),
+            QBar = new(),
+        };
+
+        _preview.Pick(ff);
+    }
+
+    [RelayCommand]
+    private void AddTFlipFlop()
+    {
+        _selection.UnHighlightAll();
+
+        TFlipFlopViewModel ff = new()
+        {
+            T = new(),
+            Clk = new(),
+            Set = new(),
+            Clr = new(),
+            Q = new(),
+            QBar = new(),
+        };
+
+        _preview.Pick(ff);
+    }
+
+    [RelayCommand]
     private void AddMultiplexer()
     {
         _selection.UnHighlightAll();

@@ -36,6 +36,18 @@
     <DataTemplate DataType="components:PriorityEncoderViewModel">
       <views:PriorityEncoderView />
     </DataTemplate>
+    <DataTemplate DataType="components:DFlipFlopViewModel">
+      <views:DFlipFlopView />
+    </DataTemplate>
+    <DataTemplate DataType="components:DLatchViewModel">
+      <views:DLatchView />
+    </DataTemplate>
+    <DataTemplate DataType="components:JKFlipFlopViewModel">
+      <views:JKFlipFlopView />
+    </DataTemplate>
+    <DataTemplate DataType="components:TFlipFlopViewModel">
+      <views:TFlipFlopView />
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <ContentControl

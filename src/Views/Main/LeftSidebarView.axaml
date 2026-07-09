@@ -199,6 +199,82 @@
       />
     </Border>
     <Border
+      x:Key="SampleDLatch"
+      Width="20"
+      Height="20"
+      Background="{DynamicResource ComponentFillBrush}"
+      BorderBrush="{DynamicResource ComponentBorderBrush}"
+      BorderThickness="2"
+      CornerRadius="2"
+    >
+      <TextBlock
+        Text="DL"
+        Foreground="{DynamicResource ComponentBorderBrush}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        FontSize="9"
+        FontWeight="ExtraBold"
+        Margin="1,0,0,0"
+      />
+    </Border>
+    <Border
+      x:Key="SampleDFlipFlop"
+      Width="20"
+      Height="20"
+      Background="{DynamicResource ComponentFillBrush}"
+      BorderBrush="{DynamicResource ComponentBorderBrush}"
+      BorderThickness="2"
+      CornerRadius="2"
+    >
+      <TextBlock
+        Text="D"
+        Foreground="{DynamicResource ComponentBorderBrush}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        FontSize="9"
+        FontWeight="ExtraBold"
+        Margin="1,0,0,0"
+      />
+    </Border>
+    <Border
+      x:Key="SampleJKFlipFlop"
+      Width="20"
+      Height="20"
+      Background="{DynamicResource ComponentFillBrush}"
+      BorderBrush="{DynamicResource ComponentBorderBrush}"
+      BorderThickness="2"
+      CornerRadius="2"
+    >
+      <TextBlock
+        Text="JK"
+        Foreground="{DynamicResource ComponentBorderBrush}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        FontSize="9"
+        FontWeight="ExtraBold"
+        Margin="1,0,0,0"
+      />
+    </Border>
+    <Border
+      x:Key="SampleTFlipFlop"
+      Width="20"
+      Height="20"
+      Background="{DynamicResource ComponentFillBrush}"
+      BorderBrush="{DynamicResource ComponentBorderBrush}"
+      BorderThickness="2"
+      CornerRadius="2"
+    >
+      <TextBlock
+        Text="T"
+        Foreground="{DynamicResource ComponentBorderBrush}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        FontSize="9"
+        FontWeight="ExtraBold"
+        Margin="1,0,0,0"
+      />
+    </Border>
+    <Border
       x:Key="SampleMux"
       Width="16"
       Height="20"

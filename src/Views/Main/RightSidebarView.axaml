@@ -40,6 +40,18 @@
     <DataTemplate DataType="components:PriorityEncoderViewModel">
       <componentViews:PriorityEncoderView />
     </DataTemplate>
+    <DataTemplate DataType="components:DFlipFlopViewModel">
+      <componentViews:DFlipFlopView />
+    </DataTemplate>
+    <DataTemplate DataType="components:DLatchViewModel">
+      <componentViews:DLatchView />
+    </DataTemplate>
+    <DataTemplate DataType="components:JKFlipFlopViewModel">
+      <componentViews:JKFlipFlopView />
+    </DataTemplate>
+    <DataTemplate DataType="components:TFlipFlopViewModel">
+      <componentViews:TFlipFlopView />
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <Border Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">

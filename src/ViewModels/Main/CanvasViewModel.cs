@@ -64,13 +64,10 @@ public partial class CanvasViewModel(
 
     public void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
-        {
-            e.Pointer.Capture(null);
-            return;
-        }
-
-        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed)
+        if (
+            e.KeyModifiers.HasFlag(KeyModifiers.Control)
+            && e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed
+        )
             return;
 
         e.Handled = true;
@@ -86,7 +83,6 @@ public partial class CanvasViewModel(
         else
         {
             SelectionBox.StartAt(AppState.MousePosition);
-            e.Pointer.Capture(sender as Control); // keeps focus till released
         }
     }
 
@@ -94,7 +90,10 @@ public partial class CanvasViewModel(
     {
         AppState.MousePosition = _simulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
 
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        if (
+            e.KeyModifiers.HasFlag(KeyModifiers.Control)
+            && e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed
+        )
             return;
 
         e.Handled = true;
@@ -114,8 +113,6 @@ public partial class CanvasViewModel(
 
     public void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        e.Pointer.Capture(null);
-
         if (SelectionBox.Exists())
             SelectionBox.Nuke();
 
