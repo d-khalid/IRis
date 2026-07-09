@@ -24,7 +24,7 @@
     Focusable="True"
     VerticalAlignment="Stretch"
     HorizontalAlignment="Stretch"
-    PanButton="Left"
+    EnablePan="False"
     KeyDown="OnKeyDown"
   >
     <Canvas

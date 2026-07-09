@@ -27,6 +27,7 @@ public partial class CanvasViewModel(
     private readonly DragService _dragService = dragService;
     private readonly SimulationService _simulationService = simulationService;
     private readonly HoverEffectService _hoverEffectService = hoverEffectService;
+    private Point? _panStart;
 
     public void OnPointerEntered(object? sender, PointerEventArgs e)
     {
@@ -68,7 +69,12 @@ public partial class CanvasViewModel(
             e.KeyModifiers.HasFlag(KeyModifiers.Control)
             && e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed
         )
+        {
+            var zoomBorder = (ZoomBorder)((Visual)sender!).Parent!;
+            _panStart = e.GetPosition(zoomBorder);
+            e.Pointer.Capture(sender as Control);
             return;
+        }
 
         e.Handled = true;
         AppState.MousePosition = _simulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
@@ -93,8 +99,25 @@ public partial class CanvasViewModel(
         if (
             e.KeyModifiers.HasFlag(KeyModifiers.Control)
             && e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed
+            && _panStart is Point start
         )
+        {
+            var zoomBorder = (ZoomBorder)((Visual)sender!).Parent!;
+            var pos = e.GetPosition(zoomBorder);
+            var m = zoomBorder.Matrix;
+            zoomBorder.SetMatrix(
+                new Matrix(
+                    m.M11,
+                    m.M12,
+                    m.M21,
+                    m.M22,
+                    m.M31 + (pos.X - start.X),
+                    m.M32 + (pos.Y - start.Y)
+                )
+            );
+            _panStart = pos;
             return;
+        }
 
         e.Handled = true;
 
@@ -113,6 +136,9 @@ public partial class CanvasViewModel(
 
     public void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
+        _panStart = null;
+        e.Pointer.Capture(null);
+
         if (SelectionBox.Exists())
             SelectionBox.Nuke();
 
