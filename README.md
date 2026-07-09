@@ -1,4 +1,7 @@
+<div align="center">
 # Logic Circuit Simulator
+### Design on paper, take a picture, Simulate!
+</div>
 
 IRis is a desktop app that allows design and simulation of digital logic circuits. It features generation of simulations from hand-drawn sketches without using LLMs or any paid API.
 
@@ -15,13 +18,16 @@ It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-t
 
 [https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08](https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08)
 
+> [!NOTE]
+> As evident from the screenshots and demo above, this simulation software has a better UX than [Logisim Evolution](https://github.com/logisim-evolution/logisim-evolution) and [CircuitVerse](https://circuitverse.org/).
+
 ---
 
-## Distinguishing Features
+## Sketch to Simulation Conversion
 
-- Sketch-to-Simulation conversion via [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic) built by the same developers.
-- A better UX than [Logisim Evolution](https://github.com/logisim-evolution/logisim-evolution) and [CircuitVerse](https://circuitverse.org/). See for yourself in the screenshots and demo above.
-- Convenient [keyboard shortcuts](#key-controls-for-circuit-design) for a smooth designing experience.
+This is one of the distinguishing features of this simulator. We support sketch-to-simulation conversion via [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic) built by the same developers. 
+
+The user is expected to draw a logic circuit on paper, take a picture and open it in IRis, and it gets converted to an actual simulation that is exactly the same as the one drawn on paper. The software allows them to edit the circuit and simulate it to test different inputs, just like what they would do after a regular circuit design. Details of how this works internally can be checked from the repository mentioned above.
 
 ---
 
@@ -49,11 +55,21 @@ Now for the Sketch to Simulation feature, you would have to download the latest 
 
 ## How does the Simulation Work?
 
-Everything in a canvas is described by one `AvaloniaList<CircuitObject>`. This list contains components and wires.
+Everything in a canvas is described by one `AvaloniaList<CircuitObject>`. This list contains components and wires. All of them have a `Simulate()` function through which they access their logical layer, compute output and update their visual states. On the other hand, wires propagate signals instantaneously independent of the frequency setting of the simulation.
 
-Every component has a `Simulate()` function through which it accesses it's logical layer and computes it's output. On the other hand, wires propagate signals instantaneously independent of the frequency setting of the simulation.
+The simulation frequency (in Hz) can be adjusted on the left sidebar in the Canvas tab. It basically decides how many times the components would recompute their output each second. In short, a frequency of **5** would mean all the components would compute their output **five times** each second.
 
-The simulation frequency (in Hz) can be adjusted on the left sidebar in the Canvas tab. It affects how many times the components would recompute their output each second.
+As for components which involve the use of clocks, we have an actual clock component with adjustable frequency independent of the simulation frequency. Each tick on a clock would toggle it's output.
+
+---
+
+## Do we have limitations?
+
+Yes, seriously. There are some sections of the code that involve AI-generated mathematics (which have the model and "reason for use" explicitly specified with comments) but this approach is deprecated and planned to be replaced. Also, we are currently not handling cycle detection, bad wiring and race-conditions.
+
+Furthermore, we are missing some industry-grade features such as VHDL export support, built-in circuit libraries,  and a few essential components (just a few). 
+
+Note that multiple components are being added every week, so the lack of basic components would be covered up soon, and as for the other features, they are being planned as worked on as you are reading this. They might just be about to get added with the next release.
 
 ---
 
@@ -65,7 +81,7 @@ The `AGENTS.md` file is there to facilitate the use of AI-agents in **Ask Mode**
 
 Decisions that involve trade-offs, deciding whether something is worth adding or removing, making the experience more seemless for a human, user-experience engineering, (and so on) none of these can ever be done by AI-agents.
 
-The file instructs agents to use the least number of tokens, avoid markdown language, try to sound like a human and about how [Code is Formatted](#code-formatting). It is to be noted that sometimes AI-agents skip reading this file entirely, if it's the case with your agent too then just remind it to read before every prompt.
+The file instructs agents to use the least number of tokens and try to sound like a human. It is to be noted that sometimes AI-agents skip reading this file entirely, if it's the case with your agent too then just remind it to read before every prompt.
 
 ---
 
@@ -138,6 +154,12 @@ Additionally, the sketch-to-simulation feature has to be kept optional, so users
 
 The sections bellow are details of why and how the codebase architecture was built like this. Every developer working on this codebase is requested to read this atleast once.
 
+### Circuit Objects & Inheritance
+
+The first thought that would come across a contributor's mind when browsing the codebase is the deep abstraction chain for the circuit objects. And honestly, that is a fair observation. To justify this, we would like to ask the contributor to look at the code the abstract classes are handling. Each one of them has it's purpose.
+
+`CircuitObject` is a top-level class for every object that is in the circuit (except for the green Terminal dots which are owned by components and hence, is in a separate namespace named `IRis.ViewModels.Main.Canvas.Core`). It handles the properties common to all circuit objects: `Opacity`, `ZIndex`, `IsSelected`, `Simulate()`, `Reset()`, etc. Then we have `Component` and `Wire` and the abstraction goes down till concrete classes.
+
 ### Dependency Injection
 
 Inspired by the [official documentation: IoC](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/ioc) for `CommunityToolkit.Mvvm` and a few thoughts we had in mind, we implemented **Dependency Injection** for better code structure, maintainability, flexibility, etc.
@@ -146,13 +168,13 @@ This involves registering the static and instance-dependent services in `app.axa
 
 It is to be noted that usually DI involves injecting services through the constructors. However, we had to take a different approach for components. They involve hierarchies and constructor chaining, so it's common sense that injecting services through the long constructor-chains is not feasible. So instead, we call the services in the constructors themselves using `App.Current.Services.GetRequiredService<ServiceName>()` and store instances of each service being used.
 
-Furthermore, singleton pattern is provided to us by `Microsoft.Extensions.DependencyInjection` and we are using it for Services as present in `Services/`.
+Furthermore, singleton pattern is provided to us by `Microsoft.Extensions.DependencyInjection` and we are using it for all Services as present in `Services/`. One thing to note here is that the classes here have clear separation of concerns so that there is no one `god class`. For more details, look at the code files for service classes.
 
 ### Initializing Components
 
 All kinds of components are only initialized in the `ViewModels/Main/LeftSidebarViewModel.cs` so any changes in the constructors have to be kept consistent with that file.
 
-Furthermore, initializing models has a certain process to it that has to be followed. For instance, adding an **AND Gate** involves declaring an instance with a new Output pin, and then adding two Input pins to it as in:
+Furthermore, initializing models has a certain process to it that has to be followed. If you look at the code you would find null forgiving operators at places, but that is intentional as deserialization needs a parameterless constructor path. For instance, adding an **AND Gate** involves declaring an instance with a new Output pin, and then adding two Input pins to it as in:
 
 ```csharp
 AndGateViewModel gate = new() { Output = new() };
@@ -160,7 +182,7 @@ gate.Inputs.Add(new());
 gate.Inputs.Add(new());
 ```
 
-This process has been programmed to facilitate the construction of components during deserialization, which would otherwise cause untraceable bugs. To simplify this, we have already considered using `ComponentFactoryService` to abstract this logic, but that would be redundant as we are only initializing components in the above mentioned ViewModel.
+To simplify this approach, we have already considered using `ComponentFactoryService` to abstract this logic, but that would be redundant as we are only initializing components in the above mentioned ViewModel. Another important point here is that all components allow rotations and the mathematics behind it only allows them to be orthogonal, which is intentional. We would like to clarify that we do not plan to add rotations at arbitrary angles.
 
 ### ViewModels have Models
 
