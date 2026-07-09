@@ -123,7 +123,7 @@ As for debugging a compiled app, it's `.exe` has to be run from a terminal which
 
 ## CI & Testing
 
-Continuous Integration has been configured in `.github/dotnet-desktop.yml`. This runs a sample build first, and then the testing module. Testing checks all the components against sample inputs and expected outputs using `[Theory]` and `InlineData` from `xunit`. To manually run testing, follow this:
+Continuous Integration has been configured in `.github/dotnet-desktop.yml`. This runs a sample build first, and then the testing module. Testing checks all the components against sample inputs and expected outputs using `[Theory]`, `InlineData` and `[Fact]` from `xunit`. To manually run testing, follow this:
 
 ```bash
 cd tests

@@ -21,4 +21,17 @@ public class MultiplexerTest
 
         Assert.Equal(expected, mux.Output.State);
     }
+
+    [Fact]
+    public void SimulateResetScenario()
+    {
+        var mux = new Multiplexer { Output = new Terminal { State = LogicState.High } };
+        mux.Selects.Add(new Terminal());
+        mux.Inputs.Add(new Terminal());
+        mux.Inputs.Add(new Terminal());
+
+        mux.Reset();
+
+        Assert.Equal(LogicState.Unknown, mux.Output.State);
+    }
 }

@@ -46,4 +46,22 @@ public class FullAdderTest
         Assert.Equal(expectedSum, adder.Sum.State);
         Assert.Equal(expectedCout, adder.Cout.State);
     }
+
+    [Fact]
+    public void SimulateResetScenario()
+    {
+        var adder = new FullAdder
+        {
+            A = new Terminal(),
+            B = new Terminal(),
+            Cin = new Terminal(),
+            Sum = new Terminal { State = LogicState.High },
+            Cout = new Terminal { State = LogicState.High },
+        };
+
+        adder.Reset();
+
+        Assert.Equal(LogicState.Unknown, adder.Sum.State);
+        Assert.Equal(LogicState.Unknown, adder.Cout.State);
+    }
 }

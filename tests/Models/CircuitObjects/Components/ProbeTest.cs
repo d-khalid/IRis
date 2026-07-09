@@ -18,4 +18,18 @@ public class ProbeTest
 
         Assert.Equal(input, probe.State);
     }
+
+    [Fact]
+    public void SimulateResetScenario()
+    {
+        var probe = new Probe
+        {
+            Input = new Terminal { State = LogicState.High },
+            State = LogicState.High,
+        };
+
+        probe.Reset();
+
+        Assert.Equal(LogicState.Unknown, probe.State);
+    }
 }

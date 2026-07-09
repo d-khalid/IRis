@@ -22,4 +22,18 @@ public class WireTest
 
         Assert.Equal(state, wire.MainOutput.State);
     }
+
+    [Fact]
+    public void SimulateResetScenario()
+    {
+        var wire = new Wire
+        {
+            MainInput = new Terminal { State = LogicState.High },
+            MainOutput = new Terminal { State = LogicState.High },
+        };
+
+        wire.Reset();
+
+        Assert.Equal(LogicState.Unknown, wire.MainOutput.State);
+    }
 }
