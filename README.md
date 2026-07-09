@@ -25,6 +25,18 @@ It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-t
 
 ---
 
+## Key Controls For Circuit Design
+
+- `R` for rotating components or entire circuits.
+- `A` for adding one line of pins to the component.
+- `S` for removing one line of pins from the component.
+- `Esc` for dropping a component preview.
+- `Ctrl+X`, `Ctrl+C`, `Ctrl+V` as shortcuts for cutting, copying, pasting components respectively.
+- `Ctrl+Z`, `Ctrl+Y` for undo/redo commands.
+- `Arrow keys` or `Ctrl+LeftClick` for canvas control and movement.
+
+---
+
 ## Try it
 
 Supports & Tested on: _Windows, Linux, and MacOS._
@@ -35,24 +47,26 @@ Now for the Sketch to Simulation feature, you would have to download the latest 
 
 ---
 
-## Key Controls For Circuit Design
+## CI & Testing
 
-- `R` for rotating components or entire circuits.
-- `A` for adding one line of pins to the component.
-- `S` for removing one line of pins from the component.
-- `Esc` for dropping a component preview.
-- `Ctrl+X`, `Ctrl+C`, `Ctrl+V` as shortcuts for cutting, copying, pasting components respectively.
-- `Ctrl+Z`, `Ctrl+Y` for undo/redo commands.
-- `Arrow keys` or `Ctrl+LeftClick` for canvas control and movement.
-- `RightClick` for menu with options from **Simulate tab**.
+Continuous Integration has been configured in `.github/dotnet-desktop.yml`. This runs a sample build first, and then the testing module. Testing checks all the components against sample inputs and expected outputs using `[Theory]` and `InlineData` from `xunit`. To manually run testing, follow this:
+
+```bash
+cd tests
+dotnet test
+```
+
+The same commands run during CI and automatically update code coverage with [CodeCov](https://about.codecov.io). Configuration for this process can be found in in `tests/IRis.Tests.csproj`.
 
 ---
 
-## License & Contributions
+## How does the Simulation Work?
 
-This project is licensed under `GPL-3.0`. For details, refer to [LICENSE](https://github.com/d-khalid/IRis?tab=GPL-3.0-1-ov-file).
+Everything in a canvas is described by one `AvaloniaList<CircuitObject>`. This list contains components and wires.
 
-Contributions are welcome, but only after understanding the documentation bellow, under strict reviewing and absolutely no AI-slop (refer to [Agents Use](#why-do-we-have-a-agentsmd-file)). For details on policies, refer to [CONTRIBUTING](https://github.com/d-khalid/IRis?tab=contributing-ov-file).
+Every component has a `Simulate()` function through which it accesses it's logical layer and computes it's output. On the other hand, wires propagate signals instantaneously independent of the frequency setting of the simulation.
+
+The simulation frequency (in Hz) can be adjusted on the left sidebar in the Canvas tab. It affects how many times the components would recompute their output each second.
 
 ---
 
@@ -68,7 +82,7 @@ The file instructs agents to use the least number of tokens, avoid markdown lang
 
 ---
 
-## Local Setup
+## Local Setup for Contributors
 
 - Install .NET SDK 9.0 from [here](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
 - Make sure it is installed properly by running `dotnet --version` in a terminal.
@@ -90,22 +104,6 @@ The file instructs agents to use the least number of tokens, avoid markdown lang
 - Put comments only where necessary. Try not to remove old comments unless you have to.
 
 With the above in mind, try to keep the code formatting consistent with the existing code when you make changes.
-
-> [!NOTE]
-> Any edits to this section have to be repeated for `AGENTS.md`.
-
----
-
-## CI & Testing
-
-Continuous Integration has been configured in `.github/dotnet-desktop.yml`. This runs a sample build first, and then the testing module. Testing checks all the components against sample inputs and expected outputs using `[Theory]` and `InlineData` from `xunit`. To manually run testing, follow this:
-
-```bash
-cd tests
-dotnet test
-```
-
-The same commands run during CI and automatically update code coverage with [CodeCov](https://about.codecov.io). Configuration for this process can be found in in `tests/IRis.Tests.csproj`.
 
 ---
 
@@ -190,14 +188,6 @@ Wire cloning is too tricky to be messed with. One IMPORTANT thing when you are w
 
 Clipboard actions such as cut, copy, paste rely on JsonSerialization. When an object is copied it's Json is copied to the system clipboard in text. This can be verified by pasting it anywhere, that is, the json will be pasted. Hence clipboard actions depend on serialization/deserialization.
 
-### How does the Simulation Work?
-
-Everything in a canvas is described by one `AvaloniaList<CircuitObject>`. This list contains components and wires.
-
-Every component has a `Simulate()` function through which it accesses it's logical layer and computes it's output. On the other hand, wires propagate signals instantaneously independent of the frequency setting of the simulation.
-
-The simulation frequency (in Hz) can be adjusted on the left sidebar in the Canvas tab. It affects how many times the components would recompute their output each second.
-
 ### How to add new icons for Context Menus?
 
 Grab a Path geometry from [fluenticons](https://fluenticons.co/). Add it in a StreamGeometry tag in `app.axaml` as follows:
@@ -208,8 +198,16 @@ Grab a Path geometry from [fluenticons](https://fluenticons.co/). Add it in a St
 </StreamGeometry>
 ```
 
-Now refer to it as a Static Resource in MenuIcon:
+Now refer to the key as a Static Resource in MenuIcon:
 
 ```xml
 <MenuItem.Icon><PathIcon Data="{StaticResource save_edit}" /></MenuItem.Icon>
 ```
+
+---
+
+## License & Contributions
+
+This project is licensed under `GPL-3.0`. For details, refer to [LICENSE](https://github.com/d-khalid/IRis?tab=GPL-3.0-1-ov-file).
+
+Contributions are welcome, but only after understanding the documentation above, under strict reviewing and absolutely no AI-slop (refer to [Agents Use](#why-do-we-have-a-agentsmd-file)). For details on policies, refer to [CONTRIBUTING](https://github.com/d-khalid/IRis?tab=contributing-ov-file).
