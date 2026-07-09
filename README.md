@@ -47,19 +47,6 @@ Now for the Sketch to Simulation feature, you would have to download the latest 
 
 ---
 
-## CI & Testing
-
-Continuous Integration has been configured in `.github/dotnet-desktop.yml`. This runs a sample build first, and then the testing module. Testing checks all the components against sample inputs and expected outputs using `[Theory]` and `InlineData` from `xunit`. To manually run testing, follow this:
-
-```bash
-cd tests
-dotnet test
-```
-
-The same commands run during CI and automatically update code coverage with [CodeCov](https://about.codecov.io). Configuration for this process can be found in in `tests/IRis.Tests.csproj`.
-
----
-
 ## How does the Simulation Work?
 
 Everything in a canvas is described by one `AvaloniaList<CircuitObject>`. This list contains components and wires.
@@ -112,6 +99,19 @@ With the above in mind, try to keep the code formatting consistent with the exis
 Logger is registered in services. It can be declared using any other service. Common logging levels used in IRis are `DEBUG`, `INFO`, `WARNING` and `ERROR`. More and more logs will be added as the app expands.
 
 As for debugging a compiled app, it's `.exe` has to be run from a terminal which would then print debugging info as the app is running.
+
+---
+
+## CI & Testing
+
+Continuous Integration has been configured in `.github/dotnet-desktop.yml`. This runs a sample build first, and then the testing module. Testing checks all the components against sample inputs and expected outputs using `[Theory]` and `InlineData` from `xunit`. To manually run testing, follow this:
+
+```bash
+cd tests
+dotnet test
+```
+
+The same commands run during CI and automatically update code coverage with [CodeCov](https://about.codecov.io). Configuration for this process can be found in in `tests/IRis.Tests.csproj`. `codecov.yml` on the other hand, is there to stop their github bot from commenting on every PR as it is annoying.
 
 ---
 
