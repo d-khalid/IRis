@@ -77,12 +77,12 @@ public partial class DFlipFlopViewModel : ComponentViewModel
         if (D is null || Clk is null || Set is null || Clr is null || Q is null || QBar is null)
             return;
 
-        PlaceTerminal(D, X - 10, Y + 10);
-        PlaceTerminal(Clk, X - 10, Y + 30);
+        PlaceTerminal(D, X - 10, Y + 20);
+        PlaceTerminal(Clk, X - 10, Y + 40);
         PlaceTerminal(Set, X + (Width / 2), Y - 10);
         PlaceTerminal(Clr, X + (Width / 2), Y + Height + 10);
-        PlaceTerminal(Q, X + (Width + 10), Y + 10);
-        PlaceTerminal(QBar, X + (Width + 10), Y + 30);
+        PlaceTerminal(Q, X + (Width + 10), Y + 20);
+        PlaceTerminal(QBar, X + (Width + 10), Y + 40);
     }
 
     private void PlaceTerminal(TerminalViewModel terminal, double unrotatedX, double unrotatedY)
