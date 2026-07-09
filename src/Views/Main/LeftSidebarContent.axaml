@@ -7,7 +7,7 @@
   FontSize="12"
 >
   <ScrollViewer Width="200" BorderThickness="0">
-    <StackPanel Margin="0,0,0,5">
+    <StackPanel Margin="0,0,0,20">
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,0">
         <Button
           Classes="tab"
@@ -143,6 +143,36 @@
               <StackPanel Orientation="Horizontal" Spacing="4">
                 <Viewbox Height="16" Child="{StaticResource SampleFullAdder}" />
                 <TextBlock Text="Full Adder" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+          </StackPanel>
+        </StackPanel>
+
+        <ToggleButton Classes="section" x:Name="MemoryToggle" IsChecked="False" Content="Memory" />
+        <StackPanel IsVisible="{Binding #MemoryToggle.IsChecked}">
+          <StackPanel>
+            <Button Classes="item" Command="{Binding AddDLatchCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Viewbox Height="16" Child="{StaticResource SampleDLatch}" />
+                <TextBlock Text="D Latch" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="item" Command="{Binding AddDFlipFlopCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Viewbox Height="16" Child="{StaticResource SampleDFlipFlop}" />
+                <TextBlock Text="D Flip-Flop" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="item" Command="{Binding AddJKFlipFlopCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Viewbox Height="16" Child="{StaticResource SampleJKFlipFlop}" />
+                <TextBlock Text="JK Flip-Flop" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="item" Command="{Binding AddTFlipFlopCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Viewbox Height="16" Child="{StaticResource SampleTFlipFlop}" />
+                <TextBlock Text="T Flip-Flop" VerticalAlignment="Center" />
               </StackPanel>
             </Button>
           </StackPanel>

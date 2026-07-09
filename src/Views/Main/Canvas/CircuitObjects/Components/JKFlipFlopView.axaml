@@ -1,0 +1,229 @@
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
+  x:DataType="vm:JKFlipFlopViewModel"
+  x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.JKFlipFlopView"
+  xmlns:core="using:IRis.Views.Main.Canvas.Core"
+  ClipToBounds="False"
+>
+  <Grid ClipToBounds="False">
+    <Rectangle Margin="-20,-20,-20,-20" Fill="Transparent" />
+
+    <Border
+      Width="{Binding Width}"
+      Height="{Binding Height}"
+      Background="{DynamicResource ComponentFillBrush}"
+      BorderBrush="{DynamicResource ComponentBorderBrush}"
+      BorderThickness="2"
+      CornerRadius="2"
+    >
+      <Grid>
+        <Grid.Styles>
+          <Style Selector="TextBlock">
+            <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+            <Setter Property="RenderTransform">
+              <RotateTransform Angle="{Binding TextRotation}" />
+            </Setter>
+          </Style>
+        </Grid.Styles>
+        <TextBlock
+          Text="S"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Top"
+          FontSize="8"
+          Margin="0,1,0,0"
+          IsHitTestVisible="False"
+        />
+        <TextBlock
+          Text="J"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Top"
+          FontSize="8"
+          Margin="3,10,0,0"
+          IsHitTestVisible="False"
+        />
+        <TextBlock
+          Text="K"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          FontSize="8"
+          Margin="3,0,0,0"
+          IsHitTestVisible="False"
+        />
+        <TextBlock
+          Text="Clk"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Bottom"
+          FontSize="8"
+          Margin="3,0,0,10"
+          IsHitTestVisible="False"
+        />
+        <TextBlock
+          Text="Q"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Top"
+          FontSize="8"
+          Margin="0,12,3,0"
+          IsHitTestVisible="False"
+        />
+        <TextBlock
+          Text="Q̅"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Bottom"
+          FontSize="8"
+          Margin="0,0,3,12"
+          IsHitTestVisible="False"
+        />
+        <TextBlock
+          Text="R"
+          Foreground="{DynamicResource ComponentBorderBrush}"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Bottom"
+          FontSize="8"
+          Margin="0,0,0,1"
+          IsHitTestVisible="False"
+        />
+      </Grid>
+    </Border>
+
+    <Grid ClipToBounds="False" HorizontalAlignment="Center" VerticalAlignment="Top">
+      <Line
+        StartPoint="0,0"
+        EndPoint="0,10"
+        Stroke="{DynamicResource ComponentBorderBrush}"
+        StrokeThickness="2"
+        Margin="0,-10,0,0"
+      />
+      <core:TerminalView
+        DataContext="{Binding Set}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Top"
+        Margin="0,-20,0,0"
+      />
+    </Grid>
+
+    <Grid ClipToBounds="False" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+      <Line
+        StartPoint="0,0"
+        EndPoint="0,10"
+        Stroke="{DynamicResource ComponentBorderBrush}"
+        StrokeThickness="2"
+        Margin="0,0,0,-10"
+      />
+      <core:TerminalView
+        DataContext="{Binding Clr}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Bottom"
+        Margin="0,0,0,-20"
+      />
+    </Grid>
+
+    <UniformGrid Columns="1" ClipToBounds="False">
+      <Grid ClipToBounds="False">
+        <Line
+          StartPoint="0,0"
+          EndPoint="10,0"
+          Stroke="{DynamicResource ComponentBorderBrush}"
+          StrokeThickness="2"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-10,0,0,0"
+        />
+        <core:TerminalView
+          DataContext="{Binding J}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-20,0,0,0"
+        />
+      </Grid>
+      <Grid ClipToBounds="False">
+        <Line
+          StartPoint="0,0"
+          EndPoint="10,0"
+          Stroke="{DynamicResource ComponentBorderBrush}"
+          StrokeThickness="2"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-10,0,0,0"
+        />
+        <core:TerminalView
+          DataContext="{Binding K}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-20,0,0,0"
+        />
+      </Grid>
+      <Grid ClipToBounds="False">
+        <Line
+          StartPoint="0,0"
+          EndPoint="10,0"
+          Stroke="{DynamicResource ComponentBorderBrush}"
+          StrokeThickness="2"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-10,0,0,0"
+        />
+        <core:TerminalView
+          DataContext="{Binding Clk}"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Center"
+          Margin="-20,0,0,0"
+        />
+      </Grid>
+    </UniformGrid>
+
+    <Grid ClipToBounds="False">
+      <Grid ClipToBounds="False">
+        <Line
+          StartPoint="0,20"
+          EndPoint="10,20"
+          Stroke="{DynamicResource ComponentBorderBrush}"
+          StrokeThickness="2"
+          Margin="0,0,-10,0"
+          HorizontalAlignment="Right"
+        />
+        <core:TerminalView
+          DataContext="{Binding Q}"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Top"
+          Margin="0,15,-20,0"
+        />
+      </Grid>
+      <Grid ClipToBounds="False">
+        <Line
+          StartPoint="0,40"
+          EndPoint="10,40"
+          Stroke="{DynamicResource ComponentBorderBrush}"
+          StrokeThickness="2"
+          Margin="0,0,-10,0"
+          HorizontalAlignment="Right"
+        />
+        <core:TerminalView
+          DataContext="{Binding QBar}"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Bottom"
+          Margin="0,0,-20,15"
+        />
+      </Grid>
+    </Grid>
+
+    <Rectangle
+      Stroke="DodgerBlue"
+      StrokeThickness="1"
+      Margin="-20,-20,-20,-20"
+      IsHitTestVisible="False"
+      Opacity="{Binding SelectionOpacity}"
+    >
+      <Rectangle.Fill>
+        <SolidColorBrush Color="#469adf" Opacity="0.2" />
+      </Rectangle.Fill>
+    </Rectangle>
+  </Grid>
+</UserControl>

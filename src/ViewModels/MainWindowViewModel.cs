@@ -260,6 +260,74 @@ public partial class MainWindowViewModel : ViewModelBase
                         wire.MainInput = new() { IsOrphan = true };
                 }
             }
+            else if (co is DLatchViewModel dl)
+            {
+                AvaloniaList<TerminalViewModel> inputs = [dl.D, dl.En];
+                AvaloniaList<TerminalViewModel> outputs = [dl.Q, dl.QBar];
+
+                foreach (TerminalViewModel input in inputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                        wire.MainOutput = new() { IsOrphan = true };
+                }
+
+                foreach (TerminalViewModel output in outputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(output))
+                        wire.MainInput = new() { IsOrphan = true };
+                }
+            }
+            else if (co is DFlipFlopViewModel dff)
+            {
+                AvaloniaList<TerminalViewModel> inputs = [dff.D, dff.Clk, dff.Set, dff.Clr];
+                AvaloniaList<TerminalViewModel> outputs = [dff.Q, dff.QBar];
+
+                foreach (TerminalViewModel input in inputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                        wire.MainOutput = new() { IsOrphan = true };
+                }
+
+                foreach (TerminalViewModel output in outputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(output))
+                        wire.MainInput = new() { IsOrphan = true };
+                }
+            }
+            else if (co is JKFlipFlopViewModel jk)
+            {
+                AvaloniaList<TerminalViewModel> inputs = [jk.J, jk.K, jk.Clk, jk.Set, jk.Clr];
+                AvaloniaList<TerminalViewModel> outputs = [jk.Q, jk.QBar];
+
+                foreach (TerminalViewModel input in inputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                        wire.MainOutput = new() { IsOrphan = true };
+                }
+
+                foreach (TerminalViewModel output in outputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(output))
+                        wire.MainInput = new() { IsOrphan = true };
+                }
+            }
+            else if (co is TFlipFlopViewModel tff)
+            {
+                AvaloniaList<TerminalViewModel> inputs = [tff.T, tff.Clk, tff.Set, tff.Clr];
+                AvaloniaList<TerminalViewModel> outputs = [tff.Q, tff.QBar];
+
+                foreach (TerminalViewModel input in inputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                        wire.MainOutput = new() { IsOrphan = true };
+                }
+
+                foreach (TerminalViewModel output in outputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(output))
+                        wire.MainInput = new() { IsOrphan = true };
+                }
+            }
             else if (co is MultiplexerViewModel mux)
             {
                 AvaloniaList<TerminalViewModel> inputs = [.. mux.Inputs, .. mux.Selects];
