@@ -94,13 +94,13 @@ public partial class JKFlipFlopViewModel : ComponentViewModel
         )
             return;
 
-        PlaceTerminal(J, X - 10, Y + 10);
-        PlaceTerminal(K, X - 10, Y + 30);
-        PlaceTerminal(Clk, X - 10, Y + 50);
+        PlaceTerminal(J, X - 10, Y + 20);
+        PlaceTerminal(K, X - 10, Y + 40);
+        PlaceTerminal(Clk, X - 10, Y + 60);
         PlaceTerminal(Set, X + (Width / 2), Y - 10);
         PlaceTerminal(Clr, X + (Width / 2), Y + Height + 10);
-        PlaceTerminal(Q, X + (Width + 10), Y + 15);
-        PlaceTerminal(QBar, X + (Width + 10), Y + 45);
+        PlaceTerminal(Q, X + (Width + 10), Y + 30);
+        PlaceTerminal(QBar, X + (Width + 10), Y + 50);
     }
 
     private void PlaceTerminal(TerminalViewModel terminal, double unrotatedX, double unrotatedY)

@@ -60,9 +60,9 @@ public partial class DLatchViewModel : ComponentViewModel
             return;
 
         PlaceTerminal(D, X - 10, Y + 10);
-        PlaceTerminal(En, X - 10, Y + 30);
+        PlaceTerminal(En, X - 10, Y + Height - 10);
         PlaceTerminal(Q, X + (Width + 10), Y + 10);
-        PlaceTerminal(QBar, X + (Width + 10), Y + 30);
+        PlaceTerminal(QBar, X + (Width + 10), Y + Height - 10);
     }
 
     private void PlaceTerminal(TerminalViewModel terminal, double unrotatedX, double unrotatedY)
