@@ -69,7 +69,7 @@ public partial class TFlipFlopViewModel : ComponentViewModel
         : base(model)
     {
         Width = 40;
-        Height = 40;
+        Height = 60;
     }
 
     public override void UpdateTerminals()

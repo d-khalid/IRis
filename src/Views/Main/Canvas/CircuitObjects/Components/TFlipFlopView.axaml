@@ -33,7 +33,6 @@
           HorizontalAlignment="Center"
           VerticalAlignment="Top"
           FontSize="8"
-          Margin="0,1,0,0"
           IsHitTestVisible="False"
         />
         <TextBlock
@@ -42,7 +41,7 @@
           HorizontalAlignment="Left"
           VerticalAlignment="Top"
           FontSize="8"
-          Margin="3,10,0,0"
+          Margin="2,12,0,0"
           IsHitTestVisible="False"
         />
         <TextBlock
@@ -51,7 +50,7 @@
           HorizontalAlignment="Left"
           VerticalAlignment="Bottom"
           FontSize="8"
-          Margin="3,0,0,10"
+          Margin="2,0,0,12"
           IsHitTestVisible="False"
         />
         <TextBlock
@@ -60,7 +59,7 @@
           HorizontalAlignment="Right"
           VerticalAlignment="Top"
           FontSize="8"
-          Margin="0,10,3,0"
+          Margin="0,12,2,0"
           IsHitTestVisible="False"
         />
         <TextBlock
@@ -69,7 +68,7 @@
           HorizontalAlignment="Right"
           VerticalAlignment="Bottom"
           FontSize="8"
-          Margin="0,0,3,10"
+          Margin="0,0,2,12"
           IsHitTestVisible="False"
         />
         <TextBlock
@@ -78,7 +77,6 @@
           HorizontalAlignment="Center"
           VerticalAlignment="Bottom"
           FontSize="8"
-          Margin="0,0,0,1"
           IsHitTestVisible="False"
         />
       </Grid>
@@ -91,6 +89,7 @@
         Stroke="{DynamicResource ComponentBorderBrush}"
         StrokeThickness="2"
         Margin="0,-10,0,0"
+        HorizontalAlignment="Center"
       />
       <core:TerminalView
         DataContext="{Binding Set}"
@@ -107,6 +106,7 @@
         Stroke="{DynamicResource ComponentBorderBrush}"
         StrokeThickness="2"
         Margin="0,0,0,-10"
+        HorizontalAlignment="Center"
       />
       <core:TerminalView
         DataContext="{Binding Clr}"
@@ -119,8 +119,8 @@
     <UniformGrid Columns="1" ClipToBounds="False">
       <Grid ClipToBounds="False">
         <Line
-          StartPoint="0,0"
-          EndPoint="10,0"
+          StartPoint="0,10"
+          EndPoint="10,10"
           Stroke="{DynamicResource ComponentBorderBrush}"
           StrokeThickness="2"
           HorizontalAlignment="Left"
@@ -131,13 +131,13 @@
           DataContext="{Binding T}"
           HorizontalAlignment="Left"
           VerticalAlignment="Center"
-          Margin="-20,0,0,0"
+          Margin="-20,10,0,0"
         />
       </Grid>
       <Grid ClipToBounds="False">
         <Line
-          StartPoint="0,0"
-          EndPoint="10,0"
+          StartPoint="0,-5"
+          EndPoint="10,-5"
           Stroke="{DynamicResource ComponentBorderBrush}"
           StrokeThickness="2"
           HorizontalAlignment="Left"
@@ -148,7 +148,7 @@
           DataContext="{Binding Clk}"
           HorizontalAlignment="Left"
           VerticalAlignment="Center"
-          Margin="-20,0,0,0"
+          Margin="-20,-10,0,0"
         />
       </Grid>
     </UniformGrid>
@@ -156,8 +156,8 @@
     <UniformGrid Columns="1" ClipToBounds="False" HorizontalAlignment="Right">
       <Grid ClipToBounds="False">
         <Line
-          StartPoint="0,0"
-          EndPoint="10,0"
+          StartPoint="0,10"
+          EndPoint="10,10"
           Stroke="{DynamicResource ComponentBorderBrush}"
           StrokeThickness="2"
           HorizontalAlignment="Right"
@@ -168,13 +168,13 @@
           DataContext="{Binding Q}"
           HorizontalAlignment="Right"
           VerticalAlignment="Center"
-          Margin="0,0,-20,0"
+          Margin="0,10,-20,0"
         />
       </Grid>
       <Grid ClipToBounds="False">
         <Line
-          StartPoint="0,0"
-          EndPoint="10,0"
+          StartPoint="0,-5"
+          EndPoint="10,-5"
           Stroke="{DynamicResource ComponentBorderBrush}"
           StrokeThickness="2"
           HorizontalAlignment="Right"
@@ -185,7 +185,7 @@
           DataContext="{Binding QBar}"
           HorizontalAlignment="Right"
           VerticalAlignment="Center"
-          Margin="0,0,-20,0"
+          Margin="0,-10,-20,0"
         />
       </Grid>
     </UniformGrid>
