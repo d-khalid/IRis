@@ -15,12 +15,4 @@
 
 ## Code Formatting
 
-`CSharpier.MsBuild` has been configured in `IRis.csproj` for automatic code formatting on builds. Some rules that are not enforced by the code formatter are as follows:
-
-- If a class variable has a multi-line declaration/assigment (including the line it is using for compiler directives), use one empty line after it for spacing.
-- Always remove unused dependencies.
-- Do not add code that is commented out, other than the chunks that are already there.
-- Do not use docstrings/multi-line comments, long explanations are to be done in this `README.md`.
-- Put comments only where necessary. Try not to remove old comments unless you have to.
-
-With the above in mind, try to keep the code formatting consistent with the existing code when you make changes.
+A general rule for this would be, to follow what already exists. Refer to the details [here](https://github.com/d-khalid/IRis#code-formatting).
