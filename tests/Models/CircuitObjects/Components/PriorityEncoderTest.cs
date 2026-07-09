@@ -23,4 +23,17 @@ public class PriorityEncoderTest
 
         Assert.Equal(expected, encoder.Outputs[0].State);
     }
+
+    [Fact]
+    public void SimulateResetScenario()
+    {
+        var encoder = new PriorityEncoder();
+        encoder.Inputs.Add(new Terminal());
+        encoder.Inputs.Add(new Terminal());
+        encoder.Outputs.Add(new Terminal { State = LogicState.High });
+
+        encoder.Reset();
+
+        Assert.Equal(LogicState.Unknown, encoder.Outputs[0].State);
+    }
 }

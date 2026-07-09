@@ -22,4 +22,18 @@ public class NotGateTest
 
         Assert.Equal(expected, gate.Output.State);
     }
+
+    [Fact]
+    public void SimulateResetScenario()
+    {
+        var gate = new NotGate
+        {
+            Output = new Terminal { State = LogicState.High },
+            Input = new Terminal(),
+        };
+
+        gate.Reset();
+
+        Assert.Equal(LogicState.Unknown, gate.Output.State);
+    }
 }

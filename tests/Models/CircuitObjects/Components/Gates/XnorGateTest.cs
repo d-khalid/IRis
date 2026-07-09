@@ -21,4 +21,16 @@ public class XnorGateTest
 
         Assert.Equal(expected, gate.Output.State);
     }
+
+    [Fact]
+    public void SimulateResetScenario()
+    {
+        var gate = new XnorGate { Output = new Terminal { State = LogicState.High } };
+        gate.Inputs.Add(new Terminal());
+        gate.Inputs.Add(new Terminal());
+
+        gate.Reset();
+
+        Assert.Equal(LogicState.Unknown, gate.Output.State);
+    }
 }

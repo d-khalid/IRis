@@ -26,4 +26,18 @@ public class DecoderTest
         Assert.Equal(expectedOutput0, decoder.Outputs[0].State);
         Assert.Equal(expectedOutput1, decoder.Outputs[1].State);
     }
+
+    [Fact]
+    public void SimulateResetScenario()
+    {
+        var decoder = new Decoder();
+        decoder.Selects.Add(new Terminal());
+        decoder.Outputs.Add(new Terminal { State = LogicState.High });
+        decoder.Outputs.Add(new Terminal { State = LogicState.High });
+
+        decoder.Reset();
+
+        Assert.Equal(LogicState.Unknown, decoder.Outputs[0].State);
+        Assert.Equal(LogicState.Unknown, decoder.Outputs[1].State);
+    }
 }

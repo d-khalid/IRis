@@ -26,4 +26,18 @@ public class DemultiplexerTest
         Assert.Equal(expectedOutput0, demux.Outputs[0].State);
         Assert.Equal(expectedOutput1, demux.Outputs[1].State);
     }
+
+    [Fact]
+    public void SimulateResetScenario()
+    {
+        var demux = new Demultiplexer { Input = new Terminal() };
+        demux.Selects.Add(new Terminal());
+        demux.Outputs.Add(new Terminal { State = LogicState.High });
+        demux.Outputs.Add(new Terminal { State = LogicState.High });
+
+        demux.Reset();
+
+        Assert.Equal(LogicState.Unknown, demux.Outputs[0].State);
+        Assert.Equal(LogicState.Unknown, demux.Outputs[1].State);
+    }
 }

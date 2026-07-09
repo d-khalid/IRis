@@ -22,4 +22,16 @@ public class NorGateTest
 
         Assert.Equal(expected, gate.Output.State);
     }
+
+    [Fact]
+    public void SimulateResetScenario()
+    {
+        var gate = new NorGate { Output = new Terminal { State = LogicState.High } };
+        gate.Inputs.Add(new Terminal());
+        gate.Inputs.Add(new Terminal());
+
+        gate.Reset();
+
+        Assert.Equal(LogicState.Unknown, gate.Output.State);
+    }
 }

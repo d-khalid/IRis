@@ -4,31 +4,32 @@ using Xunit;
 
 namespace IRis.Tests.Models.CircuitObjects.Components;
 
-public class ToggleTest
+public class ClockTest
 {
     [Theory]
     [InlineData(LogicState.High)]
     [InlineData(LogicState.Low)]
     public void SimulateExampleScenarios(LogicState state)
     {
-        var toggle = new Toggle { Output = new Terminal(), State = state };
+        var clock = new Clock { Output = new Terminal(), State = state };
 
-        toggle.Simulate();
+        clock.Simulate();
 
-        Assert.Equal(state, toggle.Output.State);
+        Assert.Equal(state, clock.Output.State);
     }
 
     [Fact]
     public void SimulateResetScenario()
     {
-        var toggle = new Toggle
+        var clock = new Clock
         {
             Output = new Terminal { State = LogicState.High },
             State = LogicState.High,
         };
 
-        toggle.Reset();
+        clock.Reset();
 
-        Assert.Equal(LogicState.Unknown, toggle.Output.State);
+        Assert.Equal(LogicState.Unknown, clock.State);
+        Assert.Equal(LogicState.Unknown, clock.Output.State);
     }
 }
