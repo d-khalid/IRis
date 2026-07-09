@@ -78,7 +78,7 @@ public partial class JKFlipFlopViewModel : ComponentViewModel
         : base(model)
     {
         Width = 40;
-        Height = 60;
+        Height = 80;
     }
 
     public override void UpdateTerminals()
