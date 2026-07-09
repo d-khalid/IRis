@@ -76,6 +76,9 @@ public partial class CanvasViewModel(
             return;
         }
 
+        if (!e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed)
+            return;
+
         e.Handled = true;
         AppState.MousePosition = _simulationService.SnapPointToGrid(e.GetPosition((Visual)sender!));
 
