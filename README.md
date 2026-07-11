@@ -58,11 +58,14 @@ Now for the Sketch to Simulation feature, you would have to download the latest 
 
 ## How does the Simulation Work?
 
-Everything in a canvas is described by one `AvaloniaList<CircuitObject>`. This list contains components and wires. All of them have a `Simulate()` function through which they access their logical layer, compute output and update their visual states. On the other hand, wires propagate signals instantaneously independent of the frequency setting of the simulation.
+Everything in a canvas is described by one `AvaloniaList<CircuitObject>`. This list contains components and wires. All of them have a `Simulate()` function through which they access their logical layer, compute output and update their visual states. On the other hand, wires propagate signals instantaneously, independent of the frequency setting of the simulation.
 
-The simulation frequency (in Hz) can be adjusted on the left sidebar in the Canvas tab. It basically decides how many times the components would recompute their output each second. In short, a frequency of **5** would mean all the components would compute their output **five times** each second.
+The Clock components have adjustable frequencies (in Hz) from the right sidebar that opens when the user selects them. Each tick simulates a full cycle (e.g. High state first then low and so on). 
 
-As for components which involve the use of clocks, we have an actual clock component with adjustable frequency independent of the simulation frequency. Each tick on a clock would toggle it's output.
+Simulation itself also offers an adjustable frequency (from the left sidebar, in the Canvas tab). This is recommended to be used for:
+
+- learning purposes - that is, to see how a circuit behaves by applying a slower computation speed on each component.
+- performance - lower cpu load or a better quality of life.
 
 ---
 
