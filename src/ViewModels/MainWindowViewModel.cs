@@ -6,14 +6,12 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
-using IRis.Models.Core;
 using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 using IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
-using IRis.ViewModels.Main.Canvas.Core;
 using IRis.Views;
 
 namespace IRis.ViewModels;
@@ -101,8 +99,9 @@ public partial class MainWindowViewModel : ViewModelBase
         _simulation.Nuke();
         _preview.Nuke();
         _wirePreview.Nuke();
-
         CommandService.Reset();
+
+        _simulation.Running = true;
     }
 
     [RelayCommand]
@@ -110,6 +109,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (param == "open" && !await AskNukeChangesAsync())
             return;
+
         if (_simulation.Running)
             _simulation.Running = false;
 
@@ -144,13 +144,13 @@ public partial class MainWindowViewModel : ViewModelBase
                 _simulation.Add(collection);
             }
         }
+
+        _simulation.Running = true;
     }
 
     [RelayCommand]
     private async Task SaveAsync()
     {
-        if (_simulation.Running)
-            _simulation.Running = false;
         if (AppState.CurrentFilePath == "(unsaved)")
         {
             await SaveAsAsync();
