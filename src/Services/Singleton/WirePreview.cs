@@ -108,9 +108,9 @@ public partial class WirePreview : ObservableObject
             return;
         }
 
-        if (CommittedPoints.Count == 0)
+        if (CommittedPoints.Count <= 1)
         {
-            _logger.LogInformation("Leave(): no points were commited. Nuking wire without saving.");
+            _logger.LogDebug("Leave(): no points were commited. Nuking wire without saving.");
         }
         else
         {
