@@ -115,7 +115,7 @@ With the above in mind, try to keep the code formatting consistent with the exis
 
 ## Debugging
 
-Logger is registered in services. It can be declared using any other service. Common logging levels used in IRis are `DEBUG`, `INFO`, `WARNING` and `ERROR`. More and more logs will be added as the app expands.
+Logger is registered in services. It can be declared using any other service. Common logging levels used in IRis are `DEBUG`, `INFO`, `WARNING` and `ERROR`. If you are adding logs, please make sure to mention the function names too.
 
 As for debugging a compiled app, it's `.exe` has to be run from a terminal which would then print debugging info as the app is running.
 

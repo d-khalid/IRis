@@ -1,9 +1,12 @@
+using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.CircuitObjects;
+using IRis.Models.Core;
 using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas.Core;
@@ -12,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects;
 
-public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
+public partial class WireViewModel : CircuitObjectViewModel
 {
     [ObservableProperty]
     private AvaloniaList<Point> _points = [];
@@ -20,14 +23,48 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
     [ObservableProperty]
     private TerminalViewModel _mainInput = null!;
 
+    [ObservableProperty]
+    private TerminalViewModel _mainOutput = null!;
+
+    public AvaloniaList<TerminalViewModel> Outputs { get; set; } = [];
+    private readonly Preview _preview;
+    private readonly AppState _appState;
+    private readonly WirePreview _wirePreview;
+    private readonly DragService _dragService;
+    private readonly ILogger<WireViewModel> _logger;
+
+    private readonly SimulationService _simulationService =
+        App.Current.Services.GetRequiredService<SimulationService>();
+
+    public WireViewModel()
+        : base(new Wire())
+    {
+        _preview = App.Current.Services.GetRequiredService<Preview>();
+        _appState = App.Current.Services.GetRequiredService<AppState>();
+        _wirePreview = App.Current.Services.GetRequiredService<WirePreview>();
+        _dragService = App.Current.Services.GetRequiredService<DragService>();
+        _logger = App.Current.Services.GetRequiredService<ILogger<WireViewModel>>();
+
+        Outputs.CollectionChanged += (_, e) =>
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                var vm = (e.NewItems![0] as TerminalViewModel)!;
+                (Model as Wire)!.Outputs.Add(vm.GetModel());
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                var vm = (e.OldItems![0] as TerminalViewModel)!;
+                (Model as Wire)!.Outputs.Remove(vm.GetModel());
+            }
+        };
+    }
+
     partial void OnMainInputChanged(TerminalViewModel value)
     {
         (Model as Wire)!.MainInput = value.GetModel();
         value.PropertyChanged += OnTerminalPropertyChanged;
     }
-
-    [ObservableProperty]
-    private TerminalViewModel _mainOutput = null!;
 
     partial void OnMainOutputChanged(TerminalViewModel value)
     {
@@ -41,24 +78,9 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
             Fix();
     }
 
-    private readonly WirePreview _wirePreview =
-        App.Current.Services.GetRequiredService<WirePreview>();
-
-    private readonly Preview _preview = App.Current.Services.GetRequiredService<Preview>();
-    private readonly AppState _appState = App.Current.Services.GetRequiredService<AppState>();
-
-    private readonly DragService _dragService =
-        App.Current.Services.GetRequiredService<DragService>();
-
-    private readonly HoverEffectService _hoverEffectService =
-        App.Current.Services.GetRequiredService<HoverEffectService>();
-
-    private readonly ILogger<WireViewModel> _logger = App.Current.Services.GetRequiredService<
-        ILogger<WireViewModel>
-    >();
-
     public void Redraw()
     {
+        _logger.LogInformation("Redrawing wire");
         if (MainInput is null || MainOutput is null)
             return;
 
@@ -157,6 +179,14 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         {
             Redraw();
         }
+
+        foreach (var output in Outputs)
+        {
+            Point closestPt = GetNearestPointOnWire(new(output.X, output.Y));
+
+            output.X = closestPt.X;
+            output.Y = closestPt.Y;
+        }
     }
 
     public void SetOrphanTo(TerminalViewModel target)
@@ -171,7 +201,8 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
 
     public override bool Contains(Point pt)
     {
-        return Points.Contains(pt);
+        var closestPt = GetNearestPointOnWire(pt);
+        return _simulationService.Distance(closestPt, pt) < 3;
     }
 
     public override bool Intersects(Rect rect)
@@ -187,9 +218,62 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         return false;
     }
 
+    public Point GetNearestPointOnWire(Point pt)
+    {
+        double bestDist = double.MaxValue;
+        Point best = pt;
+
+        for (int i = 0; i < Points.Count - 1; i++)
+        {
+            Point a = Points[i];
+            Point b = Points[i + 1];
+            Point candidate;
+
+            if (a.Y == b.Y) // horizontal segment
+            {
+                double clampedX = Math.Clamp(pt.X, Math.Min(a.X, b.X), Math.Max(a.X, b.X));
+                candidate = new Point(clampedX, a.Y);
+            }
+            else // vertical segment (a.X == b.X)
+            {
+                double clampedY = Math.Clamp(pt.Y, Math.Min(a.Y, b.Y), Math.Max(a.Y, b.Y));
+                candidate = new Point(a.X, clampedY);
+            }
+
+            double dx = candidate.X - pt.X;
+            double dy = candidate.Y - pt.Y;
+            double dist = dx * dx + dy * dy;
+
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                best = candidate;
+            }
+        }
+
+        return _simulationService.SnapPointToGrid(best);
+    }
+
     public void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        // STUB: may be used later
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
+
+        if (!_appState.EditingAllowed)
+            return;
+
+        e.Handled = true;
+        Point pt = GetNearestPointOnWire(e.GetPosition((Visual)sender!));
+
+        TerminalViewModel t = new()
+        {
+            X = pt.X,
+            Y = pt.Y,
+            Type = TerminalType.Output,
+        };
+
+        _wirePreview.StartAt(t);
+        Outputs.Add(t);
     }
 
     public void OnPointerEntered(object? sender, PointerEventArgs e)
@@ -203,8 +287,7 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || _dragService.IsRunning())
             return;
 
-        if (!IsSelected)
-            _hoverEffectService.On(this);
+        // STUB: may be used later
     }
 
     public void OnPointerExited(object? sender, PointerEventArgs e)
@@ -218,7 +301,6 @@ public partial class WireViewModel() : CircuitObjectViewModel(new Wire())
         if (!_wirePreview.IsEmpty() || !_preview.IsEmpty() || _dragService.IsRunning())
             return;
 
-        if (!IsSelected && _hoverEffectService.IsRunning())
-            _hoverEffectService.Stop();
+        // STUB: may be used later
     }
 }

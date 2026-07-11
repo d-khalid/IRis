@@ -2,6 +2,7 @@
   xmlns="https://github.com/avaloniaui"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects"
+  xmlns:core="using:IRis.Views.Main.Canvas.Core"
   x:DataType="vm:WireViewModel"
   x:Class="IRis.Views.Main.Canvas.CircuitObjects.WireView"
   ClipToBounds="False"
@@ -10,11 +11,13 @@
     <Polyline
       Points="{Binding Points}"
       Stroke="Transparent"
-      StrokeThickness="12"
+      StrokeThickness="10"
       StrokeJoin="Round"
       StrokeLineCap="Round"
+      PointerPressed="OnPointerPressed"
       PointerEntered="OnPointerEntered"
       PointerExited="OnPointerExited"
+      Cursor="Cross"
     />
 
     <Polyline
@@ -26,6 +29,7 @@
       IsHitTestVisible="False"
     />
 
+    <!-- selection -->
     <Polyline
       Points="{Binding Points}"
       Stroke="DodgerBlue"
@@ -35,5 +39,20 @@
       Opacity="{Binding SelectionOpacity}"
       IsHitTestVisible="False"
     />
+
+    <Canvas ClipToBounds="False">
+      <core:TerminalView
+        DataContext="{Binding MainInput}"
+        Canvas.Left="{Binding X}"
+        Canvas.Top="{Binding Y}"
+        Margin="-5,-5,0,0"
+      />
+      <core:TerminalView
+        DataContext="{Binding MainOutput}"
+        Canvas.Left="{Binding X}"
+        Canvas.Top="{Binding Y}"
+        Margin="-5,-5,0,0"
+      />
+    </Canvas>
   </Grid>
 </UserControl>

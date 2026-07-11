@@ -12,6 +12,9 @@ public partial class WireView : UserControl
         InitializeComponent();
     }
 
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e) =>
+        (DataContext as WireViewModel)?.OnPointerPressed(sender, e);
+
     private void OnPointerEntered(object? sender, PointerEventArgs e) =>
         (DataContext as WireViewModel)?.OnPointerEntered(sender, e);
 
