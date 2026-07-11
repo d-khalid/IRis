@@ -16,7 +16,7 @@ public partial class Simulation : ObservableObject
     private bool _running = false;
 
     [ObservableProperty]
-    private int _frequencyHz = 100;
+    private int _frequencyHz = 50;
 
     public AvaloniaList<CircuitObjectViewModel> Objects { get; } = [];
     private readonly HashSet<Point> _forbiddenMatrix = [];
@@ -75,8 +75,6 @@ public partial class Simulation : ObservableObject
     public void Add(CircuitObjectViewModel co) => Objects.Add(co);
 
     public void Add(AvaloniaList<CircuitObjectViewModel> coll) => Objects.AddRange(coll);
-
-    public void Remove(CircuitObjectViewModel co) => Objects.Remove(co);
 
     public void Nuke() => Objects.Clear();
 

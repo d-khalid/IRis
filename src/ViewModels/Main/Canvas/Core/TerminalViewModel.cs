@@ -22,11 +22,9 @@ public partial class TerminalViewModel : ObservableObject
     public bool IsOrphan = false;
 
     [ObservableProperty]
-    [property: JsonIgnore]
     private double _x = 0;
 
     [ObservableProperty]
-    [property: JsonIgnore]
     private double _y = 0;
 
     [ObservableProperty]

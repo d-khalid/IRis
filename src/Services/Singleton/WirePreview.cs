@@ -5,6 +5,8 @@ using IRis.Models.Core;
 using IRis.Services.Commands;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
 using IRis.ViewModels.Main.Canvas.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace IRis.Services.Singleton;
 
@@ -19,6 +21,10 @@ public partial class WirePreview : ObservableObject
     public AvaloniaList<Point> CommittedPoints { get; set; } = [];
     public AvaloniaList<Point> TemporaryPoints { get; set; } = [];
 
+    private readonly ILogger<WirePreview> _logger = App.Current.Services.GetRequiredService<
+        ILogger<WirePreview>
+    >();
+
     public void StartAt(TerminalViewModel target)
     {
         WireViewModel wire = new()
@@ -28,67 +34,127 @@ public partial class WirePreview : ObservableObject
         };
 
         if (target.Type is TerminalType.Output)
+        {
             wire.MainInput = target;
-        else if (target.Type is TerminalType.Input)
-            wire.MainOutput = target;
+            wire.MainInput.X = target.X;
+            wire.MainInput.Y = target.Y;
+        }
         else
-            return;
+        {
+            wire.MainOutput = target;
+            wire.MainOutput.X = target.X;
+            wire.MainOutput.Y = target.Y;
+        }
 
         wire.Opacity = 0.5;
         Wire = wire;
 
         CommittedPoints.Add(new Point(target.X, target.Y));
-        Wire!.Points.AddRange(CommittedPoints);
+        Wire.Points.AddRange(CommittedPoints);
 
         Show();
     }
 
     public void UpdateTo(Point position)
     {
-        TemporaryPoints.Clear();
+        if (Wire is null)
+        {
+            _logger.LogWarning("UpdateTo(): no wire is set currently.");
+            return;
+        }
 
-        // the math bellow for L-shaped wire routing was done by SHAHZAIB
+        TemporaryPoints.Clear();
 
         var lastPt = CommittedPoints[^1];
         TemporaryPoints.Add(new(lastPt.X, position.Y));
         TemporaryPoints.Add(position);
 
-        Wire!.Points.Clear();
+        Wire.Points.Clear();
         Wire.Points.AddRange(CommittedPoints);
         Wire.Points.AddRange(TemporaryPoints);
+
+        if (Wire.MainInput.IsOrphan)
+        {
+            Wire.MainInput.X = position.X;
+            Wire.MainInput.Y = position.Y;
+        }
+        else if (Wire.MainOutput.IsOrphan)
+        {
+            Wire.MainOutput.X = position.X;
+            Wire.MainOutput.Y = position.Y;
+        }
     }
 
     public void Checkpoint()
     {
+        if (Wire is null)
+        {
+            _logger.LogWarning("Checkpoint(): no wire is set currently.");
+            return;
+        }
+
         CommittedPoints.AddRange(TemporaryPoints);
         TemporaryPoints.Clear();
 
-        Wire!.Points.Clear();
+        Wire.Points.Clear();
         Wire.Points.AddRange(CommittedPoints);
     }
 
     public void Leave()
     {
-        Wire!.Points.Clear();
-        Wire.Points.AddRange(CommittedPoints);
+        if (Wire is null)
+        {
+            _logger.LogWarning("Leave(): no wire is set currently.");
+            return;
+        }
 
-        CommandService.Execute(new CommitCommand([Wire]) { Name = "Leave Wire" });
+        if (CommittedPoints.Count == 0)
+        {
+            _logger.LogInformation("Leave(): no points were commited. Nuking wire without saving.");
+        }
+        else
+        {
+            Wire.Points.Clear();
+            Wire.Points.AddRange(CommittedPoints);
+
+            if (Wire.MainInput.IsOrphan)
+            {
+                Wire.MainInput.X = CommittedPoints[^1].X;
+                Wire.MainInput.Y = CommittedPoints[^1].Y;
+            }
+            else if (Wire.MainOutput.IsOrphan)
+            {
+                Wire.MainOutput.X = CommittedPoints[^1].X;
+                Wire.MainOutput.Y = CommittedPoints[^1].Y;
+            }
+
+            CommandService.Execute(new CommitCommand([Wire]) { Name = "Leave Wire" });
+        }
 
         Nuke();
-    }
-
-    public void Pick(WireViewModel wire)
-    {
-        Wire = wire;
-        CommittedPoints = Wire.Points;
     }
 
     public void EndAt(TerminalViewModel target)
     {
         if (Wire is null)
+        {
+            _logger.LogWarning("WirePreview.EndAt(): no wire is set currently.");
             return;
+        }
+
         Wire.Points.Clear();
-        Wire.SetOrphanTo(target);
+        if (Wire.MainOutput.IsOrphan)
+        {
+            Wire.MainOutput = target;
+            Wire.MainOutput.X = target.X;
+            Wire.MainOutput.Y = target.Y;
+        }
+        else
+        {
+            Wire.MainInput = target;
+            Wire.MainInput.X = target.X;
+            Wire.MainInput.Y = target.Y;
+        }
 
         CommittedPoints.AddRange(TemporaryPoints);
         Wire.Points.AddRange(CommittedPoints);
