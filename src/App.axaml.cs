@@ -76,7 +76,7 @@ public partial class App : Application
         services.AddLogging(builder =>
         {
             builder.AddConsole();
-            builder.SetMinimumLevel(LogLevel.Information);
+            builder.SetMinimumLevel(LogLevel.Debug);
         });
 
         return services.BuildServiceProvider();
