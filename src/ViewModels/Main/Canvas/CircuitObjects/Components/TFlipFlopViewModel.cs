@@ -11,56 +11,20 @@ public partial class TFlipFlopViewModel : ComponentViewModel
     [ObservableProperty]
     private TerminalViewModel _t = null!;
 
-    partial void OnTChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Input;
-        (Model as TFlipFlop)!.T = value.GetModel();
-    }
-
     [ObservableProperty]
     private TerminalViewModel _clk = null!;
-
-    partial void OnClkChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Input;
-        (Model as TFlipFlop)!.Clk = value.GetModel();
-    }
 
     [ObservableProperty]
     private TerminalViewModel _set = null!;
 
-    partial void OnSetChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Input;
-        (Model as TFlipFlop)!.Set = value.GetModel();
-    }
-
     [ObservableProperty]
     private TerminalViewModel _clr = null!;
-
-    partial void OnClrChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Input;
-        (Model as TFlipFlop)!.Clr = value.GetModel();
-    }
 
     [ObservableProperty]
     private TerminalViewModel _q = null!;
 
-    partial void OnQChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Output;
-        (Model as TFlipFlop)!.Q = value.GetModel();
-    }
-
     [ObservableProperty]
     private TerminalViewModel _qBar = null!;
-
-    partial void OnQBarChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Output;
-        (Model as TFlipFlop)!.QBar = value.GetModel();
-    }
 
     public TFlipFlopViewModel()
         : this(new TFlipFlop()) { }
@@ -70,6 +34,42 @@ public partial class TFlipFlopViewModel : ComponentViewModel
     {
         Width = 40;
         Height = 60;
+    }
+
+    partial void OnTChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Input;
+        (Model as TFlipFlop)!.T = value.GetModel();
+    }
+
+    partial void OnClkChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Input;
+        (Model as TFlipFlop)!.Clk = value.GetModel();
+    }
+
+    partial void OnSetChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Input;
+        (Model as TFlipFlop)!.Set = value.GetModel();
+    }
+
+    partial void OnClrChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Input;
+        (Model as TFlipFlop)!.Clr = value.GetModel();
+    }
+
+    partial void OnQChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Output;
+        (Model as TFlipFlop)!.Q = value.GetModel();
+    }
+
+    partial void OnQBarChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Output;
+        (Model as TFlipFlop)!.QBar = value.GetModel();
     }
 
     public override void UpdateTerminals()

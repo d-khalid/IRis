@@ -23,14 +23,14 @@
           <RotateTransform Angle="{Binding TextRotation}" />
         </Grid.RenderTransform>
         <TextBlock
-          Text="{Binding Label}"
+          Text="~"
           Foreground="{DynamicResource ComponentBorderBrush}"
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
-          FontSize="14"
+          FontSize="18"
           FontWeight="ExtraBold"
           IsHitTestVisible="False"
-          Margin="0,-1,0,0"
+          Margin="2,0,0,4"
         />
       </Grid>
     </Border>

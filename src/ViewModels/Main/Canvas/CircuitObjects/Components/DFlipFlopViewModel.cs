@@ -79,8 +79,8 @@ public partial class DFlipFlopViewModel : ComponentViewModel
 
         PlaceTerminal(D, X - 10, Y + 20);
         PlaceTerminal(Clk, X - 10, Y + 40);
-        PlaceTerminal(Set, X + (Width / 2), Y - 10);
-        PlaceTerminal(Clr, X + (Width / 2), Y + Height + 10);
+        PlaceTerminal(Set, X + (Width / 2), Y);
+        PlaceTerminal(Clr, X + (Width / 2), Y + Height);
         PlaceTerminal(Q, X + (Width + 10), Y + 20);
         PlaceTerminal(QBar, X + (Width + 10), Y + 40);
     }
