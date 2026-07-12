@@ -259,6 +259,24 @@ public partial class LeftSidebarViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void AddRegister()
+    {
+        _selection.UnHighlightAll();
+
+        RegisterViewModel reg = new()
+        {
+            Clk = new(),
+            Set = new(),
+            Clr = new(),
+        };
+
+        reg.AddBit();
+        reg.AddBit();
+
+        _preview.Pick(reg);
+    }
+
+    [RelayCommand]
     private void AddMultiplexer()
     {
         _selection.UnHighlightAll();

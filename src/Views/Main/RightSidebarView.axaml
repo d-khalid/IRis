@@ -52,6 +52,9 @@
     <DataTemplate DataType="components:TFlipFlopViewModel">
       <componentViews:TFlipFlopView />
     </DataTemplate>
+    <DataTemplate DataType="components:RegisterViewModel">
+      <componentViews:RegisterView />
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <Border Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">

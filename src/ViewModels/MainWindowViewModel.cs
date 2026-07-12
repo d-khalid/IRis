@@ -329,6 +329,8 @@ public partial class MainWindowViewModel : ViewModelBase
                     decoder.AddSelectLine();
                 else if (co is PriorityEncoderViewModel encoder)
                     encoder.AddSelectLine();
+                else if (co is RegisterViewModel reg)
+                    reg.AddBit();
             }
         }
     }
@@ -366,6 +368,10 @@ public partial class MainWindowViewModel : ViewModelBase
                 else if (co is PriorityEncoderViewModel encoder)
                 {
                     encoder.RemoveSelectLine();
+                }
+                else if (co is RegisterViewModel reg)
+                {
+                    reg.RemoveBit();
                 }
             }
         }

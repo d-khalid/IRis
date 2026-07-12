@@ -175,6 +175,12 @@
                 <TextBlock Text="T Flip-Flop" VerticalAlignment="Center" />
               </StackPanel>
             </Button>
+            <Button Classes="item" Command="{Binding AddRegisterCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Viewbox Height="16" Child="{StaticResource SampleRegister}" />
+                <TextBlock Text="Register" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
           </StackPanel>
         </StackPanel>
       </StackPanel>
