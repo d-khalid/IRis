@@ -9,7 +9,7 @@ It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-t
 
 <div align="center">
   <img src="https://img.shields.io/github/license/d-khalid/IRis?style=for-the-badge&color=333333" alt="License" />
-  <img src="https://img.shields.io/github/actions/workflow/status/d-khalid/IRis/dotnet-desktop.yml?style=for-the-badge&color=333333" alt="Build Status" />
+  <img src="https://img.shields.io/github/actions/workflow/status/d-khalid/IRis/ci.yml?style=for-the-badge&color=333333" alt="Build Status" />
   <img src="https://img.shields.io/codecov/c/github/d-khalid/IRis?style=for-the-badge&color=333333" alt="Code Coverage" />
   <img src="https://img.shields.io/github/last-commit/d-khalid/IRis?style=for-the-badge&color=333333" alt="Last Commit" />
 </div>
