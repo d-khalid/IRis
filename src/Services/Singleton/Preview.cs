@@ -20,20 +20,26 @@ public partial class Preview(SimulationService simulationService, CloningService
     [ObservableProperty]
     private bool _isVisible = false;
 
-    public void UpdatePositionTo(Point position) =>
+    public void UpdatePositionTo(Point position)
+    {
         _simulationService.SnapCollectionToPosition(Objects, position, SavedMouseOffset);
+
+        if (!IsVisible)
+            IsVisible = true;
+    }
 
     public void Drop() => Objects.Clear();
 
-    public void Pick(ComponentViewModel c) => Pick([c]);
+    public void Pick(ComponentViewModel c, bool setVisible = true) => Pick([c], setVisible);
 
-    public void Pick(AvaloniaList<CircuitObjectViewModel> collection)
+    public void Pick(AvaloniaList<CircuitObjectViewModel> collection, bool setVisible = true)
     {
         Objects.Clear();
         Objects.AddRange(collection);
 
-        if (!IsVisible)
+        if (setVisible && !IsVisible)
             IsVisible = true;
+
         foreach (var co in collection)
             co.Opacity = 0.5;
 

@@ -25,6 +25,9 @@
     VerticalAlignment="Stretch"
     HorizontalAlignment="Stretch"
     EnablePan="False"
+    PointerPressed="OnPanPointerPressed"
+    PointerMoved="OnPanPointerMoved"
+    PointerReleased="OnPanPointerReleased"
     KeyDown="OnKeyDown"
   >
     <Canvas
