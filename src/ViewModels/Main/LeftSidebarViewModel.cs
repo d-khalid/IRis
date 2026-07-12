@@ -277,6 +277,26 @@ public partial class LeftSidebarViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void AddCounter()
+    {
+        _selection.UnHighlightAll();
+
+        CounterViewModel counter = new()
+        {
+            Clk = new(),
+            Clr = new(),
+            Load = new(),
+            Enable = new(),
+            Carry = new(),
+        };
+
+        counter.AddBit();
+        counter.AddBit();
+
+        _preview.Pick(counter);
+    }
+
+    [RelayCommand]
     private void AddMultiplexer()
     {
         _selection.UnHighlightAll();

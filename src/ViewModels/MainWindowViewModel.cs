@@ -331,6 +331,8 @@ public partial class MainWindowViewModel : ViewModelBase
                     encoder.AddSelectLine();
                 else if (co is RegisterViewModel reg)
                     reg.AddBit();
+                else if (co is CounterViewModel counter)
+                    counter.AddBit();
             }
         }
     }
@@ -372,6 +374,10 @@ public partial class MainWindowViewModel : ViewModelBase
                 else if (co is RegisterViewModel reg)
                 {
                     reg.RemoveBit();
+                }
+                else if (co is CounterViewModel counter)
+                {
+                    counter.RemoveBit();
                 }
             }
         }

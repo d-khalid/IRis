@@ -212,6 +212,37 @@ public class DeleteCommand(
                     }
                 }
             }
+            else if (co is CounterViewModel counter)
+            {
+                AvaloniaList<TerminalViewModel> inputs =
+                [
+                    .. counter.Inputs,
+                    counter.Clk,
+                    counter.Clr,
+                    counter.Load,
+                    counter.Enable,
+                ];
+
+                foreach (TerminalViewModel input in inputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                    {
+                        _disconnected.Add((wire, false, wire.MainOutput));
+                        wire.MainOutput = new() { IsOrphan = true };
+                    }
+                }
+
+                AvaloniaList<TerminalViewModel> outputs = [.. counter.Outputs, counter.Carry];
+
+                foreach (TerminalViewModel output in outputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(output))
+                    {
+                        _disconnected.Add((wire, true, wire.MainInput));
+                        wire.MainInput = new() { IsOrphan = true };
+                    }
+                }
+            }
             else if (co is MultiplexerViewModel mux)
             {
                 AvaloniaList<TerminalViewModel> inputs = [.. mux.Inputs, .. mux.Selects];

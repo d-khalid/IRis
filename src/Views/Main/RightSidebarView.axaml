@@ -55,6 +55,9 @@
     <DataTemplate DataType="components:RegisterViewModel">
       <componentViews:RegisterView />
     </DataTemplate>
+    <DataTemplate DataType="components:CounterViewModel">
+      <componentViews:CounterView />
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <Border Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">

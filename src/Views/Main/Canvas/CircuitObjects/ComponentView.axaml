@@ -51,6 +51,9 @@
     <DataTemplate DataType="components:RegisterViewModel">
       <views:RegisterView />
     </DataTemplate>
+    <DataTemplate DataType="components:CounterViewModel">
+      <views:CounterView />
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <ContentControl
