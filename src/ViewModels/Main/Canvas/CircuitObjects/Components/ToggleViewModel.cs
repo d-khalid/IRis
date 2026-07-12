@@ -56,9 +56,6 @@ public partial class ToggleViewModel : ComponentViewModel
         set
         {
             (Model as Toggle)!.State = value;
-            if ((Model as Toggle)!.Output is not null)
-                (Model as Toggle)!.Output.State = value;
-
             Label = value == LogicState.High ? "1" : "0";
 
             var resource = value == LogicState.High ? "HighStateBrush" : "LowStateBrush";

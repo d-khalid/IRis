@@ -7,6 +7,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Services.Commands;
 using IRis.ViewModels.Main.Canvas;
 using IRis.ViewModels.Main.Canvas.CircuitObjects;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace IRis.Services.Singleton;
 
@@ -24,12 +26,19 @@ public partial class Simulation : ObservableObject
     private readonly Selection _selection;
     private readonly Preview _preview;
     private readonly WirePreview _wirePreview;
+    private readonly ILogger<Simulation> _logger;
 
-    public Simulation(Selection selection, Preview preview, WirePreview wirePreview)
+    public Simulation(
+        Selection selection,
+        Preview preview,
+        WirePreview wirePreview,
+        ILogger<Simulation> logger
+    )
     {
         _selection = selection;
         _preview = preview;
         _wirePreview = wirePreview;
+        _logger = logger;
 
         _timer = new() { Interval = TimeSpan.FromMilliseconds(1000 / FrequencyHz) };
         _timer.Tick += (_, _) =>
