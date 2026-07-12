@@ -92,16 +92,11 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         AppState.CurrentFilePath = "(unsaved)";
 
-        if (_simulation.Running)
-            _simulation.Running = false;
-
         _selection.UnHighlightAll();
         _simulation.Nuke();
         _preview.Nuke();
         _wirePreview.Nuke();
         CommandService.Reset();
-
-        _simulation.Running = true;
     }
 
     [RelayCommand]
@@ -109,9 +104,6 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (param == "open" && !await AskNukeChangesAsync())
             return;
-
-        if (_simulation.Running)
-            _simulation.Running = false;
 
         var files = await App.ApplicationLifetime.MainWindow!.StorageProvider.OpenFilePickerAsync(
             new FilePickerOpenOptions
@@ -144,8 +136,6 @@ public partial class MainWindowViewModel : ViewModelBase
                 _simulation.Add(collection);
             }
         }
-
-        _simulation.Running = true;
     }
 
     [RelayCommand]

@@ -34,6 +34,12 @@ public partial class ProbeViewModel : ComponentViewModel
     {
         _appState = App.Current.Services.GetRequiredService<AppState>();
 
+        Model.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(Probe.State))
+                UpdateVisual((Model as Probe)!.State);
+        };
+
         Width = Height = 20;
 
         App.Current.TryGetResource("UnknownStateBrush", _appState.Theme, out var res);
@@ -44,15 +50,8 @@ public partial class ProbeViewModel : ComponentViewModel
             _background = new SolidColorBrush(Colors.DarkGray);
     }
 
-    partial void OnInputChanged(TerminalViewModel value)
-    {
+    partial void OnInputChanged(TerminalViewModel value) =>
         (Model as Probe)!.Input = value.GetModel();
-        (Model as Probe)!.Input.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName == nameof(Terminal.State))
-                UpdateVisual();
-        };
-    }
 
     public override void UpdateTerminals()
     {
@@ -75,11 +74,11 @@ public partial class ProbeViewModel : ComponentViewModel
         Input.Y = rotatedPos.Y;
     }
 
-    public void UpdateVisual()
+    public void UpdateVisual(LogicState state)
     {
         string resource;
 
-        switch ((Model as Probe)!.Input.State)
+        switch (state)
         {
             case LogicState.High:
                 resource = "HighStateBrush";
