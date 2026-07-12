@@ -11,65 +11,23 @@ public partial class JKFlipFlopViewModel : ComponentViewModel
     [ObservableProperty]
     private TerminalViewModel _j = null!;
 
-    partial void OnJChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Input;
-        (Model as JKFlipFlop)!.J = value.GetModel();
-    }
-
     [ObservableProperty]
     private TerminalViewModel _k = null!;
-
-    partial void OnKChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Input;
-        (Model as JKFlipFlop)!.K = value.GetModel();
-    }
 
     [ObservableProperty]
     private TerminalViewModel _clk = null!;
 
-    partial void OnClkChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Input;
-        (Model as JKFlipFlop)!.Clk = value.GetModel();
-    }
-
     [ObservableProperty]
     private TerminalViewModel _set = null!;
-
-    partial void OnSetChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Input;
-        (Model as JKFlipFlop)!.Set = value.GetModel();
-    }
 
     [ObservableProperty]
     private TerminalViewModel _clr = null!;
 
-    partial void OnClrChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Input;
-        (Model as JKFlipFlop)!.Clr = value.GetModel();
-    }
-
     [ObservableProperty]
     private TerminalViewModel _q = null!;
 
-    partial void OnQChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Output;
-        (Model as JKFlipFlop)!.Q = value.GetModel();
-    }
-
     [ObservableProperty]
     private TerminalViewModel _qBar = null!;
-
-    partial void OnQBarChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Output;
-        (Model as JKFlipFlop)!.QBar = value.GetModel();
-    }
 
     public JKFlipFlopViewModel()
         : this(new JKFlipFlop()) { }
@@ -79,6 +37,48 @@ public partial class JKFlipFlopViewModel : ComponentViewModel
     {
         Width = 40;
         Height = 80;
+    }
+
+    partial void OnJChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Input;
+        (Model as JKFlipFlop)!.J = value.GetModel();
+    }
+
+    partial void OnKChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Input;
+        (Model as JKFlipFlop)!.K = value.GetModel();
+    }
+
+    partial void OnClkChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Input;
+        (Model as JKFlipFlop)!.Clk = value.GetModel();
+    }
+
+    partial void OnSetChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Input;
+        (Model as JKFlipFlop)!.Set = value.GetModel();
+    }
+
+    partial void OnClrChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Input;
+        (Model as JKFlipFlop)!.Clr = value.GetModel();
+    }
+
+    partial void OnQChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Output;
+        (Model as JKFlipFlop)!.Q = value.GetModel();
+    }
+
+    partial void OnQBarChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Output;
+        (Model as JKFlipFlop)!.QBar = value.GetModel();
     }
 
     public override void UpdateTerminals()
@@ -97,8 +97,8 @@ public partial class JKFlipFlopViewModel : ComponentViewModel
         PlaceTerminal(J, X - 10, Y + 20);
         PlaceTerminal(K, X - 10, Y + 40);
         PlaceTerminal(Clk, X - 10, Y + 60);
-        PlaceTerminal(Set, X + (Width / 2), Y - 10);
-        PlaceTerminal(Clr, X + (Width / 2), Y + Height + 10);
+        PlaceTerminal(Set, X + (Width / 2), Y);
+        PlaceTerminal(Clr, X + (Width / 2), Y + Height);
         PlaceTerminal(Q, X + (Width + 10), Y + 30);
         PlaceTerminal(QBar, X + (Width + 10), Y + 50);
     }
