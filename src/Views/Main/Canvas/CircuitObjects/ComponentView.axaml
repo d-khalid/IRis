@@ -48,6 +48,9 @@
     <DataTemplate DataType="components:TFlipFlopViewModel">
       <views:TFlipFlopView />
     </DataTemplate>
+    <DataTemplate DataType="components:RegisterViewModel">
+      <views:RegisterView />
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <ContentControl

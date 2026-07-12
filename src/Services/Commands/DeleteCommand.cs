@@ -190,6 +190,28 @@ public class DeleteCommand(
                     }
                 }
             }
+            else if (co is RegisterViewModel reg)
+            {
+                AvaloniaList<TerminalViewModel> inputs = [.. reg.Inputs, reg.Clk, reg.Set, reg.Clr];
+
+                foreach (TerminalViewModel input in inputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(input))
+                    {
+                        _disconnected.Add((wire, false, wire.MainOutput));
+                        wire.MainOutput = new() { IsOrphan = true };
+                    }
+                }
+
+                foreach (TerminalViewModel output in reg.Outputs)
+                {
+                    foreach (WireViewModel wire in findAttachedWires(output))
+                    {
+                        _disconnected.Add((wire, true, wire.MainInput));
+                        wire.MainInput = new() { IsOrphan = true };
+                    }
+                }
+            }
             else if (co is MultiplexerViewModel mux)
             {
                 AvaloniaList<TerminalViewModel> inputs = [.. mux.Inputs, .. mux.Selects];
