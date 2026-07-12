@@ -58,14 +58,18 @@ Now for the Sketch to Simulation feature, you would have to download the latest 
 
 ## How does the Simulation Work?
 
-Everything in a canvas is described by one `AvaloniaList<CircuitObject>`. This list contains components and wires. All of them have a `Simulate()` function through which they access their logical layer, compute output and update their visual states. On the other hand, wires propagate signals instantaneously, independent of the frequency setting of the simulation.
+Everything in a canvas is described by one `AvaloniaList<CircuitObject>`. This list contains components and wires. All of them have a `Simulate()` function through which they access their logical layer, compute output and update their visual states.
 
-The Clock components have adjustable frequencies (in Hz) from the right sidebar that opens when the user selects them. Each tick simulates a full cycle (e.g. High state first then low and so on). 
+The Clock components have independently adjustable frequencies (in Hz) from the right sidebar that opens when the user clicks on any of them. Each tick simulates a full cycle (e.g. High state first then low and so on).
 
-Simulation itself also offers an adjustable frequency (from the left sidebar, in the Canvas tab). This is recommended to be used for:
+Simulation itself also offers an adjustable frequency (from the left sidebar, in the Canvas tab). Each tick simulates all the components once, and then all the wires once. This makes propagating states via wires instantaneous. 
 
-- learning purposes - that is, to see how a circuit behaves by applying a slower computation speed on each component.
-- performance - lower cpu load or a better quality of life.
+For logic toggles (where the user is in-control of the state), the output update is done in the next simulation tick (delay may be 1ms or `1000/simulationFrequency` ms). It is to be noted that this variable timing is not an architectural limitation; it is just how its supposed to work.
+
+Simulation frequency can be adjusted for:
+
+- **learning purposes:** to see how a circuit behaves by applying a slower computation speed on each component.
+- **performance adjustments:** to lower cpu load for a reduced quality of life.
 
 ---
 
@@ -75,7 +79,7 @@ Yes, seriously. There are some sections of the code that involve AI-generated ma
 
 Furthermore, we are missing some industry-grade features such as VHDL export support, built-in circuit libraries,  and a few essential components (just a few). 
 
-Note that multiple components are being added every week, so the lack of basic components would be covered up soon, and as for the other features, they are being planned as worked on as you are reading this. They might just be about to get added with the next release.
+Note that multiple components are being added every week, so the lack of basic components would be covered up soon, and as for the other features, they are being worked on as you are reading this. They might just be about to get added with the next release.
 
 ---
 
