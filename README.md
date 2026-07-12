@@ -64,7 +64,7 @@ The Clock components have independently adjustable frequencies (in Hz) from the 
 
 Simulation itself also offers an adjustable frequency (from the left sidebar, in the Canvas tab). Each tick simulates all the components once, and then all the wires once. This makes propagating states via wires instantaneous. 
 
-For logic toggles (where the user is in-control of the state), the output update is done in the next simulation tick (delay may be 1ms or `1000/simulationFrequency` ms). It is to be noted that this variable timing is not an architectural limitation; it is just how its supposed to work.
+For logic toggles (where the user is in-control of the state), the output update is done in the next simulation tick (delay may be 1ms or `1000/simulationFrequency` ms). It is to be noted that this variable timing is not an architectural limitation; it is just how its supposed to work since we are using asynchronous ticks for output computations.
 
 Simulation frequency can be adjusted for:
 
