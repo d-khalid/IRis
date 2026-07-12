@@ -98,7 +98,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        _preview.Pick(gate);
+        _preview.Pick(gate, setVisible: false);
     }
 
     [RelayCommand]
@@ -107,7 +107,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _selection.UnHighlightAll();
 
         NotGateViewModel gate = new() { Input = new(), Output = new() };
-        _preview.Pick(gate);
+        _preview.Pick(gate, setVisible: false);
     }
 
     [RelayCommand]
@@ -119,7 +119,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        _preview.Pick(gate);
+        _preview.Pick(gate, setVisible: false);
     }
 
     [RelayCommand]
@@ -131,7 +131,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        _preview.Pick(gate);
+        _preview.Pick(gate, setVisible: false);
     }
 
     [RelayCommand]
@@ -143,7 +143,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        _preview.Pick(gate);
+        _preview.Pick(gate, setVisible: false);
     }
 
     [RelayCommand]
@@ -155,7 +155,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        _preview.Pick(gate);
+        _preview.Pick(gate, setVisible: false);
     }
 
     [RelayCommand]
@@ -167,7 +167,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         gate.Inputs.Add(new());
         gate.Inputs.Add(new());
 
-        _preview.Pick(gate);
+        _preview.Pick(gate, setVisible: false);
     }
 
     [RelayCommand]
@@ -184,7 +184,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
             Cout = new(),
         };
 
-        _preview.Pick(adder);
+        _preview.Pick(adder, setVisible: false);
     }
 
     [RelayCommand]
@@ -200,7 +200,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
             QBar = new(),
         };
 
-        _preview.Pick(latch);
+        _preview.Pick(latch, setVisible: false);
     }
 
     [RelayCommand]
@@ -218,7 +218,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
             QBar = new(),
         };
 
-        _preview.Pick(ff);
+        _preview.Pick(ff, setVisible: false);
     }
 
     [RelayCommand]
@@ -237,7 +237,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
             QBar = new(),
         };
 
-        _preview.Pick(ff);
+        _preview.Pick(ff, setVisible: false);
     }
 
     [RelayCommand]
@@ -255,7 +255,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
             QBar = new(),
         };
 
-        _preview.Pick(ff);
+        _preview.Pick(ff, setVisible: false);
     }
 
     [RelayCommand]
@@ -273,7 +273,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         reg.AddBit();
         reg.AddBit();
 
-        _preview.Pick(reg);
+        _preview.Pick(reg, setVisible: false);
     }
 
     [RelayCommand]
@@ -293,7 +293,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         counter.AddBit();
         counter.AddBit();
 
-        _preview.Pick(counter);
+        _preview.Pick(counter, setVisible: false);
     }
 
     [RelayCommand]
@@ -305,7 +305,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         mux.AddSelectLine();
         mux.AddSelectLine();
 
-        _preview.Pick(mux);
+        _preview.Pick(mux, setVisible: false);
     }
 
     [RelayCommand]
@@ -317,7 +317,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         demux.AddSelectLine();
         demux.AddSelectLine();
 
-        _preview.Pick(demux);
+        _preview.Pick(demux, setVisible: false);
     }
 
     [RelayCommand]
@@ -329,7 +329,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         decoder.AddSelectLine();
         decoder.AddSelectLine();
 
-        _preview.Pick(decoder);
+        _preview.Pick(decoder, setVisible: false);
     }
 
     [RelayCommand]
@@ -341,7 +341,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         encoder.AddSelectLine();
         encoder.AddSelectLine();
 
-        _preview.Pick(encoder);
+        _preview.Pick(encoder, setVisible: false);
     }
 
     [RelayCommand]
@@ -350,7 +350,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _selection.UnHighlightAll();
 
         ToggleViewModel toggle = new() { Output = new() };
-        _preview.Pick(toggle);
+        _preview.Pick(toggle, setVisible: false);
     }
 
     [RelayCommand]
@@ -359,7 +359,7 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _selection.UnHighlightAll();
 
         ClockViewModel clock = new() { Output = new() };
-        _preview.Pick(clock);
+        _preview.Pick(clock, setVisible: false);
     }
 
     [RelayCommand]
@@ -368,6 +368,6 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _selection.UnHighlightAll();
 
         ProbeViewModel probe = new() { Input = new() };
-        _preview.Pick(probe);
+        _preview.Pick(probe, setVisible: false);
     }
 }

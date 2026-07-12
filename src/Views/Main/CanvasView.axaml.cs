@@ -28,6 +28,15 @@ public partial class CanvasView : UserControl
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e) =>
         (DataContext as CanvasViewModel)?.OnPointerReleased(sender, e);
 
+    private void OnPanPointerPressed(object? sender, PointerPressedEventArgs e) =>
+        (DataContext as CanvasViewModel)?.OnPanPointerPressed(sender, e);
+
+    private void OnPanPointerMoved(object? sender, PointerEventArgs e) =>
+        (DataContext as CanvasViewModel)?.OnPanPointerMoved(sender, e);
+
+    private void OnPanPointerReleased(object? sender, PointerReleasedEventArgs e) =>
+        (DataContext as CanvasViewModel)?.OnPanPointerReleased(sender, e);
+
     private void OnKeyDown(object? sender, KeyEventArgs e) =>
         (DataContext as CanvasViewModel)?.OnKeyDown(sender, e);
 }
