@@ -5,7 +5,6 @@ using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.CircuitObjects.Components;
 using IRis.Models.Core;
-using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
@@ -131,12 +130,15 @@ public partial class DemultiplexerViewModel : ComponentViewModel
 
         for (int i = 0; i < Selects.Count; i++)
         {
-            double unrotatedX = X + ((i + 0.5) * (Width / Selects.Count));
-            double unrotatedY = Y + Height + 10;
+            // DISCLAIMER: this calculation for placing the select lines on the
+            // bottom of the trapezium was done by Cursor Grok 4.5
+            // it works, so we keep it.
+
+            double u = (i + 0.5) / Selects.Count;
 
             Point selectPos = _simulationService.RotateTerminalPosition(
-                unrotatedX,
-                unrotatedY,
+                X + (u * Width),
+                Y + (Height * (0.8 + (0.2 * u))),
                 Rotation,
                 Width,
                 Height,

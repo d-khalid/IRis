@@ -16,6 +16,7 @@ public partial class MultiplexerView : UserControl
         InitializeComponent();
     }
 
+    // DISCLAIMER: this is AI-generated, binds in the axaml
     private sealed class SelectCanvasOffsetConverter : IMultiValueConverter
     {
         public object? Convert(
