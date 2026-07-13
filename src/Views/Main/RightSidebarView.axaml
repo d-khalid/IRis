@@ -87,7 +87,13 @@
       </Grid>
       <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding IsMultiInputVisible}" Margin="4">
         <TextBlock Text="Input Count" VerticalAlignment="Center" Opacity="0.8" />
-        <TextBox Grid.Column="1" Text="{Binding InputCountText, Mode=TwoWay}" FontSize="12" />
+        <TextBlock Text="(A/S)" VerticalAlignment="Center" Opacity="0.5" Margin="67,0,0,0" />
+        <TextBlock Grid.Column="1" Text="{Binding DynamicPinsCount}" FontSize="12" />
+      </Grid>
+      <Grid ColumnDefinitions="*,Auto" Margin="4">
+        <TextBlock Text="Rotation" VerticalAlignment="Center" Opacity="0.8" />
+        <TextBlock Text="(R)" VerticalAlignment="Center" Opacity="0.5" Margin="48,0,0,0" />
+        <TextBlock Grid.Column="1" Text="{Binding Rotation}" FontSize="12" />
       </Grid>
       <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding IsClockVisible}" Margin="4">
         <TextBlock Text="Frequency (Hz)" VerticalAlignment="Center" Opacity="0.8" />
