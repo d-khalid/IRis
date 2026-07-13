@@ -354,8 +354,11 @@ public class DeleteCommand(
         {
             if (co is WireViewModel wire)
             {
-                wire.MainInput.GetModel().State = LogicState.Unknown;
-                wire.MainOutput.GetModel().State = LogicState.Unknown;
+                if (wire.MainInput is not null)
+                    wire.MainInput.GetModel().State = LogicState.Unknown;
+
+                if (wire.MainOutput is not null)
+                    wire.MainOutput.GetModel().State = LogicState.Unknown;
             }
         }
 
