@@ -5,25 +5,22 @@
   x:DataType="vm:DemultiplexerViewModel"
   x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.DemultiplexerView"
   xmlns:core="using:IRis.Views.Main.Canvas.Core"
+  xmlns:corevm="using:IRis.ViewModels.Main.Canvas.Core"
+  xmlns:components="using:IRis.Views.Main.Canvas.CircuitObjects.Components"
   ClipToBounds="False"
 >
   <Grid ClipToBounds="False">
-    <Rectangle Margin="-20,-5,-20,-20" Fill="Transparent" />
+    <Rectangle Margin="-20,-5,-20,-5" Fill="Transparent" />
 
-    <Border
+    <Path
       Width="{Binding Width}"
       Height="{Binding Height}"
-      Background="{DynamicResource ComponentFillBrush}"
-      BorderBrush="{DynamicResource ComponentBorderBrush}"
-      BorderThickness="2"
-      CornerRadius="2"
-    >
-      <Grid>
-        <Grid.RenderTransform>
-          <RotateTransform Angle="{Binding TextRotation}" />
-        </Grid.RenderTransform>
-      </Grid>
-    </Border>
+      Fill="{DynamicResource ComponentFillBrush}"
+      Stroke="{DynamicResource ComponentBorderBrush}"
+      StrokeThickness="2"
+      Stretch="Fill"
+      Data="M 0,20 L 100,0 L 100,100 L 0,80 Z"
+    />
 
     <Grid ClipToBounds="False">
       <Line
@@ -71,35 +68,35 @@
       </ItemsControl.ItemTemplate>
     </ItemsControl>
 
-    <ItemsControl
-      ItemsSource="{Binding Selects}"
-      ClipToBounds="False"
-      HorizontalAlignment="Stretch"
-      VerticalAlignment="Bottom"
-    >
+    <ItemsControl ItemsSource="{Binding Selects}" ClipToBounds="False">
       <ItemsControl.ItemsPanel>
         <ItemsPanelTemplate>
-          <UniformGrid Rows="1" />
+          <Canvas ClipToBounds="False" />
         </ItemsPanelTemplate>
       </ItemsControl.ItemsPanel>
+
+      <!-- DISCLAIMER: this section is AI-generated -->
+      <!-- it involves relative.absolute positioning, DO NOT REMOVE -->
+      <ItemsControl.Styles>
+        <Style Selector="ContentPresenter" x:DataType="corevm:TerminalViewModel">
+          <Setter Property="Canvas.Left">
+            <MultiBinding Converter="{x:Static components:DemultiplexerView.CanvasOffset}">
+              <Binding Path="X" />
+              <Binding Path="$parent[UserControl].((vm:DemultiplexerViewModel)DataContext).X" />
+            </MultiBinding>
+          </Setter>
+          <Setter Property="Canvas.Top">
+            <MultiBinding Converter="{x:Static components:DemultiplexerView.CanvasOffset}">
+              <Binding Path="Y" />
+              <Binding Path="$parent[UserControl].((vm:DemultiplexerViewModel)DataContext).Y" />
+            </MultiBinding>
+          </Setter>
+        </Style>
+      </ItemsControl.Styles>
+
       <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <Grid ClipToBounds="False">
-            <Line
-              StartPoint="0,0"
-              EndPoint="0,10"
-              Stroke="{DynamicResource ComponentBorderBrush}"
-              StrokeThickness="2"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Bottom"
-              Margin="0,0,0,-10"
-            />
-            <core:TerminalView
-              HorizontalAlignment="Center"
-              VerticalAlignment="Bottom"
-              Margin="0,0,0,-20"
-            />
-          </Grid>
+        <DataTemplate x:DataType="corevm:TerminalViewModel">
+          <core:TerminalView />
         </DataTemplate>
       </ItemsControl.ItemTemplate>
     </ItemsControl>
@@ -107,7 +104,7 @@
     <Rectangle
       Stroke="DodgerBlue"
       StrokeThickness="1"
-      Margin="-20,-5,-20,-20"
+      Margin="-20,-5,-20,-5"
       IsHitTestVisible="False"
       Opacity="{Binding SelectionOpacity}"
     >
