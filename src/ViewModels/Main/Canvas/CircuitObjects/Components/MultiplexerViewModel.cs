@@ -1,10 +1,10 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using IRis.Models.CircuitObjects.Components;
 using IRis.Models.Core;
-using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
@@ -16,12 +16,6 @@ public partial class MultiplexerViewModel : ComponentViewModel
 
     [ObservableProperty]
     private TerminalViewModel _output = null!;
-
-    partial void OnOutputChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Output;
-        (Model as Multiplexer)!.Output = value.GetModel();
-    }
 
     public MultiplexerViewModel()
         : this(new Multiplexer()) { }
@@ -46,7 +40,8 @@ public partial class MultiplexerViewModel : ComponentViewModel
                 (Model as Multiplexer)!.Inputs.Remove(vm.GetModel());
             }
 
-            UpdateDimensions();
+            Height = Inputs.Count * 20;
+            Width = Selects.Count * 20;
         };
 
         Selects.CollectionChanged += (sender, e) =>
@@ -66,16 +61,24 @@ public partial class MultiplexerViewModel : ComponentViewModel
                 (Model as Multiplexer)!.Selects.Remove(vm.GetModel());
             }
 
-            UpdateDimensions();
+            Height = Inputs.Count * 20;
+            Width = Selects.Count * 20;
         };
+    }
+
+    partial void OnOutputChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Output;
+        (Model as Multiplexer)!.Output = value.GetModel();
     }
 
     public void AddSelectLine()
     {
-        Selects.Add(new TerminalViewModel());
+        if (Selects.Count >= 10)
+            return;
 
-        int target = 1 << Selects.Count;
-        while (Inputs.Count < target)
+        Selects.Add(new TerminalViewModel());
+        while (Inputs.Count < Math.Pow(2, Selects.Count))
             Inputs.Add(new TerminalViewModel());
     }
 
@@ -85,19 +88,8 @@ public partial class MultiplexerViewModel : ComponentViewModel
             return;
 
         Selects.Remove(Selects[^1]);
-
-        int target = 1 << Selects.Count;
-        while (Inputs.Count > target)
+        while (Inputs.Count > Math.Pow(2, Selects.Count))
             Inputs.Remove(Inputs[^1]);
-    }
-
-    private void UpdateDimensions()
-    {
-        if (Inputs.Count > 0)
-            Height = Inputs.Count * 20;
-
-        if (Selects.Count > 0)
-            Width = Selects.Count * 20;
     }
 
     public override void UpdateTerminals()
@@ -134,12 +126,15 @@ public partial class MultiplexerViewModel : ComponentViewModel
 
         for (int i = 0; i < Selects.Count; i++)
         {
-            double unrotatedX = X + ((i + 0.5) * (Width / Selects.Count));
-            double unrotatedY = Y + Height + 10;
+            // DISCLAIMER: this calculation for placing the select lines on the
+            // bottom of the trapezium was done by Cursor Grok 4.5
+            // it works, so we keep it.
+
+            double u = (i + 0.5) / Selects.Count;
 
             Point selectPos = _simulationService.RotateTerminalPosition(
-                unrotatedX,
-                unrotatedY,
+                X + (u * Width),
+                Y + (Height * (1.0 - (0.2 * u))),
                 Rotation,
                 Width,
                 Height,

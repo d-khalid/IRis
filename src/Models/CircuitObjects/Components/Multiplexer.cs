@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using IRis.Models.Core;
 
@@ -22,7 +23,7 @@ public class Multiplexer : Component
             }
 
             if (Selects[i].State == LogicState.High)
-                index |= 1 << i;
+                index += (int)Math.Pow(2, i);
         }
 
         if (index >= Inputs.Count)

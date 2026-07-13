@@ -22,15 +22,14 @@
         <Grid.RenderTransform>
           <RotateTransform Angle="{Binding TextRotation}" />
         </Grid.RenderTransform>
-        <TextBlock
-          Text="~"
-          Foreground="{DynamicResource ComponentBorderBrush}"
+        <Path
+          Data="M0,6 L3,6 L3,0 L9,0 L9,6 L12,6"
+          Stroke="{DynamicResource ComponentBorderBrush}"
+          StrokeThickness="1.5"
+          Stretch="None"
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
-          FontSize="18"
-          FontWeight="ExtraBold"
           IsHitTestVisible="False"
-          Margin="2,0,0,4"
         />
       </Grid>
     </Border>
