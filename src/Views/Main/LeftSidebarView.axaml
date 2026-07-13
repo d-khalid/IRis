@@ -36,14 +36,14 @@
       BorderThickness="2"
       CornerRadius="1"
     >
-      <TextBlock
-        Text="~"
-        Foreground="{DynamicResource ComponentBorderBrush}"
+      <Path
+        Data="M0,6 L3,6 L3,0 L9,0 L9,6 L12,6"
+        Stroke="{DynamicResource ComponentBorderBrush}"
+        StrokeThickness="1.5"
+        Stretch="None"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
-        Margin="0,0,0,1"
-        FontSize="14"
-        FontWeight="ExtraBold"
+        IsHitTestVisible="False"
       />
     </Border>
     <Border
@@ -312,25 +312,15 @@
         Margin="1,0,0,0"
       />
     </Border>
-    <Border
-      x:Key="SampleMux"
-      Width="16"
-      Height="20"
-      Background="{DynamicResource ComponentFillBrush}"
-      BorderBrush="{DynamicResource ComponentBorderBrush}"
-      BorderThickness="2"
-      CornerRadius="2"
-    >
-      <TextBlock
-        Text="M"
-        Foreground="{DynamicResource ComponentBorderBrush}"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"
-        FontSize="9"
-        FontWeight="ExtraBold"
-        Margin="2,0,0,0"
+    <Grid x:Key="SampleMux" Width="16" Height="20">
+      <Path
+        Fill="{DynamicResource ComponentFillBrush}"
+        Stroke="{DynamicResource ComponentBorderBrush}"
+        StrokeThickness="2"
+        Stretch="Fill"
+        Data="M 0,0 L 100,20 L 100,80 L 0,100 Z"
       />
-    </Border>
+    </Grid>
     <Border
       x:Key="SampleDemux"
       Width="16"
