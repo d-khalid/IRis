@@ -103,6 +103,19 @@
           FontSize="12"
         />
       </Grid>
+      <Grid ColumnDefinitions="*,Auto" Margin="4" IsVisible="{Binding IsToggleVisible}">
+        <TextBlock Text="State" VerticalAlignment="Center" Opacity="0.8" />
+        <TextBlock Text="(Space)" VerticalAlignment="Center" Opacity="0.5" Margin="30,0,0,0" />
+        <TextBlock Grid.Column="1" Text="{Binding ToggleState}" FontSize="12" />
+      </Grid>
+      <Grid ColumnDefinitions="*,Auto" Margin="4" IsVisible="{Binding IsOutputVisible}">
+        <TextBlock Text="Output" VerticalAlignment="Center" Opacity="0.8" />
+        <TextBlock Grid.Column="1" Text="{Binding OutputState}" FontSize="12" />
+      </Grid>
+      <Grid ColumnDefinitions="*,Auto" Margin="4" IsVisible="{Binding IsProbeVisible}">
+        <TextBlock Text="State" VerticalAlignment="Center" Opacity="0.8" />
+        <TextBlock Grid.Column="1" Text="{Binding ProbeState}" FontSize="12" />
+      </Grid>
     </StackPanel>
   </Border>
 </UserControl>
