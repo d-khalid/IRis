@@ -34,18 +34,6 @@ The user is expected to draw a logic circuit on paper, take a picture and open i
 
 ---
 
-## Key Controls For Circuit Design
-
-- `R` for rotating components or entire circuits.
-- `A` for adding one line of pins to the component.
-- `S` for removing one line of pins from the component.
-- `Esc` for dropping a component preview.
-- `Ctrl+X`, `Ctrl+C`, `Ctrl+V` as shortcuts for cutting, copying, pasting components respectively.
-- `Ctrl+Z`, `Ctrl+Y` for undo/redo commands.
-- `Arrow keys` or `Ctrl+LeftClick` for canvas control and movement.
-
----
-
 ## Try it
 
 Supports & Tested on: _Windows, Linux, and MacOS._
@@ -53,6 +41,14 @@ Supports & Tested on: _Windows, Linux, and MacOS._
 To use this software on your PC, just download the latest `.zip` for your system from [releases](https://github.com/d-khalid/IRis/releases). After unzipping, open the folder, double-click on `IRis.exe`, and you will have the simulation software running in a window. **(no .NET required)**
 
 Now for the Sketch to Simulation feature, you would have to download the latest `.exe` release from [sketchlogic](https://github.com/ShahzaibAhmad05/SketchLogic/releases). Just put the `.exe` file in the project root and the simulator will pick it up.
+
+---
+
+## Component Shaping & Controls
+
+In general, each component has it's own keyboard controls and properties as displayed on the `RightSidebar` that appears when it is selected. As for the visuals, we are following IEEE/ANSII standards being consistent with 91/91a-1984 and using rounded/distinctive shapes as well as labels on pins (including dependency labels such as EN1, 1D).
+
+It is to be noted that the pins for some components, such as the set reset pins in flipflops which are optional, as well as the selection lines for MUX/DEMUX are drawn close to the component body rather than at a distance.
 
 ---
 
@@ -75,7 +71,7 @@ Simulation frequency can be adjusted for:
 
 ## Do we have limitations?
 
-Yes, seriously. There are some sections of the code that involve AI-generated mathematics (which have the model and "reason for use" explicitly specified with comments) but this approach is deprecated and planned to be replaced. Also, we are currently not handling cycle detection, bad wiring and race-conditions.
+Yes, seriously. There are some sections of the code that involve AI-generated mathematics (which have the model and "reason for use" explicitly specified with comments) but this approach is discouraged. Also, we are currently not handling cycle detection, bad wiring and race-conditions.
 
 Furthermore, we are missing some industry-grade features such as VHDL export support, built-in circuit libraries,  and a few essential components (just a few). 
 
