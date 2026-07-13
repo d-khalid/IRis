@@ -23,7 +23,10 @@ public partial class RightSidebarViewModel : ViewModelBase
     private bool _isMultiInputVisible;
 
     [ObservableProperty]
-    private string _inputCountText = "";
+    private string _dynamicPinsCount = "";
+
+    [ObservableProperty]
+    private string _rotation = "";
 
     [ObservableProperty]
     private bool _isClockVisible;
@@ -45,16 +48,26 @@ public partial class RightSidebarViewModel : ViewModelBase
             {
                 IsVisible = true;
                 SelectedComponent = co;
+
                 ComponentType = co.GetType().Name.Replace("ViewModel", "");
+                Rotation = RotationToDirection((int)co.Rotation);
+
+                co.PropertyChanged += (_, e) =>
+                {
+                    if (e.PropertyName == nameof(ComponentViewModel.Rotation))
+                    {
+                        Rotation = RotationToDirection((int)co.Rotation);
+                    }
+                };
 
                 if (co is MultiInputGateViewModel mig)
                 {
-                    InputCountText = mig.Inputs.Count.ToString();
+                    DynamicPinsCount = mig.Inputs.Count.ToString();
                     IsMultiInputVisible = true;
 
                     mig.Inputs.CollectionChanged += (_, _) =>
                     {
-                        InputCountText = mig.Inputs.Count.ToString();
+                        DynamicPinsCount = mig.Inputs.Count.ToString();
                     };
                 }
                 else if (co is ClockViewModel clock)
@@ -64,30 +77,6 @@ public partial class RightSidebarViewModel : ViewModelBase
                 }
             }
         };
-    }
-
-    partial void OnInputCountTextChanged(string value)
-    {
-        if (int.TryParse(value, out int count) && count >= 2 && count <= 50)
-        {
-            if (SelectedComponent is not MultiInputGateViewModel mig || count == mig.Inputs.Count)
-                return;
-
-            if (count > mig.Inputs.Count)
-            {
-                while (mig.Inputs.Count < count)
-                {
-                    mig.AddInput();
-                }
-            }
-            else
-            {
-                while (mig.Inputs.Count > count)
-                {
-                    mig.RemoveInput();
-                }
-            }
-        }
     }
 
     partial void OnFrequencyTextChanged(string value)
@@ -101,5 +90,17 @@ public partial class RightSidebarViewModel : ViewModelBase
         {
             clock.FrequencyHz = hz;
         }
+    }
+
+    private static string RotationToDirection(int rotation)
+    {
+        return rotation switch
+        {
+            0 => "East",
+            90 => "South",
+            180 => "West",
+            270 => "North",
+            _ => "Dunno",
+        };
     }
 }
