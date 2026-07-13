@@ -37,7 +37,10 @@ public partial class ProbeViewModel : ComponentViewModel
         Model.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(Probe.State))
-                UpdateVisual((Model as Probe)!.State);
+            {
+                UpdateVisual(State);
+                OnPropertyChanged(nameof(State));
+            }
         };
 
         Width = Height = 20;
@@ -52,6 +55,11 @@ public partial class ProbeViewModel : ComponentViewModel
 
     partial void OnInputChanged(TerminalViewModel value) =>
         (Model as Probe)!.Input = value.GetModel();
+
+    public LogicState State
+    {
+        get => (Model as Probe)!.State;
+    }
 
     public override void UpdateTerminals()
     {

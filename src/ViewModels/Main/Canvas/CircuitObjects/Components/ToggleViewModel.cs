@@ -16,12 +16,6 @@ public partial class ToggleViewModel : ComponentViewModel
     [ObservableProperty]
     private TerminalViewModel _output = null!;
 
-    partial void OnOutputChanged(TerminalViewModel value)
-    {
-        value.Type = TerminalType.Output;
-        (Model as Toggle)!.Output = value.GetModel();
-    }
-
     [ObservableProperty]
     [property: JsonIgnore]
     private IBrush _background;
@@ -50,6 +44,12 @@ public partial class ToggleViewModel : ComponentViewModel
             _background = new SolidColorBrush(Colors.DarkGray);
     }
 
+    partial void OnOutputChanged(TerminalViewModel value)
+    {
+        value.Type = TerminalType.Output;
+        (Model as Toggle)!.Output = value.GetModel();
+    }
+
     public LogicState State
     {
         get => (Model as Toggle)!.State;
@@ -61,6 +61,8 @@ public partial class ToggleViewModel : ComponentViewModel
             var resource = value == LogicState.High ? "HighStateBrush" : "LowStateBrush";
             App.Current.TryGetResource(resource, _appState.Theme, out var res);
             Background = (IBrush)res!;
+
+            OnPropertyChanged(nameof(State));
         }
     }
 
