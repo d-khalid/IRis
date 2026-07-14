@@ -8,6 +8,7 @@
   xmlns:vm="using:IRis.ViewModels"
   x:DataType="vm:GenerateFromImageWindowViewModel"
   x:Class="IRis.Views.GenerateFromImageWindowView"
+  WindowStartupLocation="CenterOwner"
 >
   <StackPanel Margin="20" Spacing="12">
     <Button
@@ -16,7 +17,7 @@
       IsEnabled="{Binding CanGenerate}"
       HorizontalAlignment="Left"
     />
-    <Border Height="280" BorderBrush="Gray" BorderThickness="1">
+    <Border Height="280" BorderBrush="DarkGray" BorderThickness="1">
       <Image Source="{Binding PreviewImage}" Stretch="Uniform" />
     </Border>
     <Button Content="Generate" Command="{Binding GenerateCommand}" HorizontalAlignment="Right" />

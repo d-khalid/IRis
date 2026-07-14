@@ -1,0 +1,32 @@
+<Window
+  Title="Preferences"
+  Icon="/Assets/avalonia-logo.ico"
+  Width="520"
+  Height="420"
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels"
+  x:DataType="vm:PreferencesWindowViewModel"
+  x:Class="IRis.Views.PreferencesWindowView"
+  WindowStartupLocation="CenterOwner"
+>
+  <Border
+    Margin="32"
+    Padding="18"
+    CornerRadius="16"
+    Background="{DynamicResource BaseOverlayBrush}"
+  >
+    <ScrollViewer>
+      <StackPanel Spacing="10">
+        <Grid ColumnDefinitions="*,Auto" Margin="4">
+          <TextBlock Text="Theme" VerticalAlignment="Center" />
+          <ComboBox Grid.Column="1" SelectedItem="{Binding Theme}" VerticalAlignment="Center">
+            <x:String>System</x:String>
+            <x:String>Dark</x:String>
+            <x:String>Light</x:String>
+          </ComboBox>
+        </Grid>
+      </StackPanel>
+    </ScrollViewer>
+  </Border>
+</Window>

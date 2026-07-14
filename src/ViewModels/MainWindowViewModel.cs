@@ -176,7 +176,10 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private static void Preferences() { }
+    private static async Task PreferencesAsync()
+    {
+        await new PreferencesWindowView().ShowDialog(App.ApplicationLifetime.MainWindow!);
+    }
 
     [RelayCommand]
     private static void Exit()
@@ -397,7 +400,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private static void GenerateFromPrompt() { }
 
     [RelayCommand]
-    private async Task GenerateFromImageAsync()
+    private static async Task GenerateFromImageAsync()
     {
         await new GenerateFromImageWindowView().ShowDialog(App.ApplicationLifetime.MainWindow!);
     }
