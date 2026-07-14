@@ -1,0 +1,19 @@
+<Window
+  Title="Preferences"
+  Icon="/Assets/avalonia-logo.ico"
+  Width="520"
+  Height="420"
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels"
+  x:DataType="vm:PreferencesWindowViewModel"
+  x:Class="IRis.Views.PreferencesWindowView"
+>
+  <ScrollViewer>
+    <StackPanel Margin="20" Spacing="12">
+      <TextBlock Text="(settings placeholder)" />
+      <TextBlock Text="(settings placeholder)" />
+      <TextBlock Text="(settings placeholder)" />
+    </StackPanel>
+  </ScrollViewer>
+</Window>
