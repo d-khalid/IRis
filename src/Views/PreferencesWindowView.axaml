@@ -8,6 +8,7 @@
   xmlns:vm="using:IRis.ViewModels"
   x:DataType="vm:PreferencesWindowViewModel"
   x:Class="IRis.Views.PreferencesWindowView"
+  WindowStartupLocation="CenterOwner"
 >
   <Border
     Margin="32"
