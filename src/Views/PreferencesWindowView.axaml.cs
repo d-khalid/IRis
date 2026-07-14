@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using IRis.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IRis.Views;
 
@@ -8,6 +9,6 @@ public partial class PreferencesWindowView : Window
     public PreferencesWindowView()
     {
         InitializeComponent();
-        DataContext = new PreferencesWindowViewModel();
+        DataContext = App.Current.Services.GetRequiredService<PreferencesWindowViewModel>();
     }
 }

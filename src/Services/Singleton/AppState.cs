@@ -42,7 +42,7 @@ public partial class AppState : ObservableObject
     private bool _terminalColorChangeAllowed = true;
 
     [ObservableProperty]
-    private ThemeVariant _theme = ThemeVariant.Dark;
+    private ThemeVariant _theme = ThemeVariant.Default;
 
     [ObservableProperty]
     private string _currentFilePath = "(unsaved)";

@@ -16,6 +16,8 @@
     <ResourceDictionary>
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="ZoomBorderBackground" Color="#F4F4F4" />
+          <SolidColorBrush x:Key="BaseOverlayBrush" Color="#eaeaea" />
           <VisualBrush
             x:Key="CanvasGridTileBrush"
             TileMode="Tile"
@@ -29,7 +31,6 @@
               </Canvas>
             </VisualBrush.Visual>
           </VisualBrush>
-          <SolidColorBrush x:Key="ZoomBorderBackground" Color="#F4F4F4" />
           <SolidColorBrush x:Key="ComponentBorderBrush" Color="Black" />
           <SolidColorBrush x:Key="ComponentFillBrush" Color="#F4F4F4" />
           <SolidColorBrush x:Key="WireBrush" Color="Black" />
@@ -39,6 +40,8 @@
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="ZoomBorderBackground" Color="#050505" />
+          <SolidColorBrush x:Key="BaseOverlayBrush" Color="#2c2c2c" />
           <VisualBrush
             x:Key="CanvasGridTileBrush"
             TileMode="Tile"
@@ -52,7 +55,6 @@
               </Canvas>
             </VisualBrush.Visual>
           </VisualBrush>
-          <SolidColorBrush x:Key="ZoomBorderBackground" Color="#050505" />
           <SolidColorBrush x:Key="ComponentBorderBrush" Color="#B6B6B6" />
           <SolidColorBrush x:Key="ComponentFillBrush" Color="#1A1A1A" />
           <SolidColorBrush x:Key="WireBrush" Color="#B6B6B6" />

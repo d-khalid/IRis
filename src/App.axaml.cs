@@ -70,6 +70,7 @@ public partial class App : Application
         services.AddSingleton<MainWindowViewModel>();
         services.AddSingleton<CanvasViewModel>();
         services.AddSingleton<GenerateFromImageWindowViewModel>();
+        services.AddSingleton<PreferencesWindowViewModel>();
         services.AddSingleton<LeftSidebarViewModel>();
         services.AddSingleton<RightSidebarViewModel>();
 

@@ -9,11 +9,23 @@
   x:DataType="vm:PreferencesWindowViewModel"
   x:Class="IRis.Views.PreferencesWindowView"
 >
-  <ScrollViewer>
-    <StackPanel Margin="20" Spacing="12">
-      <TextBlock Text="(settings placeholder)" />
-      <TextBlock Text="(settings placeholder)" />
-      <TextBlock Text="(settings placeholder)" />
-    </StackPanel>
-  </ScrollViewer>
+  <Border
+    Margin="32"
+    Padding="18"
+    CornerRadius="16"
+    Background="{DynamicResource BaseOverlayBrush}"
+  >
+    <ScrollViewer>
+      <StackPanel Spacing="10">
+        <Grid ColumnDefinitions="*,Auto" Margin="4">
+          <TextBlock Text="Theme" VerticalAlignment="Center" />
+          <ComboBox Grid.Column="1" SelectedItem="{Binding Theme}" VerticalAlignment="Center">
+            <x:String>System</x:String>
+            <x:String>Dark</x:String>
+            <x:String>Light</x:String>
+          </ComboBox>
+        </Grid>
+      </StackPanel>
+    </ScrollViewer>
+  </Border>
 </Window>
