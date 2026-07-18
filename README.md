@@ -17,8 +17,10 @@ It is currently developed enough to be able to Simulate a Mini-CPU. The sketch-t
 
 [https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08](https://github.com/user-attachments/assets/afd92c8a-e5ac-4850-b85a-47a891b0bf08)
 
+<img width="960" height="569" alt="Screenshot 2026-07-18 121709" src="https://github.com/user-attachments/assets/60da9db9-3b97-429d-901c-12cdb210c734" />
+
 > [!NOTE]
-> As evident from the screenshots and demo above, this simulation software has a dramatically better UI than [Logisim Evolution](https://github.com/logisim-evolution/logisim-evolution) and [CircuitVerse](https://circuitverse.org/). It has been built with a modern tech stack involving:
+> As evident from the screenshot and demo above, this simulation software has a dramatically better UI than [Logisim Evolution](https://github.com/logisim-evolution/logisim-evolution) and [CircuitVerse](https://circuitverse.org/). It has been built with a modern tech stack involving:
 > 
 > ![C#](https://img.shields.io/badge/C%23-333333?style=for-the-badge&logo=csharp&logoColor=white)
 ![.NET](https://img.shields.io/badge/.NET-333333?style=for-the-badge&logo=dotnet&logoColor=white)
