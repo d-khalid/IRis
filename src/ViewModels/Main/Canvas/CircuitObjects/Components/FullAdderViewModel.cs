@@ -72,8 +72,8 @@ public partial class FullAdderViewModel : ComponentViewModel
         PlaceTerminal(A, X - 10, Y + 10);
         PlaceTerminal(B, X - 10, Y + 30);
         PlaceTerminal(Cin, X - 10, Y + 50);
-        PlaceTerminal(Sum, X + (Width + 10), Y + 15);
-        PlaceTerminal(Cout, X + (Width + 10), Y + 45);
+        PlaceTerminal(Sum, X + (Width + 10), Y + 20);
+        PlaceTerminal(Cout, X + (Width + 10), Y + 40);
     }
 
     private void PlaceTerminal(TerminalViewModel terminal, double unrotatedX, double unrotatedY)
