@@ -54,6 +54,9 @@
     <DataTemplate DataType="components:CounterViewModel">
       <views:CounterView />
     </DataTemplate>
+    <DataTemplate DataType="components:TristateBufferViewModel">
+      <views:TristateBufferView />
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <ContentControl

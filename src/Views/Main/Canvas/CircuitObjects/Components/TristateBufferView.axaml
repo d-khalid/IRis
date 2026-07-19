@@ -1,0 +1,86 @@
+<UserControl
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:vm="using:IRis.ViewModels.Main.Canvas.CircuitObjects.Components"
+  x:DataType="vm:TristateBufferViewModel"
+  x:Class="IRis.Views.Main.Canvas.CircuitObjects.Components.TristateBufferView"
+  xmlns:core="using:IRis.Views.Main.Canvas.Core"
+  ClipToBounds="False"
+>
+  <Grid ClipToBounds="False">
+    <Rectangle Margin="-20,-5,-20,-20" Fill="Transparent" />
+
+    <Line
+      StartPoint="0,0"
+      EndPoint="10,0"
+      Stroke="{DynamicResource ComponentBorderBrush}"
+      StrokeThickness="2"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center"
+      Margin="-10,0,0,0"
+    />
+    <core:TerminalView
+      DataContext="{Binding In}"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center"
+      Margin="-20,0,0,0"
+    />
+
+    <Path
+      Fill="{DynamicResource ComponentFillBrush}"
+      Stroke="{DynamicResource ComponentBorderBrush}"
+      StrokeThickness="2"
+      Stretch="Fill"
+      Data="M 0,0 L 0,100 L 100,50 Z"
+      Margin="0"
+    />
+
+    <Grid ClipToBounds="False">
+      <Line
+        StartPoint="0,0"
+        EndPoint="10,0"
+        Stroke="{DynamicResource ComponentBorderBrush}"
+        StrokeThickness="2"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Center"
+        Margin="0,0,-10,0"
+      />
+      <core:TerminalView
+        DataContext="{Binding Out}"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Center"
+        Margin="0,0,-20,0"
+      />
+    </Grid>
+
+    <Grid ClipToBounds="False">
+      <Line
+        StartPoint="0,0"
+        EndPoint="0,17"
+        Stroke="{DynamicResource ComponentBorderBrush}"
+        StrokeThickness="2"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Bottom"
+        Margin="0,0,0,-10"
+      />
+      <core:TerminalView
+        DataContext="{Binding En}"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Bottom"
+        Margin="0,0,0,-20"
+      />
+    </Grid>
+
+    <Rectangle
+      Stroke="DodgerBlue"
+      StrokeThickness="1"
+      Margin="-20,-5,-20,-20"
+      IsHitTestVisible="False"
+      Opacity="{Binding SelectionOpacity}"
+    >
+      <Rectangle.Fill>
+        <SolidColorBrush Color="#469adf" Opacity="0.2" />
+      </Rectangle.Fill>
+    </Rectangle>
+  </Grid>
+</UserControl>

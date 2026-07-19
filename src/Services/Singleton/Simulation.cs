@@ -40,7 +40,9 @@ public partial class Simulation : ObservableObject
         _wirePreview = wirePreview;
         _logger = logger;
 
+        // So this is what I need to get rid of
         _timer = new() { Interval = TimeSpan.FromMilliseconds(1000 / FrequencyHz) };
+
         _timer.Tick += (_, _) =>
         {
             foreach (var co in Objects)

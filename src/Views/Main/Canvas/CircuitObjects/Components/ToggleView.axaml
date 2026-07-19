@@ -28,7 +28,7 @@
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
           FontSize="14"
-          FontWeight="ExtraBold"
+          FontWeight="Bold"
           IsHitTestVisible="False"
           Margin="0,-1,0,0"
         />

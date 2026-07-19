@@ -93,6 +93,13 @@
                 <TextBlock Text="XNOR Gate" VerticalAlignment="Center" />
               </StackPanel>
             </Button>
+
+            <Button Classes="item" Command="{Binding AddTristateBufferCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Viewbox Height="14" Child="{StaticResource SampleTristateBuffer}" />
+                <TextBlock Text="Tristate Buffer" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
           </StackPanel>
         </StackPanel>
 

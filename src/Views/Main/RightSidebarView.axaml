@@ -58,6 +58,9 @@
     <DataTemplate DataType="components:CounterViewModel">
       <componentViews:CounterView />
     </DataTemplate>
+    <DataTemplate DataType="components:TristateBufferViewModel">
+      <componentViews:TristateBufferView />
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <Border Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
