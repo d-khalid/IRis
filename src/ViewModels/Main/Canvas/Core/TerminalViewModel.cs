@@ -74,7 +74,6 @@ public partial class TerminalViewModel : ObservableObject
             {
                 LogicState.High => "HighStateBrush",
                 LogicState.Low => "LowStateBrush",
-                LogicState.Unknown => "UnknownStateBrush",
                 _ => "UnknownStateBrush",
             };
         }

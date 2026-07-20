@@ -370,4 +370,18 @@ public partial class LeftSidebarViewModel : ViewModelBase
         ProbeViewModel probe = new() { Input = new() };
         _preview.Pick(probe, setVisible: false);
     }
+
+    [RelayCommand]
+    private void AddTristateBuffer()
+    {
+        _selection.UnHighlightAll();
+
+        TristateBufferViewModel tBuffer = new()
+        {
+            In = new(),
+            Out = new(),
+            En = new(),
+        };
+        _preview.Pick(tBuffer, setVisible: false);
+    }
 }

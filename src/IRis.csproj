@@ -32,4 +32,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PanAndZoom" Version="11.3.0.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\Main\Canvas\CircuitObjects\Components\TristateBufferVIew.axaml.cs">
+      <DependentUpon>TristateBufferView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

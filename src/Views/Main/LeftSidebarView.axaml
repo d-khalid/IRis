@@ -366,6 +366,18 @@
         FontWeight="ExtraBold"
       />
     </Border>
+
+    <!-- This is just the triangle from SampleNotGate copied in -->
+    <Border x:Key="SampleTristateBuffer" Width="20" Height="20">
+      <Path
+        Fill="{DynamicResource ComponentFillBrush}"
+        Stroke="{DynamicResource ComponentBorderBrush}"
+        StrokeThickness="2"
+        Stretch="Fill"
+        Data="M 0,0 L 0,100 L 100,50 Z"
+        Margin="0,0,6,0"
+      />
+    </Border>
   </UserControl.Resources>
 
   <UserControl.Styles>
