@@ -1,14 +1,14 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Avalonia;
+using IRis.Models;
 using IRis.Models.CircuitObjects.Components.Gates;
 using IRis.Models.Core;
-using IRis.Services;
 using IRis.ViewModels.Main.Canvas.Core;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components.Gates;
 
-public abstract partial class MultiInputGateViewModel : GateViewModel
+public abstract partial class MultiInputGateViewModel : GateViewModel, IHaveDynamicPins
 {
     public ObservableCollection<TerminalViewModel> Inputs { get; } = [];
 
@@ -36,16 +36,16 @@ public abstract partial class MultiInputGateViewModel : GateViewModel
         };
     }
 
-    public void RemoveInput()
-    {
-        if (Inputs.Count > 2)
-            Inputs.Remove(Inputs[^1]);
-    }
-
-    public void AddInput()
+    public void AddPin()
     {
         if (Inputs.Count < 50)
             Inputs.Add(new());
+    }
+
+    public void RemovePin()
+    {
+        if (Inputs.Count > 2)
+            Inputs.Remove(Inputs[^1]);
     }
 
     protected override void UpdateInputTerminals()

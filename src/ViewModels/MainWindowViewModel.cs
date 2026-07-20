@@ -6,6 +6,7 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using IRis.Models;
 using IRis.Services;
 using IRis.Services.Singleton;
 using IRis.ViewModels.Main.Canvas;
@@ -309,7 +310,7 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void AddInput()
+    private void AddPin()
     {
         if (!_preview.IsEmpty())
             AddInput(_preview.Objects);
@@ -322,26 +323,16 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             foreach (CircuitObjectViewModel co in collection)
             {
-                if (co is MultiInputGateViewModel mig)
-                    mig.AddInput();
-                else if (co is MultiplexerViewModel mux)
-                    mux.AddSelectLine();
-                else if (co is DemultiplexerViewModel demux)
-                    demux.AddSelectLine();
-                else if (co is DecoderViewModel decoder)
-                    decoder.AddSelectLine();
-                else if (co is PriorityEncoderViewModel encoder)
-                    encoder.AddSelectLine();
-                else if (co is RegisterViewModel reg)
-                    reg.AddBit();
-                else if (co is CounterViewModel counter)
-                    counter.AddBit();
+                if (co is IHaveDynamicPins idp)
+                {
+                    idp.AddPin();
+                }
             }
         }
     }
 
     [RelayCommand]
-    private void RemoveInput()
+    private void RemovePin()
     {
         if (!_preview.IsEmpty())
             RemoveInput(_preview.Objects);
@@ -354,33 +345,9 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             foreach (CircuitObjectViewModel co in collection)
             {
-                if (co is MultiInputGateViewModel mig)
+                if (co is IHaveDynamicPins idp)
                 {
-                    mig.RemoveInput();
-                }
-                else if (co is MultiplexerViewModel mux)
-                {
-                    mux.RemoveSelectLine();
-                }
-                else if (co is DemultiplexerViewModel demux)
-                {
-                    demux.RemoveSelectLine();
-                }
-                else if (co is DecoderViewModel decoder)
-                {
-                    decoder.RemoveSelectLine();
-                }
-                else if (co is PriorityEncoderViewModel encoder)
-                {
-                    encoder.RemoveSelectLine();
-                }
-                else if (co is RegisterViewModel reg)
-                {
-                    reg.RemoveBit();
-                }
-                else if (co is CounterViewModel counter)
-                {
-                    counter.RemoveBit();
+                    idp.RemovePin();
                 }
             }
         }

@@ -55,12 +55,12 @@
       <Separator />
       <MenuItem
         Header="Add Input to Selection"
-        Command="{Binding AddInputCommand}"
+        Command="{Binding AddPinCommand}"
         InputGesture="A"
       />
       <MenuItem
         Header="Remove Input from Selection"
-        Command="{Binding RemoveInputCommand}"
+        Command="{Binding RemovePinCommand}"
         InputGesture="S"
       />
     </MenuItem>
@@ -74,14 +74,10 @@
       <MenuItem Header="Copy Preview" Command="{Binding CopyCommand}" InputGesture="Ctrl+C" />
       <MenuItem Header="Paste Preview" Command="{Binding PasteCommand}" InputGesture="Ctrl+V" />
       <Separator />
-      <MenuItem
-        Header="Add Input to Preview"
-        Command="{Binding AddInputCommand}"
-        InputGesture="A"
-      />
+      <MenuItem Header="Add Input to Preview" Command="{Binding AddPinCommand}" InputGesture="A" />
       <MenuItem
         Header="Remove Input from Preview"
-        Command="{Binding RemoveInputCommand}"
+        Command="{Binding RemovePinCommand}"
         InputGesture="S"
       />
     </MenuItem>
