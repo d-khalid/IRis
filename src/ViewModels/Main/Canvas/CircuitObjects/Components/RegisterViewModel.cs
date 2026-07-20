@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.Models;
 using IRis.Models.CircuitObjects.Components;
 using IRis.Models.Core;
 using IRis.ViewModels.Main.Canvas.Core;
@@ -10,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
-public partial class RegisterViewModel : ComponentViewModel
+public partial class RegisterViewModel : ComponentViewModel, IHaveDynamicPins
 {
     public ObservableCollection<TerminalViewModel> Inputs { get; } = [];
     public ObservableCollection<TerminalViewModel> Outputs { get; } = [];
@@ -91,7 +92,7 @@ public partial class RegisterViewModel : ComponentViewModel
         };
     }
 
-    public void AddBit()
+    public void AddPin()
     {
         if (Inputs.Count >= 50)
             return;
@@ -101,7 +102,7 @@ public partial class RegisterViewModel : ComponentViewModel
         (Model as Register)!.States.Add(LogicState.Unknown);
     }
 
-    public void RemoveBit()
+    public void RemovePin()
     {
         if (Inputs.Count <= 1)
             return;

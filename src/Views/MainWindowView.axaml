@@ -93,8 +93,8 @@
     <KeyBinding Gesture="Ctrl+M" Command="{Binding OpenCommand}" CommandParameter="merge" />
     <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveCommand}" />
     <KeyBinding Gesture="R" Command="{Binding RotateCommand}" />
-    <KeyBinding Gesture="A" Command="{Binding AddInputCommand}" />
-    <KeyBinding Gesture="S" Command="{Binding RemoveInputCommand}" />
+    <KeyBinding Gesture="A" Command="{Binding AddPinCommand}" />
+    <KeyBinding Gesture="S" Command="{Binding RemovePinCommand}" />
     <KeyBinding Gesture="Space" Command="{Binding ToggleCommand}" />
     <KeyBinding Gesture="Ctrl+A" Command="{Binding SelectAllCommand}" />
   </Window.KeyBindings>

@@ -3,13 +3,14 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
+using IRis.Models;
 using IRis.Models.CircuitObjects.Components;
 using IRis.Models.Core;
 using IRis.ViewModels.Main.Canvas.Core;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
-public partial class DemultiplexerViewModel : ComponentViewModel
+public partial class DemultiplexerViewModel : ComponentViewModel, IHaveDynamicPins
 {
     public ObservableCollection<TerminalViewModel> Outputs { get; } = [];
     public ObservableCollection<TerminalViewModel> Selects { get; } = [];
@@ -66,7 +67,7 @@ public partial class DemultiplexerViewModel : ComponentViewModel
         };
     }
 
-    public void AddSelectLine()
+    public void AddPin()
     {
         Selects.Add(new TerminalViewModel());
 
@@ -75,7 +76,7 @@ public partial class DemultiplexerViewModel : ComponentViewModel
             Outputs.Add(new TerminalViewModel());
     }
 
-    public void RemoveSelectLine()
+    public void RemovePin()
     {
         if (Selects.Count <= 1)
             return;

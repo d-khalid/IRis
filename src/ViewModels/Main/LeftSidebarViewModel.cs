@@ -270,8 +270,8 @@ public partial class LeftSidebarViewModel : ViewModelBase
             Clr = new(),
         };
 
-        reg.AddBit();
-        reg.AddBit();
+        reg.AddPin();
+        reg.AddPin();
 
         _preview.Pick(reg, setVisible: false);
     }
@@ -290,8 +290,8 @@ public partial class LeftSidebarViewModel : ViewModelBase
             Carry = new(),
         };
 
-        counter.AddBit();
-        counter.AddBit();
+        counter.AddPin();
+        counter.AddPin();
 
         _preview.Pick(counter, setVisible: false);
     }
@@ -302,8 +302,8 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _selection.UnHighlightAll();
 
         MultiplexerViewModel mux = new() { Output = new() };
-        mux.AddSelectLine();
-        mux.AddSelectLine();
+        mux.AddPin();
+        mux.AddPin();
 
         _preview.Pick(mux, setVisible: false);
     }
@@ -314,8 +314,8 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _selection.UnHighlightAll();
 
         DemultiplexerViewModel demux = new() { Input = new() };
-        demux.AddSelectLine();
-        demux.AddSelectLine();
+        demux.AddPin();
+        demux.AddPin();
 
         _preview.Pick(demux, setVisible: false);
     }
@@ -326,8 +326,8 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _selection.UnHighlightAll();
 
         DecoderViewModel decoder = new();
-        decoder.AddSelectLine();
-        decoder.AddSelectLine();
+        decoder.AddPin();
+        decoder.AddPin();
 
         _preview.Pick(decoder, setVisible: false);
     }
@@ -338,8 +338,8 @@ public partial class LeftSidebarViewModel : ViewModelBase
         _selection.UnHighlightAll();
 
         PriorityEncoderViewModel encoder = new();
-        encoder.AddSelectLine();
-        encoder.AddSelectLine();
+        encoder.AddPin();
+        encoder.AddPin();
 
         _preview.Pick(encoder, setVisible: false);
     }

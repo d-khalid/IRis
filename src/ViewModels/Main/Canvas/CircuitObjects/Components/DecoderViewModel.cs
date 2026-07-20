@@ -2,13 +2,14 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Avalonia;
+using IRis.Models;
 using IRis.Models.CircuitObjects.Components;
 using IRis.Models.Core;
 using IRis.ViewModels.Main.Canvas.Core;
 
 namespace IRis.ViewModels.Main.Canvas.CircuitObjects.Components;
 
-public partial class DecoderViewModel : ComponentViewModel
+public partial class DecoderViewModel : ComponentViewModel, IHaveDynamicPins
 {
     public ObservableCollection<TerminalViewModel> Outputs { get; } = [];
     public ObservableCollection<TerminalViewModel> Selects { get; } = [];
@@ -56,7 +57,7 @@ public partial class DecoderViewModel : ComponentViewModel
         };
     }
 
-    public void AddSelectLine()
+    public void AddPin()
     {
         Selects.Add(new TerminalViewModel());
 
@@ -65,7 +66,7 @@ public partial class DecoderViewModel : ComponentViewModel
             Outputs.Add(new TerminalViewModel());
     }
 
-    public void RemoveSelectLine()
+    public void RemovePin()
     {
         if (Selects.Count <= 1)
             return;
