@@ -6,260 +6,274 @@
   x:DataType="vm:LeftSidebarViewModel"
   FontSize="12"
 >
-  <ScrollViewer Width="200" BorderThickness="0">
-    <StackPanel Margin="0,0,0,20">
-      <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,0">
-        <Button
-          Classes="tab"
-          Content="Design"
-          Classes.active="{Binding AppState.DesignTabActive}"
-          Command="{Binding ShowDesignTabCommand}"
-        />
-        <Button
-          Classes="tab"
-          Content="Canvas"
-          Classes.active="{Binding AppState.DesignTabActive, Converter={x:Static BoolConverters.Not}}"
-          Command="{Binding ShowCanvasTabCommand}"
-        />
-      </StackPanel>
-      <Border Height="1" Background="#3A3A3A" Margin="0,0,0,5" />
-      <StackPanel IsVisible="{Binding AppState.DesignTabActive}" Spacing="5">
-        <ToggleButton Classes="section" x:Name="IoToggle" IsChecked="True" Content="I/O" />
-        <StackPanel IsVisible="{Binding #IoToggle.IsChecked}">
-          <StackPanel>
-            <Button Classes="item" Command="{Binding AddClockCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleClock}" />
-                <TextBlock Text="Clock" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddToggleCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleToggle}" />
-                <TextBlock Text="Toggle Switch" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddProbeCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleProbe}" />
-                <TextBlock Text="Logic Probe" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-          </StackPanel>
-        </StackPanel>
-
-        <ToggleButton Classes="section" x:Name="GatesToggle" IsChecked="True" Content="Gates" />
-        <StackPanel IsVisible="{Binding #GatesToggle.IsChecked}">
-          <StackPanel>
-            <Button Classes="item" Command="{Binding AddAndCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="14" Child="{StaticResource SampleAnd}" />
-                <TextBlock Text="AND Gate" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddNotCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="14" Child="{StaticResource SampleNot}" />
-                <TextBlock Text="NOT Gate" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddOrCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="14" Child="{StaticResource SampleOr}" />
-                <TextBlock Text="OR Gate" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddXorCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="14" Child="{StaticResource SampleXor}" />
-                <TextBlock Text="XOR Gate" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddNandCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="14" Child="{StaticResource SampleNand}" />
-                <TextBlock Text="NAND Gate" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddNorCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="14" Child="{StaticResource SampleNor}" />
-                <TextBlock Text="NOR Gate" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddXnorCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="14" Child="{StaticResource SampleXnor}" />
-                <TextBlock Text="XNOR Gate" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-
-            <Button Classes="item" Command="{Binding AddTristateBufferCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="14" Child="{StaticResource SampleTristateBuffer}" />
-                <TextBlock Text="Tristate Buffer" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-          </StackPanel>
-        </StackPanel>
-
-        <ToggleButton
-          Classes="section"
-          x:Name="PlexersToggle"
-          IsChecked="False"
-          Content="Plexers"
-        />
-        <StackPanel IsVisible="{Binding #PlexersToggle.IsChecked}">
-          <StackPanel>
-            <Button Classes="item" Command="{Binding AddMultiplexerCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleMux}" />
-                <TextBlock Text="Multiplexer" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddDemultiplexerCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleDemux}" />
-                <TextBlock Text="Demultiplexer" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddDecoderCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleDecoder}" />
-                <TextBlock Text="Decoder" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddPriorityEncoderCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SamplePriorityEncoder}" />
-                <TextBlock Text="Priority Encoder" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-          </StackPanel>
-        </StackPanel>
-
-        <ToggleButton
-          Classes="section"
-          x:Name="ArithmeticToggle"
-          IsChecked="False"
-          Content="Arithmetic"
-        />
-        <StackPanel IsVisible="{Binding #ArithmeticToggle.IsChecked}">
-          <StackPanel>
-            <Button Classes="item" Command="{Binding AddFullAdderCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleFullAdder}" />
-                <TextBlock Text="Full Adder" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-          </StackPanel>
-        </StackPanel>
-
-        <ToggleButton Classes="section" x:Name="MemoryToggle" IsChecked="False" Content="Memory" />
-        <StackPanel IsVisible="{Binding #MemoryToggle.IsChecked}">
-          <StackPanel>
-            <Button Classes="item" Command="{Binding AddDLatchCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleDLatch}" />
-                <TextBlock Text="D Latch" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddDFlipFlopCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleDFlipFlop}" />
-                <TextBlock Text="D Flip-Flop" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddJKFlipFlopCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleJKFlipFlop}" />
-                <TextBlock Text="JK Flip-Flop" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddTFlipFlopCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleTFlipFlop}" />
-                <TextBlock Text="T Flip-Flop" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddRegisterCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleRegister}" />
-                <TextBlock Text="Register" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-            <Button Classes="item" Command="{Binding AddCounterCommand}">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Viewbox Height="16" Child="{StaticResource SampleCounter}" />
-                <TextBlock Text="Counter" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
-          </StackPanel>
-        </StackPanel>
-      </StackPanel>
-
-      <StackPanel
-        IsVisible="{Binding AppState.DesignTabActive, Converter={x:Static BoolConverters.Not}}"
-        Margin="20,10"
-        Spacing="5"
-      >
-        <Grid ColumnDefinitions="Auto,*,*" Margin="0,0,0,2">
-          <TextBlock Text="Size" VerticalAlignment="Center" Margin="0,0,8,0" />
-          <TextBox
-            Grid.Column="1"
-            Margin="0,0,4,0"
-            MinWidth="20"
-            Text="{Binding CanvasWidth, Mode=TwoWay}"
-            FontSize="12"
-          />
-          <TextBox
-            Grid.Column="2"
-            MinWidth="20"
-            Text="{Binding CanvasHeight, Mode=TwoWay}"
-            FontSize="12"
-          />
-        </Grid>
-        <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,4">
-          <TextBlock Text="Frequency (Hz)" VerticalAlignment="Center" Opacity="0.8" />
-          <TextBox Grid.Column="1" Text="{Binding FrequencyHzText, Mode=TwoWay}" FontSize="12" />
-        </Grid>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
-          <Viewbox Height="24">
-            <CheckBox
-              IsChecked="{Binding AppState.TerminalColorChangeAllowed, Mode=TwoWay}"
-              Focusable="False"
-            >
-              <CheckBox.Resources>
-                <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="DodgerBlue" />
-                <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="DodgerBlue" />
-              </CheckBox.Resources>
-            </CheckBox>
-          </Viewbox>
-          <TextBlock Text="Terminal Coloring" VerticalAlignment="Center" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
-          <Viewbox Height="24">
-            <CheckBox IsChecked="{Binding AppState.EditingAllowed, Mode=TwoWay}" Focusable="False">
-              <CheckBox.Resources>
-                <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="DodgerBlue" />
-                <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="DodgerBlue" />
-              </CheckBox.Resources>
-            </CheckBox>
-          </Viewbox>
-          <TextBlock Text="Circuit Editing" VerticalAlignment="Center" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
-          <Viewbox Height="24">
-            <CheckBox IsChecked="{Binding Simulation.Running, Mode=TwoWay}" Focusable="False">
-              <CheckBox.Resources>
-                <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="DodgerBlue" />
-                <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="DodgerBlue" />
-              </CheckBox.Resources>
-            </CheckBox>
-          </Viewbox>
-          <TextBlock Text="Simulation" VerticalAlignment="Center" />
-        </StackPanel>
-      </StackPanel>
+  <Grid RowDefinitions="Auto,Auto,*">
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="0">
+      <Button
+        Classes="tab"
+        Content="Design"
+        Classes.active="{Binding AppState.DesignTabActive}"
+        Command="{Binding ShowDesignTabCommand}"
+      />
+      <Button
+        Classes="tab"
+        Content="Canvas"
+        Classes.active="{Binding AppState.DesignTabActive, Converter={x:Static BoolConverters.Not}}"
+        Command="{Binding ShowCanvasTabCommand}"
+      />
     </StackPanel>
-  </ScrollViewer>
+    <Border Height="1" Background="#3A3A3A" Margin="0,0,0,5" Grid.Row="1" />
+    <ScrollViewer Width="200" BorderThickness="0" Grid.Row="2">
+      <StackPanel Margin="0,0,0,20">
+        <StackPanel IsVisible="{Binding AppState.DesignTabActive}" Spacing="5">
+          <ToggleButton Classes="section" x:Name="IoToggle" IsChecked="True" Content="I/O" />
+          <StackPanel IsVisible="{Binding #IoToggle.IsChecked}">
+            <StackPanel>
+              <Button Classes="item" Command="{Binding AddClockCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleClock}" />
+                  <TextBlock Text="Clock" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddToggleCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleToggle}" />
+                  <TextBlock Text="Toggle Switch" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddProbeCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleProbe}" />
+                  <TextBlock Text="Logic Probe" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+            </StackPanel>
+          </StackPanel>
+
+          <ToggleButton Classes="section" x:Name="GatesToggle" IsChecked="True" Content="Gates" />
+          <StackPanel IsVisible="{Binding #GatesToggle.IsChecked}">
+            <StackPanel>
+              <Button Classes="item" Command="{Binding AddAndCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="14" Child="{StaticResource SampleAnd}" />
+                  <TextBlock Text="AND Gate" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddNotCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="14" Child="{StaticResource SampleNot}" />
+                  <TextBlock Text="NOT Gate" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddOrCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="14" Child="{StaticResource SampleOr}" />
+                  <TextBlock Text="OR Gate" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddXorCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="14" Child="{StaticResource SampleXor}" />
+                  <TextBlock Text="XOR Gate" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddNandCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="14" Child="{StaticResource SampleNand}" />
+                  <TextBlock Text="NAND Gate" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddNorCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="14" Child="{StaticResource SampleNor}" />
+                  <TextBlock Text="NOR Gate" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddXnorCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="14" Child="{StaticResource SampleXnor}" />
+                  <TextBlock Text="XNOR Gate" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+
+              <Button Classes="item" Command="{Binding AddTristateBufferCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="14" Child="{StaticResource SampleTristateBuffer}" />
+                  <TextBlock Text="Tristate Buffer" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+            </StackPanel>
+          </StackPanel>
+
+          <ToggleButton
+            Classes="section"
+            x:Name="PlexersToggle"
+            IsChecked="True"
+            Content="Plexers"
+          />
+          <StackPanel IsVisible="{Binding #PlexersToggle.IsChecked}">
+            <StackPanel>
+              <Button Classes="item" Command="{Binding AddMultiplexerCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleMux}" />
+                  <TextBlock Text="Multiplexer" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddDemultiplexerCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleDemux}" />
+                  <TextBlock Text="Demultiplexer" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddDecoderCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleDecoder}" />
+                  <TextBlock Text="Decoder" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddPriorityEncoderCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SamplePriorityEncoder}" />
+                  <TextBlock Text="Priority Encoder" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+            </StackPanel>
+          </StackPanel>
+
+          <ToggleButton
+            Classes="section"
+            x:Name="ArithmeticToggle"
+            IsChecked="True"
+            Content="Arithmetic"
+          />
+          <StackPanel IsVisible="{Binding #ArithmeticToggle.IsChecked}">
+            <StackPanel>
+              <Button Classes="item" Command="{Binding AddFullAdderCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleFullAdder}" />
+                  <TextBlock Text="Full Adder" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+            </StackPanel>
+          </StackPanel>
+
+          <ToggleButton Classes="section" x:Name="MemoryToggle" IsChecked="True" Content="Memory" />
+          <StackPanel IsVisible="{Binding #MemoryToggle.IsChecked}">
+            <StackPanel>
+              <Button Classes="item" Command="{Binding AddDLatchCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleDLatch}" />
+                  <TextBlock Text="D Latch" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddDFlipFlopCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleDFlipFlop}" />
+                  <TextBlock Text="D Flip-Flop" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddJKFlipFlopCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleJKFlipFlop}" />
+                  <TextBlock Text="JK Flip-Flop" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddTFlipFlopCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleTFlipFlop}" />
+                  <TextBlock Text="T Flip-Flop" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddRegisterCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleRegister}" />
+                  <TextBlock Text="Register" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="item" Command="{Binding AddCounterCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <Viewbox Height="16" Child="{StaticResource SampleCounter}" />
+                  <TextBlock Text="Counter" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+            </StackPanel>
+          </StackPanel>
+        </StackPanel>
+
+        <StackPanel
+          IsVisible="{Binding AppState.DesignTabActive, Converter={x:Static BoolConverters.Not}}"
+          Margin="20,10"
+          Spacing="5"
+        >
+          <Grid ColumnDefinitions="Auto,*,*" Margin="0,0,0,2">
+            <TextBlock Text="Size" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <TextBox
+              Grid.Column="1"
+              Margin="0,0,4,0"
+              MinWidth="20"
+              Text="{Binding CanvasWidth, Mode=TwoWay}"
+              FontSize="12"
+            />
+            <TextBox
+              Grid.Column="2"
+              MinWidth="20"
+              Text="{Binding CanvasHeight, Mode=TwoWay}"
+              FontSize="12"
+            />
+          </Grid>
+          <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,4">
+            <TextBlock Text="Frequency (Hz)" VerticalAlignment="Center" Opacity="0.8" />
+            <TextBox Grid.Column="1" Text="{Binding FrequencyHzText, Mode=TwoWay}" FontSize="12" />
+          </Grid>
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
+            <Viewbox Height="24">
+              <CheckBox
+                IsChecked="{Binding AppState.TerminalColorChangeAllowed, Mode=TwoWay}"
+                Focusable="False"
+              >
+                <CheckBox.Resources>
+                  <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="DodgerBlue" />
+                  <SolidColorBrush
+                    x:Key="CheckBoxCheckBackgroundStrokeChecked"
+                    Color="DodgerBlue"
+                  />
+                </CheckBox.Resources>
+              </CheckBox>
+            </Viewbox>
+            <TextBlock Text="Terminal Coloring" VerticalAlignment="Center" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
+            <Viewbox Height="24">
+              <CheckBox
+                IsChecked="{Binding AppState.EditingAllowed, Mode=TwoWay}"
+                Focusable="False"
+              >
+                <CheckBox.Resources>
+                  <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="DodgerBlue" />
+                  <SolidColorBrush
+                    x:Key="CheckBoxCheckBackgroundStrokeChecked"
+                    Color="DodgerBlue"
+                  />
+                </CheckBox.Resources>
+              </CheckBox>
+            </Viewbox>
+            <TextBlock Text="Circuit Editing" VerticalAlignment="Center" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="-3">
+            <Viewbox Height="24">
+              <CheckBox IsChecked="{Binding Simulation.Running, Mode=TwoWay}" Focusable="False">
+                <CheckBox.Resources>
+                  <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="DodgerBlue" />
+                  <SolidColorBrush
+                    x:Key="CheckBoxCheckBackgroundStrokeChecked"
+                    Color="DodgerBlue"
+                  />
+                </CheckBox.Resources>
+              </CheckBox>
+            </Viewbox>
+            <TextBlock Text="Simulation" VerticalAlignment="Center" />
+          </StackPanel>
+        </StackPanel>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
 </UserControl>
