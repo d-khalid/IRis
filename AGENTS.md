@@ -7,7 +7,7 @@
 
 ## Coding Guidelines
 
-- Before writing any code, stop at the first point that holds:
+- Before writing any code, stop at the first point that holds: 
 
 ```txt
 1. Does this need to be built at all? (YAGNI)
