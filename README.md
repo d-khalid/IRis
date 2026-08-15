@@ -81,15 +81,15 @@ Note that multiple components are being added every week, so the lack of basic c
 
 ---
 
-## Why do we have a `AGENTS.md` file?
+## Use of AI Agents on this Project
 
 While it is obvious that just like this `README.md`, this codebase is entirely organic and pest-free (manually typed). Absolutely no AI-Agents have worked on this codebase ever. That is, they haven't made edits in it directly.
 
-The `AGENTS.md` file is there to facilitate the use of AI-agents in **Ask Mode** to query about better approaches, more efficient code, tracing down logic in some places, etc. We believe this is how AI-agents should be used in programming, because only software engineers are smart enough to be making architectural decisions.
+We rather appreciate the use of AI-agents in **Ask Mode** to query about better approaches, more efficient code, tracing down logic in some places, etc. We believe this is how AI-agents should be used in programming, because only software engineers are smart enough to be making **decisions on what to put in, and what not to.**
 
 Decisions that involve trade-offs, deciding whether something is worth adding or removing, making the experience more seemless for a human, user-experience engineering, (and so on) none of these can ever be done by AI-agents.
 
-The file instructs agents to use the least number of tokens and try to sound like a human. It is to be noted that sometimes AI-agents skip reading this file entirely, if it's the case with your agent too then just remind it to read before every prompt.
+The file instructs agents to use the least number of tokens and try to sound like a human. Note that sometimes AI-agents skip reading this file entirely, if it's the case with your agent too then just remind it to read the file.
 
 ---
 
